@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Here is How to Download/Use This Theme"
+title: "setup WLAN on FreeBSD"
 comments: true
 description: "Here is How to Download/Use This Theme"
 keywords: "dummy content"
