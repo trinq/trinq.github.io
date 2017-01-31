@@ -5,9 +5,8 @@ comments: true
 description: ""
 keywords: "Amazon-aws, vpc, subnet ,nat "
 ---
-# Create VPC, public,private subnet and NAT
 
-# Create VPC
+
 
 **Amazon OpsWorks**lets you easily orchestrate the different parts of your application using**Chef**to perform the actual automation. It presents the different AWS resources that make up your app as multiple layers, each composed of resources. A typical app might have two layers, an app server layer \(where your Ruby/NodeJS/Python/PHP app actually runs\) and a database layer \(backed by RDS\). Typically, you'd manage each instance and RDS installation separately, but with OpsWorks you can manage all instances in the "app server" layer together.
 
