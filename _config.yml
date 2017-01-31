@@ -29,8 +29,8 @@ sass:
 
 # Author settings
 author:
-  name     : "NQ Tri "
-  job      :  ""
+  name     : ""
+  job      : ""
   bio      : ""
   thumb    : /images/author.jpg
   email    : triquang13@gmail.com
