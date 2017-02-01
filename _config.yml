@@ -1,61 +1,63 @@
-
 # SEO settings
-title: "Nói "
-title2: " Chuyện" # default: ""
-description: "."
-keywords: ""
-url: http://trinq.github.io# site url
-#baseurl: "/thinkspace" # apply repo name if use it under gh-pages branch
-# baseurl: null # apply null if repo name is something like username.github.io
+title: "heiswayiNrird(site);"
+description: "Just another Software guy who loves PHP, C# and a cup of hot coffee..."
+keywords: "heiswayi nrird, php developer, c# developer, csharp developer, minimalist, software engineer, freelancer"
+url: "https://heiswayi.github.io" # Site url (default: "")
+#baseurl: "" # Apply repo name if use it under gh-pages branch
+baseurl: null # Apply null if repo name is something like username.github.io
 
-google_analytics: UA-XXXXX-XX
-repo: http://github.com/heiswayi/thinkspace
-disqus_shortname: "trinq"
-twitter_username: ""
-comments: true
+# Site analytics
+google_analytics: UA-58296043-7
+
+# Disqus
+disqus_shortname: hnbloggithub
+
+# Site author info
+author:
+  name: "Heiswayi Nrird"
+  email: hnrird@gmail.com
+  nickname: "Wayi"
+  display_bio: true # Edit file in /_includes/bio.html
+  website: http://heiswayi.github.io
+
+# Social settings
+og_locale: "en_US"
+display_social_icons: true # Edit file in /_includes/social_links.html
+github:
+  username: heiswayi
+facebook:
+  profile_url: https://www.facebook.com/profile.php?id=1257583160
+twitter:
+  username: HeiswayiNrird
 
 # Build settings
-permalink   : /:year/:title/
-markdown    : kramdown
-highlighter : rouge
-
+#source: ./
+#destination: ../heiswayi.github.io/
 source: ./
 destination: ./_site
 
-# Sass configuration
+permalink: /:year/:title
+markdown: kramdown
+highlighter: rouge
+
+timezone: Asia/Kuala_Lumpur
+
+exclude: ["README.md", "LICENSE.md", "CHANGELOG.md"]
+
+# Site configurations
+compress_html:
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+  ignore:
+    envs: [local]
+  blanklines: false
+  profile: false
+  startings: [html, head, body]
+
 sass:
   sass_dir: assets/scss
   style: compressed # expanded
 
-# Author settings
-author:
-  name     : ""
-  job      : ""
-  bio      : ""
-  thumb    : /images/author.jpg
-  email    : triquang13@gmail.com
-  url      : http://trinq.github.io
-  github   : http://github.com/trinq
-  twitter  : http://twitter.com/kihote
-  facebook : 
-  linkedin : 
-
-# social settings
-og_locale: "en_US"
-twitter_card: "summary_large_image"
-twitter_site: "@kihote"
-# Outputting
-timezone: UTC+7
-
 gems:
-  - bourbon
-  - jekyll-paginate
-
-# navbar pages
-navbar:
-  - slug : about
-    title: About
-  - slug : blog
-    title: Blog
-
-exclude: ["gulp", "node_modules", "bower", "bower_components", "config.rb", "src", "Gemfile", "Gemfile.lock", ".rvmrc", ".rbenv-version", "package.json", "gulpfile.js", "README.md", "Rakefile", "changelog.md"]
+  - jekyll-sitemap
