@@ -4,10 +4,10 @@ description: " "
 keywords: " "
 url: "https://heiswayi.github.io" # Site url (default: "")
 #baseurl: "" # Apply repo name if use it under gh-pages branch
-baseurl: null # Apply null if repo name is something like username.github.io
+baseurl: trinq.github.io # Apply null if repo name is something like username.github.io
 
 # Site analytics
-google_analytics: UA-58296043-7
+google_analytics: 
 
 # Disqus
 disqus_shortname: trinq
