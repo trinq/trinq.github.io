@@ -1,7 +1,7 @@
 # SEO settings
-title: "heiswayiNrird(site);"
-description: "Just another Software guy who loves PHP, C# and a cup of hot coffee..."
-keywords: "heiswayi nrird, php developer, c# developer, csharp developer, minimalist, software engineer, freelancer"
+title: "trinq Zone"
+description: " "
+keywords: " "
 url: "https://heiswayi.github.io" # Site url (default: "")
 #baseurl: "" # Apply repo name if use it under gh-pages branch
 baseurl: null # Apply null if repo name is something like username.github.io
@@ -10,25 +10,24 @@ baseurl: null # Apply null if repo name is something like username.github.io
 google_analytics: UA-58296043-7
 
 # Disqus
-disqus_shortname: hnbloggithub
+disqus_shortname: trinq
 
 # Site author info
 author:
-  name: "Heiswayi Nrird"
-  email: hnrird@gmail.com
-  nickname: "Wayi"
+  name: "Trinq NQ"
+  email: triquang13@gmail.com
+  nickname: "TriNQ"
   display_bio: true # Edit file in /_includes/bio.html
-  website: http://heiswayi.github.io
-
+  website: http://trinq.github.io
 # Social settings
 og_locale: "en_US"
 display_social_icons: true # Edit file in /_includes/social_links.html
 github:
   username: heiswayi
 facebook:
-  profile_url: https://www.facebook.com/profile.php?id=1257583160
+  profile_url:
 twitter:
-  username: HeiswayiNrird
+  username: kihote
 
 # Build settings
 #source: ./
