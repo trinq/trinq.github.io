@@ -3,6 +3,7 @@ layout: post
 title: "Create VPC - private - public subnet and NAT "
 comments: true
 description: ""
+tags: [Amazon AWS]
 keywords: "Amazon-aws, vpc, subnet ,nat "
 ---
 
