@@ -4,6 +4,7 @@ title: "Hướng dẫn setup setup  Skype cho Freebsd 11.0"
 comments: true
 description: "Hướng dẫn setup  Skype cho Freebsd 11.0e"
 keywords: "Hướng dẫn setup setup Skype cho Freebsd 11.0"
+tag: [FreeBSD]
 ---
 
 Hướng dẫn setup Skype trên Freebsd 11.0
