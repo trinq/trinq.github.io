@@ -27,12 +27,12 @@ Sau khi report xong thì Qualys sẽ có report, hiện tại đang hỗ trợ v
 
 **OWASP Report**
 
-![N|Solid](https://image.ibb.co/fm4jbF/Clipboard_image_2017_03_14_15_47_21.png)
+![](https://image.ibb.co/fm4jbF/Clipboard_image_2017_03_14_15_47_21.png)
 
 **Patch Report**
-![N|Solid](https://image.ibb.co/g4OGqa/Clipboard_image_2017_03_14_15_50_08.png)
+![](https://image.ibb.co/g4OGqa/Clipboard_image_2017_03_14_15_50_08.png)
 
 **Threat Report**
-![N|Solid](https://image.ibb.co/neepAa/Clipboard_image_2017_03_14_15_51_52.png)
+![](https://image.ibb.co/neepAa/Clipboard_image_2017_03_14_15_51_52.png)
 
 
