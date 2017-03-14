@@ -4,11 +4,11 @@ title: "Quét lỗ hổng bảo mật Free với Qualys"
 comments: true
 description: "Quét lỗ hổng bảo mật Free với Qualys"
 keywords: "qualys, vulnerability management"
-tag: [Vulnerability Management, Security]
+tag: [Vulnerability Management, Security,Qualys]
 ---
 
 
-![N|Solid](http://rumyittips.com/wp-content/uploads/2013/08/Free-Online-Vulnerability-Scan-with-Qualys-FreeScan5.jpg)
+![](http://rumyittips.com/wp-content/uploads/2013/08/Free-Online-Vulnerability-Scan-with-Qualys-FreeScan5.jpg)
 
 
   Để  quét lỗ hổng bảo mật như web, hoặc các ứng dụng nội bộ có nhiều sản phẩm trên thị trường ở dưới dạng opensouce và dạng có tính tiền. Opensouce có thể nói như openvas, nessus tính phí có thể kể những tên như rapid7,Qualys. Trong phiên bản tính tiền thì Qualys hỗ trợ phiên bản free, mỗi người có thể scan website của công ty mình mà không tốn đồng nào. Điểm tiện lợi quả Qualys nếu bạn scan ở bên ngoài \( External \) chỉ cần trình duyệt , khi bạn muốn scan bên trong \(Internal \ ) yêu cầu phải có máy ảo và setup Qualys , từ máy ảo đó thực hiện quét Internal.
