@@ -30,7 +30,6 @@ Vào địa chỉ: https://www.qualys.com/free-tools-trials  click chọn Free T
 Sau khi report xong thì Qualys sẽ có report, hiện tại đang hỗ trợ với những định dạng report như sau : OWASP , Patch , Threat Report.
 
 **OWASP Report**
-
 ![](https://image.ibb.co/fm4jbF/Clipboard_image_2017_03_14_15_47_21.png)
 
 **Patch Report**
