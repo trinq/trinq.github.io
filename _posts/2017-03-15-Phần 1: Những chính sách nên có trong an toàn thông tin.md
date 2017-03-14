@@ -9,6 +9,7 @@ tag: [Information Security ]
 
 
 
+![](https://www.astate.edu/dotAsset/ea07503c-c7bd-421d-9b00-18574dd53ab0.jpg)
 
 
 ### Policy quản lý và setup password
@@ -32,4 +33,3 @@ tag: [Information Security ]
 Một số hình ảnh tham khảo thềm:
 
 ![](https://s-media-cache-ak0.pinimg.com/564x/d5/bb/aa/d5bbaa74233d16afaba15b5cbd667c5d.jpg)
-
