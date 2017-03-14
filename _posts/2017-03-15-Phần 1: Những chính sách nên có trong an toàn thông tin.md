@@ -11,7 +11,7 @@ tag: [Information Security ]
 
 
 
-###Policy quản lý và đặt password
+### Policy quản lý và đặt password
 
 * Cần giải thích người dùng hiểu nến đặt nhiều loại password khác nhau cho từng loại tài khoản quang trọngkhác nhau. Nên phân chia loại tài khoản password cho "home" và tài khoản "work". Ngoài ra có thể kiểm tra email tài khoản của user có bị dính vô những vụ leak thông tin bằng cách check thông tin trên trang   [https://haveibeenpwned.com](https://haveibeenpwned.com) nếu có cần lập tức đổi password.
 * Hướng dẫn người dùng chọn password mạnh  để chống việc bị hacker bruteforce .Thông tin chi tiết có thể tham khảo ở video của sophos: [ short video by Sophos](https://nakedsecurity.sophos.com/2014/10/01/how-to-pick-a-proper-password)
