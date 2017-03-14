@@ -14,8 +14,10 @@ tag: [Information Security ]
 ### Policy quản lý và setup password
 
 * Cần giải thích người dùng hiểu nến đặt nhiều loại password khác nhau cho từng loại tài khoản quang trọngkhác nhau. Nên phân chia loại tài khoản password cho "home" và tài khoản "work". Ngoài ra có thể kiểm tra email tài khoản của user có bị dính vô những vụ leak thông tin bằng cách check thông tin trên trang   [https://haveibeenpwned.com](https://haveibeenpwned.com) nếu có cần lập tức đổi password.
+
 * Hướng dẫn người dùng chọn password mạnh  để chống việc bị hacker bruteforce .Thông tin chi tiết có thể tham khảo ở video của sophos: [ short video by Sophos](https://nakedsecurity.sophos.com/2014/10/01/how-to-pick-a-proper-password)
-###Poilicy cài đặt phần mềm trên máy tính của  nhân viên
+
+### Poilicy cài đặt phần mềm trên máy tính của  nhân viên
 
 * Nhân viên có thể dùng máy tính xách tay  được công ty cấp  ở nhà để làm những việc cá nhân của mình. Nhưng cần giải thích nhân viên hiểu từ lúc đầu tiên nhận máy là : không được dùng máy này để download torrent hoặc xem phim khiêu dâm hay những trang web khiêu dâm khác. Yêu cầu nhân viên sử dụng máy tính khác cá nhân của họ để phục vụ những nhu cầu đó.
 
