@@ -28,3 +28,8 @@ tag: [Information Security ]
 * Chấm dứt việc sử dụng USB để share file dữ liệu. Cần giải thích nhân viên hiểu rõ sự nguy hiểm công cụ này, người dùng có thể bị chiếm quyền điều khiển máy , tự động chạy đoạn mã độc hại khi vừa cắm USB vào máy  có thể xem thông tin thêm ở đây  https://www.youtube.com/watch?v=CvI_mrQYaF8. Nếu ai đó tự tin rằng Antivirus có thể tự tin quét hết mã độc hại có thể đọc thêm ở đây để có câu trả lời: [Why Antivirus Software Didn’t Save The New York Times From Hackers](http://www.huffingtonpost.com/2013/01/31/antivirus-software-hackers_n_2589538.html)
 
 * Cần ban hành chính sách nhất quán về việc cài đặt các phần mềm dùng trong công việc hạn chế tối đa việc sử dùng mềm lậu crack.
+
+Một số hình ảnh tham khảo thềm:
+
+![](https://s-media-cache-ak0.pinimg.com/564x/d5/bb/aa/d5bbaa74233d16afaba15b5cbd667c5d.jpg)
+
