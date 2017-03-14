@@ -38,4 +38,5 @@ Sau khi report xong thì Qualys sẽ có report, hiện tại đang hỗ trợ v
 **Threat Report**
 ![](https://image.ibb.co/neepAa/Clipboard_image_2017_03_14_15_51_52.png)
 
+Như vậy từ Report này cho ta khá nhiều thông tin, từ thông tin này người quản trị mới tiến hành  fix lại những lỗi đang có trong hệ thống của mình.
 
