@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "Hướng dẫn setup setup card Wifi cho Freebsd 11.0"
+title: "Quét lỗ hổng bảo mật Free với Qualys"
 comments: true
-description: "Hướng dẫn setup setup card Wifi cho Freebsd 11.0e"
-keywords: "Hướng dẫn setup setup card Wifi cho Freebsd 11.0"
-tag: [FreeBSD]
+description: ""
+tags: [vulnerability management] [Security] [Qualys]
+keywords: "qualys, vulnerability management"
 ---
 
 
