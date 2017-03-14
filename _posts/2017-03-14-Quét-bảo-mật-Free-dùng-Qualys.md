@@ -4,7 +4,7 @@ title: "Quét lỗ hổng bảo mật Free với Qualys"
 comments: true
 description: "Quét lỗ hổng bảo mật Free với Qualys"
 keywords: "qualys, vulnerability management"
-tag: [Vulnerability Management],[Security]
+tag: [Vulnerability Management, Security]
 ---
 
 
