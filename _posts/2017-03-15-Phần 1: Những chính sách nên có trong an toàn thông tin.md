@@ -24,7 +24,7 @@ tag: [Information Security ]
 
 * Nếu công ty bạn bị hack và thông tin nhạy cảm rò rỉ qua bên ngoài có thể xuất phát từ bên trong nội bộ từ sự vô tình nhân viên khi click vào trang lừa đảo. Có thể sử dụng quiz để test nhân viên mình  [phishing quiz](https://www.google.com/search?q=Phishing+Quiz).
 
-* Hạn chế việc đính kèm file khi gởi qua mail  việc này có thể thay thế bằng việc dùng Google Driver, Box hoặc giải pháp opensouce OpenCloud
+* Hạn chế việc đính kèm file khi gởi qua mail  việc này có thể thay thế bằng việc dùng Google Driver, Box hoặc giải pháp opensouce OwnCloud.
 
 * Chấm dứt việc sử dụng USB để share file dữ liệu. Cần giải thích nhân viên hiểu rõ sự nguy hiểm công cụ này, người dùng có thể bị chiếm quyền điều khiển máy , tự động chạy đoạn mã độc hại khi vừa cắm USB vào máy  có thể xem thông tin thêm ở đây  https://www.youtube.com/watch?v=CvI_mrQYaF8. Nếu ai đó tự tin rằng Antivirus có thể tự tin quét hết mã độc hại có thể đọc thêm ở đây để có câu trả lời: [Why Antivirus Software Didn’t Save The New York Times From Hackers](http://www.huffingtonpost.com/2013/01/31/antivirus-software-hackers_n_2589538.html)
 
