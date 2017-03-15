@@ -30,6 +30,5 @@ tag: [Information Security ]
 
 * Cần ban hành chính sách nhất quán về việc cài đặt các phần mềm dùng trong công việc hạn chế tối đa việc sử dùng mềm lậu crack.
 
-Một số hình ảnh tham khảo thềm:
-
+Thông tin tham khảo thêm về thống kê thông tin bị rò rỉ từ nhân viên .
 ![](https://s-media-cache-ak0.pinimg.com/564x/d5/bb/aa/d5bbaa74233d16afaba15b5cbd667c5d.jpg)
