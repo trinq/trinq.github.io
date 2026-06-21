@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Hướng dẫn setup setup  Skype cho Freebsd 11.0"
+title: "Hướng dẫn setup Skype cho FreeBSD 11.0"
 comments: true
-description: "Hướng dẫn setup  Skype cho Freebsd 11.0e"
-keywords: "Hướng dẫn setup setup Skype cho Freebsd 11.0"
+description: "Cài đặt Skype trên FreeBSD 11.0 bằng cách sử dụng Linux emulator."
+keywords: "FreeBSD, Skype, linux-c6, emulator"
 ---
 
 Hướng dẫn setup Skype trên Freebsd 11.0

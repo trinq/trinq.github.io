@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Hướng dẫn setup setup card Wifi cho Freebsd 11.0"
+title: "Hướng dẫn setup card Wifi cho FreeBSD 11.0"
 comments: true
-description: "Hướng dẫn setup setup card Wifi cho Freebsd 11.0e"
-keywords: "Hướng dẫn setup setup card Wifi cho Freebsd 11.0"
+description: "Cài đặt driver bwn và cấu hình Wifi card Broadcom BCM4312 trên FreeBSD 11.0."
+keywords: "FreeBSD, Wifi, BCM4312, bwn, driver"
 ---
 
 Hướng dẫn setup setup card Wifi cho Freebsd 11.0

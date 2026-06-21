@@ -2,8 +2,8 @@
 layout: post
 title: "If you have a Guest post.."
 comments: true
-description: "If you have a Guest post.."
-keywords: "dummy content"
+description: "Sample guest post layout — add author name in front matter to display it after the post date."
+keywords: "jekyll, guest post, sample"
 author: GuestName
 ---
 

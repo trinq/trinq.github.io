@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Create VPC - private - public subnet and NAT "
+title: "Create VPC - private - public subnet and NAT"
 comments: true
-description: ""
-keywords: "Amazon-aws, vpc, subnet ,nat "
+description: "Hướng dẫn tạo VPC với public subnet, private subnet và NAT instance trên Amazon AWS."
+keywords: "Amazon AWS, VPC, subnet, NAT"
 ---
 
 
