@@ -364,6 +364,26 @@ blockquote p:last-child {
     text-transform: uppercase;
 }
 
+.post-label {
+    display: inline-block;
+    font-size: 65%;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 4px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
+
+.reading-label {
+    background-color: #006699;
+    color: #fff;
+}
+
+.reading-label:hover {
+    background-color: #005077;
+}
+
 .post-list-desc {
     color: #888;
     font-size: 80%;

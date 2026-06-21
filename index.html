@@ -35,7 +35,14 @@ title: Home
     {% endunless %}
 
     <div class="post-list">
-      <div class="post-list-date"><small>{{ post.date | date: "%b %d" }}</small></div>
+      <div class="post-list-date">
+        <small>
+          {{ post.date | date: "%b %d" }}
+          {% if post.category == "reading" %}
+          <span class="post-label reading-label">reading</span>
+          {% endif %}
+        </small>
+      </div>
 	    <div class="text-truncate"><a href="{{ post.url }}">{{ post.title }}</a></div>
       <div class="post-list-desc">{{ post.description }}</div>
     </div>
