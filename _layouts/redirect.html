@@ -1,0 +1,21 @@
+---
+layout: default
+---
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="0; url={{ page.redirect_url }}">
+<link rel="canonical" href="{{ page.redirect_url }}">
+<title>Redirecting to {{ page.title }}...</title>
+<style>
+  body { font-family: sans-serif; text-align: center; padding: 3rem; color: #515151; }
+  a { color: #006699; }
+</style>
+</head>
+<body>
+<p>Redirecting to <a href="{{ page.redirect_url }}">{{ page.title }}</a>...</p>
+<script>window.location = "{{ page.redirect_url }}";</script>
+</body>
+</html>
