@@ -1,23 +1,23 @@
 /**
- * i18n.js — lightweight in-page translation using LibreTranslate
+ * i18n.js — lightweight in-page translation using Google Translate (unofficial API)
  *
  * Usage:
  *   <script src="i18n.js" data-source="en" data-target="vi"></script>
  *
  * How it works:
  *   1. On load, caches the English original in memory.
- *   2. On first translate, fetches LibreTranslate and caches the translated
- *      HTML string keyed by URL.
+ *   2. On first translate, calls Google Translate API and caches the result.
  *   3. Subsequent toggles are instant (cache hit).
- *   4. Translation state persists across page navigations via sessionStorage.
+ *   4. Translation state persists via sessionStorage across page navigations.
  */
 
 (function () {
   'use strict';
 
-  /* ── Configuration ─────────────────────────────────────────── */
-  const LT_ENDPOINT =
-    window.__LT_ENDPOINT__ || 'https://libretranslate.com';
+  /* ── Google Translate unofficial API ──────────────────────────── */
+  const GT_URL = (text, sl, tl) =>
+    `https://translate.googleapis.com/translate_a/single?client=webapp` +
+    `&sl=${sl}&tl=${tl}&hl=${tl}&dt=t&q=${encodeURIComponent(text)}`;
 
   /* ── State ─────────────────────────────────────────────────── */
   const cache = new Map();
@@ -27,15 +27,16 @@
   /* ── Utilities ─────────────────────────────────────────────── */
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
 
+  function parseResponse(data) {
+    if (!Array.isArray(data)) throw new Error('Unexpected response');
+    return data[0].map((seg) => seg[0]).join('');
+  }
+
   async function translate(text, sourceLang, targetLang) {
-    const res = await fetch(`${LT_ENDPOINT}/translate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ q: text, source: sourceLang, target: targetLang, format: 'html' }),
-    });
-    if (!res.ok) throw new Error(`LT ${res.status}`);
+    const res = await fetch(GT_URL(text, sourceLang, targetLang));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    return data.translatedText;
+    return parseResponse(data);
   }
 
   async function translatePage(sourceLang, targetLang, mainEl) {
@@ -58,7 +59,9 @@
     btn.setAttribute('data-action', 'lang-toggle');
 
     function refreshLabel() {
-      btn.textContent = isTranslated ? sourceLang.toUpperCase() : targetLang.toUpperCase();
+      btn.textContent = isTranslated
+        ? sourceLang.toUpperCase()
+        : targetLang.toUpperCase();
     }
     refreshLabel();
 
