@@ -1,13 +1,49 @@
 ---
-layout: default
+layout: compress
 ---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }} · {{ site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+  <link rel="stylesheet" href="{{ "/assets/css/main.css" | prepend: site.baseurl }}">
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
+</head>
+<body class="home-body">
 
-<div class="page">
-  <div class="page-top-meta">
-    <h1 class="page-title">{{ page.title }}</h1>
-  </div>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="/" class="site-logo">{{ site.title }}</a>
+      <nav class="site-nav">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/reading">Reading</a>
+        <a href="/resume">Resume</a>
+        <a href="/tagged">Tags</a>
+        <a href="http://heiswayi.nrird.com">Photography</a>
+      </nav>
+    </div>
+  </header>
 
-  {{ content }}
+  <main class="home-main">
+    <div class="crumbs">
+      <a href="/">Home</a> &nbsp;&rsaquo;&nbsp; {{ page.title }}
+    </div>
+    <h1>{{ page.title }}</h1>
+    {{ content }}
+    <div class="back-link">
+      <a href="/">&larr; Back to Homepage</a>
+    </div>
+  </main>
 
-</div>
-<div class="back"><a href="/"><i class="fa fa-chevron-left"></i> Back to Homepage</a></div>
+  <footer class="home-footer">
+    <div class="home-footer-inner">
+      <p>Unless otherwise stated, all original code is licensed under the <a href="http://heiswayi.github.io/mit-license">MIT</a> license. All photographs and text are licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.</p>
+      <p>Handmade with Jekyll &middot; on <a href="https://github.com/trinq/trinq.github.io">GitHub</a> &middot; &copy; {{ site.time | date: "%Y" }} {{ site.author.name }}</p>
+    </div>
+  </footer>
+
+</body>
+</html>
