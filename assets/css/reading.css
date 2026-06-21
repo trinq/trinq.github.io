@@ -1,0 +1,329 @@
+/* Reading Course Aesthetic — standalone stylesheet
+   Warm paper tones, serif typography, book-like layout.
+   Works independently of the site's SCSS pipeline. */
+
+@media (prefers-color-scheme: dark) {
+  :root.reading-theme {
+    --_ink: #ece7da;
+    --_ink-soft: #b9b3a3;
+    --_ink-mute: #8a8472;
+    --_paper: #15140f;
+    --_rule: #3a3528;
+    --_accent: #d97757;
+    --_accent-soft: #2a1f18;
+  }
+}
+
+:root.reading-theme {
+  --_ink: #1a1a1a;
+  --_ink-soft: #4a4a4a;
+  --_ink-mute: #7a7a7a;
+  --_paper: #fbfaf6;
+  --_rule: #d8d4c7;
+  --_accent: #8b2c1a;
+  --_accent-soft: #f3e9e4;
+}
+
+body.home-body {
+  background: var(--_paper);
+  color: var(--_ink);
+  font-family: "Iowan Old Style", "Source Serif Pro", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  font-size: 18px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding: 0;
+}
+
+/* Reset wrap from old CSS */
+body.home-body .wrap {
+  max-width: none;
+  padding: 0;
+  background: transparent;
+}
+
+/* Site header */
+body.home-body .site-header {
+  background: var(--_paper);
+  border-bottom: 1px solid var(--_rule);
+  padding: 0 1.5rem;
+}
+
+body.home-body .site-header-inner {
+  max-width: calc(70ch + 3rem);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  height: 3.5rem;
+}
+
+body.home-body .site-logo {
+  font-family: "Iowan Old Style", "Source Serif Pro", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--_ink);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+body.home-body .site-logo:hover {
+  color: var(--_accent);
+}
+
+body.home-body .site-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+body.home-body .site-nav a {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--_ink-soft);
+  text-decoration: none;
+  padding: 0.35em 0.65em;
+  border-radius: 3px;
+  transition: color 0.15s, background 0.15s;
+}
+
+body.home-body .site-nav a:hover {
+  color: var(--_accent);
+  background: var(--_accent-soft);
+}
+
+/* Main content area */
+body.home-body .home-main {
+  max-width: 70ch;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Title & subtitle */
+body.home-body .home-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--_ink);
+  line-height: 1.25;
+  margin: 0 0 0.4em;
+}
+
+body.home-body .home-subtitle {
+  font-size: 1.05rem;
+  color: var(--_ink-soft);
+  margin: 0 0 2.5rem;
+  line-height: 1.5;
+}
+
+/* Year label */
+body.home-body .year-label {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--_ink-mute);
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid var(--_rule);
+}
+
+/* Post card */
+body.home-body .post-card {
+  border: 1px solid var(--_rule);
+  border-radius: 4px;
+  padding: 1.4rem 1.5rem;
+  background: var(--_paper);
+  margin-bottom: 1rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+  display: block;
+}
+
+body.home-body .post-card:hover {
+  border-color: var(--_accent);
+  box-shadow: 0 2px 12px rgba(139, 44, 26, 0.08);
+}
+
+body.home-body .post-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+body.home-body .post-card-date {
+  font-size: 0.72rem;
+  color: var(--_ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+body.home-body .post-card-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--_accent);
+  color: #fff;
+  padding: 0.15em 0.55em;
+  border-radius: 3px;
+}
+
+body.home-body .post-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.4em;
+  line-height: 1.3;
+  color: var(--_ink);
+}
+
+body.home-body .post-card-title:hover {
+  color: var(--_accent);
+}
+
+body.home-body .post-card-desc {
+  font-size: 0.9rem;
+  color: var(--_ink-soft);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Page content typography */
+body.home-body h1,
+body.home-body h2,
+body.home-body h3,
+body.home-body h4 {
+  font-family: "Iowan Old Style", "Source Serif Pro", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--_ink);
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+}
+
+body.home-body h1 { font-size: 2rem; margin-top: 0; }
+body.home-body h2 { font-size: 1.4rem; border-bottom: 1px solid var(--_rule); padding-bottom: 0.3em; }
+body.home-body h3 { font-size: 1.1rem; }
+body.home-body h4 { font-size: 1rem; color: var(--_ink-soft); }
+
+body.home-body p {
+  margin: 0.8em 0;
+  color: var(--_ink-soft);
+}
+
+body.home-body a {
+  color: var(--_accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+body.home-body a:hover {
+  text-decoration-thickness: 2px;
+}
+
+body.home-body hr {
+  border: 0;
+  border-top: 1px solid var(--_rule);
+  margin: 2rem 0;
+}
+
+/* Breadcrumbs */
+body.home-body .crumbs {
+  font-size: 0.85rem;
+  color: var(--_ink-mute);
+  margin-bottom: 2rem;
+}
+
+body.home-body .crumbs a {
+  color: var(--_ink-soft);
+  text-decoration: none;
+}
+
+body.home-body .crumbs a:hover {
+  color: var(--_accent);
+}
+
+/* Back link */
+body.home-body .back-link {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--_rule);
+  font-size: 0.88rem;
+}
+
+body.home-body .back-link a {
+  color: var(--_ink-mute);
+  text-decoration: none;
+}
+
+body.home-body .back-link a:hover {
+  color: var(--_accent);
+}
+
+/* Tags */
+body.home-body .tag-cloud {
+  margin-bottom: 1rem;
+}
+
+body.home-body .tag-cloud a.tag-anchor {
+  border: 1px solid var(--_rule);
+  white-space: nowrap;
+  padding: 0.2em 0.6em;
+  display: inline-block;
+  background: transparent;
+  color: var(--_accent);
+  font-size: 0.78rem;
+  text-decoration: none;
+  border-radius: 3px;
+  margin-right: 4px;
+  margin-bottom: 8px;
+  font-family: "Iowan Old Style", Georgia, serif;
+}
+
+body.home-body .tag-cloud a.tag-anchor:hover {
+  background: var(--_accent);
+  color: #fff;
+  border-color: var(--_accent);
+}
+
+/* Site footer */
+body.home-body .home-footer {
+  margin-top: 4rem;
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--_rule);
+  font-size: 0.82rem;
+  color: var(--_ink-mute);
+}
+
+body.home-body .home-footer-inner {
+  max-width: calc(70ch + 3rem);
+  margin: 0 auto;
+  text-align: center;
+  line-height: 1.7;
+}
+
+body.home-body .home-footer a {
+  color: var(--_ink-mute);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+body.home-body .home-footer a:hover {
+  color: var(--_accent);
+}
+
+/* Suppress old masthead / nav / footer on reading pages */
+body.home-body .masthead,
+body.home-body .nav,
+body.home-body .footer,
+body.home-body .footer .license,
+body.home-body .footer .copyright,
+body.home-body .top-menu,
+body.home-body .bio {
+  display: none !important;
+}

@@ -6,8 +6,8 @@ layout: compress
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ page.title }} · {{ site.title }}</title>
-  <meta name="description" content="{{ page.description | default: site.description }}">
+  <title>{{ site.title }}</title>
+  <meta name="description" content="{{ site.description }}">
   <link rel="stylesheet" href="{{ "/assets/css/main.css" | prepend: site.baseurl }}">
   <link rel="stylesheet" href="{{ "/assets/css/reading.css" | prepend: site.baseurl }}">
   <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
@@ -29,14 +29,7 @@ layout: compress
   </header>
 
   <main class="home-main">
-    <div class="crumbs">
-      <a href="/">Home</a> &nbsp;&rsaquo;&nbsp; {{ page.title }}
-    </div>
-    <h1>{{ page.title }}</h1>
     {{ content }}
-    <div class="back-link">
-      <a href="/">&larr; Back to Homepage</a>
-    </div>
   </main>
 
   <footer class="home-footer">
