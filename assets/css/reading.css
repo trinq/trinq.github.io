@@ -4,13 +4,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root.reading-theme {
-    --_ink: #ece7da;
-    --_ink-soft: #b9b3a3;
-    --_ink-mute: #8a8472;
-    --_paper: #15140f;
-    --_rule: #3a3528;
-    --_accent: #d97757;
-    --_accent-soft: #2a1f18;
+    --_ink: #ece7da !important;
+    --_ink-soft: #b9b3a3 !important;
+    --_ink-mute: #8a8472 !important;
+    --_paper: #15140f !important;
+    --_rule: #3a3528 !important;
+    --_accent: #d97757 !important;
+    --_accent-soft: #2a1f18 !important;
   }
 }
 
@@ -25,8 +25,8 @@
 }
 
 body.home-body {
-  background: var(--_paper);
-  color: var(--_ink);
+  background: var(--_paper) !important;
+  color: var(--_ink) !important;
   font-family: "Iowan Old Style", "Source Serif Pro", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
   font-size: 18px;
   line-height: 1.6;
@@ -326,4 +326,12 @@ body.home-body .footer .copyright,
 body.home-body .top-menu,
 body.home-body .bio {
   display: none !important;
+}
+
+/* Direct dark mode — bypasses specificity issues from main.css */
+@media (prefers-color-scheme: dark) {
+  body.home-body {
+    background-color: #15140f !important;
+    color: #ece7da !important;
+  }
 }
