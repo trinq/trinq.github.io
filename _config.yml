@@ -41,7 +41,7 @@ highlighter: rouge
 
 timezone: Asia/Kuala_Lumpur
 
-exclude: ["README.md", "LICENSE.md", "CHANGELOG.md"]
+exclude: ["README.md", "LICENSE.md", "CHANGELOG.md", "reading/generate.js", "reading/registry.json", "reading/skills-lock.json", "reading/NOTES.md", "reading/learning-records", "reading/workflow.html", "reading/workflow-runner-cyberjutsu.md"]
 
 # Site configurations
 compress_html:

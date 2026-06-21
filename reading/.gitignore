@@ -1,0 +1,8 @@
+# Internal development files — do not publish
+generate.js
+registry.json
+skills-lock.json
+workflow.html
+workflow-runner-cyberjutsu.md
+learning-records/
+.agents/

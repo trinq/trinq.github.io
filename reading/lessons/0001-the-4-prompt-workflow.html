@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0001 — The 4-Prompt Reading Workflow</title>
+  <link rel="stylesheet" href="/reading/assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="/reading/index.html" class="site-logo">Reading Nonfiction That Sticks</a>
+    <nav class="site-nav">
+      <a href="/reading/index.html">Lessons</a>
+      <a href="/reading/MISSION.md">Mission</a>
+      <a href="/reading/RESOURCES.md">Resources</a>
+      <a href="/reading/GLOSSARY.md">Glossary</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="/reading/index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="/reading/MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="/reading/RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0001
+</div>
+
+<h1>Lesson 0001<br>The 4-Prompt Reading Workflow</h1>
+
+<p><em>Time to complete: ~25 minutes. Then ~30 minutes on a real book.</em></p>
+
+<p>You saw the transcript. A Harvard student reads a 300-page nonfiction book in 30 minutes and can still argue its central thesis six months later. The book didn't change. The interface did.</p>
+
+<p>This lesson teaches that interface. It is a four-prompt workflow you run in <a href="https://notebooklm.google/">NotebookLM</a> (or any source-grounded LLM) before, during, and after reading. By the end you will have run the full workflow on a real book of your choice and produced a one-page artifact you can return to in six months and still understand.</p>
+
+<p>There is one claim in the transcript that needs a flag before we start.</p>
+
+<div class="callout">
+  <strong>Heads up.</strong> The transcript says "60 to 70 percent of nonfiction is padding." That number has no empirical source. The real, testable version of the claim comes from Josh Bernoff's <a href="https://bernoff.com/blog/value-ratios-a-key-metric-for-your-book-chapters">value ratio</a> metric: a well-structured chapter should be more than 75% stories and advice, and less than 25% proof points and argumentation. We will use the principle (most chapters vary in load-bearing weight) without false precision.
+</div>
+
+<h2>Why this works (the science, briefly)</h2>
+
+<p>You don't need a deep dive into learning theory to use the workflow. But you should know the two findings that make it more than a productivity hack:</p>
+
+<ol>
+  <li><strong>Schema activation.</strong> Reading comprehension research consistently shows that activating relevant background knowledge <em>before</em> you read produces measurably better inferential comprehension than reading cold. The first prompt gives your brain the skeleton. The flesh goes on faster because it has somewhere to attach. (<a href="https://journals.sagepub.com/doi/10.2307/1511053">source</a>)</li>
+  <li><strong>Retrieval beats re-reading.</strong> Roediger and Karpicke's "testing effect" research is now a century of replication: pulling an idea out of your head strengthens it far more than putting it back in. Prompts 3 and 4 are retrieval events. They feel like work because they are — and that effort is the point. (<a href="https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x">source</a>)</li>
+</ol>
+
+<p>Together: pre-load a schema, then test yourself against it. That is the whole engine.</p>
+
+<h2>The workflow</h2>
+
+<div class="step">
+  <span class="step-num">Prompt 1</span>
+  <span class="step-title">Skeleton before the flesh</span>
+  <p>Upload the entire book to NotebookLM. Then run this prompt <em>before opening page one</em>:</p>
+  <div class="prompt"><span class="label">NotebookLM · prompt 1</span>What is the single central argument this book is making? What does the author believe that most people don't? And what are the 5 most important ideas I need to understand before everything else makes sense?</div>
+  <p>Read the answer. Read it twice. You are not looking for the perfect summary — you are looking for <em>a thing your brain can hold while it reads</em>. The argument, the contrarian claim, the five load-bearing ideas. That's it.</p>
+  <p>Why this matters: every page you read from now on is confirming, extending, or challenging something you already hold. That is a fundamentally different cognitive experience from "discovering" what the book is about as you go. It is faster, and it sticks.</p>
+</div>
+
+<div class="step">
+  <span class="step-num">Prompt 2</span>
+  <span class="step-title">Find the load-bearing chapters</span>
+  <p>Now the time-saver:</p>
+  <div class="prompt"><span class="label">NotebookLM · prompt 2</span>Which chapters or sections contain the core ideas? Which ones are examples, case studies, or repetition of things already said? Give me a list of the chapters I actually need to read, in order.</div>
+  <p>You will typically get back 4–6 chapters out of 10–14. Read those. Skip the rest. You are not missing anything — you are cutting everything that was never the point.</p>
+  <p>Check the answer. If NotebookLM lists a chapter as "core" that feels like a case study, push back. Ask: "Is this chapter necessary to understand the central argument, or is it illustrating a point already made?" The model is source-grounded, so it will defend its choice with a citation. Use that to pressure-test the list.</p>
+</div>
+
+<div class="step">
+  <span class="step-num">Prompt 3</span>
+  <span class="step-title">Stress-test the book</span>
+  <p>After reading the load-bearing chapters (this usually takes 30–60 minutes for a typical 300-page nonfiction book), do not move on. The most important move is the one most readers skip:</p>
+  <div class="prompt"><span class="label">NotebookLM · prompt 3</span>What questions does this book not answer? What would a hostile critic say is wrong with the central argument? Where does the evidence feel weakest? Cite specific passages.</div>
+  <p>This is a <a href="https://cardcatalogforlife.substack.com/p/steel-manning-can-be-more-useful">steelman</a> — you are constructing the strongest possible case against the book, <em>using the book's own sources</em>. NotebookLM will cite the chapters where the evidence is thin. That is gold. You now know where the book holds and where it doesn't.</p>
+  <p>This is the difference between reading and thinking. Most readers absorb the author's opinions and carry them around as if they built them themselves. After this prompt, the opinions are tested. You can keep them, modify them, or reject them — but you now own them.</p>
+</div>
+
+<div class="step">
+  <span class="step-num">Prompt 4</span>
+  <span class="step-title">Compress until you understand</span>
+  <p>The final prompt, the one that makes the workflow close its loop:</p>
+  <div class="prompt"><span class="label">NotebookLM · prompt 4</span>If I had to explain this book's core idea to a smart 14-year-old in three sentences, what would I say? And what is the single most actionable thing the author wants the reader to do differently after finishing?</div>
+  <p>Compression is a test. You cannot compress what you do not understand. This is the <a href="https://fs.blog/feynman-learning-technique/">Feynman technique</a> in disguise: explain it in language with no jargon, no professional shorthand, no place to hide. If the model cannot produce the three sentences, neither could you — and the book has more work to do on you.</p>
+  <p>The "single most actionable thing" half is the part that turns reading into behaviour change. Most books die on the shelf between "I understood this" and "I did something about it." This prompt forces the bridge.</p>
+</div>
+
+<h2>What you produce</h2>
+
+<p>One page, written by you, that captures the four outputs:</p>
+
+<ol>
+  <li>Central argument in one sentence (yours, not the model's).</li>
+  <li>The 5 load-bearing ideas (yours, in your own words).</li>
+  <li>The strongest objection a critic would raise (yours, even if you disagree).</li>
+  <li>The one thing you will actually do differently because of this book.</li>
+</ol>
+
+<p>Keep this page. You will return to it in a week, in a month, in six months. The page is the residue. Without it, the book joins the blur.</p>
+
+<h2>Check your understanding</h2>
+
+<p>Before you run the workflow on a real book, check that you have the order right. The four prompts must run in a specific order, and the order is the whole point.</p>
+
+<div class="quiz" data-name="prompt-order">
+  <div class="quiz-question">In what order should the four prompts run?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="order" data-correct="false">
+        <span>Read the book, then extract the central argument, then stress-test, then compress.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — that order is slow and the book will shape your reading before you have a skeleton to compare it to." data-wrong-text="Not quite. You will still get something out of the workflow, but you are leaving the biggest speed and retention gain on the table."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="order" data-correct="true">
+        <span>Extract the central argument first, identify the load-bearing chapters, read those, then stress-test and compress.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Skeleton first, then the load-bearing chapters, then the two retrieval events."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="order" data-correct="false">
+        <span>Compress first to see what you don't know, then read, then extract and stress-test.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — you have nothing to compress yet, so the prompt just produces noise." data-wrong-text="Not quite. Compression before reading is a useful Feynman move, but only when you already have a topic in your head — not a whole book."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="order" data-correct="false">
+        <span>Order doesn't matter — all four prompts produce the same result regardless of sequence.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — order is the whole engine. Schema first, then read, then retrieve. The sequence is doing the work." data-wrong-text="Not quite. The sequence is what makes the workflow work, not the prompts in isolation."></div>
+    </li>
+  </ul>
+</div>
+
+<h2>The task (do this now, on a real book)</h2>
+
+<ol>
+  <li>Pick a nonfiction book on your shelf that you have been meaning to read, or one you read recently and barely remember. <em>Do not pick a book you have already deeply internalised</em> — this lesson is about the workflow, not about any specific book.</li>
+  <li>Upload it to NotebookLM. (PDF, EPUB-via-Google-Docs, or web link all work.)</li>
+  <li>Run prompts 1 and 2. Read the load-bearing chapters. Time yourself — 30 to 60 minutes is typical for a 300-page book.</li>
+  <li>Run prompt 3. Note where the evidence feels weakest.</li>
+  <li>Run prompt 4. Write your own three-sentence version of the book's idea, and the one action you will take.</li>
+  <li>Produce your one-page artifact using the four outputs above.</li>
+</ol>
+
+<p>When you have the page, bring it to the next session. We will look at it together and design the next lesson around what is hard for you — generating your own central argument, writing the hostile-critic objection in your own words, or sticking to the one-action commitment.</p>
+
+<div class="callout">
+  <strong>If anything is unclear, ask.</strong> The agent is your teacher. If a prompt feels off, if the model gives you a useless answer, if you are not sure whether your one-page artifact is good enough — bring it back here. The next lesson is designed around the friction you hit in this one.
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0001 of the <em>Reading Nonfiction That Sticks</em> course. See
+  <a href="/reading/RESOURCES.md">Resources</a> for the primary sources behind each prompt, and
+  <a href="/reading/MISSION.md">Mission</a> for why we are doing this.
+</footer>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/reading/index.html">Lessons</a></li>
+        <li><a href="/reading/MISSION.md">Mission</a></li>
+        <li><a href="/reading/RESOURCES.md">Resources</a></li>
+        <li><a href="/reading/GLOSSARY.md">Glossary</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://notebooklm.google/" target="_blank" rel="noopener">NotebookLM</a></li>
+        <li><a href="https://bernoff.com/blog/value-ratios-a-key-metric-for-your-book-chapters" target="_blank" rel="noopener">Value Ratios (Bernoff)</a></li>
+        <li><a href="https://cardcatalogforlife.substack.com/p/steel-manning-can-be-more-useful" target="_blank" rel="noopener">Steelmanning</a></li>
+        <li><a href="https://fs.blog/feynman-learning-technique/" target="_blank" rel="noopener">Feynman Technique</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Reading Nonfiction That Sticks &mdash; a self-paced course.
+  </div>
+</footer>
+
+</main>
+<script src="/reading/assets/quiz.js"></script>
+</body>
+</html>

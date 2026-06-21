@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0002 — Picking the 5 Load-Bearing Ideas</title>
+<link rel="stylesheet" href="/reading/assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="/reading/index.html" class="site-logo">Reading Nonfiction That Sticks</a>
+    <nav class="site-nav">
+      <a href="/reading/index.html">Lessons</a>
+      <a href="/reading/MISSION.md">Mission</a>
+      <a href="/reading/RESOURCES.md">Resources</a>
+      <a href="/reading/GLOSSARY.md">Glossary</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="/reading/index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="/reading/MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="/reading/RESOURCES.md">Resources</a> &nbsp;·&nbsp;
+  <a href="0001-the-4-prompt-workflow.html">Lesson 0001</a> &nbsp;·&nbsp; Lesson 0002
+</div>
+
+<h1>Lesson 0002<br>Picking the 5 Load-Bearing Ideas</h1>
+
+<p><em>Time to complete: ~30 minutes reading, then ~60 minutes on a real book.</em></p>
+
+<p>This is the friction point of the workflow. In <a href="0001-the-4-prompt-workflow.html">Lesson 0001</a> you saw the four prompts. Three of them are <em>extraction</em> — you ask the model a question, it returns a structured answer, you verify. The "5 load-bearing ideas" step is the one that is not extraction. It is <em>judgment</em>. You have to decide what matters, and that decision forces you to actually understand the book well enough to rank its ideas. The model cannot do it for you — and that's the point.</p>
+
+<p>The lesson is built around <em>Cyberjutsu</em> by Ben McCarty, a 26-chapter book on cybersecurity framed through feudal Japanese ninja tactics. The structure is convenient: each chapter pairs one historical technique with one modern cybersecurity concept, and the central argument (defend like a ninja, think offensively) runs through all of them. That gives us a clean, dense set of candidate ideas to rank — exactly the kind of decision you will face on every other book you read with the workflow.</p>
+
+<h2>Why this step is the bottleneck</h2>
+
+<p>Three of the four prompts can be run in five minutes each. The "5 ideas" step takes 30–60 minutes if you do it well. That is not a bug. The effort is the learning event. The work of deciding which ideas are load-bearing is what installs them in your memory — you are not collecting, you are <em>compressing</em>, and compression is the test of understanding.</p>
+
+<div class="callout">
+  <strong>The rule of thumb.</strong> If you can defend your 5 against the test below, you have understood the book. If you cannot, you have not. The output of the lesson is not the list — it is the test results written next to each idea.
+</div>
+
+<h2>The 3-part test for "load-bearing"</h2>
+
+<p>An idea is load-bearing if it passes at least two of these three tests. If it passes all three, it is almost certainly in your top 5.</p>
+
+<ol>
+  <li><strong>Does the idea carry the central argument?</strong> If you removed this idea from the book, would the main thesis still stand? If yes, the idea is supporting. If no — if the thesis collapses without it — the idea is load-bearing.</li>
+  <li><strong>Does the idea unlock other ideas?</strong> Is this idea a prerequisite for understanding two or more other ideas in the book? A good load-bearing idea is a node in a graph, not a leaf. (Network mapping in <em>Cyberjutsu</em> is a node: chapters on sensors, on bridges and ladders, on worm agents all assume you have already mapped the territory.)</li>
+  <li><strong>Could you defend it against a critic?</strong> Not "is it true" — that is for later. The question is: if a hostile reviewer said "this idea is wrong / overstated / obvious," could you name the evidence, give a counter-example, and articulate why the author still holds it? If yes, you own the idea. If you can only repeat what the author said, you are carrying it for them.</li>
+</ol>
+
+<p>The three tests catch different failure modes:</p>
+
+<ul>
+  <li>Test 1 catches the <strong>catchy-but-optional</strong> idea (the "moon on the water" analogy in <em>Cyberjutsu</em> is memorable but the book works without it).</li>
+  <li>Test 2 catches the <strong>one-off</strong> idea (a single chapter's recommendation that doesn't feed back into the rest of the book).</li>
+  <li>Test 3 catches the <strong>handed-down</strong> idea (something the author asserts without grounding, that you also accept without grounding).</li>
+</ul>
+
+<h2>Worked example: 5 load-bearing ideas from <em>Cyberjutsu</em></h2>
+
+<p>Below is my ranking. I am showing it to you so you can see the test applied — and so you can disagree. The point of the exercise is not to land on the same list. The point is to write down the test results.</p>
+
+<h3>1. <em>Map like an attacker, not a defender.</em> (Ch. 1, 8, 9)</h3>
+<ul>
+  <li><strong>Test 1:</strong> Carries the central argument. The whole ninja conceit is offense-as-defense: you cannot defend what you have not first seen the way an attacker sees it. Remove this and the book becomes a generic security checklist.</li>
+  <li><strong>Test 2:</strong> Unlocks 6+ chapters. Network mapping is the prerequisite for sensors (Ch. 9), bridges and ladders (Ch. 10), worm agent analysis (Ch. 13), zero days (Ch. 22), and the entire "Castle Theory" exercises.</li>
+  <li><strong>Test 3:</strong> Defensible. Critics will say "attackers have more time and motive than defenders." True — and that is exactly why defenders must map adversarially, to find the asymmetry before it's exploited.</li>
+</ul>
+
+<h3>2. <em>Reduce your attack surface to the irreducible minimum.</em> (Ch. 2, 3, 11)</h3>
+<ul>
+  <li><strong>Test 1:</strong> Carries the central argument. "Xenophobic security" (Ch. 3) — default-deny on everything — is the operational form of the offensive-defense philosophy.</li>
+  <li><strong>Test 2:</strong> Unlocks 4+ chapters (locks, time-based access, identification, hiring).</li>
+  <li><strong>Test 3:</strong> Defensible but with a known weakness: it trades usability for security, and McCarty admits that. A hostile critic will say it stalls an organisation. The defence: the cost of stalled operations is bounded; the cost of a breach is not.</li>
+</ul>
+
+<h3>3. <em>Authentication is a chain, and a chain is only as strong as its weakest link.</em> (Ch. 4, 5, 19, 23)</h3>
+<ul>
+  <li><strong>Test 1:</strong> Carries the central argument. The "double-sealed password" chapter is the historical anchor for the whole book, and the chain-of-trust framing is what makes the later insider-threat material make sense.</li>
+  <li><strong>Test 2:</strong> Unlocks 5+ chapters (call signs, hiring, the access-time chapter, the circumvention chapter).</li>
+  <li><strong>Test 3:</strong> Defensible. Critics will argue multi-factor auth makes this obvious. McCarty's contribution is the social/process dimension — even a strong chain breaks if the human holding a link is compromised. Insider threat (Ch. 23) is the proof.</li>
+</ul>
+
+<h3>4. <em>Detect the unusual, not just the bad.</em> (Ch. 9, 12, 14, 15, 20)</h3>
+<ul>
+  <li><strong>Test 1:</strong> Carries the central argument. "Moon on the water," "ghost on the moon," "fireflies," and the noise-and-litter chapter are all variations on the same insight: most attacks hide as normal traffic, and detection requires looking for anomalies a defender's own process would call "ordinary."</li>
+  <li><strong>Test 2:</strong> Unlocks 4+ chapters.</li>
+  <li><strong>Test 3:</strong> Defensible. The hostile critique is "anomaly detection produces alert fatigue." McCarty's answer: tune for behavioural baselines, not signatures. A real defence, not a hand-wave.</li>
+</ul>
+
+<h3>5. <em>Plan for failure, not for the absence of it.</em> (Ch. 16, 17, 22, 25)</h3>
+<ul>
+  <li><strong>Test 1:</strong> Carries the central argument. "Live capture," "fire attack," "zero days," and "zero suspicion threat management" all share the assumption that breach is inevitable and the question is response.</li>
+  <li><strong>Test 2:</strong> Unlocks 4+ chapters.</li>
+  <li><strong>Test 3:</strong> Defensible. Critics will say "this is just incident response dressed up in ninja clothes." The defence: the ninja framing forces a kind of asymmetric creativity that traditional incident response templates don't generate. Whether you buy that is a judgment call — but the call is honest, and the test is passable.</li>
+</ul>
+
+<hr>
+
+<p>Three observations about that list:</p>
+
+<ul>
+  <li>Each idea fails to pass all three tests with flying colours. Idea 3 in particular is vulnerable to "this is obvious" critiques. That's fine — the test is not "is the idea unimpeachable," it's "could you defend it." You can defend "obvious" ideas by articulating the non-obvious consequences.</li>
+  <li>None of my five is one of the most quotable chapters. The "moon on the water" analogy is gorgeous; the "xenophobic security" framing is provocative; the "worm agent" chapter is dramatic. None of those is load-bearing by the test. <strong>Memorability is not the same as load-bearing.</strong> This is the most common mistake.</li>
+  <li>The list is the same length as the workflow asks for. If you find yourself wanting to add a sixth because all six feel important, that is a signal that one of them is not — go back to the test. The point of "5" is forced compression.</li>
+</ul>
+
+<h2>Calibration exercise</h2>
+
+<p>Below are four candidate ideas from <em>Cyberjutsu</em>. The descriptions are kept close to equal length on purpose — the test is whether you can apply the 3-part test, not whether you can read between formatting.</p>
+
+<p>Rank them. Which two would you put in your top 5? Which two would you cut?</p>
+
+<div class="quiz" data-name="ranking-1">
+  <div class="quiz-question">Candidate A — "Treat your security as a layered castle defence, not a single wall."</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="candA" data-correct="false">
+        <span>Cut it — it's a metaphor, not an idea.</span>
+      </label>
+      <div class="quiz-feedback" data-wrong-text="Not quite. A metaphor can be load-bearing if it organises the rest of the book. The question is whether this one does."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="candA" data-correct="true">
+        <span>Keep it — defence in depth is the spine of the book.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Defence in depth passes tests 1 and 2 (carries the argument; unlocks the castle-theory exercises). It might fail test 3 — 'everyone already knows this' — but passable."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="candA" data-correct="false">
+        <span>Keep it — but only if the book is about castles, which it isn't really.</span>
+      </label>
+      <div class="quiz-feedback" data-wrong-text="Not quite. The book is centrally organised around the castle metaphor — every chapter is a castle defence concept."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="ranking-2">
+  <div class="quiz-question">Candidate B — "Use 'access to time' as a security control: limit when credentials are valid, not just who has them."</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="candB" data-correct="true">
+        <span>Keep it — it's a specific, defensible, unlockable idea.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Time-based access (Ch. 7) passes all three tests: it carries the argument (defenders should constrain attack windows), it unlocks the circumvention chapter (Ch. 21), and it is genuinely defensible against the 'too restrictive' critique."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="candB" data-correct="false">
+        <span>Cut it — it's a one-off technique, not a load-bearing idea.</span>
+      </label>
+      <div class="quiz-feedback" data-wrong-text="Not quite. One-off techniques usually fail test 1 (don't carry the central argument) or test 2 (don't unlock other ideas). This one actually unlocks Ch. 21 (circumstances of infiltration), so it isn't a true one-off."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="candB" data-correct="false">
+        <span>Keep it — but only if you've worked in IT operations.</span>
+      </label>
+      <div class="quiz-feedback" data-wrong-text="Not quite. The 3-part test doesn't depend on the reader's background. It depends on the idea's role in the book."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="ranking-3">
+  <div class="quiz-question">Candidate C — "When in doubt, hire shinobi — that is, find people with adversarial mindsets, not just credentials."</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="candC" data-correct="false">
+        <span>Keep it — it's a memorable chapter and a strong analogy.</span>
+      </label>
+      <div class="quiz-feedback" data-wrong-text="Not quite. 'Memorable chapter' and 'strong analogy' are not on the test. This is the most common failure mode. Re-read idea-vs-memorability distinction in the lesson."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="candC" data-correct="true">
+        <span>Cut it — it's a one-chapter hiring recommendation, not load-bearing.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. 'Hiring shinobi' is a single chapter (Ch. 23). It is interesting, it is practical, but it fails test 1 (the central argument survives without it) and arguably test 2 (it doesn't unlock other ideas). A perfect example of memorable-but-optional."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="candC" data-correct="false">
+        <span>Keep it — you can defend it against the 'just hire certified people' critique.</span>
+      </label>
+      <div class="quiz-feedback" data-wrong-text="Not quite. You might be able to defend it on test 3, but you need test 1 or 2 as well. Defensibility alone doesn't make an idea load-bearing."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="ranking-4">
+  <div class="quiz-question">Candidate D — "Zero-day vulnerabilities are inevitable; plan response, not prevention."</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="candD" data-correct="false">
+        <span>Cut it — it's the same as idea 5 in your worked example.</span>
+      </label>
+      <div class="quiz-feedback" data-wrong-text="Not quite — though close. Zero-days specifically (Ch. 22) are a sharper instance of 'plan for failure.' The two ideas are related, but one is a principle and the other is its application. The question is which to keep."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="candD" data-correct="true">
+        <span>Keep it — but acknowledge it overlaps with the 'plan for failure' idea.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Zero-days are a strong, defensible, unlockable idea. The honest answer is that you probably shouldn't keep both this and 'plan for failure' in a 5 — pick the more general one. This is exactly the kind of forced choice the 5-idea cap is designed to force."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="candD" data-correct="false">
+        <span>Keep it — zero-days are the most important concept in cybersecurity today.</span>
+      </label>
+      <div class="quiz-feedback" data-wrong-text="Not quite. The 3-part test is not 'how important is this concept in the real world.' It is 'how central is this concept to the book.' Importance outside the book is irrelevant."></div>
+    </li>
+  </ul>
+</div>
+
+<h2>What "done" looks like — the one-page artifact</h2>
+
+<p>This is the deliverable. One page. The five outputs of the full workflow, in your own words. Format:</p>
+
+<pre>
+BOOK: [title, author]
+CENTRAL ARGUMENT (one sentence, mine):
+FIVE LOAD-BEARING IDEAS (mine, with the 3-part test results):
+  1. ...
+     - Test 1: ...
+     - Test 2: ...
+     - Test 3: ...
+  2. ...
+  (etc.)
+STRONGEST OBJECTION A CRITIC WOULD RAISE (mine):
+ONE ACTION I WILL TAKE DIFFERENTLY (mine, specific):
+</pre>
+
+<p>Notice: every field is yours, not the model's. The model is the sparring partner. The page is yours.</p>
+
+<h2>The task</h2>
+
+<ol>
+  <li>Re-run prompts 1 and 2 of the workflow on <em>Cyberjutsu</em> in NotebookLM. (Even if you read it cover to cover, treat this as a fresh pass — the lesson is about the workflow, not the book.)</li>
+  <li>Read the load-bearing chapters the model gives you.</li>
+  <li>Run prompt 4 — the 14-year-old compression. Write your own three-sentence version.</li>
+  <li>Apply the 3-part test to every candidate idea. Land on 5.</li>
+  <li>Write the one-page artifact. Save it.</li>
+</ol>
+
+<p>When you have the page, bring it to the next session. The most likely places the friction will show up: tests 1 and 2 are mechanical, but test 3 (the hostile-critic defence) is the part that actually exposes whether you understand the book or are just summarising it. If that's where you get stuck, that's where lesson 0003 will go.</p>
+
+<div class="callout">
+  <strong>If anything is unclear, ask.</strong> If your 5 don't match mine, that's interesting — bring the disagreement. If you can't pass test 3 on any of your 5, that's a signal you read a different book than the one you remember, and the lesson after this one will be about closing that gap.
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0002 of the <em>Reading Nonfiction That Sticks</em> course. See
+  <a href="0001-the-4-prompt-workflow.html">Lesson 0001</a> for the workflow this lesson is part of,
+  <a href="/reading/RESOURCES.md">Resources</a> for sources, and
+  <a href="/reading/MISSION.md">Mission</a> for why we are doing this.
+</footer>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/reading/index.html">Lessons</a></li>
+        <li><a href="/reading/MISSION.md">Mission</a></li>
+        <li><a href="/reading/RESOURCES.md">Resources</a></li>
+        <li><a href="/reading/GLOSSARY.md">Glossary</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://notebooklm.google/" target="_blank" rel="noopener">NotebookLM</a></li>
+        <li><a href="https://bernoff.com/blog/value-ratios-a-key-metric-for-your-book-chapters" target="_blank" rel="noopener">Value Ratios (Bernoff)</a></li>
+        <li><a href="https://cardcatalogforlife.substack.com/p/steel-manning-can-be-more-useful" target="_blank" rel="noopener">Steelmanning</a></li>
+        <li><a href="https://fs.blog/feynman-learning-technique/" target="_blank" rel="noopener">Feynman Technique</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Reading Nonfiction That Sticks &mdash; a self-paced course.
+  </div>
+</footer>
+
+</main>
+<script src="/reading/assets/quiz.js"></script>
+</body>
+</html>
