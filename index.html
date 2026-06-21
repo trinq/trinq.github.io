@@ -1,5 +1,5 @@
 ---
-layout: home
+layout: default
 title: Home
 ---
 
@@ -22,45 +22,33 @@ title: Home
 	{% endif %}
 {% endfor %}
 
-<h1 class="home-title">Trinq Zone</h1>
-<p class="home-subtitle">Just another Software guy who loves PHP, C# and a cup of hot coffee.</p>
+<div class="posts">
+  {% for post in site.posts %}
+    {% unless post.next %}
+      <h2 class="year">{{ post.date | date: '%Y' }}</h2>
+    {% else %}
+      {% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
+      {% capture nyear %}{{ post.next.date | date: '%Y' }}{% endcapture %}
+      {% if year != nyear %}
+        <h2 class="year">{{ post.date | date: '%Y' }}</h2>
+      {% endif %}
+    {% endunless %}
 
-{% assign current_year = "" %}
-{% for post in site.posts %}
-	{% capture post_year %}{{ post.date | date: '%Y' }}{% endcapture %}
-	{% if post_year != current_year %}
-		{% if current_year != "" %}
-		</div>
-		{% endif %}
-		<h2 class="year-label">{{ post_year }}</h2>
-		<div class="posts-grid">
-		{% assign current_year = post_year %}
-	{% endif %}
+    <div class="post-list">
+      <div class="post-list-date"><small>{{ post.date | date: "%b %d" }}</small></div>
+	    <div class="text-truncate"><a href="{{ post.url }}">{{ post.title }}</a></div>
+      <div class="post-list-desc">{{ post.description }}</div>
+    </div>
 
-	<a href="{{ post.url }}" class="post-card">
-		<div class="post-card-meta">
-			<span class="post-card-date">{{ post.date | date: "%b %d" }}</span>
-			{% if post.category == "reading" %}
-			<span class="post-card-label">reading</span>
-			{% endif %}
-		</div>
-		<div class="post-card-title">{{ post.title }}</div>
-		<div class="post-card-desc">{{ post.description }}</div>
-	</a>
-
-{% endfor %}
-{% if current_year != "" %}
+  {% endfor %}
 </div>
-{% endif %}
 
 <hr/>
 
 {% if tags %}
 <div class="tag-cloud" id="Tags">
-	{% for tag in tags %}
-		<a id="{{ tag | slugify }}" class="tag-anchor" href="{{ site.url }}{{ site.baseurl }}/tagged#{{ tag | slugify }}">
-			<i class="fa fa-hashtag" aria-hidden="true"></i> {{ tag }}
-		</a>
-	{% endfor %}
+  {% for tag in tags %}
+    <a id="{{ tag | slugify }}" class="tag-anchor" href="{{ site.url }}{{ site.baseurl }}/tagged#{{ tag | slugify }}"><i class="fa fa-hashtag"></i> {{ tag }}</a>
+  {% endfor %}
 </div>
 {% endif %}
