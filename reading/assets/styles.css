@@ -463,6 +463,40 @@ footer.lesson-foot {
 .card-compact .card-desc  { font-size: 0.85rem; }
 
 /* ============================================================
+   LANGUAGE TOGGLE
+   ============================================================ */
+.lang-toggle {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.3em 0.7em;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  margin-left: auto;
+  min-width: 2.6em;
+  text-align: center;
+  white-space: nowrap;
+}
+.lang-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.lang-toggle.loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.lang-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
    PRINT
    ============================================================ */
 @media print {
