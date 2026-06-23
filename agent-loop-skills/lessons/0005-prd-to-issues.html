@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0005 — PRD to Issues: Turn a Destination into a Journey</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Agent Loop Skills</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0005
+</div>
+
+<h1>Lesson 0005<br>PRD to Issues: Turn a Destination into a Journey</h1>
+
+<p><em>Break a PRD down into vertical slices so your agents can work independently, in parallel, and without getting stuck on unknown unknowns</em></p>
+
+<h2>Prerequisite</h2>
+
+<p>This lesson builds on <a href="0004-write-a-prd.html">Lesson 0004 (Write a PRD)</a>. You should have a PRD — ideally a real one from your own project — to work through the breakdown process.</p>
+
+<h2>The Problem with Horizontal Slices</h2>
+
+<p>When developers break a PRD into tasks, the naive approach is horizontal slices:</p>
+
+<ul>
+  <li>"Create the database schema"</li>
+  <li>"Build the API endpoints"</li>
+  <li>"Write the frontend components"</li>
+  <li>"Add tests"</li>
+</ul>
+
+<p>This looks organized. It's not. Each slice touches every layer, which means:</p>
+
+<ul>
+  <li>You can't test anything until all slices are done</li>
+  <li>If layer B is blocked, layer A sits idle</li>
+  <li>You don't discover integration problems until the very end</li>
+</ul>
+
+<div class="callout">
+  <p><strong>Vertical slices cut through all layers.</strong> Each issue does one thing end-to-end: database → API → frontend → test. This gives you working, testable code after every single issue.</p>
+</div>
+
+<h2>The Tracer Bullet Principle</h2>
+
+<p>The goal of <code>prd-to-issues</code> is to identify the unknowns as early as possible. The fastest path to learning what you don't know:</p>
+
+<ol>
+  <li>Pick the task that touches the most uncertain part of your system</li>
+  <li>Build it as a thin, end-to-end vertical slice</li>
+  <li>If it works, you have a proven path. If it fails, you know immediately and can pivot</li>
+</ol>
+
+<p>Known as the <em>tracer bullet</em> approach — you fire through the whole system at once and see where the smoke comes out.</p>
+
+<h2>The Skill</h2>
+
+<div class="callout" style="background: var(--code-bg); font-size: 0.92rem; border-left: 3px solid var(--accent);">
+  <p><strong>prd-to-issues</strong> — takes a PRD and turns it into a canon board of independent issues.</p>
+  <ol style="margin-bottom: 0;">
+    <li>Locate the PRD. Fetch it if not in the current context.</li>
+    <li>Draft vertical slices. Each slice should cut through all integration layers — not be a single-layer task.</li>
+    <li>Prioritize unknown unknowns first. If you're integrating something new, do that as early as possible.</li>
+    <li>Establish blocking relationships. Which issues can run in parallel? Which must complete before others start?</li>
+    <li>Create GitHub issues referencing the parent PRD, with user stories embedded in each issue.</li>
+  </ol>
+</div>
+
+<h2>What a Good Breakdown Looks Like</h2>
+
+<p>Here's a real breakdown from a split-pane document editor PRD. Four slices, each a full end-to-end working feature:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Slice 1: Document Editing Engine</h4>
+    <p>Core engine with 28 tests. Pure function. No UI. Establishes whether the approach is feasible before any UI work begins.</p>
+    <p><em>⚠️ Do this first — it answers "can we?"</em></p>
+  </div>
+  <div class="concept-card">
+    <h4>Slice 2: UI Split Pane Layout</h4>
+    <p>Basic layout — chat left, document panel right. No AI integration yet. Establishes the visual shell.</p>
+    <p><em>→ Blocked by: nothing (parallel to 1)</em></p>
+  </div>
+  <div class="concept-card">
+    <h4>Slice 3: AI → Engine Integration</h4>
+    <p>Wire the AI output into the editing engine. Once this works, the core loop is live.</p>
+    <p><em>→ Blocked by: Slice 1 (needs working engine)</em></p>
+  </div>
+  <div class="concept-card">
+    <h4>Slice 4: Monaco Editor Toggle</h4>
+    <p>Add Monaco editor mode for power users. Depends on the split pane existing.</p>
+    <p><em>→ Blocked by: Slice 2 (needs split pane)</em></p>
+  </div>
+</div>
+
+<p>Notice: slices 1 and 2 can run in parallel. Slices 3 and 4 each have exactly one blocker. This means two agents can work simultaneously on the first two slices, then converge once their dependencies are resolved.</p>
+
+<h2>Blocking Relationships Are a Feature</h2>
+
+<p>Blocking relationships make the work visible to autonomous agents. When a <code>ralph-loop</code> picks up an issue, it:</p>
+
+<ul>
+  <li>Fetches the parent PRD to understand context</li>
+  <li>Comments on the issue when it starts</li>
+  <li>Closes the issue when done — which unblocks the next one</li>
+  <li>Moves to the next unblocked issue automatically</li>
+</ul>
+
+<p>You get a self-propelling development machine where the board state itself drives what gets done next.</p>
+
+<div class="callout warning">
+  <p><strong>QA issues are often forgotten.</strong> When you finish all the feature slices, remember to add a QA or testing issue at the end — and block it on all the feature slices. QA often falls through the cracks because it only appears after everything else is done.</p>
+</div>
+
+<h2>How This Fits the Workflow</h2>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">grill-me<br><small>surface the full scope</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">write-a-prd<br><small>lock the destination</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-run">prd-to-issues<br><small>plan the vertical slices</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">tdd<br><small>implement each slice</small></span>
+</div>
+
+<p>The chain from grill-me to tdd is a complete development methodology: surface → capture → slice → build. Each skill hands off to the next.</p>
+
+<h2>Practice Exercise</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Find or create a PRD</strong>
+    <span>Use Lesson 0004 to create a PRD for something you want to build. A small feature is fine.</span>
+  </li>
+  <li>
+    <strong>Draft 3–4 vertical slices</strong>
+    <span>For each slice, ask: does this cut through all layers? Does it have a single blocker? Could an agent pick this up independently?</span>
+  </li>
+  <li>
+    <strong>Name the blockers</strong>
+    <span>Which slices can run in parallel? Which must wait? Write it down explicitly.</span>
+  </li>
+  <li>
+    <strong>Optional: create real issues</strong>
+    <span>If you have a real project, create GitHub issues using <code>gh issue create</code> with the PRD in the body and blocking relationships set via <code>--blocking</code>.</span>
+  </li>
+</ol>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why does prd-to-issues prioritize "unknown unknowns" first?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">Because unknown unknowns are the most interesting to solve</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">Because if they're impossible, you need to find out early — before building everything else on top</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">Because agents work better on unknown problems</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">Because product managers always prioritize them</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>A task labeled "Write all the database migrations" is an example of:</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="true">
+        <label for="q2-a">A horizontal slice</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="false">
+        <label for="q2-b">A vertical slice</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c">A tracer bullet</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">A blocking relationship</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What does closing a GitHub issue trigger in a well-designed autonomous agent setup?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">An email notification to the team</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="false">
+        <label for="q3-b">A Slack message to the project channel</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="true">
+        <label for="q3-c">The next unblocked issue becomes available for the agent to pick up</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
+        <label for="q3-d">A code review request</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0005 of the <em>Agent Loop Skills</em> course. Next: <a href="0006-tdd.html">Lesson 0006 — TDD</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0004-write-a-prd.html">← Lesson 0004</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="0006-tdd.html">Lesson 0006 →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Agent Loop Skills · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

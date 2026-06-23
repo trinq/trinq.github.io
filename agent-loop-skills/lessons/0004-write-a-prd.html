@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0004 — Write a PRD: Capture the Destination Before the Journey</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Agent Loop Skills</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0004
+</div>
+
+<h1>Lesson 0004<br>Write a PRD: Capture the Destination Before the Journey</h1>
+
+<p><em>Turn shared understanding into a durable document your future self and your AI agents can rely on</em></p>
+
+<h2>Prerequisite</h2>
+
+<p>This lesson builds on <a href="0003-grill-me.html">Lesson 0003 (Grill Me)</a>. If you haven't used <code>grill-me</code> to reach shared understanding with your AI, start there first.</p>
+
+<h2>The Gap Between Understanding and Implementation</h2>
+
+<p>After a good grilling session, you and the AI both understand the problem. But that understanding lives in a volatile context window — it will evaporate the moment the conversation moves on.</p>
+
+<p>The <code>write-a-prd</code> skill fixes this. It takes shared understanding and crystallizes it into a document that:</p>
+
+<ul>
+  <li>Survives beyond the current conversation</li>
+  <li>Gives future agents a clear target to work toward</li>
+  <li>Serves as a contract between you and the AI about what "done" means</li>
+</ul>
+
+<div class="callout">
+  <p><strong>PRD ≠ plan.</strong> A plan describes the journey. A PRD describes the <em>destination</em>. Don't prescribe implementation details here — let the AI discover the best path during implementation.</p>
+</div>
+
+<h2>The Skill</h2>
+
+<div class="callout" style="background: var(--code-bg); font-size: 0.92rem; border-left: 3px solid var(--accent);">
+  <p><strong>write-a-prd</strong> — invoked when the user wants to create a PRD.</p>
+  <p>You may skip steps if you don't consider them necessary.</p>
+  <ol style="margin-bottom: 0;">
+    <li>Ask the user for a long, detailed description of the problem and desired outcome.</li>
+    <li>Explore the repo to verify their assertions and ground the PRD in reality.</li>
+    <li>Interview the user relentlessly (<code>grill-me</code>) if anything is unclear.</li>
+    <li>Sketch the major modules you will need to build or modify.</li>
+    <li>Once you have a complete understanding of the problem and solution, use the template below to write the PRD and submit it as a GitHub issue.</li>
+  </ol>
+</div>
+
+<h2>The PRD Template</h2>
+
+<p>A PRD has four sections. Each serves a specific purpose:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>1. Problem Statement</h4>
+    <p>Why does this need to change? What's broken, missing, or painful today? Be concrete — avoid vague framings like "improve performance."</p>
+  </div>
+  <div class="concept-card">
+    <h4>2. Solution Overview</h4>
+    <p>What does the end state look like? Describe the behavior, not the implementation. Use "the system will..." statements.</p>
+  </div>
+  <div class="concept-card">
+    <h4>3. User Stories</h4>
+    <p>How does each stakeholder interact with the new feature? Written in plain language, describing desired behavior — not technical requirements.</p>
+  </div>
+  <div class="concept-card">
+    <h4>4. Implementation Decisions</h4>
+    <p>Constraints, non-negotiables, and known unknowns. What architectural decisions have already been made? What's still uncertain?</p>
+  </div>
+</div>
+
+<h2>Example: Split Pane Document Editor</h2>
+
+<p>Here's a real-world example from a course platform build. After the grilling session surfaced 16 questions, the resulting PRD opened like this:</p>
+
+<blockquote>
+  <p><strong>Problem:</strong> The article writing page currently regenerates the entire document on every AI interaction. Users lose their work-in-progress content.</p>
+  <p><strong>Solution:</strong> Add a split pane document editing experience. Chat stays on the left. A new document panel appears on the right, showing the rendered output, live-updating as the AI writes.</p>
+</blockquote>
+
+<p>Notice the user stories — they describe behavior, not code:</p>
+
+<ul>
+  <li>"As a course author, I can see the rendered article while the AI writes, so I can catch errors early."</li>
+  <li>"As a course author, I can edit the document panel directly and those changes are preserved."</li>
+</ul>
+
+<div class="callout warning">
+  <p><strong>Don't over-prescribe implementation decisions.</strong> The more you specify <em>how</em> in the PRD, the more likely the implementation will drift from reality as you learn. The PRD describes the destination — the journey (issues, TDD cycles) comes next.</p>
+</div>
+
+<h2>Where the PRD Lives</h2>
+
+<p>The skill outputs the PRD as a GitHub issue. This is deliberate:</p>
+
+<ul>
+  <li>PRDs as issues can reference other issues (blocking relationships, parent-child links)</li>
+  <li>Agents can fetch it with <code>gh issue view</code> at any time</li>
+  <li>It lives alongside the code in the same repository</li>
+</ul>
+
+<p>From there, the PRD feeds into <a href="0005-prd-to-issues.html">the <code>prd-to-issues</code> skill</a> — which breaks the destination into a journey of vertical slices.</p>
+
+<h2>How This Fits the Workflow</h2>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">grill-me<br><small>reach shared understanding</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">write-a-prd<br><small>capture the destination</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-run">prd-to-issues<br><small>plan the journey</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">tdd<br><small>implement with confidence</small></span>
+</div>
+
+<p>Each skill does exactly one thing. Grill-me surfaces the full scope. Write-a-prd locks it down. The rest follows.</p>
+
+<h2>Practice Exercise</h2>
+
+<p>Think of a small feature you've been meaning to add to a project. Before the next lesson:</p>
+
+<ol class="task-list">
+  <li>
+    <strong>Invoke grill-me</strong>
+    <span>Use the skill from Lesson 0003. Ask the AI to interview you about this feature. Don't stop until it asks 10+ questions.</span>
+  </li>
+  <li>
+    <strong>Say "write a PRD"</strong>
+    <span>When the interview feels complete, ask the AI to write a PRD as a GitHub issue.</span>
+  </li>
+  <li>
+    <strong>Review the result</strong>
+    <span>Does the PRD accurately reflect what you want? Are the user stories in plain language? Is anything missing?</span>
+  </li>
+</ol>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What's the main difference between a plan and a PRD?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">A plan is longer and more detailed than a PRD</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">A PRD describes the destination; a plan describes the journey</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">A PRD is for humans; a plan is for AI agents</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">There is no meaningful difference — they are the same thing</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why does the write-a-prd skill ask the AI to submit the PRD as a GitHub issue?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">Because GitHub issues are the only way to store documents</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="false">
+        <label for="q2-b">Because GitHub requires all work to be tracked as issues</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="true">
+        <label for="q2-c">So the PRD can be referenced by child issues and fetched by agents at any time</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">Because issues render markdown better than other formats</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>A PRD includes an "Implementation Decisions" section. How prescriptive should this section be?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">As prescriptive as possible — specify every class, function, and file</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="true">
+        <label for="q3-b">Only state constraints and non-negotiables — let implementation discover the best path</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="false">
+        <label for="q3-c">Skip it entirely — implementation decisions belong in issues</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
+        <label for="q3-d">Leave it vague so the AI has maximum freedom</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0004 of the <em>Agent Loop Skills</em> course. Next: <a href="0005-prd-to-issues.html">Lesson 0005 — PRD to Issues</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0003-grill-me.html">← Lesson 0003</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="0005-prd-to-issues.html">Lesson 0005 →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Agent Loop Skills · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>
