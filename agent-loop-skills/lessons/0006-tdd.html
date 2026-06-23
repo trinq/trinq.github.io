@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0006 — TDD: Red Green Refactor with Agents</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Agent Loop Skills</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0006
+</div>
+
+<h1>Lesson 0006<br>TDD: Red Green Refactor with Agents</h1>
+
+<p><em>The single most effective way to raise the code quality of anything an agent produces</em></p>
+
+<h2>Prerequisite</h2>
+
+<p>This lesson builds on <a href="0005-prd-to-issues.html">Lesson 0005 (PRD to Issues)</a>. You should have a set of vertical slices (GitHub issues) ready to implement. Each issue is the input to the TDD loop.</p>
+
+<h2>Why TDD with Agents Is Different</h2>
+
+<p>Humans do TDD for many reasons: to drive design, to document intent, to enable safe refactoring. With agents, there's one dominant reason:</p>
+
+<div class="callout">
+  <p><strong>TDD is the most consistent way to improve agent output quality.</strong> It forces the agent to write one failing test, then the minimum code to pass it. The loop creates tight feedback discipline that agents otherwise lack.</p>
+</div>
+
+<p>Agents have a peculiar weakness: they're precious about code in their own context window. Clear the context, and they forget. Keep it, and they resist changing it. TDD fights this by forcing small, testable steps. Each iteration is too small to be precious about.</p>
+
+<h2>The Red Green Refactor Loop</h2>
+
+<p>The TDD skill prompts the agent to follow this exact loop for every issue:</p>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">Red<br><small>write a failing test</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">Green<br><small>write minimum code to pass</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">Refactor<br><small>clean up without changing behavior</small></span>
+  <div class="ld-branch">repeat until acceptance criteria met</div>
+  <span class="ld-step ld-term">→ Done</span>
+</div>
+
+<h2>The TDD Skill</h2>
+
+<div class="callout" style="background: var(--code-bg); font-size: 0.92rem; border-left: 3px solid var(--accent);">
+  <p><strong>tdd</strong> — invoked when implementing a GitHub issue. Follows red green refactor until all acceptance criteria pass.</p>
+  <ol style="margin-bottom: 0;">
+    <li>Confirm interface changes needed with the user. <em>This is critical — agents need a clear surface to target.</em></li>
+    <li>Confirm which behaviors to test.</li>
+    <li>Design the interfaces for testability (thin interfaces on top of deep modules).</li>
+    <li>Write one failing test. Run it. Watch it fail.</li>
+    <li>Write the minimum code to make the test pass. Run the test. Watch it pass.</li>
+    <li>Refactor — look for candidates: duplicate logic, long functions, unclear names. Clean without changing behavior.</li>
+    <li>Repeat from step 4 until all acceptance criteria are covered by tests.</li>
+  </ol>
+</div>
+
+<h2>Interface Changes Are the Most Important Step</h2>
+
+<p>Before writing a single test, the skill asks: what interface changes are needed? This question forces clarity about:</p>
+
+<ul>
+  <li>What is exported from each module?</li>
+  <li>What do callers actually use?</li>
+  <li>Where are the test boundaries?</li>
+</ul>
+
+<p>Agents working on a well-structured codebase — with deep modules and thin interfaces — produce much better output than agents working on a codebase with many small, undifferentiated files.</p>
+
+<div class="callout warning">
+  <p><strong>TDD is hard in badly structured codebases.</strong> If the module boundaries are unclear, the test boundaries are unclear too. The <code>improve-codebase-architecture</code> skill (Lesson 0007) exists specifically to address this.</p>
+</div>
+
+<h2>Refactoring: Where Agents Struggle</h2>
+
+<p>The refactor step is where agents underperform humans. Because the code the agent just wrote lives in its own context window, it becomes "precious" — the agent is reluctant to change it.</p>
+
+<p>Techniques to work around this:</p>
+
+<ul>
+  <li><strong>Clear the context window</strong> before the refactor step — the agent forgets what it just wrote and evaluates the code freshly</li>
+  <li><strong>Name things specifically</strong>: "Extract duplicate logic in <code>parseAndFormat</code>" is better than "refactor for cleanliness"</li>
+  <li><strong>Ask explicitly</strong>: "List 3 refactor candidates in this module and pick one"</li>
+</ul>
+
+<div class="callout success">
+  <p><strong>The output is real:</strong> In one real project, a single TDD cycle on a document editing engine produced 28 passing tests covering all acceptance criteria — in one agent loop run.</p>
+</div>
+
+<h2>Mocking and Deep Modules</h2>
+
+<p>The TDD skill includes guidance on:</p>
+
+<ul>
+  <li><strong>Mocking at boundaries</strong>: Mock external services, not internal collaborators. The test should describe behavior, not implementation.</li>
+  <li><strong>Deep modules</strong>: Prefer modules with rich interfaces over modules with many shallow functions. Deep modules are easier to test at their single surface.</li>
+</ul>
+
+<h2>How This Fits the Workflow</h2>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">grill-me<br><small>surface the full scope</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">write-a-prd<br><small>lock the destination</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-run">prd-to-issues<br><small>plan the vertical slices</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">tdd<br><small>implement each slice with tests</small></span>
+</div>
+
+<p>The workflow chain is complete. TDD is the final skill — the one that actually builds working code.</p>
+
+<h2>Practice Exercise</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Pick an unblocked issue</strong>
+    <span>From your PRD breakdown (Lesson 0005), find an issue with no blocking dependencies.</span>
+  </li>
+  <li>
+    <strong>Confirm the interface</strong>
+    <span>Before writing tests, answer: what functions will callers use? What should the module export?</span>
+  </li>
+  <li>
+    <strong>Write a failing test</strong>
+    <span>Start with the simplest acceptance criterion. Write the test, watch it fail.</span>
+  </li>
+  <li>
+    <strong>Make it pass</strong>
+    <span>Write the minimum code to make the test pass. Don't optimize yet.</span>
+  </li>
+  <li>
+    <strong>Refactor</strong>
+    <span>After the test passes, ask: what would make this code cleaner? Rename, extract, consolidate.</span>
+  </li>
+</ol>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why does the TDD skill prioritize confirming interface changes before writing tests?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">Because interfaces are more important than implementation</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">Because the test boundary is the interface boundary — knowing the surface tells you what to test and how to mock</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">Because agents can't write tests without interfaces</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">Because refactoring is impossible without stable interfaces</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What is the main reason agents struggle with the refactor step?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">Agents don't understand code quality</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="true">
+        <label for="q2-b">Agents become reluctant to change code that lives in their own context window</label>
+      </li>
+      <li>
+        <input type="radio" name="q2-c" data-correct="false">
+        <label for="q2-c">Refactoring requires too many tokens</label>
+      </li>
+      <li>
+        <input type="radio" name="q2-d" data-correct="false">
+        <label for="q2-d">Tests prevent refactoring from working correctly</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why is TDD especially valuable for agents compared to human developers?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">Agents write tests faster than humans</label>
+      </li>
+      <li>
+        <input type="radio" name="q3-b" data-correct="true">
+        <label for="q3-b">The tight loop of small, testable steps creates discipline that agents otherwise lack and fights their tendency to be precious about code</label>
+      </li>
+      <li>
+        <input type="radio" name="q3-c" data-correct="false">
+        <label for="q3-c">TDD makes agents more creative</label>
+      </li>
+      <li>
+        <input type="radio" name="q3-d" data-correct="false">
+        <label for="q3-d">Agents prefer writing tests over writing production code</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0006 of the <em>Agent Loop Skills</em> course. Next: <a href="0007-improve-codebase-architecture.html">Lesson 0007 — Improve Codebase Architecture</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0005-prd-to-issues.html">← Lesson 0005</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="0007-improve-codebase-architecture.html">Lesson 0007 →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Agent Loop Skills · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>
