@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -216,7 +216,7 @@
     }
 
     .ingredient-code {
-      font-family: 'SF Mono', monospace;
+      font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 0.75rem;
       color: var(--accent);
       background: var(--code-bg);
@@ -323,55 +323,55 @@
     <header>
       <div class="lesson-num">Lesson 0001</div>
       <h1>The Core Loop: Why Iteration Beats Cleverness</h1>
-      <p class="subtitle">Nắm được 5 thành phần cốt lõi và tư duy "propose → score → keep" đằng sau mọi loop</p>
+      <p class="subtitle">Master the 5 core components and the "propose → score → keep" mindset behind every loop</p>
     </header>
 
     <section>
-      <h2>Insight nền tảng</h2>
-      <p>Đây là điều đầu tiên cần nắm, trước khi nhìn bất kỳ code nào:</p>
+      <h2>Core Insight</h2>
+      <p>This is the first thing to understand, before looking at any code:</p>
       <div class="callout">
-        <p><strong>Agents không mạnh vì một prompt khéo léo.</strong> Agents mạnh vì <em>lặp lại</em> — propose một thay đổi, chạy nó, đo kết quả, giữ lại nếu tốt hơn, quay lại.</p>
+        <p><strong>Agents aren't powerful because of a clever prompt.</strong> Agents are powerful because they <em>iterate</em> — propose a change, run it, measure the result, keep it if it's better, loop back.</p>
       </div>
-      <p>Karpathy chạy ~700 experiments trong 2 ngày với một markdown prompt đơn giản. Không phải vì prompt đó quá thông minh — mà vì nó lặp. Mỗi lần lặp, kết quả thực tế feedback vào bước tiếp theo.</p>
-      <p>Agent Loop Skills là framework đóng gói tư duy đó thành một đơn vị có thể reuse: <strong>loop</strong>.</p>
+      <p>Karpathy ran ~700 experiments in 2 days with a simple markdown prompt. Not because the prompt was brilliant — but because it looped. Every iteration, real-world feedback fed into the next step.</p>
+      <p>Agent Loop Skills packages that mindset into a reusable unit: the <strong>loop</strong>.</p>
     </section>
 
     <section>
-      <h2>5 thành phần cốt lõi</h2>
-      <p>Mọi loop đều có đúng 5 thành phần. Thiếu một là loop thiếu thông tin.</p>
+      <h2>The 5 Core Components</h2>
+      <p>Every loop has exactly 5 components. Missing one means the loop is missing information.</p>
 
       <div class="ingredient-grid">
         <div class="ingredient">
           <div class="ingredient-name">1. Program</div>
-          <div class="ingredient-desc">Hướng dẫn điều phối. Trong Agent Loop Skills: file <code>SKILL.md</code></div>
+          <div class="ingredient-desc">Orchestration guide. In Agent Loop Skills: the <code>SKILL.md</code> file</div>
           <span class="ingredient-code">SKILL.md</span>
         </div>
         <div class="ingredient">
           <div class="ingredient-name">2. Artifact slot</div>
-          <div class="ingredient-desc">Thứ được cải thiện. Không hardcode — được truyền vào lúc gọi loop</div>
+          <div class="ingredient-desc">What gets improved. Not hardcoded — passed in at invocation time</div>
           <span class="ingredient-code">&lt;artifact&gt;</span>
         </div>
         <div class="ingredient">
           <div class="ingredient-name">3. Feedback signal</div>
-          <div class="ingredient-desc">Tín hiệu quyết định bước tiếp theo. Ưu tiên objective + locally runnable</div>
+          <div class="ingredient-desc">Signal that decides the next step. Prioritize objective + locally runnable</div>
           <span class="ingredient-code">&lt;signal&gt;</span>
         </div>
         <div class="ingredient">
           <div class="ingredient-name">4. Run ledger</div>
-          <div class="ingredient-desc">Log append-only: thay đổi nào, kết quả ra sao, quyết định gì. Không ghi đè.</div>
+          <div class="ingredient-desc">Append-only log: which change, what result, what decision. Never overwrites.</div>
           <span class="ingredient-code">ledger.tsv</span>
         </div>
         <div class="ingredient full-width">
           <div class="ingredient-name">5. Termination</div>
-          <div class="ingredient-desc">Khi nào dừng: threshold đạt, plateau (không cải thiện K vòng), hết budget, hoặc loop-until-dry</div>
+          <div class="ingredient-desc">When to stop: threshold reached, plateau (no improvement for K rounds), out of budget, or loop-until-dry</div>
           <span class="ingredient-code">&lt;budget&gt; | threshold | plateau | loop-until-dry</span>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Luồng cơ bản</h2>
-      <p>Đây là flowchart cho mọi loop — bất kể loop nào trong repo:</p>
+      <h2>The Basic Flow</h2>
+      <p>Here's the flowchart for every loop — regardless of which loop in the repo:</p>
 
       <div class="diagram">
         <div class="diagram-title">The Loop Flow</div>
@@ -391,81 +391,81 @@
       </div>
 
       <div class="callout">
-        <p>Key discipline: <strong>signal decides</strong>. Không phải intuition, không phải "trông ổn". Một con số cụ thể so sánh với baseline. Giữ lại nếu tốt hơn, revert nếu không.</p>
+        <p>Key discipline: <strong>signal decides</strong>. Not intuition, not "looks fine". A specific number comparing against the baseline. Keep if better, revert if not.</p>
       </div>
     </section>
 
     <section>
-      <h2>Ví dụ tối giản</h2>
-      <p>Giả sử bạn muốn tối ưu một câu SQL query. Loop đi qua các bước:</p>
+      <h2>Minimal Example</h2>
+      <p>Say you want to optimize a SQL query. The loop goes through these steps:</p>
 
-      <pre><code># Mỗi vòng lặp:
-1. Propose: "Thử JOIN thay vì subquery"
-2. Run: chạy cả hai query, đo latency
-3. Score: so sánh latency mới vs baseline
-4. Keep nếu <baseline; revert nếu ≥baseline
-5. Log: ledger ghi [iteration, change, latency_old, latency_new, decision]
-6. Stop: khi latency giảm < 5% sau 3 vòng liên tiếp</code></pre>
+      <pre><code># Each iteration:
+1. Propose: "Try JOIN instead of subquery"
+2. Run: execute both queries, measure latency
+3. Score: compare new latency vs baseline
+4. Keep if &lt;baseline; revert if ≥baseline
+5. Log: ledger records [iteration, change, latency_old, latency_new, decision]
+6. Stop: when latency drops &lt; 5% for 3 consecutive rounds</code></pre>
 
-      <p>Đây chính là <code>optimize-loop</code> trong repo. Bạn bind câu SQL vào, chỉ định cách đo latency, và loop tự chạy. Không cần viết lại logic propose/run/score mỗi lần.</p>
+      <p>This is exactly <code>optimize-loop</code> in the repo. You bind the SQL query, specify how to measure latency, and the loop runs itself. No need to rewrite propose/run/score logic every time.</p>
     </section>
 
     <section>
-      <h2>Bindings: cách loop nhận task</h2>
-      <p>Loop không hardcode artifact. Thay vào đó, khi gọi loop, bạn bind các giá trị cụ thể:</p>
+      <h2>Bindings: How a Loop Receives a Task</h2>
+      <p>A loop doesn't hardcode the artifact. Instead, when invoking the loop, you bind specific values:</p>
 
       <div class="meta-grid">
         <div class="meta-item">
           <span class="meta-icon">📦</span>
           <div>
             <div class="meta-label">artifact</div>
-            <div class="meta-value">File/task cụ thể của bạn</div>
+            <div class="meta-value">Your specific file/task</div>
           </div>
         </div>
         <div class="meta-item">
           <span class="meta-icon">⚡</span>
           <div>
             <div class="meta-label">signal</div>
-            <div class="meta-value">Cách đo "tốt hơn"</div>
+            <div class="meta-value">How to measure "better"</div>
           </div>
         </div>
         <div class="meta-item">
           <span class="meta-icon">🔧</span>
           <div>
             <div class="meta-label">run_cmd</div>
-            <div class="meta-value">Lệnh chạy artifact</div>
+            <div class="meta-value">Command to run the artifact</div>
           </div>
         </div>
         <div class="meta-item">
           <span class="meta-icon">⏱️</span>
           <div>
             <div class="meta-label">budget</div>
-            <div class="meta-value">Số vòng tối đa</div>
+            <div class="meta-value">Maximum number of iterations</div>
           </div>
         </div>
       </div>
 
-      <p>Bindings được resolve khi gọi loop — không cần sửa code. Bind đúng → loop chạy đúng task.</p>
+      <p>Bindings are resolved at invocation time — no code changes needed. Bind correctly → loop runs the right task.</p>
     </section>
 
     <section>
-      <h2>Loops vs Skills thường</h2>
-      <p>Skills thường (ví dụ: <code>create-blog-post</code>) làm một việc và dừng. Loops lặp đi lặp lại với feedback. Dùng khi:</p>
+      <h2>Loops vs Regular Skills</h2>
+      <p>Regular skills (e.g. <code>create-blog-post</code>) do one thing and stop. Loops iterate with feedback. Use when:</p>
       <div class="callout">
-        <p><strong>Dùng loop</strong> khi: bạn biết "tốt hơn" trông như thế nào và muốn machine tìm nó qua nhiều attempts.</p>
-        <p><strong>Dùng skill thường</strong> khi: một lần chạy là đủ, không cần đo lường giữa các attempts.</p>
+        <p><strong>Use a loop</strong> when: you know what "better" looks like and want the machine to find it across multiple attempts.</p>
+        <p><strong>Use a regular skill</strong> when: one run is enough, no measurement needed between attempts.</p>
       </div>
     </section>
 
     <footer>
-      <h3>Bài tập thực hành</h3>
-      <p>Trước bài tiếp theo, thử suy nghĩ:</p>
-      <p>🎯 <strong>Task của bạn</strong>: Bạn có task gì trong công việc hoặc dự án cá nhân mà bạn lặp đi lặp lại thủ công? (VD: tối ưu prompt, clean data, viết draft, debug)</p>
-      <p>Chọn 1-2 task đó. Chúng ta sẽ map chúng vào loop phù hợp hoặc viết loop mới ở bài tiếp.</p>
+      <h3>Practice Exercise</h3>
+      <p>Before the next lesson, try thinking about:</p>
+      <p>🎯 <strong>Your task</strong>: What repetitive manual work do you have in your job or personal projects? (E.g. prompt optimization, data cleaning, draft writing, debugging)</p>
+      <p>Pick 1-2 of those tasks. We'll map them to the right loop or write a new one in the next lesson.</p>
     </footer>
 
     <nav>
-      <span class="nav-hint">← Mission & Resources đã setup ở workspace root</span>
+      <span class="nav-hint">← Mission & Resources are set up at workspace root</span>
       <span class="nav-hint">Lesson 0002 →</span>
     </nav>
 

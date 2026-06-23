@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,7 +132,7 @@
       align-items: flex-start;
     }
     .loop-card-icon { font-size: 1.4rem; flex-shrink: 0; }
-    .loop-card-name { font-weight: 700; color: #c4b5fd; font-family: 'SF Mono', monospace; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .loop-card-name { font-weight: 700; color: #c4b5fd; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9rem; margin-bottom: 0.25rem; }
     .loop-card-desc { font-size: 0.82rem; color: var(--muted); }
 
     .worksheet {
@@ -205,161 +205,161 @@
     <header>
       <div class="lesson-num">Lesson 0002</div>
       <h1>Install & Pick Your Loop</h1>
-      <p class="subtitle">Cài loops vào Cursor, chọn task thực tế để map vào loop</p>
+      <p class="subtitle">Install loops into Cursor, then pick a real task to map onto a loop</p>
     </header>
 
     <section>
-      <h2>Bước 1 — Clone repo</h2>
-      <p>Đầu tiên, clone Agent Loop Skills về máy. Một lần thôi.</p>
+      <h2>Step 1 — Clone the repo</h2>
+      <p>First, clone the Agent Loop Skills repo to your machine. One time only.</p>
 
       <div class="step-box">
         <div class="step-title"><span class="step-num">1</span>Clone repo</div>
-        <div class="step-desc">Chạy lệnh này trong terminal:</div>
+        <div class="step-desc">Run this in your terminal:</div>
         <div class="cmd-block">git clone https://github.com/gaasher/agent-loop-skills.git ~/code/agent-loop-skills</div>
       </div>
     </section>
 
     <section>
-      <h2>Bước 2 — Copy vào skills folder của Cursor</h2>
-      <p>Cursor dùng cùng định dạng với Claude Code và Codex — chỉ cần copy folder <code>loops/</code>.</p>
+      <h2>Step 2 — Copy into Cursor's skills folder</h2>
+      <p>Cursor uses the same format as Claude Code and Codex — just copy the <code>loops/</code> folder.</p>
 
       <div class="step-box">
-        <div class="step-title"><span class="step-num">2</span>Copy tất cả loops vào Cursor skills</div>
-        <div class="step-desc">Lệnh:</div>
+        <div class="step-title"><span class="step-num">2</span>Copy all loops into Cursor skills</div>
+        <div class="step-desc">Command:</div>
         <div class="cmd-block">cp -r ~/code/agent-loop-skills/loops/* ~/.agents/skills/</div>
       </div>
 
       <div class="callout warning">
-        <p>Kiểm tra xem folder <code>~/.agents/skills/</code> có tồn tại chưa. Nếu chưa, tạo trước:</p>
+        <p>Check if <code>~/.agents/skills/</code> exists first. If not, create it first:</p>
         <div class="cmd-block">mkdir -p ~/.agents/skills && cp -r ~/code/agent-loop-skills/loops/* ~/.agents/skills/</div>
       </div>
 
       <div class="step-box">
-        <div class="step-title"><span class="step-num">3</span>Verify đã cài đúng</div>
-        <div class="step-desc">List folder để xem:</div>
+        <div class="step-title"><span class="step-num">3</span>Verify installation</div>
+        <div class="step-desc">List the folder to confirm:</div>
         <div class="cmd-block">ls ~/.agents/skills/ | head -20</div>
-        <div class="step-desc" style="margin-top:0.5rem;">Bạn sẽ thấy: <code>karpathy/</code>, <code>optimize-loop/</code>, <code>claim-verify/</code>, v.v. Mỗi folder có <code>SKILL.md</code> bên trong.</div>
+        <div class="step-desc" style="margin-top:0.5rem;">You should see: <code>karpathy/</code>, <code>optimize-loop/</code>, <code>claim-verify/</code>, etc. Each folder contains a <code>SKILL.md</code> inside.</div>
       </div>
     </section>
 
     <section>
-      <h2>Task của bạn: map vào loop</h2>
-      <p>Từ MISSION.md, mục tiêu của bạn là tự động hóa workflow lặp đi lặp lại. Hãy nhìn vào các task bạn làm hàng ngày và map chúng:</p>
+      <h2>Your Task: Map It to a Loop</h2>
+      <p>From MISSION.md, your goal is to automate repetitive workflows. Look at the tasks you do daily and map them:</p>
 
       <ul class="task-list">
         <li>
-          <strong>Viết và duy trì blog (trinq.github.io)</strong>
-          <span>Chuyển HTML lesson → redirect post mỗi khi publish bài mới. Mỗi bài: trích title, description, tạo file YAML frontmatter, commit & push.</span>
-          <span class="loop-tag">📝 claim-verify? data-analysis? Viết loop mới!</span>
+          <strong>Writing and maintaining a blog (trinq.github.io)</strong>
+          <span>Convert HTML lesson → redirect post every time you publish. Each post: extract title, description, create YAML frontmatter, commit & push.</span>
+          <span class="loop-tag">📝 claim-verify? data-analysis? Write a new loop!</span>
         </li>
         <li>
-          <strong>Tối ưu prompt</strong>
-          <span>Viết prompt → chạy test → xem kết quả → sửa prompt → lặp. Muốn automated: script đo "prompt score" và tự tìm prompt tốt hơn.</span>
+          <strong>Prompt optimization</strong>
+          <span>Write prompt → run test → see result → fix prompt → repeat. Want automation: script to measure "prompt score" and find better prompt automatically.</span>
           <span class="loop-tag">→ prompt-optimize</span>
         </li>
         <li>
-          <strong>Clean data / table messy</strong>
-          <span>CSV bẩn, cần chuẩn hóa schema, điền missing values, fix types. Chạy 1 lần là xong.</span>
+          <strong>Clean data / messy tables</strong>
+          <span>Dirty CSV, need to normalize schema, fill missing values, fix types. One run and it's done.</span>
           <span class="loop-tag">→ tabular-cleanup</span>
         </li>
         <li>
-          <strong>Research: tìm papers + tổng hợp claims</strong>
-          <span>Search web → đọc abstract → trích claims → so sánh xung đột. Lặp đến khi saturated.</span>
+          <strong>Research: find papers + synthesize claims</strong>
+          <span>Search web → read abstract → extract claims → compare conflicts. Repeat until saturated.</span>
           <span class="loop-tag">→ literature-survey</span>
         </li>
         <li>
           <strong>Debug/refactor code</strong>
-          <span>Đo test coverage + cyclomatic complexity. Cải thiện cả hai → giữ, không → revert.</span>
+          <span>Measure test coverage + cyclomatic complexity. Improve both → keep, don't → revert.</span>
           <span class="loop-tag">→ optimize-loop (mode: code)</span>
         </li>
         <li>
-          <strong>Verify claims từ dataset</strong>
-          <span>Có bài viết với các số liệu. Muốn check: số đó có đúng không, có bị confounders không.</span>
+          <strong>Verify claims from a dataset</strong>
+          <span>There's an article with numbers. Want to check: are those numbers correct, are there confounders.</span>
           <span class="loop-tag">→ claim-verify</span>
         </li>
       </ul>
 
       <div class="callout success">
-        <p><strong>Your turn.</strong> Trong workspace của bạn, task nào là thực tế nhất để bắt đầu? Chọn 1. Việc đầu tiên chúng ta sẽ làm là đặt binding cho nó — viết <code>loop.run.yaml</code> — rồi chạy loop đó.</p>
+        <p><strong>Your turn.</strong> In your workspace, which task is the most realistic to start with? Pick 1. The first thing we'll do is set up its bindings — write a <code>loop.run.yaml</code> — then run that loop.</p>
       </div>
     </section>
 
     <section>
-      <h2>Map nhanh: task → loop</h2>
-      <p>Nếu bạn biết task mình muốn tự động hóa, dùng bảng này:</p>
+      <h2>Quick Map: Task → Loop</h2>
+      <p>If you already know which task you want to automate, use this table:</p>
 
       <div class="loop-card">
         <span class="loop-card-icon">🐢</span>
         <div>
           <div class="loop-card-name">karpathy</div>
-          <div class="loop-card-desc">Minimal. Train model, keep if metric better. Chạy được ngay, ít config.</div>
+          <div class="loop-card-desc">Minimal. Train model, keep if metric better. Runs immediately, minimal config.</div>
         </div>
       </div>
       <div class="loop-card">
         <span class="loop-card-icon">⚡</span>
         <div>
           <div class="loop-card-name">optimize-loop (code mode)</div>
-          <div class="loop-card-desc">Refactor code. Correctness gate (tests green) + complexity/metrics down. Tốt nhất cho dev work.</div>
+          <div class="loop-card-desc">Refactor code. Correctness gate (tests green) + complexity/metrics down. Best for dev work.</div>
         </div>
       </div>
       <div class="loop-card">
         <span class="loop-card-icon">🔤</span>
         <div>
           <div class="loop-card-name">prompt-optimize</div>
-          <div class="loop-card-desc">Evolve prompt against a scoring command. User-provided oracle. Cần viết scorer trước.</div>
+          <div class="loop-card-desc">Evolve prompt against a scoring command. User-provided oracle. Need to write a scorer first.</div>
         </div>
       </div>
       <div class="loop-card">
         <span class="loop-card-icon">📊</span>
         <div>
           <div class="loop-card-name">data-analysis</div>
-          <div class="loop-card-desc">Hypothesis → verify với effect size. Không hallucinations (tested). Tốt cho data có sẵn.</div>
+          <div class="loop-card-desc">Hypothesis → verify with effect size. No hallucinations (tested). Good for existing data.</div>
         </div>
       </div>
       <div class="loop-card">
         <span class="loop-card-icon">✅</span>
         <div>
           <div class="loop-card-name">claim-verify</div>
-          <div class="loop-card-desc">Một bài viết có claims, verify từng số. Stress-test với outliers/confounds. Publish-safe.</div>
+          <div class="loop-card-desc">An article with claims, verify each number. Stress-test with outliers/confounds. Publish-safe.</div>
         </div>
       </div>
       <div class="loop-card">
         <span class="loop-card-icon">🗂️</span>
         <div>
           <div class="loop-card-name">tabular-cleanup</div>
-          <div class="loop-card-desc">Clean messy table. Infer schema + deterministic checks. Chạy 1 lần là done.</div>
+          <div class="loop-card-desc">Clean messy table. Infer schema + deterministic checks. One run and done.</div>
         </div>
       </div>
       <div class="loop-card">
         <span class="loop-card-icon">🔬</span>
         <div>
           <div class="loop-card-name">literature-search / literature-survey</div>
-          <div class="loop-card-desc">Research tool. Tìm papers, build evidence matrix. Cần setup API keys (Semantic Scholar, arXiv).</div>
+          <div class="loop-card-desc">Research tool. Find papers, build evidence matrix. Needs API keys setup (Semantic Scholar, arXiv).</div>
         </div>
       </div>
       <div class="loop-card">
         <span class="loop-card-icon">🛡️</span>
         <div>
           <div class="loop-card-name">red-team</div>
-          <div class="loop-card-desc">Adversarial testing. Tìm failure modes. Dùng khi bạn sở hữu hệ thống cần test.</div>
+          <div class="loop-card-desc">Adversarial testing. Find failure modes. Use when you own the system being tested.</div>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Task blog của bạn</h2>
-      <p>Task blog (HTML → redirect post) có vẻ là ứng cử viên thú vị nhất — vì <code>create-blog-post</code> skill hiện tại của bạn là một lần chạy. Nếu muốn cải thiện nó theo thời gian (detect đã post chưa, tự chọn category, tự viết description tốt hơn...), đó là candidate cho một loop.</p>
+      <h2>Your Blog Task</h2>
+      <p>The blog task (HTML → redirect post) seems like the most interesting candidate — because your current <code>create-blog-post</code> skill is a single run. If you want to improve it over time (detect if already posted, auto-select category, write better descriptions...), that's a candidate for a loop.</p>
       <div class="callout">
-        <p>Tuy nhiên, task blog chưa chắc đã fit loop có sẵn. Có thể cần <strong>viết loop mới</strong> — Lesson 3 sẽ học cách viết loop từ đầu theo spec.</p>
-        <p>Trước khi viết loop mới, Lesson 3 sẽ thực hành với một loop có sẵn trước — để bạn thấy cách một loop chạy thực tế trong Cursor.</p>
+        <p>However, the blog task may not fit an existing loop. You might need to <strong>write a new loop</strong> — Lesson 3 will teach you how to write a loop from scratch based on a spec.</p>
+        <p>Before writing a new loop, Lesson 3 will practice with an existing loop first — so you can see how a loop actually runs in Cursor.</p>
       </div>
     </section>
 
     <footer>
-      <h3>Action items cho bạn</h3>
-      <p>✅ Bước 1-3: Clone + copy loops vào <code>~/.agents/skills/</code></p>
-      <p>✅ Nghĩ ra 1 task bạn muốn tự động hóa</p>
-      <p>→ Báo cho mình task nào. Chúng ta sẽ đặt bindings và chạy loop tiếp theo.</p>
+      <h3>Action Items for You</h3>
+      <p>✅ Steps 1-3: Clone + copy loops to <code>~/.agents/skills/</code></p>
+      <p>✅ Think of 1 task you want to automate</p>
+      <p>→ Tell me which task. We'll set up the bindings and run the next loop.</p>
     </footer>
 
     <nav>
