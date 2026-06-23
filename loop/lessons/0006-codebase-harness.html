@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0006 — Codebase Harness</title>
+<link rel="stylesheet" href="/loop/assets/styles.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <a href="/loop/" class="site-logo">Loop Engineer</a>
+    <div class="site-nav">
+      <a href="/loop/">Lessons</a>
+      <a href="/loop/MISSION.md">Mission</a>
+      <a href="/loop/RESOURCES.md">Resources</a>
+      <a href="/loop/GLOSSARY.md">Glossary</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<div class="crumbs">
+  <a href="/loop/">Lessons</a> &nbsp;·&nbsp;
+  <a href="/loop/MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="/loop/RESOURCES.md">Resources</a> &nbsp;·&nbsp;
+  <a href="/loop/GLOSSARY.md">Glossary</a> &nbsp;·&nbsp;
+  <a href="/loop/reference/the-loop-system.html">Reference</a> &nbsp;·&nbsp; Lesson 0006
+</div>
+
+<h1>Lesson 0006<br>Codebase Harness</h1>
+
+<p><em>Reading time: ~25 minutes. Light coding — optional exercises.</em></p>
+
+<p>So far, you have learned about harness design, inner loops, outer loops, and compound loops. Now let's bring it all together with a practical, hands-on topic: making your codebase work <em>with</em> agents, not against them. This is the <strong>Codebase Harness</strong> — the set of practices that make a codebase agent-friendly.</p>
+
+<h2>The Problem: Codebases Are Built for Humans</h2>
+
+<p>Most codebases are designed for human collaborators who have context built up over months of working in the codebase. They know:</p>
+
+<ul>
+  <li>Where to find the authentication logic</li>
+  <li>Why a certain pattern exists</li>
+  <li>Which file to modify for a specific feature</li>
+  <li>How to run tests and what they mean</li>
+</ul>
+
+<p>Agents do not have this context. A fresh agent dropped into a codebase sees a wall of files. Without guidance, it will:</p>
+
+<ul>
+  <li>Read irrelevant files, wasting context budget</li>
+  <li>Modify the wrong files</li>
+  <li>Reinvent existing patterns instead of following them</li>
+  <li>Run commands incorrectly or miss critical setup steps</li>
+</ul>
+
+<p>The solution: build a codebase harness that provides the context humans take for granted.</p>
+
+<h2>The Three Qualities of an Agent-Friendly Codebase</h2>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Legible</h4>
+    <p>The agent can easily understand the structure, find the right files, and know where to make changes. This is achieved through <code>AGENTS.md</code>, clear directory organization, and self-documenting code.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Executable</h4>
+    <p>The agent can spin up the dev environment, run tests, and verify work with minimal friction. This requires one-command setup, clear startup scripts, and documented dependencies.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Verifiable</h4>
+    <p>The agent has tools to check its own work before presenting it to humans. This means tests, linters, and explicit acceptance criteria so the agent knows when it is actually done.</p>
+  </div>
+</div>
+
+<h2>Making It Legible: AGENTS.md</h2>
+
+<p><code>AGENTS.md</code> is a file at the root of your project that tells agents everything they need to know. Think of it as a README written for an AI colleague.</p>
+
+<p>A good <code>AGENTS.md</code> includes:</p>
+
+<ul>
+  <li><strong>Project overview</strong> — What does this project do? Who are the stakeholders?</li>
+  <li><strong>Directory structure</strong> — A map of the codebase with explanations of what each folder contains</li>
+  <li><strong>Key patterns</strong> — The coding conventions, naming rules, and architectural patterns used</li>
+  <li><strong>Where to find things</strong> — Common tasks and which files to look at</li>
+  <li><strong>What to avoid</strong> — Known anti-patterns, deprecated files, sensitive areas</li>
+</ul>
+
+<p>Example structure:</p>
+
+<pre><code># AGENTS.md
+
+## Project Overview
+This is the internal security proposal automation system.
+It generates customized security proposals for enterprise clients.
+
+## Directory Structure
+- /src/agents/        # Agent prompt definitions and loop configurations
+- /src/services/     # Business logic (proposal generation, PDF export)
+- /src/data/          # Client data, templates, signals
+- /tests/             # Playwright e2e tests, unit tests
+
+## Key Patterns
+- All agent prompts are in /src/agents/prompts/
+- Signal files follow schema in /src/data/signals/README.md
+- Proposals use the template system in /src/data/templates/
+
+## Where to Find Things
+- To add a new proposal type: /src/services/proposals/
+- To modify signal behavior: /src/agents/signals/
+- To change the output format: /src/data/templates/</code></pre>
+
+<h2>Making It Executable: Dev Scripts</h2>
+
+<p>Agents need to run the project without manual setup. Every project should have a <code>dev.sh</code> (or <code>Makefile</code>) at the root that handles:</p>
+
+<ul>
+  <li><strong>Setup</strong> — Install dependencies, set environment variables</li>
+  <li><strong>Start</strong> — Spin up the dev server</li>
+  <li><strong>Test</strong> — Run the test suite</li>
+  <li><strong>Verify</strong> — Run linting and type checking</li>
+</ul>
+
+<p>Example <code>dev.sh</code>:</p>
+
+<pre><code>#!/bin/bash
+# dev.sh &#8212; Agent-facing project commands
+
+case "$1" in
+  setup)
+    npm install
+    cp .env.example .env
+    ;;
+  start)
+    npm run dev
+    ;;
+  test)
+    npm test
+    npx playwright test
+    ;;
+  verify)
+    npm run lint
+    npm run typecheck
+    ;;
+  *)
+    echo "Usage: ./dev.sh {setup|start|test|verify}"
+    ;;
+esac</code></pre>
+
+<h2>Making It Verifiable: Self-Check Systems</h2>
+
+<p>Agents need to know when their work is actually correct. There are 3 verification layers:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Automated Tests</h4>
+    <p>Unit tests and integration tests that run automatically. The agent should be able to run the full test suite with one command. If tests fail, the agent knows the work is not done.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Linters and Type Checkers</h4>
+    <p>Static analysis tools (ESLint, Prettier, TypeScript, Ruff) that catch style and type errors. These run fast and give the agent immediate feedback.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Acceptance Criteria</h4>
+    <p>Explicit checklists in the task prompt: "This task is complete when: [1] tests pass, [2] no lint errors, [3] the proposal renders correctly in the browser."</p>
+  </div>
+</div>
+
+<div class="callout">
+  <strong>Critical rule.</strong> Do not let an agent verify its own work without a separate verification step. The source video says: "it just generally doesn't work that well." Always spawn a <strong>verifier agent</strong> — a separate, read-only agent that checks the output and reports back.
+</div>
+
+<h2>Verification Agent Pattern</h2>
+
+<p>Instead of letting the agent self-verify, spawn two agents:</p>
+
+<ol>
+  <li><strong>Worker agent</strong> — Does the actual work (write code, create documents)</li>
+  <li><strong>Verifier agent</strong> — Read-only. Checks the output against acceptance criteria, runs tests, and reports findings</li>
+</ol>
+
+<pre><code>Task prompt
+    |
+    +-- Worker Agent --&#62; Changes to codebase
+    |                         |
+    |                         +-- Verifier Agent (read-only)
+    |                                    |
+    |                                    +-- Report: pass / fail / issues
+    |
+    +-- Human reviews the report</code></pre>
+
+<p>The verifier agent should be given <em>only</em> the acceptance criteria and the ability to read files and run tests — not the ability to modify files.</p>
+
+<h2>Directory Structure for a Loop-Aware Codebase</h2>
+
+<p>Here is a recommended structure for a codebase designed for agents:</p>
+
+<pre><code>project/
+  AGENTS.md              # Agent-facing documentation
+  dev.sh                 # One-command dev workflow
+  .cursor/
+    rules/               # Cursor-specific agent rules
+  src/
+    agents/              # Agent configurations
+      prompts/           # System prompts for each loop
+      contracts/         # Loop contracts
+    loops/               # Loop implementations
+    services/            # Business logic
+  tests/
+    e2e/                # Playwright tests (verifiable by agent)
+    unit/                # Unit tests
+  signals/               # Shared file system signals
+  artifacts/             # Generated outputs
+  worklog.md             # Global activity log</code></pre>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz" data-name="codebase-q1">
+  <div class="quiz-question">What are the three qualities of an agent-friendly codebase?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="codebase-q1" data-correct="true">
+        <span>Legible, Executable, Verifiable.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. These three qualities make a codebase agent-friendly."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q1" data-correct="false">
+        <span>Readable, Runnable, Testable.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Close, but not quite — those are human-focused terms." data-wrong-text="Incorrect. The three qualities are legible, executable, verifiable — specific to agent interaction."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q1" data-correct="false">
+        <span>Documented, Modular, Performant.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are general software quality attributes." data-wrong-text="Incorrect. The codebase harness qualities are specific terms: legible, executable, verifiable."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q1" data-correct="false">
+        <span>Organized, Automated, Monitored.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are DevOps terms." data-wrong-text="Incorrect. The codebase harness has a specific three-quality framework."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="codebase-q2">
+  <div class="quiz-question">Why should you not let an agent verify its own work?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="codebase-q2" data-correct="false">
+        <span>Because it is too slow for an agent to check its own work.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — speed is not the reason." data-wrong-text="Incorrect. The issue is not about speed."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q2" data-correct="true">
+        <span>Because agents verifying their own work tend to approve flawed outputs without catching real issues — a separate read-only verifier is more reliable.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Self-verification does not work well because the agent has a vested interest in its own output being approved."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q2" data-correct="false">
+        <span>Because it uses too many API tokens.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — token cost is not the reason." data-wrong-text="Incorrect. The issue is reliability and objectivity, not cost."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q2" data-correct="false">
+        <span>Because agents are not smart enough to verify their own work.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — intelligence is not the issue." data-wrong-text="Incorrect. The issue is incentive alignment, not intelligence."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="codebase-q3">
+  <div class="quiz-question">What does the dev.sh script provide for agents?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="codebase-q3" data-correct="false">
+        <span>A GUI interface for agents to interact with the codebase.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — agents do not use GUIs." data-wrong-text="Incorrect. Agents interact via CLI, not GUI."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q3" data-correct="true">
+        <span>One-command setup, start, test, and verify — so agents can run the project without manual intervention.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. dev.sh abstracts away the complexity of running the project so agents can focus on tasks."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q3" data-correct="false">
+        <span>The training data for fine-tuning the agent.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — dev.sh is for execution, not training." data-wrong-text="Incorrect. dev.sh is a runtime script, not a training file."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="codebase-q3" data-correct="false">
+        <span>A way to deploy the application to production.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — dev.sh is for development, not deployment." data-wrong-text="Incorrect. dev.sh is for local development workflow, not production deployment."></div>
+    </li>
+  </ul>
+</div>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+  <li>A codebase harness makes your codebase <strong>Legible</strong> (agents understand structure), <strong>Executable</strong> (agents can run it), and <strong>Verifiable</strong> (agents can check their work).</li>
+  <li><code>AGENTS.md</code> is the agent's map of the codebase — include directory structure, patterns, and where to find things.</li>
+  <li><code>dev.sh</code> provides one-command workflows: setup, start, test, verify.</li>
+  <li>Use a <strong>verifier agent</strong> — a read-only agent that checks work — not self-verification.</li>
+  <li>Verification has 3 layers: <strong>automated tests</strong>, <strong>linters/type checkers</strong>, and <strong>explicit acceptance criteria</strong>.</li>
+</ul>
+
+<h2>Questions to Think About</h2>
+
+<ol>
+  <li>Look at a codebase you work with. Is it legible to a fresh agent? What would an agent miss on day one?</li>
+  <li>Create a draft of what your <code>AGENTS.md</code> would look like for one of your projects.</li>
+  <li>What verification tools do you already have in place? What is missing?</li>
+</ol>
+
+<div class="callout">
+  <strong>If anything is unclear, ask.</strong> This lesson bridges theory and practice. Before moving to the final lesson, make sure you can explain what makes a codebase legible, executable, and verifiable.
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0006 of the <em>Loop Engineer</em> course. See
+  <a href="/loop/RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/loop/">Lessons</a></li>
+        <li><a href="/loop/MISSION.md">Mission</a></li>
+        <li><a href="/loop/RESOURCES.md">Resources</a></li>
+        <li><a href="/loop/GLOSSARY.md">Glossary</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Loop Engineer &mdash; a self-paced course.
+  </div>
+</footer>
+
+<script src="/loop/assets/quiz.js"></script>
+<script src="/loop/assets/i18n.js" data-source="en" data-target="vi"></script>
+</body>
+</html>

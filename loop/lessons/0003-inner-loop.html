@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0003 — Inner Loop</title>
+<link rel="stylesheet" href="/loop/assets/styles.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <a href="/loop/" class="site-logo">Loop Engineer</a>
+    <div class="site-nav">
+      <a href="/loop/">Lessons</a>
+      <a href="/loop/MISSION.md">Mission</a>
+      <a href="/loop/RESOURCES.md">Resources</a>
+      <a href="/loop/GLOSSARY.md">Glossary</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<div class="crumbs">
+  <a href="/loop/">Lessons</a> &nbsp;·&nbsp;
+  <a href="/loop/MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="/loop/RESOURCES.md">Resources</a> &nbsp;·&nbsp;
+  <a href="/loop/GLOSSARY.md">Glossary</a> &nbsp;·&nbsp;
+  <a href="/loop/reference/the-loop-system.html">Reference</a> &nbsp;·&nbsp; Lesson 0003
+</div>
+
+<h1>Lesson 0003<br>Inner Loop</h1>
+
+<p><em>Reading time: ~20 minutes. No coding required.</em></p>
+
+<p>In the previous lesson, you learned about the harness — the scaffolding around agents. Now let's go inside the agent itself. The <strong>inner loop</strong> is the process by which a single agent completes a single task. This is the domain of the Agent Engineer.</p>
+
+<h2>The Inner Loop: Agent in Action</h2>
+
+<p>Every time an agent works on a task, it goes through a cycle:</p>
+
+<div class="loop-diagram">
+  <span class="loop-node">Think</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Plan</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Act</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Observe</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Think</span>
+</div>
+
+<p>The loop continues until the agent decides the task is complete. This cycle happens inside a single session, within a single context window.</p>
+
+<h2>Four Things That Make an Inner Loop Work Well</h2>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>1. Clear Objective</h4>
+    <p>The agent must know exactly what "done" looks like. Vague instructions produce vague results. A good objective includes: what to produce, where to save it, what format to use, and how to verify it.</p>
+  </div>
+  <div class="concept-card">
+    <h4>2. Good Tools</h4>
+    <p>The agent needs the right tools for the job. A coding agent needs file access and a terminal. A research agent needs web search. A writing agent needs document formatting tools. Without the right tools, the agent cannot act effectively.</p>
+  </div>
+  <div class="concept-card">
+    <h4>3. Context That Matters</h4>
+    <p>Feed the agent only what it needs to make good decisions. Irrelevant context is noise. The agent should not have to sift through 50 files to find the 2 that matter.</p>
+  </div>
+  <div class="concept-card">
+    <h4>4. Self-Correction Triggers</h4>
+    <p>The agent needs checkpoints — moments where it asks: "Am I on the right track?" Without self-correction, the agent can go very far down the wrong path before anyone notices.</p>
+  </div>
+</div>
+
+<h2>Prompt Optimization: Making Instructions Work</h2>
+
+<p>A prompt is not just "do X." A good harness prompt for an inner loop task includes:</p>
+
+<ul>
+  <li><strong>Role</strong> — Who is the agent? (e.g., "You are a security vulnerability researcher.")</li>
+  <li><strong>Task</strong> — What specifically to do? (e.g., "Research CVE-2024-XXXX and write a summary.")</li>
+  <li><strong>Output format</strong> — What should the result look like? (e.g., "A markdown file in signals/cve-daily.md using the schema in signals/README.md.")</li>
+  <li><strong>Constraints</strong> — What to avoid? (e.g., "Do not include speculation. Only cite official sources.")</li>
+  <li><strong>Exit criteria</strong> — How does the agent know it is done? (e.g., "The summary covers: description, affected versions, severity, and remediation.")</li>
+</ul>
+
+<div class="callout">
+  <strong>Pattern.</strong> The best inner loop prompts are written like instructions for a new hire on their first day — specific, structured, and leaving no ambiguity about what success looks like.
+</div>
+
+<h2>Context Injection: What to Feed the Agent</h2>
+
+<p>There are 3 ways to give an agent context:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>System Prompt</h4>
+    <p>Permanent instructions baked into the agent's configuration. Use for role definition, behavioral rules, and output format. Keep it stable — it should not change per task.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Task Prompt</h4>
+    <p>Instructions given at the start of each task. Use for task-specific goals, constraints, and success criteria. This is the variable part — different tasks, different prompts.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Dynamic Context</h4>
+    <p>Information injected during the loop as the agent works. Use for file contents, search results, tool outputs. This is real-time — it changes as the agent gathers information.</p>
+  </div>
+</div>
+
+<h2>Common Inner Loop Failure Modes</h2>
+
+<p>Agents fail in predictable ways. Knowing these helps you design better harnesses:</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Failure Mode</th>
+        <th>Symptom</th>
+        <th>Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Goal drift</strong></td>
+        <td>Agent starts doing something unrelated to the task</td>
+        <td>Add explicit checkpoint prompts: "Are you still on track? Review the objective."</td>
+      </tr>
+      <tr>
+        <td><strong>Context overflow</strong></td>
+        <td>Agent gets confused or produces generic output</td>
+        <td>Reduce context. Feed only the top 3 most relevant files.</td>
+      </tr>
+      <tr>
+        <td><strong>Infinite loop</strong></td>
+        <td>Agent calls the same tool repeatedly without progress</td>
+        <td>Add a step counter or max-iterations guard in the harness.</td>
+      </tr>
+      <tr>
+        <td><strong>Hallucination</strong></td>
+        <td>Agent cites facts or sources that do not exist</td>
+        <td>Require verifiable sources. Add a tool that confirms facts, not just retrieves them.</td>
+      </tr>
+      <tr>
+        <td><strong>Tool misuse</strong></td>
+        <td>Agent uses the wrong tool for the job</td>
+        <td>Make tool descriptions more explicit. Add examples of correct tool use.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>Tool Selection: Choosing the Right Action</h2>
+
+<p>A core part of the inner loop is deciding <em>which tool to use</em>. This is called <strong>tool selection</strong>. A well-designed tool set makes this easy:</p>
+
+<ul>
+  <li><strong>Distinct names</strong> — Each tool name clearly describes what it does. "search_web" not "tool_1."</li>
+  <li><strong>Clear descriptions</strong> — Every tool has a description that tells the agent when to use it.</li>
+  <li><strong>Explicit inputs/outputs</strong> — The agent knows exactly what to pass in and what to expect back.</li>
+  <li><strong>Scoped purpose</strong> — Each tool does one thing well. Avoid "do everything" tools.</li>
+</ul>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz" data-name="inner-q1">
+  <div class="quiz-question">What are the four stages of the inner loop cycle?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="inner-q1" data-correct="false">
+        <span>Input, Process, Output, Feedback.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are general computing stages, not the inner loop stages." data-wrong-text="Incorrect. The inner loop is Think → Plan → Act → Observe."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q1" data-correct="true">
+        <span>Think, Plan, Act, Observe.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. The agent thinks about what to do, plans the approach, acts by calling tools, and observes the results."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q1" data-correct="false">
+        <span>Read, Write, Execute, Verify.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are file operations, not the inner loop stages." data-wrong-text="Incorrect. The inner loop is a thinking cycle, not file operations."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q1" data-correct="false">
+        <span>Prompt, Generate, Refine, Complete.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are text generation stages, not the inner loop." data-wrong-text="Incorrect. The inner loop is about agent cognition and action."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="inner-q2">
+  <div class="quiz-question">Which failure mode describes an agent going off-task and doing something unrelated?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="inner-q2" data-correct="true">
+        <span>Goal drift.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Goal drift is when the agent's focus gradually shifts away from the original task."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q2" data-correct="false">
+        <span>Infinite loop.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — infinite loop is when the agent repeats the same action without progress." data-wrong-text="Incorrect. Infinite loop is about repetition, not going off-task."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q2" data-correct="false">
+        <span>Hallucination.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — hallucination is when the agent generates false information." data-wrong-text="Incorrect. Hallucination is about false facts, not off-task behavior."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q2" data-correct="false">
+        <span>Context overflow.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — context overflow is when the agent gets confused from too much context." data-wrong-text="Incorrect. Context overflow causes confusion, not goal drift."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="inner-q3">
+  <div class="quiz-question">What is the best way to fix tool misuse in an inner loop?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="inner-q3" data-correct="false">
+        <span>Give the agent more tools so it has more options.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — more tools often makes selection harder, not easier." data-wrong-text="Incorrect. Adding more tools increases the chance of misuse."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q3" data-correct="true">
+        <span>Make tool descriptions more explicit and add examples of correct use.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Clear descriptions and examples help the agent choose the right tool."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q3" data-correct="false">
+        <span>Remove tools one by one until the agent stops misusing them.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — removing tools reduces capability, it does not improve selection." data-wrong-text="Incorrect. The fix is clarity, not reduction."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="inner-q3" data-correct="false">
+        <span>Use a smarter model that understands tools better.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — tool misuse is usually a prompt/harness problem, not a model problem." data-wrong-text="Incorrect. Better prompts fix tool misuse faster than switching models."></div>
+    </li>
+  </ul>
+</div>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+  <li>The <strong>inner loop</strong> is the Think → Plan → Act → Observe cycle a single agent goes through to complete one task.</li>
+  <li>Four things make inner loops work: <strong>clear objectives</strong>, <strong>good tools</strong>, <strong>relevant context</strong>, and <strong>self-correction triggers</strong>.</li>
+  <li>A good task prompt includes: role, task, output format, constraints, and exit criteria.</li>
+  <li>Common failure modes: goal drift, context overflow, infinite loop, hallucination, tool misuse.</li>
+  <li>The fix for most inner loop problems is <strong>better prompts and harness design</strong>, not a smarter model.</li>
+</ul>
+
+<h2>Questions to Think About</h2>
+
+<ol>
+  <li>Think of a task you do repeatedly at work. What would a perfect inner loop prompt look like for that task? (Role? Task? Output format? Constraints?)</li>
+  <li>Have you seen an agent fail in one of these failure modes? Which one? What was the fix?</li>
+  <li>What is the "right tool" for a security consultant researching a new CVE? What does that tool need to do?</li>
+</ol>
+
+<div class="callout">
+  <strong>If anything is unclear, ask.</strong> The inner loop is the foundation of all agent work. Before moving to the outer loop, make sure you can spot failure modes and write a good task prompt.
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0003 of the <em>Loop Engineer</em> course. See
+  <a href="/loop/RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/loop/">Lessons</a></li>
+        <li><a href="/loop/MISSION.md">Mission</a></li>
+        <li><a href="/loop/RESOURCES.md">Resources</a></li>
+        <li><a href="/loop/GLOSSARY.md">Glossary</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Loop Engineer &mdash; a self-paced course.
+  </div>
+</footer>
+
+<script src="/loop/assets/quiz.js"></script>
+<script src="/loop/assets/i18n.js" data-source="en" data-target="vi"></script>
+</body>
+</html>

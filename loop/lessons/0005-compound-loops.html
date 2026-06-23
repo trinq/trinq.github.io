@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0005 — Compound Loops</title>
+<link rel="stylesheet" href="/loop/assets/styles.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <a href="/loop/" class="site-logo">Loop Engineer</a>
+    <div class="site-nav">
+      <a href="/loop/">Lessons</a>
+      <a href="/loop/MISSION.md">Mission</a>
+      <a href="/loop/RESOURCES.md">Resources</a>
+      <a href="/loop/GLOSSARY.md">Glossary</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<div class="crumbs">
+  <a href="/loop/">Lessons</a> &nbsp;·&nbsp;
+  <a href="/loop/MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="/loop/RESOURCES.md">Resources</a> &nbsp;·&nbsp;
+  <a href="/loop/GLOSSARY.md">Glossary</a> &nbsp;·&nbsp;
+  <a href="/loop/reference/the-loop-system.html">Reference</a> &nbsp;·&nbsp; Lesson 0005
+</div>
+
+<h1>Lesson 0005<br>Compound Loops</h1>
+
+<p><em>Reading time: ~20 minutes. No coding required.</em></p>
+
+<p>In the previous lessons, you learned about the inner loop (one agent, one task) and the outer loop (orchestration of tasks). Now we reach the real power of Loop Engineering: <strong>compound loops</strong> — when multiple loops run simultaneously, share signals, and amplify each other's work.</p>
+
+<h2>The Difference: Simple Loop vs Compound Loop</h2>
+
+<p>A <strong>simple loop</strong> is what most people imagine when they hear "loop": one agent running forever with the same prompt. It is reactive, self-contained, and limited.</p>
+
+<p>A <strong>compound loop</strong> is different: many loops running at the same time, all reading from and writing to the same shared file system, creating a network effect where each loop's output becomes another loop's input.</p>
+
+<div class="loop-diagram">
+  <span class="loop-node">Support Loop</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Signals</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">SEO Loop</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Product Loop</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Ads Loop</span>
+</div>
+
+<p>The key insight: each loop does not need to know about the others. They only need to follow the signal contract. The shared file system does the coordination implicitly.</p>
+
+<h2>How Signals Work in a Compound System</h2>
+
+<p>Signals are the "language" between loops. A signal is a structured message that:</p>
+
+<ul>
+  <li>Describes something that happened or needs attention</li>
+  <li>Has a clear schema so any loop can read it</li>
+  <li>Has a priority level that drives the outer loop</li>
+  <li>Optionally carries metadata (source loop, timestamp, urgency)</li>
+</ul>
+
+<p>Example signal file:</p>
+
+<pre><code># signals/high-ctr-keyword.md
+&#45;&#45;&#45;
+type: keyword-opportunity
+priority: P1
+source: seo-loop
+created: 2024-03-15T08:00:00Z
+&#45;&#45;&#45;
+
+keyword: "zero trust architecture"
+ctr: 4.2%
+current_rank: 8
+organic_content_exists: false
+&#45;&#45;&#45;
+
+This keyword has high commercial intent but no organic content.
+Recommend: create in-depth guide.</code></pre>
+
+<p>Now, the SEO loop reads this signal and creates content. The Ads loop reads the same signal and starts a campaign. The Product loop reads it and prioritizes documentation. All three react to the same signal — without knowing about each other.</p>
+
+<h2>Loop Types in a Compound System</h2>
+
+<p>Different loops serve different purposes. In a mature system, you typically see these types:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Research Loop</h4>
+    <p>Scans external data sources for new information. Examples: CVE research, market analysis, competitor monitoring. Produces signals about findings.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Production Loop</h4>
+    <p>Takes signals and produces artifacts. Examples: content creation, code generation, proposal writing. Consumes signals, produces content.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Distribution Loop</h4>
+    <p>Takes artifacts and publishes or promotes them. Examples: SEO loop (publishes content), Ads loop (runs campaigns), Email loop (sends newsletters).</p>
+  </div>
+  <div class="concept-card">
+    <h4>Support Loop</h4>
+    <p>Handles incoming requests and issues. Examples: customer support triage, bug triage, ticket management. Produces signals that trigger other loops.</p>
+  </div>
+</div>
+
+<h2>The Compounding Effect</h2>
+
+<p>Compound loops create value through compounding — the output of one loop becomes the input of another, and the effect grows over time:</p>
+
+<ol>
+  <li>The <strong>Research loop</strong> finds a high-ctr keyword with no content → creates a signal</li>
+  <li>The <strong>Production loop</strong> reads the signal → creates a 5,000-word guide</li>
+  <li>The <strong>SEO loop</strong> reads the new content → publishes and optimizes it</li>
+  <li>The <strong>Distribution loop</strong> sees the published content → promotes it via social and ads</li>
+  <li>The <strong>Research loop</strong> sees traffic growth on that keyword → creates a signal for related keywords</li>
+  <li>Back to step 2 — the cycle continues, each iteration building on the last</li>
+</ol>
+
+<p>No single agent or loop could do all of this. But together, they create a self-reinforcing system that grows organically.</p>
+
+<h2>Designing Signal Contracts</h2>
+
+<p>The power of compound loops depends entirely on well-designed signal contracts. A contract is a README in the signals folder that defines:</p>
+
+<ul>
+  <li><strong>Schema</strong> — What fields does a signal of this type have?</li>
+  <li><strong>Priority levels</strong> — What do P0, P1, P2, P3 mean for this signal type?</li>
+  <li><strong>Expected actions</strong> — What should a loop do when it reads this signal?</li>
+  <li><strong>Lifetime</strong> — How long is this signal valid? When should it be archived?</li>
+</ul>
+
+<div class="callout">
+  <strong>Rule of thumb.</strong> If a loop needs to understand another loop's code to read its signals, the signal contract is broken. Any loop should be able to read any signal by following the schema in signals/README.md.
+</div>
+
+<h2>Real Example: A Security Loop System</h2>
+
+<p>Here is how compound loops could work for a security consulting team:</p>
+
+<pre><code>Loops:
+  - CVE Research Loop: monitors NVD, CISA, security feeds daily
+  - Impact Assessment Loop: reads new CVE signals, assesses customer exposure
+  - Proposal Loop: reads impact signals, drafts customer-specific proposals
+  - Customer Comms Loop: reads proposal completions, formats and sends emails
+  - Metrics Loop: reads all loop outputs, generates weekly summary report</code></pre>
+
+<p>Each loop is simple on its own. Together, they automate the entire workflow from CVE discovery to customer proposal — without anyone manually chasing each step.</p>
+
+<h2>Managing Loop Dependencies</h2>
+
+<p>With many loops running, you need to manage dependencies carefully:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>No Direct Coupling</h4>
+    <p>Loops should never call each other directly. All communication goes through the shared file system. Direct coupling creates spaghetti and makes the system fragile.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Contract Versioning</h4>
+    <p>When you change a signal schema, increment the version. Old loops reading new signals (or vice versa) should gracefully handle mismatches.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop Isolation</h4>
+    <p>Each loop should be independently deployable. One loop failing should not crash the others. Use timeouts, error boundaries, and circuit breakers.</p>
+  </div>
+</div>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz" data-name="compound-q1">
+  <div class="quiz-question">What is the key difference between a simple loop and a compound loop?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="compound-q1" data-correct="false">
+        <span>A simple loop runs faster, while a compound loop runs slower.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — speed is not the distinguishing factor." data-wrong-text="Incorrect. The difference is about architecture, not speed."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q1" data-correct="true">
+        <span>A simple loop is one agent running with the same prompt. A compound loop is many loops sharing signals through the shared file system, creating a compounding effect.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Compound loops create a network effect where outputs become inputs for other loops."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q1" data-correct="false">
+        <span>A simple loop uses prompts, while a compound loop uses code.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — both use prompts." data-wrong-text="Incorrect. Both loops use prompts; the difference is in how they coordinate."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q1" data-correct="false">
+        <span>A compound loop is just multiple instances of a simple loop running in parallel.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — that is parallel execution, not compounding." data-wrong-text="Incorrect. Compounding is about signal sharing, not parallel execution."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="compound-q2">
+  <div class="quiz-question">What is the "language" between loops in a compound system?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="compound-q2" data-correct="false">
+        <span>Direct API calls between loops.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — direct coupling is exactly what compound loops avoid." data-wrong-text="Incorrect. Compound loops communicate through the shared file system, not direct API calls."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q2" data-correct="true">
+        <span>Signals — structured messages in the shared file system with a defined schema.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Signals are the communication layer between loops. Any loop can read any signal by following the schema."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q2" data-correct="false">
+        <span>Shared memory within the same process.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — loops run in separate sessions and may not share process memory." data-wrong-text="Incorrect. Loops communicate through files, not shared process memory."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q2" data-correct="false">
+        <span>Email messages sent between loop operators.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — email requires human intervention." data-wrong-text="Incorrect. All loop communication is automated through the shared file system."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="compound-q3">
+  <div class="quiz-question">What is the most important principle when designing signal contracts?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="compound-q3" data-correct="true">
+        <span>Any loop should be able to read any signal by following the schema — without needing to understand the producing loop's code.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Signal contracts are the API between loops. If a loop needs to read another loop's code to understand its signals, the contract is broken."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q3" data-correct="false">
+        <span>Signals should be encrypted for security.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — encryption is not the primary concern for signal design." data-wrong-text="Incorrect. Signal contract design is about schema clarity, not encryption."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q3" data-correct="false">
+        <span>Each signal should contain as much context as possible.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — signals should be focused. Too much context makes them hard to process." data-wrong-text="Incorrect. Well-designed signals are minimal and focused, not comprehensive."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="compound-q3" data-correct="false">
+        <span>Signals should only be readable by the loop that created them.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — that would defeat the purpose of signals." data-wrong-text="Incorrect. Signals are meant to be shared across loops for compound effects."></div>
+    </li>
+  </ul>
+</div>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+  <li><strong>Compound loops</strong> are many loops running simultaneously, all reading and writing to the shared file system.</li>
+  <li><strong>Signals</strong> are the language between loops — structured messages with a clear schema.</li>
+  <li>Four common loop types: <strong>Research</strong>, <strong>Production</strong>, <strong>Distribution</strong>, and <strong>Support</strong>.</li>
+  <li>The <strong>compounding effect</strong> happens when one loop's output becomes another loop's input — creating a self-reinforcing cycle.</li>
+  <li>Loops should <strong>never couple directly</strong> — all communication goes through the shared file system.</li>
+  <li>A good <strong>signal contract</strong> lets any loop read any signal without understanding the producing loop's code.</li>
+</ul>
+
+<h2>Questions to Think About</h2>
+
+<ol>
+  <li>What compound loop system could you build for your security consulting workflow? Which loops would you have? What signals would they share?</li>
+  <li>What is the first signal you would create? What schema would it have?</li>
+  <li>How would you monitor a compound system to make sure all loops are healthy and not fighting each other?</li>
+</ol>
+
+<div class="callout">
+  <strong>If anything is unclear, ask.</strong> Compound loops are the most advanced concept in this course. If the signal contract idea does not feel clear, go back and re-read this lesson before moving on.
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0005 of the <em>Loop Engineer</em> course. See
+  <a href="/loop/RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/loop/">Lessons</a></li>
+        <li><a href="/loop/MISSION.md">Mission</a></li>
+        <li><a href="/loop/RESOURCES.md">Resources</a></li>
+        <li><a href="/loop/GLOSSARY.md">Glossary</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Loop Engineer &mdash; a self-paced course.
+  </div>
+</footer>
+
+<script src="/loop/assets/quiz.js"></script>
+<script src="/loop/assets/i18n.js" data-source="en" data-target="vi"></script>
+</body>
+</html>

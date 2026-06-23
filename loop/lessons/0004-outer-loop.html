@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0004 — Outer Loop</title>
+<link rel="stylesheet" href="/loop/assets/styles.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <a href="/loop/" class="site-logo">Loop Engineer</a>
+    <div class="site-nav">
+      <a href="/loop/">Lessons</a>
+      <a href="/loop/MISSION.md">Mission</a>
+      <a href="/loop/RESOURCES.md">Resources</a>
+      <a href="/loop/GLOSSARY.md">Glossary</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<div class="crumbs">
+  <a href="/loop/">Lessons</a> &nbsp;·&nbsp;
+  <a href="/loop/MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="/loop/RESOURCES.md">Resources</a> &nbsp;·&nbsp;
+  <a href="/loop/GLOSSARY.md">Glossary</a> &nbsp;·&nbsp;
+  <a href="/loop/reference/the-loop-system.html">Reference</a> &nbsp;·&nbsp; Lesson 0004
+</div>
+
+<h1>Lesson 0004<br>Outer Loop</h1>
+
+<p><em>Reading time: ~20 minutes. No coding required.</em></p>
+
+<p>In the previous lesson, you learned how a single agent completes a single task — the <strong>inner loop</strong>. Now we zoom out. The <strong>outer loop</strong> is the layer that decides <em>which task to work on next</em>, <em>when to run agents</em>, and <em>how to coordinate across sessions</em>. This is where Loop Engineers do their most important work.</p>
+
+<h2>The Outer Loop: The Orchestrator</h2>
+
+<p>While the inner loop optimizes how an agent does a task, the outer loop optimizes what task gets done next. Think of it as the manager that:</p>
+
+<ul>
+  <li>Scans the environment for work</li>
+  <li>Prioritizes tasks based on signals and dependencies</li>
+  <li>Assigns work to the right agent</li>
+  <li>Monitors results and updates state</li>
+</ul>
+
+<p>Without an outer loop, agents are reactive — they wait for a human to tell them what to do. With an outer loop, the system is proactive — it continuously scans, decides, and acts.</p>
+
+<h2>The Outer Loop Cycle</h2>
+
+<div class="loop-diagram">
+  <span class="loop-node">Scan</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Prioritize</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Assign</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Monitor</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Scan</span>
+</div>
+
+<ol>
+  <li><strong>Scan</strong> — Read signals, check backlog, look for new triggers</li>
+  <li><strong>Prioritize</strong> — Rank tasks by urgency, impact, and dependencies</li>
+  <li><strong>Assign</strong> — Give the top-priority task to the right agent</li>
+  <li><strong>Monitor</strong> — Watch for completion, errors, and new signals</li>
+</ol>
+
+<h2>State Tracking: The Backbone of the Outer Loop</h2>
+
+<p>The outer loop needs to know the current state of everything. This is called <strong>state tracking</strong>. The system must always know:</p>
+
+<ul>
+  <li>Which tasks are <strong>pending</strong> (waiting to be done)</li>
+  <li>Which tasks are <strong>in progress</strong> (currently being worked on)</li>
+  <li>Which tasks are <strong>completed</strong> (done and verified)</li>
+  <li>Which tasks are <strong>blocked</strong> (waiting on a dependency)</li>
+</ul>
+
+<p>The shared file system stores this state. A simple state file looks like this:</p>
+
+<pre><code># signals/backlog.md
+
+## Status Legend
+- [ ] Pending
+- [&gt;] In Progress
+- [x] Done
+- [!] Blocked
+
+## Backlog
+- [ ] Research CVE-2024-XXXX (priority: high)
+- [x] Write Q3 security report (priority: medium)
+- [&gt;] Review vendor proposals (priority: high)
+- [!] Update threat model (priority: medium) &#8212; blocked on vendor response</code></pre>
+
+<h2>Trigger Types in the Outer Loop</h2>
+
+<p>The outer loop decides when to act based on triggers. Four main types:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Time-Based</h4>
+    <p>Scheduled triggers run at fixed intervals. Example: every morning at 7am, scan for new CVEs. Useful for recurring, predictable work. Be careful: scheduled runs can pile up if tasks take longer than expected.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Event-Based</h4>
+    <p>Reactive triggers fire when a specific file or signal appears. Example: when signals/urgent.md is created, immediately triage. This is the most responsive trigger type.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Dependency-Based</h4>
+    <p>Chained triggers fire when a previous task completes. Example: after the research agent finishes, the summary agent starts. This is how you create pipelines of agents.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Request-Based</h4>
+    <p>Human-initiated triggers start when someone asks. Example: a customer submits a ticket. This keeps humans in control of high-priority work.</p>
+  </div>
+</div>
+
+<h2>Prioritization: How to Decide What Comes First</h2>
+
+<p>Not all tasks are equal. The outer loop needs a way to rank them. A simple prioritization framework:</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Priority</th>
+        <th>Signal Type</th>
+        <th>Example</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>P0 — Critical</strong></td>
+        <td>Incident, breach alert</td>
+        <td>New zero-day CVE detected</td>
+        <td>Interrupt current work, handle immediately</td>
+      </tr>
+      <tr>
+        <td><strong>P1 — High</strong></td>
+        <td>Deadline approaching</td>
+        <td>Proposal due in 24h</td>
+        <td>Complete before scheduled work</td>
+      </tr>
+      <tr>
+        <td><strong>P2 — Medium</strong></td>
+        <td>Standard backlog item</td>
+        <td>Weekly security digest</td>
+        <td>Process in normal order</td>
+      </tr>
+      <tr>
+        <td><strong>P3 — Low</strong></td>
+        <td>Nice-to-have</td>
+        <td>Blog post draft</td>
+        <td>Do when capacity available</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>Signals in the shared file system carry their own priority. The outer loop reads priority and acts accordingly.</p>
+
+<h2>Cross-Session Coordination</h2>
+
+<p>The outer loop must handle work that spans multiple sessions. A task might take days to complete across many agent runs. The key to cross-session coordination:</p>
+
+<ul>
+  <li><strong>Checkpoint files</strong> — At the end of each session, the agent writes what it did and what needs to happen next. The next session reads this before starting.</li>
+  <li><strong>Artifact versioning</strong> — Each work product gets a version number. This makes it clear which is the latest and what changed.</li>
+  <li><strong>Dependency locks</strong> — A task that depends on another task gets locked until the dependency is complete. The outer loop reads these locks to decide scheduling.</li>
+</ul>
+
+<h2>The Outer Loop is Not Magic</h2>
+
+<p>A common misconception: the outer loop is an AI that magically decides everything. In reality, the outer loop is <em>deterministic logic</em> built on top of the shared file system. It is not a model — it is a set of rules:</p>
+
+<pre><code>IF signals/urgent.md exists
+  THEN run triage agent immediately
+ELIF tasks due in 24h exist
+  THEN prioritize those tasks
+ELIF time is 7am
+  THEN run morning research agent
+ELSE
+  WAIT</code></pre>
+
+<p>The sophistication comes from well-designed signals, clear contracts, and good state management — not from a smarter AI.</p>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz" data-name="outer-q1">
+  <div class="quiz-question">What does the outer loop optimize for?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="outer-q1" data-correct="false">
+        <span>How an agent completes a single task.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — that is the inner loop." data-wrong-text="Incorrect. The outer loop is not about individual task completion."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q1" data-correct="true">
+        <span>Which task to work on next, when to run agents, and how to coordinate across sessions.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. The outer loop is the orchestrator — it decides what gets done and when."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q1" data-correct="false">
+        <span>The training data used to fine-tune the model.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — training data is unrelated to the outer loop." data-wrong-text="Incorrect. The outer loop is about workflow orchestration, not model training."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q1" data-correct="false">
+        <span>The hardware resources allocated to running agents.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — resource allocation is infrastructure, not the outer loop." data-wrong-text="Incorrect. The outer loop is about task and workflow management, not hardware."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="outer-q2">
+  <div class="quiz-question">What are the four stages of the outer loop cycle?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="outer-q2" data-correct="false">
+        <span>Think, Plan, Act, Observe.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are inner loop stages." data-wrong-text="Incorrect. The outer loop cycle is Scan → Prioritize → Assign → Monitor."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q2" data-correct="true">
+        <span>Scan, Prioritize, Assign, Monitor.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. The outer loop scans for work, prioritizes tasks, assigns to agents, and monitors results."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q2" data-correct="false">
+        <span>Read, Write, Execute, Log.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are file operations." data-wrong-text="Incorrect. The outer loop is a management cycle, not file operations."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q2" data-correct="false">
+        <span>Train, Deploy, Monitor, Retrain.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are ML pipeline stages." data-wrong-text="Incorrect. The outer loop is about task orchestration, not machine learning."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="outer-q3">
+  <div class="quiz-question">Why is the outer loop described as deterministic logic rather than an AI?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="outer-q3" data-correct="true">
+        <span>Because it is a set of rules (IF signals/urgent.md exists THEN run triage) built on top of the shared file system — not a model making decisions.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. The outer loop uses deterministic rules based on file system state, not probabilistic model reasoning."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q3" data-correct="false">
+        <span>Because it is too simple to qualify as AI.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — simplicity does not mean it is not AI." data-wrong-text="Incorrect. The point is not about complexity, but about determinism vs. probabilistic reasoning."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q3" data-correct="false">
+        <span>Because agents are not capable of running the outer loop.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — agents can absolutely run the outer loop logic." data-wrong-text="Incorrect. The outer loop logic can be encoded and run by any system, including agents."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="outer-q3" data-correct="false">
+        <span>Because it requires too much computing power to use AI.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — resource constraints are not the reason." data-wrong-text="Incorrect. The reason is architectural: the outer loop is rule-based, not model-based."></div>
+    </li>
+  </ul>
+</div>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+  <li>The <strong>outer loop</strong> optimizes what task gets done next — it is the orchestrator of the whole system.</li>
+  <li>Outer loop cycle: <strong>Scan → Prioritize → Assign → Monitor</strong>.</li>
+  <li><strong>State tracking</strong> is the backbone — the system must always know which tasks are pending, in progress, done, or blocked.</li>
+  <li>Four trigger types: <strong>time-based</strong>, <strong>event-based</strong>, <strong>dependency-based</strong>, and <strong>request-based</strong>.</li>
+  <li>The outer loop is <strong>deterministic logic</strong>, not an AI. It reads the file system and follows rules.</li>
+  <li>Cross-session coordination requires <strong>checkpoints</strong>, <strong>artifact versioning</strong>, and <strong>dependency locks</strong>.</li>
+</ul>
+
+<h2>Questions to Think About</h2>
+
+<ol>
+  <li>What are the top 3 tasks you do repeatedly at work? How would an outer loop prioritize them?</li>
+  <li>What signals in your workflow would trigger an outer loop to take action? (A new email? A calendar event? A CVE alert?)</li>
+  <li>How would you encode your current workflow as a set of IF-THEN rules in the shared file system?</li>
+</ol>
+
+<div class="callout">
+  <strong>If anything is unclear, ask.</strong> The outer loop is the hardest concept in Loop Engineering. Make sure this clicks before moving to compound loops.
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0004 of the <em>Loop Engineer</em> course. See
+  <a href="/loop/RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/loop/">Lessons</a></li>
+        <li><a href="/loop/MISSION.md">Mission</a></li>
+        <li><a href="/loop/RESOURCES.md">Resources</a></li>
+        <li><a href="/loop/GLOSSARY.md">Glossary</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Loop Engineer &mdash; a self-paced course.
+  </div>
+</footer>
+
+<script src="/loop/assets/quiz.js"></script>
+<script src="/loop/assets/i18n.js" data-source="en" data-target="vi"></script>
+</body>
+</html>

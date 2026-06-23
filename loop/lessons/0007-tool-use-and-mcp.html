@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0007 — Tool Use & MCP</title>
+<link rel="stylesheet" href="/loop/assets/styles.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <a href="/loop/" class="site-logo">Loop Engineer</a>
+    <div class="site-nav">
+      <a href="/loop/">Lessons</a>
+      <a href="/loop/MISSION.md">Mission</a>
+      <a href="/loop/RESOURCES.md">Resources</a>
+      <a href="/loop/GLOSSARY.md">Glossary</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<div class="crumbs">
+  <a href="/loop/">Lessons</a> &nbsp;·&nbsp;
+  <a href="/loop/MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="/loop/RESOURCES.md">Resources</a> &nbsp;·&nbsp;
+  <a href="/loop/GLOSSARY.md">Glossary</a> &nbsp;·&nbsp;
+  <a href="/loop/reference/the-loop-system.html">Reference</a> &nbsp;·&nbsp; Lesson 0007
+</div>
+
+<h1>Lesson 0007<br>Tool Use & MCP</h1>
+
+<p><em>Reading time: ~20 minutes. No coding required.</em></p>
+
+<p>In the previous lessons, you learned how agents work (inner loop), how systems of agents work (outer loop and compound loops), and how to make your codebase agent-friendly. Now let's cover the final piece: how agents interact with the outside world through <strong>tools</strong> and the <strong>Model Context Protocol (MCP)</strong>.</p>
+
+<h2>Why Tools Matter</h2>
+
+<p>Without tools, an agent is just a text generator. It can reason, plan, and write — but it cannot take action in the real world. Tools give agents the ability to:</p>
+
+<ul>
+  <li>Read and write files</li>
+  <li>Run terminal commands</li>
+  <li>Search the web</li>
+  <li>Call APIs</li>
+  <li>Send emails</li>
+  <li>Control browsers</li>
+</ul>
+
+<p>Every tool a harness provides expands what the agent can do. The art of Loop Engineering is choosing the right tools, describing them clearly, and orchestrating them effectively.</p>
+
+<h2>What Makes a Good Tool?</h2>
+
+<p>Not all tools are created equal. A well-designed tool has 5 properties:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>1. Clear Name</h4>
+    <p>The tool name describes exactly what it does. "read_file" not "tool_1." "search_cve" not "search." Ambiguous names cause tool misuse — the agent picks the wrong tool.</p>
+  </div>
+  <div class="concept-card">
+    <h4>2. Explicit Description</h4>
+    <p>A description that tells the agent when to use this tool and when not to. Include edge cases: "Use this when X, but not when Y."</p>
+  </div>
+  <div class="concept-card">
+    <h4>3. Typed Inputs</h4>
+    <p>Each parameter has a type (string, number, boolean) and a description. The agent must know what to pass in. Avoid ambiguous parameters like "filter" without explaining the format.</p>
+  </div>
+  <div class="concept-card">
+    <h4>4. Predictable Output</h4>
+    <p>The agent knows what to expect back. If a tool sometimes returns text, sometimes JSON, and sometimes an error, the agent cannot plan effectively.</p>
+  </div>
+  <div class="concept-card">
+    <h4>5. Single Responsibility</h4>
+    <p>Each tool does one thing well. Avoid "do everything" tools. A tool that reads one file is better than a tool that "manages files."</p>
+  </div>
+</div>
+
+<h2>The Model Context Protocol (MCP)</h2>
+
+<p><strong>MCP</strong> is an open protocol that standardizes how agents connect to external tools and data sources. Think of it as USB for AI agents — a universal connector that lets any MCP-compatible agent talk to any MCP-compatible tool.</p>
+
+<p>Before MCP, each agent framework had its own tool format. A tool built for LangChain did not work with CrewAI. MCP solves this by defining a common language:</p>
+
+<ul>
+  <li><strong>Tools</strong> — Functions the agent can call</li>
+  <li><strong>Resources</strong> — Data the agent can read (files, databases, configs)</li>
+  <li><strong>Prompts</strong> — Reusable prompt templates</li>
+</ul>
+
+<p>MCP servers expose tools and resources. MCP clients (agents) connect to servers and use them. One agent can connect to multiple servers simultaneously.</p>
+
+<pre><code>+---------------------------------------------+
+|  Agent (MCP Client)                         |
+|                                             |
+|  +----------+  +----------+  +----------+  |
+|  | File     |  | Web      |  | Database |  |
+|  | Server   |  | Server   |  | Server   |  |
+|  +----------+  +----------+  +----------+  |
++---------------------------------------------+</code></pre>
+
+<h2>Common MCP Tool Categories</h2>
+
+<p>MCP has a growing ecosystem of pre-built tools. Here are the most useful categories:</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Tools</th>
+        <th>Use Case</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>File System</strong></td>
+        <td>read_file, write_file, list_directory, glob</td>
+        <td>Reading configs, writing outputs, navigating project structure</td>
+      </tr>
+      <tr>
+        <td><strong>Web</strong></td>
+        <td>fetch_url, search_web, scrape_html</td>
+        <td>Researching CVEs, competitor analysis, market data</td>
+      </tr>
+      <tr>
+        <td><strong>Developer</strong></td>
+        <td>run_command, git operations, docker</td>
+        <td>Running tests, deployments, CI/CD pipelines</td>
+      </tr>
+      <tr>
+        <td><strong>Communication</strong></td>
+        <td>send_email, post_slack, create_ticket</td>
+        <td>Customer notifications, team alerts, issue creation</td>
+      </tr>
+      <tr>
+        <td><strong>Data</strong></td>
+        <td>query_database, read_api, webhook</td>
+        <td>CRM data, metrics, third-party integrations</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>Tool Orchestration: How to Chain Tools Effectively</h2>
+
+<p>Individual tools are powerful. Chained tools are transformative. Tool orchestration is the skill of combining tools into sequences that accomplish complex tasks.</p>
+
+<p>A simple chain for CVE research:</p>
+
+<pre><code>1. search_cve(keyword="zero trust")     --&#62; finds relevant CVEs
+2. fetch_cve_detail(id=CVE-XXXX)       --&#62; gets full CVE data
+3. search_web(query=affected_products)   --&#62; finds affected product versions
+4. write_file(path="signals/cve-xxxx.md", content=summary)  --&#62; saves signal</code></pre>
+
+<p>The key to good orchestration is <strong>explicit tool descriptions</strong>. If the agent knows what each tool outputs, it can chain them automatically. If descriptions are vague, the agent will misuse or ignore tools.</p>
+
+<h2>Security Considerations for Tool Use</h2>
+
+<p>Tools give agents power — and power requires responsibility. When designing a harness, consider:</p>
+
+<ul>
+  <li><strong>Least privilege</strong> — Give each agent only the tools it needs. A research agent does not need write access to production systems.</li>
+  <li><strong>Read-only by default</strong> — Most agents should operate in read-only mode. Write access is a higher privilege that requires justification.</li>
+  <li><strong>Audit logging</strong> — Log every tool call: who called it, when, with what parameters, and what it returned. You need this for debugging and security review.</li>
+  <li><strong>Rate limiting</strong> — Prevent runaway loops that call the same tool thousands of times. Set max iterations and timeouts.</li>
+  <li><strong>Confirmation gates</strong> — For destructive actions (delete, overwrite, send), require a human confirmation before executing.</li>
+</ul>
+
+<div class="callout">
+  <strong>Security consultant perspective.</strong> As someone who works in security, you already understand least privilege and audit logging. Apply the same principles to your agent tools. An agent with too many tools is like a user with too many permissions — a breach waiting to happen.
+</div>
+
+<h2>MCP in Practice: A Real Security Loop Example</h2>
+
+<p><p>Here is how MCP tools could power a real compound loop system for a security consulting team:</p>
+
+<pre><code>+---------------------------------------------------+
+|  Security Loop System                               |
+|                                                   |
+|  +---------------+  MCP Server 1: NVD / CISA  |
+|  | CVE Research  |-&gt; Tools: fetch_cve, search_nvd |
+|  | Loop          |                                 |
+|  +-------+-------+                                 |
+|          | signal: new_cve                        |
+|          +-&gt;                                     |
+|  +-------+-------+  MCP Server 2: Internal CRM  |
+|  | Impact        |-&gt; Tools: query_customers,        |
+|  | Assessment    |           check_exposure         |
+|  +-------+-------+                                 |
+|          | signal: high_impact_cve               |
+|          +-&gt;                                     |
+|  +-------+-------+  MCP Server 3: Email / Docs |
+|  | Proposal      |-&gt; Tools: generate_pdf,           |
+|  | Loop          |           send_email,          |
+|  +---------------+                                 |
++---------------------------------------------------+
+</code></pre>
+<p>Each loop connects to its own MCP server with the specific tools it needs. The loops communicate through the shared file system, not through the MCP connections.</p>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz" data-name="tool-q1">
+  <div class="quiz-question">What are the 5 properties of a well-designed tool?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="tool-q1" data-correct="false">
+        <span>Fast, reliable, cheap, popular, open-source.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are general software qualities, not tool design properties." data-wrong-text="Incorrect. The 5 properties are about tool design for agent use."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q1" data-correct="true">
+        <span>Clear name, explicit description, typed inputs, predictable output, single responsibility.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. These 5 properties make a tool easy for agents to understand and use correctly."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q1" data-correct="false">
+        <span>Readable, writable, executable, testable, deployable.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are file attributes." data-wrong-text="Incorrect. The 5 properties are specific to tool interface design for agents."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q1" data-correct="false">
+        <span>Modular, reusable, composable, observable, secure.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — those are general architecture qualities." data-wrong-text="Incorrect. The 5 properties are specific to how agents interact with tools."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="tool-q2">
+  <div class="quiz-question">What problem does MCP solve?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="tool-q2" data-correct="false">
+        <span>MCP makes models faster by caching responses.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — MCP is not about performance optimization." data-wrong-text="Incorrect. MCP is a connectivity protocol, not a performance tool."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q2" data-correct="true">
+        <span>MCP standardizes how agents connect to external tools and data sources, so tools built for one agent framework work with any MCP-compatible agent.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. MCP is the "USB for AI agents" — a universal connector standard."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q2" data-correct="false">
+        <span>MCP provides free access to premium AI models.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — MCP is not about model access." data-wrong-text="Incorrect. MCP is about tool connectivity, not model availability."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q2" data-correct="false">
+        <span>MCP replaces the need for prompt engineering.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — MCP complements prompt engineering, it does not replace it." data-wrong-text="Incorrect. MCP and prompt engineering are complementary, not competing."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="tool-q3">
+  <div class="quiz-question">Which security principle should apply to agent tool design?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="tool-q3" data-correct="false">
+        <span>Give agents as many tools as possible to maximize capability.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — more tools means more attack surface and more mis-use." data-wrong-text="Incorrect. Least privilege means giving only the tools each agent needs."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q3" data-correct="true">
+        <span>Least privilege — give each agent only the tools it needs, audit every call, and require confirmation for destructive actions.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. The same security principles you apply to human users should apply to agents: least privilege, audit logging, and confirmation gates."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q3" data-correct="false">
+        <span>Trust all tool calls by default since agents are aligned and safe.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — alignment does not prevent errors. Tools should be secured regardless." data-wrong-text="Incorrect. Security is about defense in depth, not trust in alignment."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="tool-q3" data-correct="false">
+        <span>Tools should only be accessible during business hours.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — time-based restrictions do not address the core security concerns of tool access." data-wrong-text="Incorrect. Time-based restrictions are not the primary security principle for tool design."></div>
+    </li>
+  </ul>
+</div>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+  <li>Tools give agents the ability to act in the real world — without them, agents are just text generators.</li>
+  <li>A good tool has: <strong>clear name</strong>, <strong>explicit description</strong>, <strong>typed inputs</strong>, <strong>predictable output</strong>, and <strong>single responsibility</strong>.</li>
+  <li><strong>MCP</strong> is the standard protocol that lets any MCP-compatible agent connect to any MCP-compatible tool — the "USB for AI agents."</li>
+  <li>Tool orchestration chains tools into sequences. Explicit descriptions enable the agent to chain tools automatically.</li>
+  <li>Apply security principles: <strong>least privilege</strong>, <strong>read-only by default</strong>, <strong>audit logging</strong>, <strong>rate limiting</strong>, and <strong>confirmation gates</strong>.</li>
+</ul>
+
+<h2>Course Wrap-Up</h2>
+
+<p>Congratulations — you have completed the Loop Engineer fundamentals course. Here is what you now know:</p>
+
+<ul>
+  <li><strong>Lesson 0001</strong> — Loop Engineers work at the outer loop layer, setting up systems of many agents that run automatically.</li>
+  <li><strong>Lesson 0002</strong> — The harness is everything that is not the model: prompts, context, orchestration, hooks, and shared file system.</li>
+  <li><strong>Lesson 0003</strong> — The inner loop is the Think → Plan → Act → Observe cycle. Optimize for clear objectives, good tools, and self-correction.</li>
+  <li><strong>Lesson 0004</strong> — The outer loop is the orchestrator: Scan → Prioritize → Assign → Monitor. It is deterministic logic, not an AI.</li>
+  <li><strong>Lesson 0005</strong> — Compound loops create compounding effects. Signals are the language between loops.</li>
+  <li><strong>Lesson 0006</strong> — A codebase harness makes your codebase Legible, Executable, and Verifiable. Use a verifier agent, not self-verification.</li>
+  <li><strong>Lesson 0007</strong> — Tools give agents agency. MCP standardizes tool connectivity. Apply security principles to tool design.</li>
+</ul>
+
+<p>The next step is to apply this. Pick one workflow you do repeatedly at work, and try to build a minimal harness for it. Start small. One loop. One signal. One agent. Then expand.</p>
+
+<div class="callout">
+  <strong>Next: build your first loop.</strong> Choose one recurring task from your work. Write a harness prompt for it. Set up a shared file system. Run it and see what breaks. That is how you learn Loop Engineering — by building, not by reading.
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0007 of the <em>Loop Engineer</em> course. See
+  <a href="/loop/RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/loop/">Lessons</a></li>
+        <li><a href="/loop/MISSION.md">Mission</a></li>
+        <li><a href="/loop/RESOURCES.md">Resources</a></li>
+        <li><a href="/loop/GLOSSARY.md">Glossary</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Loop Engineer &mdash; a self-paced course.
+  </div>
+</footer>
+
+<script src="/loop/assets/quiz.js"></script>
+<script src="/loop/assets/i18n.js" data-source="en" data-target="vi"></script>
+</body>
+</html>
