@@ -1,405 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson 0001 — The Core Loop: Why Iteration Beats Cleverness</title>
-  <style>
-    :root {
-      --bg: #0f0f14;
-      --surface: #18181f;
-      --surface2: #1f1f28;
-      --border: #2a2a38;
-      --text: #e0e0ec;
-      --muted: #7878a0;
-      --accent: #7c6af7;
-      --accent2: #f76a9a;
-      --green: #4ade80;
-      --red: #f87171;
-      --yellow: #fbbf24;
-      --code-bg: #12121a;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-      min-height: 100vh;
-      padding: 2rem;
-    }
-
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    header {
-      margin-bottom: 3rem;
-      padding-bottom: 2rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .lesson-num {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 1rem;
-    }
-
-    section {
-      margin-bottom: 2.5rem;
-    }
-
-    h2 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    h2::before {
-      content: '';
-      display: inline-block;
-      width: 3px;
-      height: 1.1em;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-
-    p {
-      color: var(--text);
-      margin-bottom: 1rem;
-    }
-
-    .callout {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      padding: 1rem 1.25rem;
-      margin: 1.5rem 0;
-      font-size: 0.95rem;
-    }
-
-    .callout.warning {
-      border-left-color: var(--yellow);
-    }
-
-    .callout p:last-child { margin-bottom: 0; }
-
-    .diagram {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin: 1.5rem 0;
-      overflow-x: auto;
-    }
-
-    .diagram-title {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      margin-bottom: 1rem;
-    }
-
-    .loop-flow {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 0.85rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .step {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.5rem 0.75rem;
-      color: var(--text);
-      white-space: nowrap;
-    }
-
-    .step.propose { border-color: var(--accent); color: #a89df8; }
-    .step.run { border-color: var(--accent2); color: #f89dc0; }
-    .step.score { border-color: var(--yellow); color: #fcd34d; }
-    .step.keep { border-color: var(--green); color: var(--green); }
-    .step.revert { border-color: var(--red); color: var(--red); }
-    .step.term { border-color: var(--muted); color: var(--muted); }
-
-    .arrow {
-      color: var(--border);
-      font-size: 1.2rem;
-    }
-
-    .branch {
-      color: var(--muted);
-      font-size: 0.75rem;
-      width: 100%;
-      text-align: center;
-      margin-top: 0.25rem;
-    }
-
-    code {
-      background: var(--code-bg);
-      color: #c4b5fd;
-      padding: 0.15em 0.4em;
-      border-radius: 4px;
-      font-size: 0.875em;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-    }
-
-    pre {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      overflow-x: auto;
-      margin: 1rem 0;
-      font-size: 0.85rem;
-      line-height: 1.6;
-    }
-
-    pre code {
-      background: none;
-      padding: 0;
-      color: var(--text);
-    }
-
-    .ingredient-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin: 1.5rem 0;
-    }
-
-    .ingredient {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-    }
-
-    .ingredient-name {
-      font-weight: 600;
-      color: #fff;
-      font-size: 0.9rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .ingredient-desc {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .ingredient-code {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 0.75rem;
-      color: var(--accent);
-      background: var(--code-bg);
-      padding: 0.1em 0.4em;
-      border-radius: 3px;
-      display: inline-block;
-      margin-top: 0.5rem;
-    }
-
-    .full-width {
-      grid-column: 1 / -1;
-    }
-
-    .meta-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin: 1rem 0;
-    }
-
-    .meta-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .meta-icon {
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-
-    .meta-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .meta-value {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    nav {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .nav-hint {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    footer {
-      margin-top: 3rem;
-      padding: 1.5rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-
-    footer h3 {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 0.75rem;
-    }
-
-    footer p {
-      font-size: 0.85rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .kbd {
-      display: inline-block;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 0.1em 0.5em;
-      font-size: 0.8em;
-      font-family: monospace;
-      color: var(--text);
-    }
-
-    @media (max-width: 600px) {
-      .ingredient-grid { grid-template-columns: 1fr; }
-      .meta-grid { grid-template-columns: 1fr; }
-      .loop-flow { justify-content: flex-start; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0001 — The Core Loop: Why Iteration Beats Cleverness</title>
+<link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body>
-  <div class="container">
 
-    <header>
-      <div class="lesson-num">Lesson 0001</div>
-      <h1>The Core Loop: Why Iteration Beats Cleverness</h1>
-      <p class="subtitle">Master the 5 core components and the "propose → score → keep" mindset behind every loop</p>
-    </header>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Agent Loop Skills</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
 
-    <section>
-      <h2>Core Insight</h2>
-      <p>This is the first thing to understand, before looking at any code:</p>
-      <div class="callout">
-        <p><strong>Agents aren't powerful because of a clever prompt.</strong> Agents are powerful because they <em>iterate</em> — propose a change, run it, measure the result, keep it if it's better, loop back.</p>
-      </div>
-      <p>Karpathy ran ~700 experiments in 2 days with a simple markdown prompt. Not because the prompt was brilliant — but because it looped. Every iteration, real-world feedback fed into the next step.</p>
-      <p>Agent Loop Skills packages that mindset into a reusable unit: the <strong>loop</strong>.</p>
-    </section>
+<main>
 
-    <section>
-      <h2>The 5 Core Components</h2>
-      <p>Every loop has exactly 5 components. Missing one means the loop is missing information.</p>
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0001
+</div>
 
-      <div class="ingredient-grid">
-        <div class="ingredient">
-          <div class="ingredient-name">1. Program</div>
-          <div class="ingredient-desc">Orchestration guide. In Agent Loop Skills: the <code>SKILL.md</code> file</div>
-          <span class="ingredient-code">SKILL.md</span>
-        </div>
-        <div class="ingredient">
-          <div class="ingredient-name">2. Artifact slot</div>
-          <div class="ingredient-desc">What gets improved. Not hardcoded — passed in at invocation time</div>
-          <span class="ingredient-code">&lt;artifact&gt;</span>
-        </div>
-        <div class="ingredient">
-          <div class="ingredient-name">3. Feedback signal</div>
-          <div class="ingredient-desc">Signal that decides the next step. Prioritize objective + locally runnable</div>
-          <span class="ingredient-code">&lt;signal&gt;</span>
-        </div>
-        <div class="ingredient">
-          <div class="ingredient-name">4. Run ledger</div>
-          <div class="ingredient-desc">Append-only log: which change, what result, what decision. Never overwrites.</div>
-          <span class="ingredient-code">ledger.tsv</span>
-        </div>
-        <div class="ingredient full-width">
-          <div class="ingredient-name">5. Termination</div>
-          <div class="ingredient-desc">When to stop: threshold reached, plateau (no improvement for K rounds), out of budget, or loop-until-dry</div>
-          <span class="ingredient-code">&lt;budget&gt; | threshold | plateau | loop-until-dry</span>
-        </div>
-      </div>
-    </section>
+<h1>Lesson 0001<br>The Core Loop: Why Iteration Beats Cleverness</h1>
 
-    <section>
-      <h2>The Basic Flow</h2>
-      <p>Here's the flowchart for every loop — regardless of which loop in the repo:</p>
+<p><em>Master the 5 core components and the "propose → score → keep" mindset behind every loop</em></p>
 
-      <div class="diagram">
-        <div class="diagram-title">The Loop Flow</div>
-        <div class="loop-flow">
-          <span class="step propose">Propose change</span>
-          <span class="arrow">→</span>
-          <span class="step run">Run it</span>
-          <span class="arrow">→</span>
-          <span class="step score">Score it</span>
-          <div class="branch">↙ better &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worse ↘</div>
-          <span class="step keep">✓ Keep + log</span>
-          <span class="arrow">↔</span>
-          <span class="step revert">✗ Revert</span>
-          <div class="branch">stop?</div>
-          <span class="step term">→ Done</span>
-        </div>
-      </div>
+<h2>Core Insight</h2>
 
-      <div class="callout">
-        <p>Key discipline: <strong>signal decides</strong>. Not intuition, not "looks fine". A specific number comparing against the baseline. Keep if better, revert if not.</p>
-      </div>
-    </section>
+<p>This is the first thing to understand, before looking at any code:</p>
 
-    <section>
-      <h2>Minimal Example</h2>
-      <p>Say you want to optimize a SQL query. The loop goes through these steps:</p>
+<div class="callout">
+  <p><strong>Agents aren't powerful because of a clever prompt.</strong> Agents are powerful because they <em>iterate</em> — propose a change, run it, measure the result, keep it if it's better, loop back.</p>
+</div>
 
-      <pre><code># Each iteration:
+<p>Karpathy ran ~700 experiments in 2 days with a simple markdown prompt. Not because the prompt was brilliant — but because it looped. Every iteration, real-world feedback fed into the next step.</p>
+
+<p>Agent Loop Skills packages that mindset into a reusable unit: the <strong>loop</strong>.</p>
+
+<h2>The 5 Core Components</h2>
+
+<p>Every loop has exactly 5 components. Missing one means the loop is missing information.</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>1. Program</h4>
+    <p>Orchestration guide. In Agent Loop Skills: the <code>SKILL.md</code> file.</p>
+  </div>
+  <div class="concept-card">
+    <h4>2. Artifact Slot</h4>
+    <p>What gets improved. Not hardcoded — passed in at invocation time.</p>
+  </div>
+  <div class="concept-card">
+    <h4>3. Feedback Signal</h4>
+    <p>Signal that decides the next step. Prioritize objective + locally runnable.</p>
+  </div>
+  <div class="concept-card">
+    <h4>4. Run Ledger</h4>
+    <p>Append-only log: which change, what result, what decision. Never overwrites.</p>
+  </div>
+  <div class="concept-card">
+    <h4>5. Termination</h4>
+    <p>When to stop: threshold reached, plateau (no improvement for K rounds), out of budget, or loop-until-dry.</p>
+  </div>
+</div>
+
+<h2>The Basic Flow</h2>
+
+<p>Here's the flowchart for every loop — regardless of which loop in the repo:</p>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">Propose change</span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-run">Run it</span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">Score it</span>
+  <div class="ld-branch">better ↙ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↘ worse</div>
+  <span class="ld-step ld-keep">✓ Keep + log</span>
+  <span class="ld-arrow ld-revert-arrow">↔</span>
+  <span class="ld-step ld-revert">✗ Revert</span>
+  <div class="ld-branch">stop?</div>
+  <span class="ld-step ld-term">→ Done</span>
+</div>
+
+<div class="callout">
+  <p><strong>Key discipline: signal decides.</strong> Not intuition, not "looks fine". A specific number comparing against the baseline. Keep if better, revert if not.</p>
+</div>
+
+<h2>Minimal Example</h2>
+
+<p>Say you want to optimize a SQL query. The loop goes through these steps:</p>
+
+<pre><code># Each iteration:
 1. Propose: "Try JOIN instead of subquery"
 2. Run: execute both queries, measure latency
 3. Score: compare new latency vs baseline
@@ -407,68 +104,80 @@
 5. Log: ledger records [iteration, change, latency_old, latency_new, decision]
 6. Stop: when latency drops &lt; 5% for 3 consecutive rounds</code></pre>
 
-      <p>This is exactly <code>optimize-loop</code> in the repo. You bind the SQL query, specify how to measure latency, and the loop runs itself. No need to rewrite propose/run/score logic every time.</p>
-    </section>
+<p>This is exactly <code>optimize-loop</code> in the repo. You bind the SQL query, specify how to measure latency, and the loop runs itself. No need to rewrite propose/run/score logic every time.</p>
 
-    <section>
-      <h2>Bindings: How a Loop Receives a Task</h2>
-      <p>A loop doesn't hardcode the artifact. Instead, when invoking the loop, you bind specific values:</p>
+<h2>Bindings: How a Loop Receives a Task</h2>
 
-      <div class="meta-grid">
-        <div class="meta-item">
-          <span class="meta-icon">📦</span>
-          <div>
-            <div class="meta-label">artifact</div>
-            <div class="meta-value">Your specific file/task</div>
-          </div>
-        </div>
-        <div class="meta-item">
-          <span class="meta-icon">⚡</span>
-          <div>
-            <div class="meta-label">signal</div>
-            <div class="meta-value">How to measure "better"</div>
-          </div>
-        </div>
-        <div class="meta-item">
-          <span class="meta-icon">🔧</span>
-          <div>
-            <div class="meta-label">run_cmd</div>
-            <div class="meta-value">Command to run the artifact</div>
-          </div>
-        </div>
-        <div class="meta-item">
-          <span class="meta-icon">⏱️</span>
-          <div>
-            <div class="meta-label">budget</div>
-            <div class="meta-value">Maximum number of iterations</div>
-          </div>
-        </div>
-      </div>
+<p>A loop doesn't hardcode the artifact. Instead, when invoking the loop, you bind specific values:</p>
 
-      <p>Bindings are resolved at invocation time — no code changes needed. Bind correctly → loop runs the right task.</p>
-    </section>
+<table class="comparison-table">
+  <thead>
+    <tr><th>Binding</th><th>Meaning</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>artifact</strong></td><td>Your specific file/task</td></tr>
+    <tr><td><strong>signal</strong></td><td>How to measure "better"</td></tr>
+    <tr><td><strong>run_cmd</strong></td><td>Command to run the artifact</td></tr>
+    <tr><td><strong>budget</strong></td><td>Maximum number of iterations</td></tr>
+  </tbody>
+</table>
 
-    <section>
-      <h2>Loops vs Regular Skills</h2>
-      <p>Regular skills (e.g. <code>create-blog-post</code>) do one thing and stop. Loops iterate with feedback. Use when:</p>
-      <div class="callout">
-        <p><strong>Use a loop</strong> when: you know what "better" looks like and want the machine to find it across multiple attempts.</p>
-        <p><strong>Use a regular skill</strong> when: one run is enough, no measurement needed between attempts.</p>
-      </div>
-    </section>
+<p>Bindings are resolved at invocation time — no code changes needed. Bind correctly → loop runs the right task.</p>
 
-    <footer>
-      <h3>Practice Exercise</h3>
-      <p>Before the next lesson, try thinking about:</p>
-      <p>🎯 <strong>Your task</strong>: What repetitive manual work do you have in your job or personal projects? (E.g. prompt optimization, data cleaning, draft writing, debugging)</p>
-      <p>Pick 1-2 of those tasks. We'll map them to the right loop or write a new one in the next lesson.</p>
-    </footer>
+<h2>Loops vs Regular Skills</h2>
 
-    <nav>
-      <span class="nav-hint">← Mission & Resources are set up at workspace root</span>
-      <span class="nav-hint">Lesson 0002 →</span>
-    </nav>
+<p>Regular skills (e.g. <code>create-blog-post</code>) do one thing and stop. Loops iterate with feedback. Use when:</p>
 
+<div class="callout">
+  <p><strong>Use a loop</strong> when: you know what "better" looks like and want the machine to find it across multiple attempts.</p>
+  <p><strong>Use a regular skill</strong> when: one run is enough, no measurement needed between attempts.</p>
+</div>
+
+<h2>Practice Exercise</h2>
+
+<p>Before the next lesson, try thinking about:</p>
+
+<p>🎯 <strong>Your task</strong>: What repetitive manual work do you have in your job or personal projects? (E.g. prompt optimization, data cleaning, draft writing, debugging)</p>
+
+<p>Pick 1-2 of those tasks. We'll map them to the right loop or write a new one in the next lesson.</p>
+
+<footer class="lesson-foot">
+  Lesson 0001 of the <em>Agent Loop Skills</em> course. See
+  <a href="../RESOURCES.md">Resources</a> for primary sources, and
+  <a href="../MISSION.md">Mission</a> to understand why we are doing this.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="../MISSION.md">← Mission</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="0002-install-and-pick.html">Lesson 0002 →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
   </div>
+  <div class="site-footer-bottom">
+    <p>Agent Loop Skills · Built with Cursor</p>
+  </div>
+</footer>
+
 </body>
 </html>
