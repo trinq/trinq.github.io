@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001 — The Core Loop: Why Iteration Beats Cleverness</title>
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --surface: #18181f;
+      --surface2: #1f1f28;
+      --border: #2a2a38;
+      --text: #e0e0ec;
+      --muted: #7878a0;
+      --accent: #7c6af7;
+      --accent2: #f76a9a;
+      --green: #4ade80;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --code-bg: #12121a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-num {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 1.1em;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    p {
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .callout.warning {
+      border-left-color: var(--yellow);
+    }
+
+    .callout p:last-child { margin-bottom: 0; }
+
+    .diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .diagram-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .loop-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .step {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .step.propose { border-color: var(--accent); color: #a89df8; }
+    .step.run { border-color: var(--accent2); color: #f89dc0; }
+    .step.score { border-color: var(--yellow); color: #fcd34d; }
+    .step.keep { border-color: var(--green); color: var(--green); }
+    .step.revert { border-color: var(--red); color: var(--red); }
+    .step.term { border-color: var(--muted); color: var(--muted); }
+
+    .arrow {
+      color: var(--border);
+      font-size: 1.2rem;
+    }
+
+    .branch {
+      color: var(--muted);
+      font-size: 0.75rem;
+      width: 100%;
+      text-align: center;
+      margin-top: 0.25rem;
+    }
+
+    code {
+      background: var(--code-bg);
+      color: #c4b5fd;
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.875em;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--text);
+    }
+
+    .ingredient-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .ingredient {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .ingredient-name {
+      font-weight: 600;
+      color: #fff;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .ingredient-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .ingredient-code {
+      font-family: 'SF Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: var(--code-bg);
+      padding: 0.1em 0.4em;
+      border-radius: 3px;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .meta-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .meta-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .meta-value {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    nav {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .nav-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    footer h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    footer p {
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .kbd {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.5em;
+      font-size: 0.8em;
+      font-family: monospace;
+      color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      .ingredient-grid { grid-template-columns: 1fr; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .loop-flow { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="lesson-num">Lesson 0001</div>
+      <h1>The Core Loop: Why Iteration Beats Cleverness</h1>
+      <p class="subtitle">Nắm được 5 thành phần cốt lõi và tư duy "propose → score → keep" đằng sau mọi loop</p>
+    </header>
+
+    <section>
+      <h2>Insight nền tảng</h2>
+      <p>Đây là điều đầu tiên cần nắm, trước khi nhìn bất kỳ code nào:</p>
+      <div class="callout">
+        <p><strong>Agents không mạnh vì một prompt khéo léo.</strong> Agents mạnh vì <em>lặp lại</em> — propose một thay đổi, chạy nó, đo kết quả, giữ lại nếu tốt hơn, quay lại.</p>
+      </div>
+      <p>Karpathy chạy ~700 experiments trong 2 ngày với một markdown prompt đơn giản. Không phải vì prompt đó quá thông minh — mà vì nó lặp. Mỗi lần lặp, kết quả thực tế feedback vào bước tiếp theo.</p>
+      <p>Agent Loop Skills là framework đóng gói tư duy đó thành một đơn vị có thể reuse: <strong>loop</strong>.</p>
+    </section>
+
+    <section>
+      <h2>5 thành phần cốt lõi</h2>
+      <p>Mọi loop đều có đúng 5 thành phần. Thiếu một là loop thiếu thông tin.</p>
+
+      <div class="ingredient-grid">
+        <div class="ingredient">
+          <div class="ingredient-name">1. Program</div>
+          <div class="ingredient-desc">Hướng dẫn điều phối. Trong Agent Loop Skills: file <code>SKILL.md</code></div>
+          <span class="ingredient-code">SKILL.md</span>
+        </div>
+        <div class="ingredient">
+          <div class="ingredient-name">2. Artifact slot</div>
+          <div class="ingredient-desc">Thứ được cải thiện. Không hardcode — được truyền vào lúc gọi loop</div>
+          <span class="ingredient-code">&lt;artifact&gt;</span>
+        </div>
+        <div class="ingredient">
+          <div class="ingredient-name">3. Feedback signal</div>
+          <div class="ingredient-desc">Tín hiệu quyết định bước tiếp theo. Ưu tiên objective + locally runnable</div>
+          <span class="ingredient-code">&lt;signal&gt;</span>
+        </div>
+        <div class="ingredient">
+          <div class="ingredient-name">4. Run ledger</div>
+          <div class="ingredient-desc">Log append-only: thay đổi nào, kết quả ra sao, quyết định gì. Không ghi đè.</div>
+          <span class="ingredient-code">ledger.tsv</span>
+        </div>
+        <div class="ingredient full-width">
+          <div class="ingredient-name">5. Termination</div>
+          <div class="ingredient-desc">Khi nào dừng: threshold đạt, plateau (không cải thiện K vòng), hết budget, hoặc loop-until-dry</div>
+          <span class="ingredient-code">&lt;budget&gt; | threshold | plateau | loop-until-dry</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Luồng cơ bản</h2>
+      <p>Đây là flowchart cho mọi loop — bất kể loop nào trong repo:</p>
+
+      <div class="diagram">
+        <div class="diagram-title">The Loop Flow</div>
+        <div class="loop-flow">
+          <span class="step propose">Propose change</span>
+          <span class="arrow">→</span>
+          <span class="step run">Run it</span>
+          <span class="arrow">→</span>
+          <span class="step score">Score it</span>
+          <div class="branch">↙ better &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worse ↘</div>
+          <span class="step keep">✓ Keep + log</span>
+          <span class="arrow">↔</span>
+          <span class="step revert">✗ Revert</span>
+          <div class="branch">stop?</div>
+          <span class="step term">→ Done</span>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p>Key discipline: <strong>signal decides</strong>. Không phải intuition, không phải "trông ổn". Một con số cụ thể so sánh với baseline. Giữ lại nếu tốt hơn, revert nếu không.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Ví dụ tối giản</h2>
+      <p>Giả sử bạn muốn tối ưu một câu SQL query. Loop đi qua các bước:</p>
+
+      <pre><code># Mỗi vòng lặp:
+1. Propose: "Thử JOIN thay vì subquery"
+2. Run: chạy cả hai query, đo latency
+3. Score: so sánh latency mới vs baseline
+4. Keep nếu <baseline; revert nếu ≥baseline
+5. Log: ledger ghi [iteration, change, latency_old, latency_new, decision]
+6. Stop: khi latency giảm < 5% sau 3 vòng liên tiếp</code></pre>
+
+      <p>Đây chính là <code>optimize-loop</code> trong repo. Bạn bind câu SQL vào, chỉ định cách đo latency, và loop tự chạy. Không cần viết lại logic propose/run/score mỗi lần.</p>
+    </section>
+
+    <section>
+      <h2>Bindings: cách loop nhận task</h2>
+      <p>Loop không hardcode artifact. Thay vào đó, khi gọi loop, bạn bind các giá trị cụ thể:</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-icon">📦</span>
+          <div>
+            <div class="meta-label">artifact</div>
+            <div class="meta-value">File/task cụ thể của bạn</div>
+          </div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⚡</span>
+          <div>
+            <div class="meta-label">signal</div>
+            <div class="meta-value">Cách đo "tốt hơn"</div>
+          </div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔧</span>
+          <div>
+            <div class="meta-label">run_cmd</div>
+            <div class="meta-value">Lệnh chạy artifact</div>
+          </div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⏱️</span>
+          <div>
+            <div class="meta-label">budget</div>
+            <div class="meta-value">Số vòng tối đa</div>
+          </div>
+        </div>
+      </div>
+
+      <p>Bindings được resolve khi gọi loop — không cần sửa code. Bind đúng → loop chạy đúng task.</p>
+    </section>
+
+    <section>
+      <h2>Loops vs Skills thường</h2>
+      <p>Skills thường (ví dụ: <code>create-blog-post</code>) làm một việc và dừng. Loops lặp đi lặp lại với feedback. Dùng khi:</p>
+      <div class="callout">
+        <p><strong>Dùng loop</strong> khi: bạn biết "tốt hơn" trông như thế nào và muốn machine tìm nó qua nhiều attempts.</p>
+        <p><strong>Dùng skill thường</strong> khi: một lần chạy là đủ, không cần đo lường giữa các attempts.</p>
+      </div>
+    </section>
+
+    <footer>
+      <h3>Bài tập thực hành</h3>
+      <p>Trước bài tiếp theo, thử suy nghĩ:</p>
+      <p>🎯 <strong>Task của bạn</strong>: Bạn có task gì trong công việc hoặc dự án cá nhân mà bạn lặp đi lặp lại thủ công? (VD: tối ưu prompt, clean data, viết draft, debug)</p>
+      <p>Chọn 1-2 task đó. Chúng ta sẽ map chúng vào loop phù hợp hoặc viết loop mới ở bài tiếp.</p>
+    </footer>
+
+    <nav>
+      <span class="nav-hint">← Mission & Resources đã setup ở workspace root</span>
+      <span class="nav-hint">Lesson 0002 →</span>
+    </nav>
+
+  </div>
+</body>
+</html>

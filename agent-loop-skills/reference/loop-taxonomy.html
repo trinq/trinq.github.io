@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loop Taxonomy — Agent Loop Skills Reference</title>
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --surface: #18181f;
+      --surface2: #1f1f28;
+      --border: #2a2a38;
+      --text: #e0e0ec;
+      --muted: #7878a0;
+      --accent: #7c6af7;
+      --accent2: #f76a9a;
+      --green: #4ade80;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --blue: #60a5fa;
+      --orange: #fb923c;
+      --pink: #f472b6;
+      --teal: #2dd4bf;
+      --code-bg: #12121a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; min-height: 100vh; padding: 2rem; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem; }
+    .subtitle { color: var(--muted); margin-bottom: 2rem; }
+    h2 { font-size: 1.1rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    h2::before { content: ''; display: inline-block; width: 3px; height: 1em; border-radius: 2px; }
+    .autoresearch h2::before { background: var(--accent); }
+    .literature h2::before { background: var(--teal); }
+    .data h2::before { background: var(--yellow); }
+    .code h2::before { background: var(--orange); }
+    .other h2::before { background: var(--pink); }
+    h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin: 1rem 0 0.25rem; }
+    p { color: var(--text); margin-bottom: 0.75rem; font-size: 0.9rem; }
+    code { background: var(--code-bg); color: #c4b5fd; padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.85em; font-family: 'SF Mono', 'Fira Code', monospace; }
+    .loop-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; margin: 0.75rem 0; }
+    .loop-header { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .loop-name { font-weight: 700; font-size: 1rem; color: #fff; font-family: 'SF Mono', 'Fira Code', monospace; }
+    .multi-role { background: var(--accent2); color: #fff; font-size: 0.65rem; padding: 0.15em 0.5em; border-radius: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .loop-desc { font-size: 0.85rem; color: var(--muted); }
+    .loop-usecase { font-size: 0.8rem; color: var(--text); background: var(--surface2); border-radius: 6px; padding: 0.5rem 0.75rem; margin-top: 0.5rem; }
+    .loop-usecase strong { color: var(--green); }
+    .badge { display: inline-block; padding: 0.1em 0.5em; border-radius: 4px; font-size: 0.7rem; font-weight: 600; margin-right: 0.25rem; }
+    .badge-ml { background: #2d1f6e; color: #a89df8; }
+    .badge-lit { background: #134e4a; color: #5eead4; }
+    .badge-data { background: #422006; color: #fbbf24; }
+    .badge-code { background: #431407; color: #fb923c; }
+    .badge-other { background: #500724; color: #f472b6; }
+    .category-intro { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; }
+    .index { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+    .index-item { display: flex; gap: 0.5rem; font-size: 0.8rem; padding: 0.2rem 0; }
+    .index-item code { color: #c4b5fd; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Loop Taxonomy</h1>
+    <p class="subtitle">Tất cả 20 loops trong gaasher/Agent-Loop-Skills, phân theo category. Mỗi loop đều có 5 ingredients.</p>
+
+    <div class="index">
+      <strong style="font-size:0.8rem;color:var(--muted);">QUICK JUMP</strong>
+      <div class="index-item"><code>karpathy</code> minimal · <code>ml-autoresearch</code> diagnostic · <code>exploratory-autoresearch</code> broad · <code>tournament-autoresearch</code> competitive · <code>dueling-autoresearch</code> racing · <code>alpha-evolve</code> population</div>
+      <div class="index-item"><code>optimize-loop</code> code/SQL · <code>prompt-optimize</code> prompt · <code>claim-verify</code> verify claims · <code>data-analysis</code> findings · <code>tabular-cleanup</code> clean · <code>anomaly-investigation</code> diagnose</div>
+      <div class="index-item"><code>literature-search</code> tool · <code>literature-survey</code> matrix · <code>research-question</code> sharpen · <code>hypothesis-gen</code> generate · <code>research-proposal</code> grade · <code>scientific-writer</code> write · <code>scientific-figure</code> figure</div>
+      <div class="index-item"><code>red-team</code> adversarial · <code>power-analysis</code> experiment sizing</div>
+    </div>
+
+    <div class="autoresearch">
+      <h2>Autoresearch <span class="badge badge-ml">ML</span></h2>
+      <p class="category-intro">Iterate on an ML artifact (model, config, data pipeline) against a metric. Propose → train → score → keep/revert → log.</p>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">karpathy</span>
+          <span>Minimal baseline</span>
+        </div>
+        <p class="loop-desc">Propose one change, train, keep if metric improves, loop. Faithful to Karpathy's original idea. Start here.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You have a training script + metric and want a minimal, reliable loop. No frills, no analysis.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">ml-autoresearch</span>
+          <span class="multi-role">multi-role</span>
+          <span>Diagnostic-first</span>
+        </div>
+        <p class="loop-desc">Reads inside each run: gradient flow, dead neurons, loss curve. Grounds next change in evidence, not guesswork. Optional literature-dial adds paper-grounded changes.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> Training is slow/expensive and you want every change traced to a measured cause.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">exploratory-autoresearch</span>
+          <span>Broad exploration</span>
+        </div>
+        <p class="loop-desc">Temperature/swing scheduler forces broad exploration. Escapes hill-climbing one idea forever.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You're stuck on a plateau and need the loop to try far-out ideas, not just incremental changes.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">tournament-autoresearch</span>
+          <span class="multi-role">multi-role</span>
+          <span>Competitive</span>
+        </div>
+        <p class="loop-desc">N agents pitch competing changes; a self-calibrating judge picks one, runs it, and recalibrates by comparing predicted vs realized gain.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You want the loop to self-correct judge bias over time. Best for escaping single-thread plateaus.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">dueling-autoresearch</span>
+          <span class="multi-role">multi-role</span>
+          <span>Parallel racing</span>
+        </div>
+        <p class="loop-desc">Two approaches race the same metric in parallel and borrow ideas across lanes.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You have two competing architectures/strategies and want them to compete + cross-pollinate.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">alpha-evolve</span>
+          <span class="multi-role">multi-role</span>
+          <span>Population-based</span>
+        </div>
+        <p class="loop-desc">MAP-Elites + island model. Diff-mutate + cascade-eval. Inspired by AlphaEvolve paper (Novikov et al., 2025).</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You want evolutionary search over a population, not single-point hill climbing.</div>
+      </div>
+    </div>
+
+    <div class="literature">
+      <h2>Literature & Writing <span class="badge badge-lit">Research</span></h2>
+      <p class="category-intro">Build, evaluate, and iterate on research artifacts (papers, proposals, figures, writing).</p>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">literature-search</span>
+          <span>Shared toolchain</span>
+        </div>
+        <p class="loop-desc">NOT a loop — a shared tool. Paper discovery, snippets, citation graph, full-text over Semantic Scholar + arXiv. Used by other research loops.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> Any research loop needs to find papers. Installed alongside, degrades to WebSearch if absent.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">literature-survey</span>
+          <span>Evidence matrix</span>
+        </div>
+        <p class="loop-desc">Builds a saturating evidence/contradiction matrix: sources × claims. Stops when evidence is saturated.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You need to map what the literature says about a set of claims across many papers.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">research-question</span>
+          <span>Question sharpening</span>
+        </div>
+        <p class="loop-desc">Sharpens vague topics into strong, novel, feasible research questions. Web novelty checks pivot already-answered questions toward open sub-problems.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You have a broad research interest and need to find the specific unanswered question.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">hypothesis-gen</span>
+          <span class="multi-role">multi-role</span>
+          <span>Generate + vet</span>
+        </div>
+        <p class="loop-desc">Generates a pool of hypotheses, then literature-vets each one. Keeps only those that survive the literature check.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You need many hypotheses generated and filtered against existing work.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">research-proposal</span>
+          <span class="multi-role">multi-role</span>
+          <span>Grade + revise</span>
+        </div>
+        <p class="loop-desc">ScholarEval grades a proposal against the literature. Judge + Reviser iterate until the score clears a bar (e.g. 45 → 84).</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You have a draft proposal and want it graded + revised to pass peer review bar.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">scientific-writer</span>
+          <span class="multi-role">multi-role</span>
+          <span>Peer review loop</span>
+        </div>
+        <p class="loop-desc">Specialist judges + independent peer-reviewer critique a draft; a writer revises until the score clears a bar.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You want adversarial peer review of a scientific manuscript before submission.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">scientific-figure</span>
+          <span class="multi-role">multi-role</span>
+          <span>Figure iteration</span>
+        </div>
+        <p class="loop-desc">Generator drafts a figure from data/brief; adversarial critic grades it against a fixed rubric. Both can consult literature. Iterates until paper-ready (80 → 96).</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You need a publication-quality figure that survives scrutiny from reviewers.</div>
+      </div>
+    </div>
+
+    <div class="data">
+      <h2>Data <span class="badge badge-data">Analysis</span></h2>
+      <p class="category-intro">Work with datasets: find findings, verify claims, clean tables, diagnose anomalies.</p>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">data-analysis</span>
+          <span>Hypothesis → verify</span>
+        </div>
+        <p class="loop-desc">Hypothesis → verify discovery. Every finding backed by a reproduced number at a meaningful effect size. Correctly refuted 2 planted wrong findings in testing.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You have a dataset and want to surface real findings, not hallucinations. Each finding is reproduced + effect-sized.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">anomaly-investigation</span>
+          <span>Diagnose anomalies</span>
+        </div>
+        <p class="loop-desc">Diagnoses the cause of a known anomaly by forming, testing, and eliminating candidates. Think: "why did X suddenly spike last Tuesday?"</p>
+        <div class="loop-usecase"><strong>Use when:</strong> Something went wrong and you need to find the root cause, not just the symptom.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">claim-verify</span>
+          <span>Adversarial verification</span>
+        </div>
+        <p class="loop-desc">Extracts checkable claims from a draft, reproduces each number, stress-tests against threats (outliers, confounds, Simpson's reversals). Marks verified/fragile/refuted.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You have a results draft ready to publish and want to red-team every claim before it goes out.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">tabular-cleanup</span>
+          <span>Schema inference</span>
+        </div>
+        <p class="loop-desc">Cleans a messy table to an inferred data contract with deterministic checks. Loop-until-clean: all checks pass.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You have a dirty CSV/table and want to clean it with a reproducible schema, not manual editing.</div>
+      </div>
+    </div>
+
+    <div class="code">
+      <h2>Code & Optimization <span class="badge badge-code">Dev</span></h2>
+      <p class="category-intro">Iterate on code, queries, and prompts with correctness gates and optimization targets.</p>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">optimize-loop</span>
+          <span>Correctness-gated optimization</span>
+        </div>
+        <p class="loop-desc">Pluggable correctness gate + minimized metric. Two modes: code (tests green + complexity ↓) and SQL (identical results + latency ↓). Real run: 1,131ms → 1.055ms (~1,073×).</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You want to make code faster or cleaner without breaking correctness. This is the most generally useful loop for developers.</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">prompt-optimize</span>
+          <span>Black-box oracle</span>
+        </div>
+        <p class="loop-desc">Evolves a prompt against a user-supplied scoring command (black-box oracle). No internal access to the scoring — just input/output.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You have a prompt and an evaluator (human, test suite, another model) and want to evolve the prompt toward better outputs.</div>
+      </div>
+    </div>
+
+    <div class="other">
+      <h2>Other <span class="badge badge-other">Specialized</span></h2>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">red-team</span>
+          <span>Adversarial, loop-until-dry</span>
+        </div>
+        <p class="loop-desc">Surfaces distinct failure classes of a system you own. Loop-until-dry: no new failure classes found for K rounds. Surfaces root-cause + one-line fix for each.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You own a system (content filter, classifier, auth) and want to find its weaknesses before attackers do. (Authorized testing only.)</div>
+      </div>
+
+      <div class="loop-card">
+        <div class="loop-header">
+          <span class="loop-name">power-analysis</span>
+          <span>Experiment sizing</span>
+        </div>
+        <p class="loop-desc">Sizes and pre-registers a two-arm experiment to hit a target statistical power. Solves n = 100/group for 80% power via Monte-Carlo, fixes validity flaws.</p>
+        <div class="loop-usecase"><strong>Use when:</strong> You're designing an A/B test or experiment and need to know how many samples to collect before you start.</div>
+      </div>
+    </div>
+
+    <footer>
+      20 loops across 5 categories · Source: <a href="https://github.com/gaasher/Agent-Loop-Skills" style="color:var(--accent)">gaasher/Agent-Loop-Skills</a> · Stats: 118 commits, experimental
+    </footer>
+  </div>
+</body>
+</html>

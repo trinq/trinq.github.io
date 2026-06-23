@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002 — Install & Pick Your Loop</title>
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --surface: #18181f;
+      --surface2: #1f1f28;
+      --border: #2a2a38;
+      --text: #e0e0ec;
+      --muted: #7878a0;
+      --accent: #7c6af7;
+      --accent2: #f76a9a;
+      --green: #4ade80;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --code-bg: #12121a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; min-height: 100vh; padding: 2rem; }
+    .container { max-width: 720px; margin: 0 auto; }
+
+    header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .lesson-num { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem; }
+    h1 { font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--muted); font-size: 1rem; }
+
+    section { margin-bottom: 2.5rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    h2::before { content: ''; display: inline-block; width: 3px; height: 1.1em; background: var(--accent); border-radius: 2px; }
+    p { color: var(--text); margin-bottom: 1rem; }
+
+    code { background: var(--code-bg); color: #c4b5fd; padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.875em; font-family: 'SF Mono', 'Fira Code', monospace; }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    pre code { background: none; padding: 0; color: var(--text); }
+
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+    .callout.warning { border-left-color: var(--yellow); }
+    .callout.success { border-left-color: var(--green); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    .step-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .step-title { font-weight: 600; color: #fff; font-size: 1rem; margin-bottom: 0.5rem; }
+    .step-desc { font-size: 0.875rem; color: var(--muted); margin-bottom: 0.75rem; }
+
+    .cmd-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: #a5f3fc;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .task-list { list-style: none; padding: 0; }
+    .task-list li {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+    }
+    .task-list li strong { color: #fff; display: block; margin-bottom: 0.2rem; }
+    .task-list li span { color: var(--muted); font-size: 0.8rem; }
+    .task-list li .loop-tag {
+      display: inline-block;
+      background: #2d1f6e;
+      color: #a89df8;
+      font-size: 0.7rem;
+      padding: 0.1em 0.5em;
+      border-radius: 4px;
+      font-weight: 600;
+      margin-top: 0.4rem;
+    }
+
+    .loop-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .loop-card-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .loop-card-name { font-weight: 700; color: #c4b5fd; font-family: 'SF Mono', monospace; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .loop-card-desc { font-size: 0.82rem; color: var(--muted); }
+
+    .worksheet {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .worksheet-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--yellow);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .worksheet-field {
+      margin-bottom: 1rem;
+    }
+    .worksheet-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+    .worksheet-input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 0.85rem;
+      color: var(--text);
+      font-size: 0.875rem;
+      width: 100%;
+      font-family: inherit;
+    }
+    .worksheet-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    nav {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .nav-hint { font-size: 0.75rem; color: var(--muted); }
+
+    footer {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    footer h3 { font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 0.75rem; }
+    footer p { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="lesson-num">Lesson 0002</div>
+      <h1>Install & Pick Your Loop</h1>
+      <p class="subtitle">Cài loops vào Cursor, chọn task thực tế để map vào loop</p>
+    </header>
+
+    <section>
+      <h2>Bước 1 — Clone repo</h2>
+      <p>Đầu tiên, clone Agent Loop Skills về máy. Một lần thôi.</p>
+
+      <div class="step-box">
+        <div class="step-title"><span class="step-num">1</span>Clone repo</div>
+        <div class="step-desc">Chạy lệnh này trong terminal:</div>
+        <div class="cmd-block">git clone https://github.com/gaasher/agent-loop-skills.git ~/code/agent-loop-skills</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Bước 2 — Copy vào skills folder của Cursor</h2>
+      <p>Cursor dùng cùng định dạng với Claude Code và Codex — chỉ cần copy folder <code>loops/</code>.</p>
+
+      <div class="step-box">
+        <div class="step-title"><span class="step-num">2</span>Copy tất cả loops vào Cursor skills</div>
+        <div class="step-desc">Lệnh:</div>
+        <div class="cmd-block">cp -r ~/code/agent-loop-skills/loops/* ~/.agents/skills/</div>
+      </div>
+
+      <div class="callout warning">
+        <p>Kiểm tra xem folder <code>~/.agents/skills/</code> có tồn tại chưa. Nếu chưa, tạo trước:</p>
+        <div class="cmd-block">mkdir -p ~/.agents/skills && cp -r ~/code/agent-loop-skills/loops/* ~/.agents/skills/</div>
+      </div>
+
+      <div class="step-box">
+        <div class="step-title"><span class="step-num">3</span>Verify đã cài đúng</div>
+        <div class="step-desc">List folder để xem:</div>
+        <div class="cmd-block">ls ~/.agents/skills/ | head -20</div>
+        <div class="step-desc" style="margin-top:0.5rem;">Bạn sẽ thấy: <code>karpathy/</code>, <code>optimize-loop/</code>, <code>claim-verify/</code>, v.v. Mỗi folder có <code>SKILL.md</code> bên trong.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Task của bạn: map vào loop</h2>
+      <p>Từ MISSION.md, mục tiêu của bạn là tự động hóa workflow lặp đi lặp lại. Hãy nhìn vào các task bạn làm hàng ngày và map chúng:</p>
+
+      <ul class="task-list">
+        <li>
+          <strong>Viết và duy trì blog (trinq.github.io)</strong>
+          <span>Chuyển HTML lesson → redirect post mỗi khi publish bài mới. Mỗi bài: trích title, description, tạo file YAML frontmatter, commit & push.</span>
+          <span class="loop-tag">📝 claim-verify? data-analysis? Viết loop mới!</span>
+        </li>
+        <li>
+          <strong>Tối ưu prompt</strong>
+          <span>Viết prompt → chạy test → xem kết quả → sửa prompt → lặp. Muốn automated: script đo "prompt score" và tự tìm prompt tốt hơn.</span>
+          <span class="loop-tag">→ prompt-optimize</span>
+        </li>
+        <li>
+          <strong>Clean data / table messy</strong>
+          <span>CSV bẩn, cần chuẩn hóa schema, điền missing values, fix types. Chạy 1 lần là xong.</span>
+          <span class="loop-tag">→ tabular-cleanup</span>
+        </li>
+        <li>
+          <strong>Research: tìm papers + tổng hợp claims</strong>
+          <span>Search web → đọc abstract → trích claims → so sánh xung đột. Lặp đến khi saturated.</span>
+          <span class="loop-tag">→ literature-survey</span>
+        </li>
+        <li>
+          <strong>Debug/refactor code</strong>
+          <span>Đo test coverage + cyclomatic complexity. Cải thiện cả hai → giữ, không → revert.</span>
+          <span class="loop-tag">→ optimize-loop (mode: code)</span>
+        </li>
+        <li>
+          <strong>Verify claims từ dataset</strong>
+          <span>Có bài viết với các số liệu. Muốn check: số đó có đúng không, có bị confounders không.</span>
+          <span class="loop-tag">→ claim-verify</span>
+        </li>
+      </ul>
+
+      <div class="callout success">
+        <p><strong>Your turn.</strong> Trong workspace của bạn, task nào là thực tế nhất để bắt đầu? Chọn 1. Việc đầu tiên chúng ta sẽ làm là đặt binding cho nó — viết <code>loop.run.yaml</code> — rồi chạy loop đó.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Map nhanh: task → loop</h2>
+      <p>Nếu bạn biết task mình muốn tự động hóa, dùng bảng này:</p>
+
+      <div class="loop-card">
+        <span class="loop-card-icon">🐢</span>
+        <div>
+          <div class="loop-card-name">karpathy</div>
+          <div class="loop-card-desc">Minimal. Train model, keep if metric better. Chạy được ngay, ít config.</div>
+        </div>
+      </div>
+      <div class="loop-card">
+        <span class="loop-card-icon">⚡</span>
+        <div>
+          <div class="loop-card-name">optimize-loop (code mode)</div>
+          <div class="loop-card-desc">Refactor code. Correctness gate (tests green) + complexity/metrics down. Tốt nhất cho dev work.</div>
+        </div>
+      </div>
+      <div class="loop-card">
+        <span class="loop-card-icon">🔤</span>
+        <div>
+          <div class="loop-card-name">prompt-optimize</div>
+          <div class="loop-card-desc">Evolve prompt against a scoring command. User-provided oracle. Cần viết scorer trước.</div>
+        </div>
+      </div>
+      <div class="loop-card">
+        <span class="loop-card-icon">📊</span>
+        <div>
+          <div class="loop-card-name">data-analysis</div>
+          <div class="loop-card-desc">Hypothesis → verify với effect size. Không hallucinations (tested). Tốt cho data có sẵn.</div>
+        </div>
+      </div>
+      <div class="loop-card">
+        <span class="loop-card-icon">✅</span>
+        <div>
+          <div class="loop-card-name">claim-verify</div>
+          <div class="loop-card-desc">Một bài viết có claims, verify từng số. Stress-test với outliers/confounds. Publish-safe.</div>
+        </div>
+      </div>
+      <div class="loop-card">
+        <span class="loop-card-icon">🗂️</span>
+        <div>
+          <div class="loop-card-name">tabular-cleanup</div>
+          <div class="loop-card-desc">Clean messy table. Infer schema + deterministic checks. Chạy 1 lần là done.</div>
+        </div>
+      </div>
+      <div class="loop-card">
+        <span class="loop-card-icon">🔬</span>
+        <div>
+          <div class="loop-card-name">literature-search / literature-survey</div>
+          <div class="loop-card-desc">Research tool. Tìm papers, build evidence matrix. Cần setup API keys (Semantic Scholar, arXiv).</div>
+        </div>
+      </div>
+      <div class="loop-card">
+        <span class="loop-card-icon">🛡️</span>
+        <div>
+          <div class="loop-card-name">red-team</div>
+          <div class="loop-card-desc">Adversarial testing. Tìm failure modes. Dùng khi bạn sở hữu hệ thống cần test.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Task blog của bạn</h2>
+      <p>Task blog (HTML → redirect post) có vẻ là ứng cử viên thú vị nhất — vì <code>create-blog-post</code> skill hiện tại của bạn là một lần chạy. Nếu muốn cải thiện nó theo thời gian (detect đã post chưa, tự chọn category, tự viết description tốt hơn...), đó là candidate cho một loop.</p>
+      <div class="callout">
+        <p>Tuy nhiên, task blog chưa chắc đã fit loop có sẵn. Có thể cần <strong>viết loop mới</strong> — Lesson 3 sẽ học cách viết loop từ đầu theo spec.</p>
+        <p>Trước khi viết loop mới, Lesson 3 sẽ thực hành với một loop có sẵn trước — để bạn thấy cách một loop chạy thực tế trong Cursor.</p>
+      </div>
+    </section>
+
+    <footer>
+      <h3>Action items cho bạn</h3>
+      <p>✅ Bước 1-3: Clone + copy loops vào <code>~/.agents/skills/</code></p>
+      <p>✅ Nghĩ ra 1 task bạn muốn tự động hóa</p>
+      <p>→ Báo cho mình task nào. Chúng ta sẽ đặt bindings và chạy loop tiếp theo.</p>
+    </footer>
+
+    <nav>
+      <span class="nav-hint">← Lesson 0001: The Core Loop</span>
+      <span class="nav-hint">Lesson 0003 → Run Your First Loop</span>
+    </nav>
+
+  </div>
+</body>
+</html>

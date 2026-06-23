@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossary — Agent Loop Skills</title>
+  <style>
+    :root { --bg: #0f0f14; --surface: #18181f; --border: #2a2a38; --text: #e0e0ec; --muted: #7878a0; --accent: #7c6af7; --code-bg: #12121a; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; padding: 2rem; }
+    .container { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 2rem; }
+    .term { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+    .term-name { font-weight: 700; color: #c4b5fd; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .term-def { font-size: 0.875rem; color: var(--text); }
+    .term-see { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    code { background: var(--code-bg); color: #c4b5fd; padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.85em; font-family: 'SF Mono', 'Fira Code', monospace; }
+    footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Glossary</h1>
+
+    <div class="term">
+      <div class="term-name">Artifact</div>
+      <div class="term-def">Thứ được cải thiện trong một loop. Là một binding, không hardcode. VD: một file SQL, một prompt, một training script, một bản draft.</div>
+      <div class="term-see">Binding: <code>&lt;artifact&gt;</code></div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Bindings</div>
+      <div class="term-def">Các giá trị cụ thể được truyền vào loop khi gọi. Tương tự function arguments. Mỗi loop có bảng bindings riêng (artifact, run_cmd, signal, budget...). Bindings sống trong <code>loop.run.yaml</code>, không trong SKILL.md.</div>
+      <div class="term-see">File: <code>loop.run.yaml</code> · Format: <code>examples/run.example.yaml</code></div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Budget</div>
+      <div class="term-def">Số vòng lặp tối đa. Một trong các termination conditions. Thường default = 8, user override được.</div>
+      <div class="term-see">Binding: <code>&lt;budget&gt;</code></div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Feedback Signal</div>
+      <div class="term-def">Tín hiệu objective quyết định bước tiếp theo. Ưu tiên locally-runnable (tests, latency, metric). Dùng calibrated judge khi không có objective metric. Là điểm khác biệt giữa "loop thật" và "agent lặp bừa".</div>
+      <div class="term-see">Binding: <code>&lt;signal&gt;</code> · Principle: "signal decides"</div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Keep / Revert</div>
+      <div class="term-def">Quyết định cuối mỗi vòng. Keep = artifact mới tốt hơn baseline (signal cải thiện). Revert = không tốt hơn, quay lại artifact cũ. Không bao giờ để cả hai cùng tồn tại mà không quyết định.</div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Ledger</div>
+      <div class="term-def">File log append-only ghi lại mỗi vòng: thay đổi gì, signal ra sao, quyết định gì. Tab-separated. Không ghi đè, không xóa. Dùng để reconstruct decision history và report best iteration.</div>
+      <div class="term-see">File: <code>ledger.tsv</code> · Header: <code>iter	change	signal	decision</code></div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Loop</div>
+      <div class="term-def">Một unit gồm 5 thành phần: program, artifact, signal, ledger, termination. Mỗi loop được đóng gói thành một Agent Skill (một folder với SKILL.md + tools/roles/schemas/rubrics/examples).</div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Multi-role</div>
+      <div class="term-def">Loop có nhiều role chạy song song hoặc nối tiếp (VD: Judge + Researcher, Writer + Reviewer). Trên Claude Code: dùng real isolated subagents. Trên host khác (Cursor, Codex): chạy inline cùng context.</div>
+      <div class="term-see">Pattern: spawn-or-degrade · Roles: <code>roles/*.md</code></div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Plateau</div>
+      <div class="term-def">Termination condition: không cải thiện sau K vòng liên tiếp. Tránh loop chạy mãi không có progress.</div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Run ledger</div>
+      <div class="term-def">Xem Ledger.</div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">SKILL.md</div>
+      <div class="term-def">File chính của mỗi loop. Chứa frontmatter (name, description, metadata) + body (overview, when to use, setup, loop, ledger, constraints). Description là dòng quan trọng nhất vì host dùng nó để quyết định load skill nào.</div>
+      <div class="term-see">Spec: Agent Skills open standard · Max: ~500 lines</div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Spawn-or-degrade</div>
+      <div class="term-def">Pattern cho multi-role loops: nếu host hỗ trợ subagent (Claude Code), spawn real isolated subagent cho mỗi role; nếu không (Cursor, Codex), adopt role inline trong same context.</div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Termination</div>
+      <div class="term-def">Điều kiện dừng. Một trong: budget exhausted, threshold reached, plateau (K vòng không cải thiện), loop-until-dry (không có findings mới sau K vòng). Mỗi loop có termination condition rõ ràng.</div>
+      <div class="term-see">Types: <code>budget | threshold | plateau | loop-until-dry</code></div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Verification-gated</div>
+      <div class="term-def">Nguyên tắc: mọi thay đổi phải vượt qua feedback signal TRƯỚC KHI được keep. Không có "looks good". Không có autonomous garbage output được ship. Đây là điểm khác biệt chính giữa Agent Loop Skills và unsupervised agent loops.</div>
+    </div>
+
+    <div class="term">
+      <div class="term-name">Loop-until-dry</div>
+      <div class="term-def">Termination type cho loops tìm findings. Dừng khi không còn new distinct findings sau K vòng. Dùng trong: red-team, literature-survey.</div>
+    </div>
+
+    <footer>
+      Source: <a href="https://github.com/gaasher/Agent-Loop-Skills" style="color:var(--accent)">gaasher/Agent-Loop-Skills</a>
+    </footer>
+  </div>
+</body>
+</html>
