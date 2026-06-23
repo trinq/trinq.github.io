@@ -40,11 +40,13 @@ title: Home
 	<a href="{{ post.url }}" class="post-card">
 		<div class="post-card-meta">
 			<span class="post-card-date">{{ post.date | date: "%b %d" }}</span>
-			{% if post.category == "reading" %}
+		{% if post.category == "reading" %}
 			<span class="post-card-label">reading</span>
-			{% elsif post.category == "loop" %}
+		{% elsif post.category == "loop" %}
 			<span class="post-card-label">loop</span>
-			{% endif %}
+		{% elsif post.category == "agent-loop-skills" %}
+			<span class="post-card-label">agent-loop-skills</span>
+		{% endif %}
 		</div>
 		<div class="post-card-title">{{ post.title }}</div>
 		<div class="post-card-desc">{{ post.description }}</div>
