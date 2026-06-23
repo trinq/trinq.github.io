@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0003 — Grill Me: Reach Shared Understanding Before You Build</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Agent Loop Skills</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;&middot;&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;&middot;&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;&middot;&nbsp; Lesson 0003
+</div>
+
+<h1>Lesson 0003<br>Grill Me: Reach Shared Understanding Before You Build</h1>
+
+<p><em>Before you write a single line of code or a single skill — walk down the entire design tree together with the AI. This lesson teaches the most impactful 3-sentence skill in the entire workflow.</em></p>
+
+<h2>The Problem It Solves</h2>
+
+<p>You've probably experienced this: you go into Plan mode, describe your idea briefly, and the AI immediately spits out a full implementation plan. It looks thorough. But then you implement it and things are wrong in ways that feel obvious in hindsight — wrong page, wrong API shape, wrong scope. You trusted the AI to design something it didn't understand.</p>
+
+<p>The root cause: <strong>you never reached shared understanding.</strong> The AI was working from a vague approximation of your intent, not from a deep model of what you actually wanted.</p>
+
+<p>The <code>grill-me</code> skill solves this. It's three sentences. It can take a 30–50 question conversation. And it's the highest-leverage skill in the entire workflow.</p>
+
+<h2>The Skill</h2>
+
+<div class="skill-block">
+  <div class="skill-header">grill-me — 3 sentences</div>
+  <div class="skill-body">
+    <p>Interview the user relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one by one. If a question can be answered by exploring the codebase, explore the codebase instead.</p>
+  </div>
+</div>
+
+<p>That's it. Three sentences. No examples, no step-by-step instructions. The power is in the specificity of each sentence.</p>
+
+<h2>The Design Tree</h2>
+
+<p>The concept comes from Frederick P. Brooks' <em>The Design of Design</em>. The idea: every design decision is a branch on a tree. Below each branch are more branches — sub-decisions that depend on the parent decision. To understand a design fully, you must walk down every path.</p>
+
+<p>Example: say you want a "search page."</p>
+
+<div class="tree-diagram">
+  <ul class="tree-root">
+    <li>
+      Search page
+      <ul>
+        <li>
+          Text box only
+          <ul>
+            <li>Search syntax: simple keywords or advanced query language?</li>
+            <li>Results: paginated or infinite scroll?</li>
+          </ul>
+        </li>
+        <li>
+          Advanced search
+          <ul>
+            <li>Filters: what fields? Date range? Tags? Author?</li>
+            <li>Sort options: relevance, date, alphabetical?</li>
+            <li>Save searches for logged-in users?</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<p>If you choose "text box only," you don't need to design filters. If you choose "advanced search," every filter you add creates more sub-questions. The tree grows until the design is as complete as it can be <em>before</em> you commit to code.</p>
+
+<p>Most engineers do this intuitively. The problem with AI agents: they don't. They pick a branch prematurely and start building. The <code>grill-me</code> skill forces the conversation.</p>
+
+<h2>What "Relentless" Actually Looks Like</h2>
+
+<p>Here's a real grilling session from the author's course. The AI asked <strong>16 questions</strong> before a single line of code was written. For a feature that ended up being a 4-day implementation.</p>
+
+<div class="callout info">
+  <p>The conversation started with: "Here's some research I did in this markdown file. Grill me — I'd like to add this to the right page."</p>
+  <p>Output: <strong>16 questions.</strong> The AI explored the codebase first, then systematically walked through: where does the document live → what's the UI layout → which modes get the document panel → document lifecycle → what does the right document tool look like → edit tool shape → ... all the way to question 16.</p>
+</div>
+
+<p>Some sessions run 30–45 minutes. That's normal. The time spent questioning is always less than the time wasted rebuilding something that was designed wrong.</p>
+
+<h2>Rule 3: Explore the Codebase Instead</h2>
+
+<p>The third sentence is subtle but important:</p>
+
+<blockquote>
+  <p>If a question can be answered by exploring the codebase, explore the codebase instead.</p>
+</blockquote>
+
+<p>This prevents useless back-and-forth. Don't ask the user "where is the auth module?" — just open the codebase and find it. The AI should use its tools, not the user's memory.</p>
+
+<h2>Exercise: Grill Your Own Blog Task</h2>
+
+<p>From Lesson 0002, your real task is improving <code>create-blog-post</code>. Before writing a single improvement, let's do a grill session.</p>
+
+<p>In your workspace, think about this question:</p>
+
+<div class="callout exercise">
+  <p><strong>Prompt:</strong> "I want to improve my create-blog-post skill. Here's the current SKILL.md. Grill me about every aspect before we plan improvements."</p>
+</div>
+
+<p>Try it with me — paste your <code>create-blog-post</code> SKILL.md and say "grill me." Count how many questions the AI asks before you reach shared understanding. Then reflect:</p>
+
+<ul>
+  <li>Did the AI surface decisions you hadn't thought about?</li>
+  <li>Did it find hidden constraints?</li>
+  <li>Did you change your mind about any of your initial assumptions?</li>
+</ul>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>After your grill session, the AI asks questions about things you already decided in your head but never wrote down. This means:</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">The AI is wasting your time — you should just tell it to write the code.</label>
+        <span class="quiz-feedback" data-correct-text="Correct." data-wrong-text="Not quite — think again."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">Your SKILL.md has implicit assumptions that need to be made explicit — those are the gaps the grill session found.</label>
+        <span class="quiz-feedback" data-correct-text="Correct." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">You shouldn't write skills — you should just write prompts instead.</label>
+        <span class="quiz-feedback" data-correct-text="Correct." data-wrong-text="Not quite — think again."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">The AI is not smart enough to figure it out without questions.</label>
+        <span class="quiz-feedback" data-correct-text="Correct." data-wrong-text="Not quite — think again."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2>Why It Matters for Loop Skills</h2>
+
+<p>When you write an Agent Loop Skill, you're encoding a process. If you encode a process you don't fully understand, the loop will do the wrong thing confidently. You'll spend more time debugging the loop than you would have spent writing it manually.</p>
+
+<p>The <code>grill-me</code> skill forces you to think through:</p>
+
+<ul>
+  <li>What is the <em>termination condition</em>? When does the loop know it's done?</li>
+  <li>What is the <em>signal contract</em>? What does each pass produce and consume?</li>
+  <li>What are the <em>failure modes</em>? What goes wrong, and how does the loop recover?</li>
+  <li>Who is the <em>oracle</em>? Who or what decides if an output is good?</li>
+</ul>
+
+<p>These are the questions that make or break a loop. Use <code>grill-me</code> before every new skill.</p>
+
+<h2>When to Use It</h2>
+
+<ul>
+  <li>Before writing any <code>SKILL.md</code> — especially for a new loop type</li>
+  <li>Before a major refactor — make sure you agree on the destination</li>
+  <li>When the AI starts building too fast — invoke it to hit the brakes</li>
+  <li>When you have a vague idea — "I want to automate X" is not a spec</li>
+</ul>
+
+<div class="callout warning">
+  <p><strong>Warning:</strong> <code>grill-me</code> can feel uncomfortable. It means sitting with uncertainty longer than you want to. Resist the urge to jump to solutions. The discomfort pays off in better-designed loops.</p>
+</div>
+
+<h2>Action Items</h2>
+
+<ul class="task-list">
+  <li>
+    <strong>Try it now</strong>
+    <span>Take your <code>create-blog-post</code> SKILL.md and say "grill me" to me. Let's see how many questions it takes before we reach shared understanding.</span>
+  </li>
+  <li>
+    <strong>Record what you learned</strong>
+    <span>After the session, note which questions revealed hidden assumptions. That becomes your design tree.</span>
+  </li>
+</ul>
+
+<footer class="lesson-foot">
+  Lesson 0003 of the <em>Agent Loop Skills</em> course.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+  Primary source: Simon Willison's "Claude Code for Real Engineers" video — timestamp 0:00-2:44.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0002-install-and-pick.html">&larr; Lesson 0002</a>
+  <a href="../index.html">All Lessons</a>
+  <span class="nav-hint">Lesson 0004 &rarr;</span>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Agent Loop Skills &middot; Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
