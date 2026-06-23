@@ -163,18 +163,22 @@
       <li>
         <input type="radio" name="q1" id="q1-a" data-correct="false">
         <label for="q1-a">Because interfaces are more important than implementation</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — both matter equally, but the reason is about test boundaries."></span>
       </li>
       <li>
         <input type="radio" name="q1" id="q1-b" data-correct="true">
         <label for="q1-b">Because the test boundary is the interface boundary — knowing the surface tells you what to test and how to mock</label>
+        <span class="quiz-feedback" data-correct-text="Correct." data-wrong-text=""></span>
       </li>
       <li>
         <input type="radio" name="q1" id="q1-c" data-correct="false">
         <label for="q1-c">Because agents can't write tests without interfaces</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — agents can write tests, they need the right boundaries."></span>
       </li>
       <li>
         <input type="radio" name="q1" id="q1-d" data-correct="false">
         <label for="q1-d">Because refactoring is impossible without stable interfaces</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — harder, but not impossible."></span>
       </li>
     </ul>
   </div>
@@ -187,18 +191,22 @@
       <li>
         <input type="radio" name="q2" id="q2-a" data-correct="false">
         <label for="q2-a">Agents don't understand code quality</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — agents understand code quality but context shapes their behavior."></span>
       </li>
       <li>
         <input type="radio" name="q2" id="q2-b" data-correct="true">
         <label for="q2-b">Agents become reluctant to change code that lives in their own context window</label>
+        <span class="quiz-feedback" data-correct-text="Correct." data-wrong-text=""></span>
       </li>
       <li>
-        <input type="radio" name="q2-c" data-correct="false">
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
         <label for="q2-c">Refactoring requires too many tokens</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — token limits are a concern but not the core reason."></span>
       </li>
       <li>
-        <input type="radio" name="q2-d" data-correct="false">
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
         <label for="q2-d">Tests prevent refactoring from working correctly</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — tests enable refactoring. The problem is agent preciousness."></span>
       </li>
     </ul>
   </div>
@@ -211,18 +219,22 @@
       <li>
         <input type="radio" name="q3" id="q3-a" data-correct="false">
         <label for="q3-a">Agents write tests faster than humans</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — speed isn't the main advantage. It's the discipline the loop creates."></span>
       </li>
       <li>
-        <input type="radio" name="q3-b" data-correct="true">
+        <input type="radio" name="q3" id="q3-b" data-correct="true">
         <label for="q3-b">The tight loop of small, testable steps creates discipline that agents otherwise lack and fights their tendency to be precious about code</label>
+        <span class="quiz-feedback" data-correct-text="Correct." data-wrong-text=""></span>
       </li>
       <li>
-        <input type="radio" name="q3-c" data-correct="false">
+        <input type="radio" name="q3" id="q3-c" data-correct="false">
         <label for="q3-c">TDD makes agents more creative</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — TDD constrains creativity. The value is discipline."></span>
       </li>
       <li>
-        <input type="radio" name="q3-d" data-correct="false">
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
         <label for="q3-d">Agents prefer writing tests over writing production code</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not quite — agents don't have preferences like this."></span>
       </li>
     </ul>
   </div>
