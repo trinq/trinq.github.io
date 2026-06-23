@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0007 — Improve Codebase Architecture: Build the Foundation Agents Need</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Agent Loop Skills</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0007
+</div>
+
+<h1>Lesson 0007<br>Improve Codebase Architecture: Build the Foundation Agents Need</h1>
+
+<p><em>The skill that makes every other skill — including TDD — work better. A well-structured codebase is the single best investment you can make in agent output quality.</em></p>
+
+<h2>Prerequisite</h2>
+
+<p>This lesson builds on <a href="0006-tdd.html">Lesson 0006 (TDD)</a>. Understanding why TDD is hard in badly structured codebases sets up why this skill exists.</p>
+
+<h2>The Feedback Loop Nobody Talks About</h2>
+
+<p>Here's a pattern that plays out constantly:</p>
+
+<ol>
+  <li>You hire a new AI agent on a messy codebase</li>
+  <li>It produces messy code — inconsistent, duplicative, poorly tested</li>
+  <li>You blame the AI</li>
+</ol>
+
+<p>But step back. A senior human engineer handed a messy codebase will also produce messy code — or spend weeks just understanding the structure before writing anything useful.</p>
+
+<div class="callout">
+  <p><strong>Garbage codebase → garbage agent output.</strong> This is not a criticism of AI. It's the same rule that applies to humans. If you want better outputs, invest in the structure the AI works within.</p>
+</div>
+
+<h2>The Core Insight: Shallow vs. Deep Modules</h2>
+
+<p>John Ousterhout's <em>A Philosophy of Software Design</em> introduces a concept that transforms how you think about architecture: <strong>shallow modules vs. deep modules</strong>.</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Shallow Module</h4>
+    <p>A small file with many tiny exported functions. The interface is wide — lots of things to learn. But each piece does almost nothing alone. Tests are scattered and hard to write.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Deep Module</h4>
+    <p>A larger module with a thin, focused interface. Rich behavior lives behind it. You learn a few functions and get a lot of capability. Easy to test at the boundary.</p>
+  </div>
+</div>
+
+<p>When a codebase has many shallow modules, the AI sees a fog of undifferentiated files. It doesn't know where to start, what depends on what, or where bugs are likely to hide.</p>
+
+<p>When a codebase has deep modules, the AI sees clear boundaries. It knows exactly what to test and where to look for bugs.</p>
+
+<h2>The Skill</h2>
+
+<div class="callout" style="background: var(--code-bg); font-size: 0.92rem; border-left: 3px solid var(--accent);">
+  <p><strong>improve-codebase-architecture</strong> — surfaces opportunities to deepen shallow modules.</p>
+  <ol style="margin-bottom: 0;">
+    <li>Explore the codebase as an agent would. Look for confusions — places where understanding one concept requires bouncing around many small files.</li>
+    <li>Present candidates: numbered list of deepening opportunities. Each is a candidate for a refactor.</li>
+    <li>User picks a candidate. Then: spawn three sub-agents in parallel, each producing a radically different interface design for that module.</li>
+    <li>Compare the three designs. Give your recommendation — which is strongest and why. If elements combine well, propose a hybrid.</li>
+    <li>Create a GitHub issue: an RFC describing the proposed refactor as a destination, then use <code>prd-to-issues</code> to break it into a journey.</li>
+  </ol>
+</div>
+
+<h2>Finding Candidates: The Confusion Checklist</h2>
+
+<p>When exploring, the skill asks questions a senior engineer would ask about any codebase:</p>
+
+<ul>
+  <li><strong>Where does understanding one concept require bouncing around many small files?</strong> — signals a shallow module that should be deepened</li>
+  <li><strong>Where have pure functions been extracted just for testability, but the real bugs hide in how they're called?</strong> — signals misaligned test boundaries</li>
+  <li><strong>Where do tightly coupled modules create integration risk in the seams between them?</strong> — signals missing abstractions</li>
+  <li><strong>Where does the AI repeatedly ask "which file should I put this in?"</strong> — signals structural confusion</li>
+</ul>
+
+<p>The skill surfaces what the AI finds confusing so you can resolve it — together.</p>
+
+<h2>Three Designs, One Decision</h2>
+
+<p>The most powerful step: spawn three sub-agents in parallel, each producing a radically different interface design for the same module. This forces genuine exploration rather than the first reasonable idea.</p>
+
+<p>You don't need to be an interface design expert to benefit from this. Comparing three concrete options reveals trade-offs you wouldn't see otherwise. Then you apply your judgment:</p>
+
+<ul>
+  <li>Which design matches how callers actually use the module?</li>
+  <li>Which is easiest to test at its boundary?</li>
+  <li>Which is most resilient to future changes?</li>
+</ul>
+
+<p>The skill asks for a recommendation — but with rationale. It forces you to think, not just accept.</p>
+
+<h2>Only One at a Time</h2>
+
+<p>Architecture refactors are cognitively expensive. The skill recommends doing one at a time:</p>
+
+<ul>
+  <li>Pick the highest-confusion candidate</li>
+  <li>Design the new interface</li>
+  <li>Write the GitHub issue</li>
+  <li>Break it into slices with <code>prd-to-issues</code></li>
+  <li>Implement with <code>tdd</code></li>
+  <li>Then move to the next candidate</li>
+</ul>
+
+<p>Running this once a week — or whenever a surge of new features creates a new wing of the codebase — keeps the structure clean enough for agents to navigate.</p>
+
+<h2>How This Fits the Workflow</h2>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">grill-me<br><small>surface the full scope</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">write-a-prd<br><small>lock the destination</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-run">prd-to-issues<br><small>plan the vertical slices</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">tdd<br><small>implement each slice</small></span>
+</div>
+
+<p>But wait — this skill runs <em>outside</em> the main workflow. It runs in the background, continuously improving the codebase so that when you invoke the main workflow, the AI is working in a cleaner environment. Think of it as maintenance, not feature development.</p>
+
+<div class="callout warning">
+  <p><strong>Invest early.</strong> The best time to deepen modules is before they become critical paths in your workflow. Once a shallow module is depended on everywhere, refactoring it becomes risky. Catch it early.</p>
+</div>
+
+<h2>The Full Skill Chain</h2>
+
+<p>Here's the complete picture of the Claude Code for Real Engineers workflow:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Planning Phase</h4>
+    <p><code>grill-me</code> → <code>write-a-prd</code> → <code>prd-to-issues</code></p>
+    <p>Surface, capture, and slice the work before writing any code.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Implementation Phase</h4>
+    <p><code>tdd</code> with <code>ralph-loop</code></p>
+    <p>Implement each slice with red green refactor, one issue at a time.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Maintenance Phase</h4>
+    <p><code>improve-codebase-architecture</code></p>
+    <p>Continuously deepen shallow modules so future work happens in a cleaner environment.</p>
+  </div>
+</div>
+
+<h2>Practice Exercise</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Explore your own codebase</strong>
+    <span>Pick one module you work with often. Can you describe its interface in one sentence? Or do you have to navigate many files to understand it?</span>
+  </li>
+  <li>
+    <strong>Identify one confusion point</strong>
+    <span>Where does understanding one concept require bouncing between 3+ files? That's a deepening candidate.</span>
+  </li>
+  <li>
+    <strong>Sketch two alternative interfaces</strong>
+    <span>Without spawning sub-agents yet, think: how could this module's surface look differently? Which is cleaner?</span>
+  </li>
+</ol>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why does improve-codebase-architecture spawn three sub-agents in parallel to design interfaces?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">Because sub-agents are faster than a single agent</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">Because comparing three radically different designs reveals trade-offs that aren't visible from the first reasonable idea</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">Because sub-agents produce better code than a single agent</label>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">Because the user doesn't know enough about interface design to pick one option</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>A module exports 12 functions, each doing almost nothing on its own. This is an example of:</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="true">
+        <label for="q2-a">A shallow module</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="false">
+        <label for="q2-b">A deep module</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c">A blocking relationship</label>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">A vertical slice</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Where does improve-codebase-architecture fit in the main workflow chain (grill-me → write-a-prd → prd-to-issues → tdd)?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">It replaces tdd</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="false">
+        <label for="q3-b">It runs before grill-me in every session</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="true">
+        <label for="q3-c">It runs outside the main workflow — continuously, in the background — to keep the codebase clean for when you do invoke the main workflow</label>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
+        <label for="q3-d">It is part of prd-to-issues</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0007 of the <em>Agent Loop Skills</em> course. This completes the core skill chain.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0006-tdd.html">← Lesson 0006</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="../reference/glossary.html">Glossary →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Agent Loop Skills · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>
