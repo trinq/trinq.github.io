@@ -42,6 +42,8 @@ title: Home
 			<span class="post-card-date">{{ post.date | date: "%b %d" }}</span>
 			{% if post.category == "reading" %}
 			<span class="post-card-label">reading</span>
+			{% elsif post.category == "loop" %}
+			<span class="post-card-label">loop</span>
 			{% endif %}
 		</div>
 		<div class="post-card-title">{{ post.title }}</div>
