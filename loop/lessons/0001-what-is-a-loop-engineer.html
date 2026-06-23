@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0001 — What is a Loop Engineer?</title>
+<link rel="stylesheet" href="/loop/assets/styles.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <a href="/loop/" class="site-logo">Loop Engineer</a>
+    <div class="site-nav">
+      <a href="/">Home</a>
+      <a href="/loop/">Lessons</a>
+      <a href="/loop/MISSION.md">Mission</a>
+      <a href="/loop/RESOURCES.md">Resources</a>
+      <a href="/loop/GLOSSARY.md">Glossary</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<div class="crumbs">
+  <a href="/loop/">Lessons</a> &nbsp;·&nbsp;
+  <a href="/loop/MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="/loop/RESOURCES.md">Resources</a> &nbsp;·&nbsp;
+  <a href="/loop/GLOSSARY.md">Glossary</a> &nbsp;·&nbsp; Lesson 0001
+</div>
+
+<h1>Lesson 0001<br>What is a Loop Engineer?</h1>
+
+<p><em>Reading time: ~25 minutes. No coding required.</em></p>
+
+<p>One day, you are out but a pile of PRs is still rolling into the repo. A whole bunch of agents are running in the background, automatically finding issues and doing the work. One SEO agent has generated 20–40 high-quality content pages over 2 days — without you lifting a finger. This is the product of Loop Engineering.</p>
+
+<p>This lesson introduces the concept, distinguishes it from Prompt Engineering and Agent Engineering, and gives you the full picture of the loop system.</p>
+
+<h2>Three Layers of AI Engineering</h2>
+
+<p>The source video argues there are 3 layers of AI Engineering, each at a different layer:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Prompt Engineer</h4>
+    <p>Optimize commands for a model. Give one input, get a better output. Focus on context injection techniques to steer model behavior — like "always return text in CAPS" or "write in a journalistic style."</p>
+  </div>
+  <div class="concept-card">
+    <h4>Agent Engineer</h4>
+    <p>Design an agent to complete a task well. Focus on tool use, memory, and context management of a single agent. "How do we make this agent do task X well?"</p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop Engineer</h4>
+    <p>Set up the environment so many agents run automatically, share state, and self-improve. "How do we get agents woken up at the right time, doing the right work, and logging results?" This is the outermost layer — the layer surrounding agent runtime.</p>
+  </div>
+</div>
+
+<p>In short: Prompt Engineer works with <em>1 prompt</em>. Agent Engineer works with <em>1 agent</em>. Loop Engineer works with <em>a system of many agents</em> running together.</p>
+
+<h2>The Three Core Components of an Agent</h2>
+
+<p>Any agent — ChatGPT, Claude, Cursor, Copilot — has 3 components:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Agent</h4>
+    <p>The language model (LLM) receives input, thinks, decides on the next action. It is the "brain" of the system.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop</h4>
+    <p>The thinking loop — call tool → receive result → think again → call tool or answer. The loop continues until the agent decides the task is done.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Memory Layer</h4>
+    <p>The memory storing conversation history, files, and state. The memory layer is what distinguishes an agent from a plain chatbot — the agent remembers "what it did before."</p>
+  </div>
+</div>
+
+<p>There is a fourth component: <strong>Tool Access</strong> — the ability to call APIs, read files, send requests. But the 3 above are what everyone has in common.</p>
+
+<h2>The Inflection Point: From Task Completion to Cross-Session Work</h2>
+
+<p>Mid-2024, context windows grew (4K → 128K → 1M tokens), models got smarter, and tool use became common (MCP). This changed how we use LLMs:</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>2023</th>
+        <th>2024–2025</th>
+        <th>2025–2026</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Task</strong></td>
+        <td>1 turn, small</td>
+        <td>30 minutes – 2 hours</td>
+        <td>Many sessions, many agents</td>
+      </tr>
+      <tr>
+        <td><strong>Context</strong></td>
+        <td>~4K tokens</td>
+        <td>128K–1M tokens</td>
+        <td>Effective: 128K–200K</td>
+      </tr>
+      <tr>
+        <td><strong>Work pattern</strong></td>
+        <td>Prompt → Output</td>
+        <td>Agent + Tools</td>
+        <td>Loop + State tracking</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>The larger context window does not mean "use 1M tokens." The effective context is only about 128K–200K tokens. This creates a problem: how can many different agent sessions work on the same large task without losing state between calls?</p>
+
+<p><strong>Answer: Harness.</strong></p>
+
+<h2>What is the Harness?</h2>
+
+<p>The harness is everything that is not the model in an agent system. It includes:</p>
+
+<ul>
+  <li>How you write prompts</li>
+  <li>How you manage context</li>
+  <li>Orchestration logic</li>
+  <li>Hooks</li>
+  <li><strong>Shared file system</strong> — the most important thing most people overlook</li>
+</ul>
+
+<p>Why is the shared file system so important? Because when many agent sessions run on the same task, each session needs to know "where things are" and "what was done." Without a shared file system, each session is like a goldfish that has to remember everything in context — but the context window is finite.</p>
+
+<h2>Inner Loop vs Outer Loop</h2>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Inner Loop</h4>
+    <p>Optimize <em>how one agent completes a task</em>. Focus on: prompt optimization, tool selection, context management. Question: "How do we make the agent do this task well?"</p>
+  </div>
+  <div class="concept-card">
+    <h4>Outer Loop</h4>
+    <p>Optimize <em>how the system decides which task to work on next</em>. Focus on: trigger setup, state tracking, cross-session coordination. Question: "Which task should we do next?"</p>
+  </div>
+</div>
+
+<p>Loop Engineers work mainly at the <strong>outer loop</strong> — setting up the environment so agents get woken up at the right time, do the right work, and log results — without anyone prompting them by hand.</p>
+
+<h2>The Picture: This Is Not Just One Loop</h2>
+
+<p>When people hear "loop," they think of a simple while loop: "run the agent forever with the same prompt." But the source video talks about something different: <strong>compound loops</strong> — many different loops all reading and writing to a shared file system, creating a compounding effect.</p>
+
+<div class="loop-diagram">
+  <span class="loop-node">Support Loop</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Signals</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Product Loop</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">SEO Loop</span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node">Ads Loop</span>
+</div>
+
+<p>Example: SEO loop discovers a keyword with high CTR but no organic content → creates a signal. Ads loop reads this signal → prioritizes creating ads for that keyword. Product loop reads the signal → prioritizes building content. They all share one "brain" — the signals folder.</p>
+
+<h2>Codebase Harness: Making Agents Work Autonomously</h2>
+
+<p>A practical part the source video emphasizes: <strong>the codebase must be agent-friendly</strong>. Three qualities:</p>
+
+<ul>
+  <li><strong>Legible</strong> — The agent can easily understand the structure, know where to make changes, know where to find information. This can be through <code>AGENTS.md</code>, documentation, or custom linting rules.</li>
+  <li><strong>Executable</strong> — The agent can spin up the dev server, run tests, verify work with just one command. Include <code>dev.sh</code>, startup scripts.</li>
+  <li><strong>Verifiable</strong> — The agent has tools to check results. Playwright for browser automation and video recording. End-to-end tests for critical flows. PR checklist to ensure quality before human review.</li>
+</ul>
+
+<div class="callout">
+  <strong>Key point.</strong> Do not let the agent self-verify. The source video says: "it just generally doesn't work that well." Instead, spawn a <strong>read-only verifier agent</strong> to check results and report.
+</div>
+
+<h2>Three File Types in a Loop System</h2>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Artifacts</h4>
+    <p>The output of each agent's work. Can be docs, signals, tasks, tickets, campaigns. Each artifact has its own folder, a README defining the schema and process, and a metadata + timeline file.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Contracts</h4>
+    <p>The README in each loop folder, defining: the loop's goal, workflow, backlog, timeline. Each time the loop runs, it reads the contract first to understand "where things are."</p>
+  </div>
+  <div class="concept-card">
+    <h4>Logs</h4>
+    <p>Global <code>worklog.md</code>. The agent logs completed work, readable by both humans and agents. Contains information that does not belong in any artifact but needs to be kept.</p>
+  </div>
+</div>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz" data-name="loop-q1">
+  <div class="quiz-question">How does a Loop Engineer differ from an Agent Engineer?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="loop-q1" data-correct="false">
+        <span>Loop Engineers write prompts better, while Agent Engineers design tool use.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Not quite — that is Prompt Engineering, not Loop Engineering." data-wrong-text="Incorrect. Prompt Engineers work with 1 prompt. Loop Engineers work with systems of many agents."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q1" data-correct="true">
+        <span>Agent Engineers optimize 1 agent to complete 1 task well. Loop Engineers set up the environment for many agents to run automatically, share state, and self-improve.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Loop Engineers work at the outer layer — outer loop — rather than optimizing the inner loop."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q1" data-correct="false">
+        <span>There is no difference — the two terms are synonymous.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — the two terms differ in scope of operation." data-wrong-text="Incorrect. These are 3 different layers of AI Engineering, not the same thing."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q1" data-correct="false">
+        <span>Loop Engineers only deal with while loops, while Agent Engineers do everything else.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Not quite — 'loop' here is not just a while loop, but a system of trigger + state tracking + compounding." data-wrong-text="Incorrect. 'Loop' in Loop Engineering is a complete system, not just a while statement."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="loop-q2">
+  <div class="quiz-question">Why is the shared file system the most important part of the Harness?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="loop-q2" data-correct="false">
+        <span>Because it lets the agent cache data temporarily to go faster.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — that is memcached, not a harness." data-wrong-text="Incorrect. The shared file system does not just slow things down; it ensures state is preserved between sessions."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q2" data-correct="true">
+        <span>Because many different agent sessions need to know "where things are" and "what was done" to continue working without losing state between calls, and the context window is finite.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. Without a shared file system, each session is like a goldfish that has to hold everything in context."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q2" data-correct="false">
+        <span>Because it replaces the agent's memory layer, reducing API costs.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — the shared file system does not replace the memory layer." data-wrong-text="Incorrect. The shared file system supplements the memory layer, it does not replace it."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q2" data-correct="false">
+        <span>Because it is the mandatory syntax of MCP (Model Context Protocol).</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — MCP is a tool use protocol, it does not define a shared file system." data-wrong-text="Incorrect. MCP and shared file system are two different concepts."></div>
+    </li>
+  </ul>
+</div>
+
+<div class="quiz" data-name="loop-q3">
+  <div class="quiz-question">What does "compound loop" mean?</div>
+  <ul class="quiz-options">
+    <li>
+      <label>
+        <input type="radio" name="loop-q3" data-correct="false">
+        <span>A while loop running many agents at the same time.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — that is parallel agents, not a compound loop." data-wrong-text="Incorrect. A compound loop is many different loops sharing state, not one loop running many agents."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q3" data-correct="true">
+        <span>Many different loops all reading and writing to a shared file system, creating a compounding effect — this loop creates a signal, that loop reacts.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="Correct. This is the key difference between a 'simple loop' and a 'compound loop'."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q3" data-correct="false">
+        <span>An agent loop running for a very long time, spanning many hours.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — that is cross-session work, not compounding." data-wrong-text="Incorrect. Compound loops emphasize many loops interacting with each other through a shared file system."></div>
+    </li>
+    <li>
+      <label>
+        <input type="radio" name="loop-q3" data-correct="false">
+        <span>An agent loop calling itself in recursion.</span>
+      </label>
+      <div class="quiz-feedback" data-correct-text="No — recursion and compound loops are two different concepts." data-wrong-text="Incorrect. Compound loops involve many different domain loops, not recursion."></div>
+    </li>
+  </ul>
+</div>
+
+<h2>Key Takeaways</h2>
+
+<p>After this lesson, you know:</p>
+
+<ul>
+  <li><strong>Loop Engineer</strong> is someone who sets up a system of many agents running automatically, sharing state, and self-improving. This is the outermost layer (outer loop), different from Prompt Engineer (1 prompt) and Agent Engineer (1 agent).</li>
+  <li><strong>Harness</strong> is everything that is not the model — especially the <strong>shared file system</strong> so many agent sessions can all understand "where things are."</li>
+  <li><strong>Compound loops</strong> are when many different domain loops (support, SEO, product) all read/write signals, creating a compounding effect.</li>
+  <li><strong>Codebase harness</strong> needs 3 qualities: legible, executable, verifiable. Do not let the agent self-verify.</li>
+</ul>
+
+<h2>Questions to Think About</h2>
+
+<p>If you want to go deeper before the next step, try answering these questions in your head:</p>
+
+<ol>
+  <li>In your work (Pre Sales Security Consultant), what recurring workflows do you do manually? (Example: researching new CVEs, creating proposals, answering customers.)</li>
+  <li>If you had a Support Loop for your team, how often would it run, and what would it do?</li>
+  <li>Can you imagine a Signal that a Security Loop might create, and which other loop would react to it?</li>
+</ol>
+
+<div class="callout">
+  <strong>If anything is unclear, ask.</strong> The agent is your teacher. If a concept feels confusing, if you need more specific examples on how to apply this to your Security work — bring your question here. The next lesson will be designed around your sticking points.
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0001 of the <em>Loop Engineer</em> course. See
+  <a href="/loop/RESOURCES.md">Resources</a> for primary sources, and
+  <a href="/loop/MISSION.md">Mission</a> to understand why we are doing this.
+</footer>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/loop/">Lessons</a></li>
+        <li><a href="/loop/MISSION.md">Mission</a></li>
+        <li><a href="/loop/RESOURCES.md">Resources</a></li>
+        <li><a href="/loop/GLOSSARY.md">Glossary</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Loop Engineer &mdash; a self-paced course.
+  </div>
+</footer>
+
+<script src="/loop/assets/quiz.js"></script>
+<script src="/loop/assets/i18n.js" data-source="en" data-target="vi"></script>
+</body>
+</html>
