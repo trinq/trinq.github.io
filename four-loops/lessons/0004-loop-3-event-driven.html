@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0004 — Loop 3: The Event-Driven Loop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">The 4-Loop Ladder</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0004
+</div>
+
+<h1>Lesson 0004<br>Loop 3: The Event-Driven Loop</h1>
+
+<p><em>Here's where it stops waiting for you to open a terminal.</em></p>
+
+<h2>What this loop does</h2>
+
+<p>Loops 1 and 2 fire when you tell them to. Loop 3 fires on its own — when something happens. A message in Slack. A webhook from GitHub. A cron at 3am. A new row in a database. A comment on a doc.</p>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">event<br><small>slack msg, cron, webhook, db row</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">trigger fires</span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">agent runs<br><small>(Loops 1 + 2)</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-term">write result back to system</span>
+</div>
+
+<p>The key property: <strong>no human invocation</strong>. The agent becomes a participant in the system, not a tool you reach for.</p>
+
+<h2>Two properties that matter</h2>
+
+<ul>
+  <li><strong>No human invocation.</strong> The agent runs because something fired, not because someone opened a terminal.</li>
+  <li><strong>Lives where you already work.</strong> The trigger happens inside a tool you're already in all day — Slack, GitHub, your CRM, your data warehouse.</li>
+</ul>
+
+<p>When both are true, the agent isn't "an app you go visit." It's a coworker who's always on and never files an invoice.</p>
+
+<div class="callout">
+  <p><strong>Concrete examples:</strong>
+  <ul>
+    <li>A "heartbeat" cron: every morning at 8am, your docs agent checks for broken links across your docs site.</li>
+    <li>A Slack channel like <code>#docs-plz</code>: any message in that channel triggers the docs agent to answer.</li>
+    <li>A GitHub webhook on issues labeled <code>good-first-task</code>: the agent drafts a response.</li>
+    <li>A row arriving in a "support tickets" table: the agent triages the ticket and assigns priority.</li>
+  </ul>
+  </p>
+</div>
+
+<h2>The canonical primitives</h2>
+
+<p>From the LangChain blog:</p>
+
+<blockquote>
+  <p>"LangSmith Deployment supports the trigger infrastructure, including support for cron schedules and webhooks. One popular example of crons in action is 'heartbeats' in openclaw, which turn your agent into an always-on, proactive assistant."</p>
+</blockquote>
+
+<p>Two flavors in the LangChain stack:</p>
+
+<ul>
+  <li><strong>LangSmith Deployment with cron / webhooks</strong> — for triggers you control directly (schedules, HTTP endpoints).</li>
+  <li><strong>Fleet channels</strong> — for triggers that live inside chat-style tools (Slack, Teams, etc.).</li>
+</ul>
+
+<p>Other frameworks have equivalents. The pattern matters; the brand name doesn't.</p>
+
+<h2>Why this rung unlocks the next one</h2>
+
+<p>Loop 3 generates <strong>traces at scale</strong>. Every event-driven run produces a trace — the system prompt, the inputs, the tool calls, the rubric verdict, the output. When you have hundreds or thousands of these, you have the data Loop 4 needs to actually improve the agent.</p>
+
+<p>Loop 3 is the data-collection layer for Loop 4.</p>
+
+<div class="callout success">
+  <p><strong>This is why "no human invocation" matters.</strong> A human-run agent produces a handful of traces per day. An event-driven agent produces hundreds. Loop 4 needs volume to find patterns.</p>
+</div>
+
+<h2>Common mistakes</h2>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Triggering too often</h4>
+    <p>If your cron runs every minute and most runs are no-ops, you're burning tokens. Set the cadence to match when the work actually shows up.</p>
+  </div>
+  <div class="concept-card">
+    <h4>No output channel</h4>
+    <p>If the agent runs but has nowhere to write the result, the work dies in the trace log. Loop 3 must end with a write — to Slack, to a file, to a DB column.</p>
+  </div>
+  <div class="concept-card">
+    <h4>No idempotency</h4>
+    <p>If the same event fires twice (webhook retries are common), the agent runs twice. Idempotency keys or dedup at the trigger layer save you.</p>
+  </div>
+  <div class="concept-card">
+    <h4>No human override</h4>
+    <p>Always-on agents go off the rails. Have a kill switch — a way to pause the trigger, or a rate limit that fails closed.</p>
+  </div>
+</div>
+
+<h2>Exercise: design one event-driven agent</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Pick a recurring annoyance</strong>
+    <span>Something that happens every day or week and currently needs a human to notice. New signups with no first action. Docs pages with broken links. Customers waiting too long for a reply.</span>
+  </li>
+  <li>
+    <strong>Define the trigger</strong>
+    <span>What's the event? Be specific. "New row in users table where first_action IS NULL" is a trigger. "User signups" is not.</span>
+  </li>
+  <li>
+    <strong>Define the output channel</strong>
+    <span>Where does the agent write when it's done? Be specific. Slack DM to the user. Email. Update a column. Post in a channel.</span>
+  </li>
+  <li>
+    <strong>Identify the rubric</strong>
+    <span>What does "done well" look like? At least 3 criteria, mixed deterministic and fuzzy. This is your Loop 2 — the verification inside Loop 3.</span>
+  </li>
+</ol>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What is the key property that distinguishes Loop 3 from Loops 1 and 2?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">It uses a bigger model</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Model size is not what defines this rung."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">It runs without a human invoking it — it fires when an event happens</label>
+        <span class="quiz-feedback" data-correct-text="Correct. No human invocation is the defining property." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">It grades its own output</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 2."</span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">It improves itself over time</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 4."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why is Loop 3 essential infrastructure for Loop 4?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">Because Loop 4 needs a bigger model</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Model size isn't the issue — trace volume is."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="false">
+        <label for="q2-b">Because Loop 4 needs a cron</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="The cron is part of Loop 3's setup, not Loop 4's data input."</span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="true">
+        <label for="q2-c">Because Loop 4 needs many traces to find patterns — and event-driven runs produce traces at scale, while human-invoked runs produce only a few per day</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Volume is the unlock." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">Because Loop 4 only runs at night</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Loop 4 runs whenever there's enough trace data — not specifically at night."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0004 of the <em>4-Loop Ladder</em> course. Next: <a href="0005-loop-4-hill-climbing.html">Lesson 0005 — Loop 4: Hill-Climbing</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0003-loop-2-verification.html">← Lesson 0003</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="0005-loop-4-hill-climbing.html">Lesson 0005 →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>The 4-Loop Ladder · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

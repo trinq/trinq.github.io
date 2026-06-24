@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — Glossary</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">The 4-Loop Ladder</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Reference — Glossary
+</div>
+
+<h1>Glossary</h1>
+
+<p><em>Reference for the four-loop ladder. Each lesson references these terms. Use this as your one-stop lookup.</em></p>
+
+<h2>The four loops</h2>
+
+<dl class="glossary">
+  <dt>Loop 1 — Agent loop</dt>
+  <dd>The model picks a tool, calls it, reads the result, picks another, and continues until it decides the task is done. The floor of the ladder. Canonical primitive: <code>create_agent</code> (LangChain).</dd>
+
+  <dt>Loop 2 — Verification loop</dt>
+  <dd>After Loop 1 finishes, a grader scores the output against a rubric. If it fails, feedback goes back to the agent and it retries, up to a cap. Canonical primitive: <code>RubricMiddleware</code> (deepagents).</dd>
+
+  <dt>Loop 3 — Event-driven loop</dt>
+  <dd>The agent runs because something fired (cron, webhook, Slack message, DB row), not because a human invoked it. The defining property: no human in the trigger path. Canonical primitives: LangSmith Deployment (cron / webhooks) or Fleet channels.</dd>
+
+  <dt>Loop 4 — Hill-climbing loop</dt>
+  <dd>An analysis agent reads traces from Loop 3 runs, clusters failures, proposes patches (prompt edits, tool changes, new rubric criteria), and applies them. The agent improves itself. Canonical primitive: LangSmith Engine.</dd>
+</dl>
+
+<h2>Primitives and patterns</h2>
+
+<dl class="glossary">
+  <dt>create_agent</dt>
+  <dd>The LangChain entry point for Loop 1. Pick a model, plug in tools, get back an invokable agent. The pattern repeats across frameworks.</dd>
+
+  <dt>Rubric</dt>
+  <dd>A list of criteria the grader checks against. Each criterion is one thing, testable, and either deterministic (checked by code) or fuzzy (checked by an LLM-as-judge). Good rubrics have 3-8 criteria.</dd>
+
+  <dt>RubricMiddleware</dt>
+  <dd>The deepagents middleware that attaches a grader to Loop 1. Takes a model (the grader, often smaller), an optional system prompt, optional tools the grader can call, and a max_iterations cap. Default cap: 3. Hard cap: 20.</dd>
+
+  <dt>LLM-as-judge</dt>
+  <dd>Using one LLM to score another LLM's output. Used for fuzzy checks (did it answer the question? is the tone right?). Slower and more expensive than deterministic checks but the only way to grade non-deterministic output.</dd>
+
+  <dt>Deterministic check</dt>
+  <dd>A pass/fail check that runs as code, not as an LLM. "Did the link resolve?" "Does the JSON match the schema?" "Is the file written?" Cheap, fast, unambiguous.</dd>
+
+  <dt>Trigger</dt>
+  <dd>The event that fires Loop 3. A cron schedule, an HTTP webhook, a Slack message, a database row, a GitHub issue event. The defining property: no human invocation.</dd>
+
+  <dt>Trace</dt>
+  <dd>The complete record of one agent run: system prompt, inputs, every tool call and result, the rubric verdict, the final output. Loop 4 reads traces.</dd>
+
+  <dt>Patch</dt>
+  <dd>Loop 4's unit of work. A small edit to the agent's setup — usually a sentence in the system prompt, a new tool, a new rubric criterion, or a model change. Patches are tested against failing traces before being kept.</dd>
+
+  <dt>Engine (LangSmith Engine)</dt>
+  <dd>The LangChain agent that automates Loop 4. Built on Deep Agents. Pulls traces, clusters failures into issues, proposes patches, verifies them.</dd>
+
+  <dt>Fleet channels</dt>
+  <dd>LangChain's chat-style triggers (Slack, Teams, etc.). Part of Loop 3's infrastructure.</dd>
+
+  <dt>Harness</dt>
+  <dd>The thing wrapping the agent: prompt, tools, rubric, triggers, trace storage, analysis agent. The harness is what improves over time on Loop 4. "The model hasn't been the bottleneck for months. What's left is the harness around it."</dd>
+
+  <dt>Hill-climbing</dt>
+  <dd>The metaphor for Loop 4. The agent keeps walking up the slope of its own failures — small improvements, applied iteratively, each one measured against the rubric.</dd>
+</dl>
+
+<h2>The math</h2>
+
+<dl class="glossary">
+  <dt>1.01<sup>365</sup> ≈ 37.78</dt>
+  <dd>The geometric compounding formula. 1% improvement per day, compounded for a year, gives ~37.8× the starting value. Linear growth (1 + 0.01 × 365) gives only ~4.65. The difference between linear and compounding is the whole pitch of Loop 4.</dd>
+</dl>
+
+<h2>Status vocabulary</h2>
+
+<dl class="glossary">
+  <dt>satisfied</dt>
+  <dd>RubricMiddleware status: the grader accepted the output. The run terminates successfully.</dd>
+
+  <dt>needs_revision</dt>
+  <dd>RubricMiddleware status: the grader found at least one unmet criterion. The middleware sends feedback back to the agent for another attempt.</dd>
+
+  <dt>max_iterations_reached</dt>
+  <dd>RubricMiddleware status: the agent exhausted its retry budget without satisfying the rubric. The run terminates as a failure. Tweak the rubric, the prompt, or raise the cap.</dd>
+
+  <dt>failed</dt>
+  <dd>RubricMiddleware status: the grader itself errored. Different from max_iterations_reached — this is a grader problem, not an agent problem.</dd>
+</dl>
+
+<p style="margin-top: 2rem;"><a href="loop-ladder.html">→ Loop ladder cheat sheet</a> for the four rungs in one table.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>The 4-Loop Ladder · Built with Cursor</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — The Loop Ladder Cheat Sheet</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">The 4-Loop Ladder</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Reference — Loop Ladder
+</div>
+
+<h1>The Loop Ladder Cheat Sheet</h1>
+
+<p><em>Print this. Tape it above your monitor. The four rungs in one page.</em></p>
+
+<h2>The four rungs</h2>
+
+<table class="ref-table">
+  <thead>
+    <tr>
+      <th>Rung</th>
+      <th>What it does</th>
+      <th>What it costs</th>
+      <th>Canonical primitive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Loop 1 — Agent</strong></td>
+      <td>Model calls tools until task is done</td>
+      <td>1× tokens</td>
+      <td><code>create_agent</code></td>
+    </tr>
+    <tr>
+      <td><strong>Loop 2 — Verification</strong></td>
+      <td>Grader scores output against rubric, retries on fail</td>
+      <td>2-3× tokens</td>
+      <td><code>RubricMiddleware</code></td>
+    </tr>
+    <tr>
+      <td><strong>Loop 3 — Event-driven</strong></td>
+      <td>Agent runs on triggers (cron, webhook, Slack)</td>
+      <td>infra + 2-3× per run</td>
+      <td>LangSmith Deployment / Fleet</td>
+    </tr>
+    <tr>
+      <td><strong>Loop 4 — Hill-climbing</strong></td>
+      <td>Trace analysis agent patches the agent's setup</td>
+      <td>analysis compute</td>
+      <td>LangSmith Engine</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Where you probably are</h2>
+
+<table class="ref-table">
+  <thead>
+    <tr>
+      <th>Rung</th>
+      <th>Symptoms</th>
+      <th>Next step</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Loop 1 only</td>
+      <td>You copy-paste agent output and patch it by hand</td>
+      <td>Write a rubric. Run Loop 2.</td>
+    </tr>
+    <tr>
+      <td>Loop 2</td>
+      <td>You invoke the agent. It grades and retries. You read the result.</td>
+      <td>Add a cron or webhook. Move to Loop 3.</td>
+    </tr>
+    <tr>
+      <td>Loop 3</td>
+      <td>Agent fires on events. You read its output in Slack / logs.</td>
+      <td>Let traces accumulate. Start clustering failures. Move to Loop 4.</td>
+    </tr>
+    <tr>
+      <td>Loop 4</td>
+      <td>Agent patches itself. You see commits in the morning.</td>
+      <td>Compound. Stay on this rung for a year.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The math</h2>
+
+<div class="formula">1.01<sup>365</sup> ≈ 37.78</div>
+
+<p>1% improvement every night, compounded for a year. That's the pitch of Loop 4 in one formula.</p>
+
+<h2>The arrow that matters</h2>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">Loop 4<br><small>hill-climb</small></span>
+  <span class="ld-arrow">↑ patches</span>
+  <span class="ld-step ld-score">Loop 1<br><small>agent runs</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">Loop 2<br><small>grade + retry</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-term">Loop 3<br><small>trigger</small></span>
+</div>
+
+<p>Loop 4 doesn't restart the agent. It reaches <em>inside</em> and edits the prompt, the tools, or the rubric. The system prompt tomorrow is not the system prompt today — because the agent itself edited it.</p>
+
+<h2>One-sentence summary of each loop</h2>
+
+<ul>
+  <li><strong>Loop 1:</strong> the agent runs.</li>
+  <li><strong>Loop 2:</strong> the agent grades itself and retries when it fails.</li>
+  <li><strong>Loop 3:</strong> the agent runs on its own, fired by events.</li>
+  <li><strong>Loop 4:</strong> the agent improves itself, fired by its own failures.</li>
+</ul>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>The 4-Loop Ladder · Built with Cursor</p>
+  </div>
+</footer>
+
+</body>
+</html>

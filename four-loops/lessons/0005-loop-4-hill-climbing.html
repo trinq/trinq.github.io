@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0005 — Loop 4: The Hill-Climbing Loop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">The 4-Loop Ladder</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0005
+</div>
+
+<h1>Lesson 0005<br>Loop 4: The Hill-Climbing Loop</h1>
+
+<p><em>The one that took the author a while to actually believe. The return arrow doesn't go back to the top. It reaches inside and edits the agent itself.</em></p>
+
+<h2>What this loop does</h2>
+
+<p>Every Loop 3 run leaves a trace. Those traces feed an analysis agent. The analysis agent reads them, spots the failures that keep happening, and rewrites the prompt and tool config of Loop 1.</p>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">traces<br><small>from Loop 3</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">analysis agent<br><small>cluster failures</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">propose patch<br><small>prompt / tool / rubric</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-term">Loop 1 runs on new config</span>
+  <div class="ld-branch">tomorrow's agent is better than today's</div>
+</div>
+
+<h2>The three properties</h2>
+
+<ul>
+  <li><strong>It notices where it keeps screwing up.</strong> Failures cluster. The agent reads clusters.</li>
+  <li><strong>It patches its own setup.</strong> Not just the prompt — also the tools, the rubric, the model choice.</li>
+  <li><strong>You wake up to a better agent.</strong> The improvement happens while you slept. You see the diff in the morning.</li>
+</ul>
+
+<div class="callout">
+  <p><strong>Compound effect:</strong> if Loop 4 finds even a 1% improvement each cycle, after 365 cycles you're at 1.01<sup>365</sup> ≈ 37.78× the original quality. That's not a metaphor — it's the math of geometric compounding applied to agent improvement.</p>
+</div>
+
+<h2>The canonical primitive: LangSmith Engine</h2>
+
+<p>From the LangChain engineering blog, <em>How We Built LangSmith Engine, Our Agent for Improving Agents</em>:</p>
+
+<blockquote>
+  <p>"Engine is itself an agent: an orchestrator that uses specialized components to run the improvement loop end to end. It pulls traces, reads code when a repository is connected, groups failures into issues, proposes evaluators and dataset examples, and updates its understanding of your agent over time."</p>
+</blockquote>
+
+<p>The mechanics:</p>
+
+<ol>
+  <li><strong>Pull traces.</strong> Engine reads the LangSmith trace store for the target agent.</li>
+  <li><strong>Group failures.</strong> Similar failures cluster into recurring issues.</li>
+  <li><strong>Open an issue.</strong> Each recurring failure becomes a GitHub-style issue: "Agent fails when input contains Korean characters."</li>
+  <li><strong>Propose a fix.</strong> Engine proposes a patch — usually a prompt edit, sometimes a tool change, sometimes a new rubric criterion.</li>
+  <li><strong>Apply and verify.</strong> The patch goes in. Engine re-runs the failing cases. If they now pass, the patch sticks.</li>
+</ol>
+
+<p>Engine is built on top of Deep Agents and connects to a sandbox where it can write files, inspect traces, execute code, and work with a checked-out repository. The core piece is the agent's memory: an Agent Overview document that gets updated as Engine learns about your system.</p>
+
+<h2>Why this is the rarest loop</h2>
+
+<p>Three reasons people stop short of Loop 4:</p>
+
+<ul>
+  <li><strong>It needs trace volume.</strong> You can't find patterns in three runs. You need hundreds. That means Loop 3 must be running first, and for long enough.</li>
+  <li><strong>It needs a safe place to patch.</strong> Letting an agent rewrite your prompt in production is scary. You need a sandbox, a reviewer (human or LLM), and a rollback path.</li>
+  <li><strong>It needs clear signals of "better."</strong> If your rubric is fuzzy or your traces don't capture failures cleanly, Engine can't tell which patches help.</li>
+</ul>
+
+<p>The companies that win next year won't be the ones with the best model. They'll be the ones whose agent got 1% better every single night for a year, on its own, while the competition was still typing prompts by hand.</p>
+
+<h2>Manual Loop 4</h2>
+
+<p>You don't need LangSmith Engine to do Loop 4. You can do it by hand, just slower:</p>
+
+<ol>
+  <li>After a week of Loop 3 runs, dump the failed traces into a single doc.</li>
+  <li>Read them. Cluster them. Notice the patterns.</li>
+  <li>For each cluster, write a one-paragraph hypothesis: "the agent fails on X because Y."</li>
+  <li>For each hypothesis, propose a patch: an addition to the prompt, a new tool, a rubric criterion.</li>
+  <li>Apply the patches. Re-run on the failing cases.</li>
+  <li>Commit the working patches. Roll back the ones that don't help.</li>
+</ol>
+
+<p>That's Loop 4 with you as the analysis agent. Engine just automates steps 1-5. The discipline is the same.</p>
+
+<div class="callout success">
+  <p><strong>The unlock:</strong> once you've done this once, you see that "the analysis agent" is just another agent. The pattern composes. Loops inside loops.</p>
+</div>
+
+<h2>The whole picture</h2>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Loop 1</h4>
+    <p>Agent runs. <code>create_agent</code>.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop 2</h4>
+    <p>Grader retries. <code>RubricMiddleware</code>.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop 3</h4>
+    <p>Triggers fire. LangSmith Deployment / Fleet.</p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop 4</h4>
+    <p>Patches the agent. LangSmith Engine.</p>
+  </div>
+</div>
+
+<p>Each loop wraps the one before it. The cost goes up with each rung. The leverage goes up faster.</p>
+
+<h2>Exercise: do one manual Loop 4 cycle</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Wait for traces</strong>
+    <span>Either let Loop 3 collect them, or run your Loop 1/Loop 2 agent manually 20-30 times. Save every failure trace.</span>
+  </li>
+  <li>
+    <strong>Cluster the failures</strong>
+    <span>Group by what's wrong, not by the input. "Hallucinated links" is one cluster. "Missed the tone requirement" is another.</span>
+  </li>
+  <li>
+    <strong>Pick one cluster</strong>
+    <span>Pick the cluster that hurts the most. Don't try to fix everything at once.</span>
+  </li>
+  <li>
+    <strong>Write a patch</strong>
+    <span>Add a rubric criterion, or a sentence to the prompt, or a tool. One small change.</span>
+  </li>
+  <li>
+    <strong>Test it</strong>
+    <span>Re-run the failing cases. Did the patch help? If yes, keep it. If no, revert.</span>
+  </li>
+</ol>
+
+<p>After one cycle, you understand what Loop 4 is. After ten cycles, you understand why 1% a night compounds.</p>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What does Loop 4 do that the other loops don't?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">It runs the agent without human invocation</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 3."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="false">
+        <label for="q1-b">It grades the agent's output and retries on failure</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 2."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="true">
+        <label for="q1-c">It reaches inside the agent and edits its prompt, tools, or rubric based on trace analysis</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Loop 4 patches Loop 1's setup." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">It calls tools repeatedly until the task is done</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 1."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What's the prerequisite for running Loop 4 effectively?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">A larger model</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Model size isn't the bottleneck — trace volume is."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="true">
+        <label for="q2-b">Lots of traces from Loop 3 runs, plus a clear rubric so you can tell when patches help</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Volume and clear success signals are the prerequisites." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c">A faster cron job</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Cron speed is unrelated to Loop 4's effectiveness."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">A dedicated GPU</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Hardware isn't the constraint."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why does 1% daily improvement become 37× over a year?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">Because each day's improvement is added to the original baseline</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That would be linear growth (1 + 0.01 × 365 = 4.65), not compounding."</span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="true">
+        <label for="q3-b">Because each day's improvement multiplies on top of the previous total, so growth is exponential</label>
+        <span class="quiz-feedback" data-correct-text="Correct. 1.01^365 ≈ 37.78 because each day's 1% is on top of yesterday's 1.01× baseline." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="false">
+        <label for="q3-c">Because the math is approximate and the real answer is 365×</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="365× would be one improvement per day without compounding. The real answer is the compounding formula."</span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
+        <label for="q3-d">Because LangChain Engine uses a special algorithm</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="No special algorithm — just standard geometric compounding."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0005 of the <em>4-Loop Ladder</em> course. You have completed the four rungs.
+  See <a href="../reference/glossary.html">Glossary</a> for a recap of all primitives.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0004-loop-3-event-driven.html">← Lesson 0004</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="../reference/glossary.html">Glossary →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>The 4-Loop Ladder · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

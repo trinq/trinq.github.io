@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0003 — Loop 2: The Verification Loop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">The 4-Loop Ladder</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0003
+</div>
+
+<h1>Lesson 0003<br>Loop 2: The Verification Loop</h1>
+
+<p><em>The rung where 90% of people stop. It's also, annoyingly, exactly where the money was the whole time.</em></p>
+
+<h2>What this loop does</h2>
+
+<p>The agent finishes its work. Instead of you eyeballing the output and clicking "retry," a grader scores the output against a rubric. If it's under the bar, the feedback goes straight back into the agent and it tries again. No human in the loop.</p>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">Loop 1 output</span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">grader scores<br><small>rubric</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">pass?</span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-term">return</span>
+  <div class="ld-branch">if fail: feedback → agent → retry (max N iterations)</div>
+</div>
+
+<h2>Two kinds of checks</h2>
+
+<p>The grader is usually a mix of two things:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Deterministic checks</h4>
+    <p>For the boring stuff. Do the links resolve? Does the code compile? Did the output match the requested schema? Is the file written?</p>
+    <p>These run as code, not as an LLM. They're cheap, fast, and unambiguous.</p>
+  </div>
+  <div class="concept-card">
+    <h4>LLM-as-judge</h4>
+    <p>For the fuzzy stuff. Did it actually answer the question? Is the tone right? Does the explanation make sense? Did it cover the edge cases?</p>
+    <p>An LLM grades the output against the rubric. Slower and more expensive, but the only way to grade non-deterministic output.</p>
+  </div>
+</div>
+
+<h2>The canonical primitive: RubricMiddleware</h2>
+
+<p>LangChain ships this as a middleware you attach to a deep agent. From the docs:</p>
+
+<pre><code>from deepagents import RubricMiddleware, create_deep_agent
+
+rubric_middleware = RubricMiddleware(
+    model="anthropic:claude-haiku-4-5",   # the grader model
+    system_prompt="You are a code reviewer grading generated code against a rubric.",
+    tools=[run_test_suite],                # optional: tools the grader can call
+    max_iterations=5,                      # cap retry loops
+)
+
+agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-6",   # the agent model (often bigger)
+    system_prompt="You are a careful Python engineer...",
+    middleware=[rubric_middleware],
+)
+
+result = agent.invoke({
+    "messages": [HumanMessage(content="Write a function...")],
+    "rubric": "- Criterion 1\n- Criterion 2",
+})</code></pre>
+
+<p>Key facts from the docs:</p>
+
+<ul>
+  <li>If <code>rubric</code> is absent on invocation, the middleware does nothing — it's safe to attach unconditionally.</li>
+  <li>The grader can be a smaller, cheaper model than the agent (e.g., Haiku judges Sonnet).</li>
+  <li>The grader can use tools itself — to run tests, count words, lint output, etc.</li>
+  <li><code>max_iterations</code> defaults to 3 and is hard-capped at 20. After the cap, the run terminates with <code>max_iterations_reached</code> — a failure, not a pass.</li>
+</ul>
+
+<h2>What this gets you</h2>
+
+<p>The honest answer: it costs more tokens per task — roughly 2-3× — because you're running the agent plus the grader, and sometimes running the agent again. But what you buy is:</p>
+
+<ul>
+  <li>The agent never hands a customer a wrong answer without you checking first.</li>
+  <li>Failures get caught immediately and re-attempted with feedback, instead of being discovered in production.</li>
+  <li>The rubric is a contract — you can change it without rewriting the agent.</li>
+</ul>
+
+<div class="callout success">
+  <p><strong>One wrong answer in prod costs you more than a thousand retries ever will.</strong> Verification is the cheapest insurance you can buy.</p>
+</div>
+
+<h2>Why most people stop here</h2>
+
+<p>Loop 2 is comfortable. The output is good. The agent retries when it fails. The harness runs without you. There's no obvious next step.</p>
+
+<p>But here's what Loop 2 can't do:</p>
+
+<ul>
+  <li>It can't run on its own. You still have to invoke the agent.</li>
+  <li>It can't improve the rubric. You write the rubric, the rubric stays as-is.</li>
+  <li>It can't patch the agent when the model itself drifts. You're stuck with whatever prompt you wrote.</li>
+</ul>
+
+<p>That's where Loops 3 and 4 come in.</p>
+
+<div class="callout warning">
+  <p><strong>The trap:</strong> you stop optimizing because Loop 2 is "good enough." Meanwhile, your competitor is on Loop 4, and their agent has been improving itself for six months while yours hasn't moved.</p>
+</div>
+
+<h2>Writing a good rubric</h2>
+
+<p>A bad rubric is vague. "Make it good." A good rubric is concrete. "Every link must resolve to a 200. The opening sentence must contain the word 'because.'"</p>
+
+<p>Rules of thumb:</p>
+
+<ol>
+  <li><strong>Each criterion is one thing.</strong> If a criterion has "and," split it.</li>
+  <li><strong>Each criterion is testable.</strong> If you can't write a sentence saying what "passing" looks like, the criterion isn't ready.</li>
+  <li><strong>Deterministic first.</strong> Anything that can be checked by code should be. Save LLM-as-judge for things only a human-shaped judgment can score.</li>
+  <li><strong>3 to 8 criteria.</strong> Fewer and you're not specific enough. More and the grader loses the plot.</li>
+</ol>
+
+<h2>Exercise: write one rubric</h2>
+
+<p>Pick one of the agents from Lesson 0002's exercise. Write a 3-5 item rubric. Mix deterministic and fuzzy. Then:</p>
+
+<ol class="task-list">
+  <li>
+    <strong>Run it against your last 3 outputs</strong>
+    <span>How many would have passed? If all 3 pass, your rubric is too loose. If 0 pass, it's too strict.</span>
+  </li>
+  <li>
+    <strong>Count criteria</strong>
+    <span>If you wrote more than 8, cut the weakest. If you wrote fewer than 3, add at least one more.</span>
+  </li>
+</ol>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What is the loop in Loop 2?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">The agent calls a tool repeatedly</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 1."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">The agent's output is graded; if it fails, the agent retries with feedback, up to a cap</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Loop 2 is the grader-and-retry loop around Loop 1." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">A cron job fires the agent</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 3."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">The trace analysis agent patches the prompt</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 4."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why use a smaller model (e.g., Haiku) as the grader for a more powerful agent (e.g., Sonnet)?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">Because smaller models are always more accurate at grading</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Not always — but for narrow rubrics, smaller can be sufficient and cheaper."</span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="true">
+        <label for="q2-b">Because the grader only needs to evaluate against a checklist, which is easier than generating the work — so you can save cost without losing quality</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Judging is a narrower task than producing; smaller models do it well and cheaply." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c">Because the framework requires it</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="It doesn't — using the same model is allowed. The smaller grader is an optimization, not a requirement."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">To make the agent run faster</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="The grader doesn't make the agent faster — it adds work. The win is cost and reliability, not speed."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0003 of the <em>4-Loop Ladder</em> course. Next: <a href="0004-loop-3-event-driven.html">Lesson 0004 — Loop 3: Event-Driven</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0002-loop-1-agent.html">← Lesson 0002</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="0004-loop-3-event-driven.html">Lesson 0004 →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>The 4-Loop Ladder · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

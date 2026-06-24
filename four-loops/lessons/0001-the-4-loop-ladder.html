@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0001 — The 4-Loop Ladder</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">The 4-Loop Ladder</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0001
+</div>
+
+<h1>Lesson 0001<br>The 4-Loop Ladder</h1>
+
+<p><em>Stop typing prompts by hand. Build the loops that prompt for you.</em></p>
+
+<h2>The pitch in one line</h2>
+
+<div class="callout">
+  <p>Stop being the thing that prompts the agent. Go build the thing that prompts the agent for you.</p>
+</div>
+
+<p>Most people using AI agents are stuck on rung 2 of a 4-rung ladder. The other two rungs are basically empty — and that's where the leverage is.</p>
+
+<h2>The four loops</h2>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>Loop 1 — Agent</h4>
+    <p>Model calls a tool, reads what comes back, calls another, keeps going until the task is done. You already have this.</p>
+    <p class="card-meta">LangChain primitive: <code>create_agent</code></p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop 2 — Verification</h4>
+    <p>After the agent finishes, a grader scores it against a rubric. If it's under the bar, feedback goes back in and it retries. No human clicking retry.</p>
+    <p class="card-meta">LangChain primitive: <code>RubricMiddleware</code></p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop 3 — Event-driven</h4>
+    <p>A message in Slack kicks it off. A webhook kicks it off. A 3am cron job kicks it off. Nobody invokes it. It just runs, at scale, inside the tools you already live in.</p>
+    <p class="card-meta">LangChain primitive: LangSmith Deployment (cron/webhooks) or Fleet channels</p>
+  </div>
+  <div class="concept-card">
+    <h4>Loop 4 — Hill-climbing</h4>
+    <p>Every run leaves a trace. An analysis agent reads them, spots the failures that keep happening, and rewrites Loop 1's prompt and tools. You wake up to a better agent than the one you shut the laptop on.</p>
+    <p class="card-meta">LangChain primitive: LangSmith Engine</p>
+  </div>
+</div>
+
+<h2>Why most people plateau at rung 2</h2>
+
+<p>The honest version: loops 1 and 2 are where everyone is elbowing each other. Better prompts, better models, better graders. Packed.</p>
+
+<p>Loops 3 and 4 are basically empty. That's the whole edge, sitting there.</p>
+
+<div class="callout warning">
+  <p><strong>The wrong takeaway:</strong> "I need a better model." The model is no longer the bottleneck. Everyone rents the same model anyway, same weights, same price. The bottleneck is the harness around it.</p>
+</div>
+
+<div class="callout success">
+  <p><strong>The right takeaway:</strong> "I need a better harness." A harness is just loops inside loops.</p>
+</div>
+
+<h2>The math</h2>
+
+<p>If something improves by 1% every day:</p>
+
+<div class="formula">
+  1.01<sup>365</sup> ≈ 37.78
+</div>
+
+<p>That's 37.8× better in a year. Loop 4 is the loop that makes this compounding happen automatically. Every run leaves a trace. The trace gets analyzed. The agent gets patched. Tomorrow's run is on a slightly better agent.</p>
+
+<p>Loop 4 is hill-climbing because the agent keeps walking up the slope of its own failures.</p>
+
+<h2>The four loops, as a picture</h2>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">Loop 4<br><small>hill-climb</small></span>
+  <span class="ld-arrow">↑ patches</span>
+  <span class="ld-step ld-score">Loop 1<br><small>agent runs</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">Loop 2<br><small>grade + retry</small></span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-term">Loop 3<br><small>trigger</small></span>
+  <div class="ld-branch">all wrapped in: harness, traces, observability</div>
+</div>
+
+<p>The arrows matter. Loop 4 doesn't just restart the agent — it reaches <em>inside</em> and edits the agent itself. The system prompt. The tools. The rubric. Each patch is small. Over a year, those small patches compound.</p>
+
+<h2>Where you probably are right now</h2>
+
+<div class="callout">
+  <p><strong>Loop 1:</strong> You're using an agent in Cursor, Claude Code, or similar. It runs, it returns text, you copy-paste it somewhere.</p>
+  <p><strong>Loop 2:</strong> You've added some kind of test or check. You eyeball the output. Maybe you retry when it's bad.</p>
+  <p><strong>Loop 3:</strong> You haven't wired it into a cron or webhook. You still open the terminal.</p>
+  <p><strong>Loop 4:</strong> Your agent doesn't improve on its own. You patch the prompt by hand when it goes off the rails.</p>
+</div>
+
+<p>That's the median state. The good news: the median is the easiest place to escape from, because the next rung up is well-defined.</p>
+
+<h2>What this course teaches</h2>
+
+<p>Each of the next four lessons is one rung. By the end, you'll know:</p>
+
+<ul>
+  <li>What each loop does and the canonical primitive that implements it</li>
+  <li>Where you're currently on the ladder (and what climbing one rung costs)</li>
+  <li>Which rung gives you the biggest leverage for the kind of work you do</li>
+</ul>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>If something improves by 1% every day, after one year it becomes roughly how much better?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">About 3.65× (one year of 1%)</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That would be linear — 1 + 0.01 × 365 = 4.65. The actual formula is compounding."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">About 37.78×</label>
+        <span class="quiz-feedback" data-correct-text="Correct. 1.01^365 ≈ 37.78." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">About 365× (one improvement per day)</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That assumes each day's improvement is added to a base of 1, not multiplied on top of the previous total."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">About 10×</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Closer, but the actual answer is much higher."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Where do most agent builders plateau, according to the source material?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">Loop 1 — they never get a basic agent working</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Loop 1 is essentially table stakes now — most people have this."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="true">
+        <label for="q2-b">Loop 2 — they have verification but don't go further</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Loops 3 and 4 are basically empty." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c">Loop 3 — they wire up triggers but not improvement</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Loop 3 is rarer than that — most people haven't automated triggers."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">Loop 4 — they don't make the agent self-improve</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Almost nobody is on Loop 4 yet, but the median plateau is Loop 2."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What's the unique thing Loop 4 does that the other loops don't?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">It runs the agent faster</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Speed is not Loop 4's job. That's a deployment concern."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="false">
+        <label for="q3-b">It uses a bigger model</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Bigger model is not the answer — model parity is the norm."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="true">
+        <label for="q3-c">It reaches inside the agent and edits the system prompt or tools based on trace analysis</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Loop 4 patches Loop 1's setup." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
+        <label for="q3-d">It triggers the agent from external events</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 3."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2>Action Items</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Identify your current rung</strong>
+    <span>Pick one agent you use regularly. Which loop does it stop at? Be honest — most agents you've built by hand stop at Loop 1.</span>
+  </li>
+  <li>
+    <strong>Estimate the cost of climbing one rung</strong>
+    <span>If you're on Loop 1, what's it take to add a verifier (Loop 2)? If you're on Loop 2, what's it take to add a cron trigger (Loop 3)?</span>
+  </li>
+  <li>
+    <strong>Read the source</strong>
+    <span>Open <a href="../RESOURCES.md">Resources</a> and read LangChain's "The Art of Loop Engineering" blog post. The course is a simplified walkthrough of that ladder.</span>
+  </li>
+</ol>
+
+<footer class="lesson-foot">
+  Lesson 0001 of the <em>4-Loop Ladder</em> course. Next: <a href="0002-loop-1-agent.html">Lesson 0002 — Loop 1: The Agent Loop</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="../index.html">All Lessons</a>
+  <a href="0002-loop-1-agent.html">Lesson 0002 →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>The 4-Loop Ladder · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

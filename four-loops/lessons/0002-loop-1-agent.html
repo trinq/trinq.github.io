@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0002 — Loop 1: The Agent Loop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">The 4-Loop Ladder</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0002
+</div>
+
+<h1>Lesson 0002<br>Loop 1: The Agent Loop</h1>
+
+<p><em>The floor of the ladder. If you're here, you have an agent that runs. This is the rung everyone starts on.</em></p>
+
+<h2>What this loop does</h2>
+
+<p>The model picks a tool. Calls it. Reads what came back. Picks another tool. Calls it. Reads. Picks another. Keeps going until the task says "done."</p>
+
+<div class="loop-diagram">
+  <span class="ld-step ld-propose">task</span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-score">model picks tool</span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-keep">tool returns</span>
+  <span class="ld-arrow">→</span>
+  <span class="ld-step ld-run">model reads + decides</span>
+  <div class="ld-branch">loop until "done"</div>
+</div>
+
+<p>That's it. The whole loop. No verifier. No trigger. No self-improvement. Just the agent doing the work.</p>
+
+<h2>What you give it</h2>
+
+<ul>
+  <li><strong>Context:</strong> the system prompt, the conversation history, the data the model needs to reason about</li>
+  <li><strong>Tools:</strong> the actions it can take — file system, search, HTTP calls, databases, custom functions</li>
+  <li><strong>A termination condition:</strong> something that says "stop now," either a final answer or a budget</li>
+</ul>
+
+<div class="callout">
+  <p><strong>This is the floor, not the ceiling.</strong> Stop here and what you've actually got is a fancier autocomplete. It runs, but it doesn't grade itself, it doesn't fire on its own, and it doesn't get better over time.</p>
+</div>
+
+<h2>The canonical primitive: create_agent</h2>
+
+<p>In LangChain, the canonical name for this pattern is <code>create_agent</code>. It's the entry point — pick a model, plug in tools, get back something you can invoke. From the source:</p>
+
+<blockquote>
+  <p>"This is what LangChain's <code>create_agent</code> gives you. Pick any model, plug in tools, and you have a working agent loop. Tools are what give the agent the power to take action in the real world."</p>
+</blockquote>
+
+<p>The exact API lives in the LangChain reference. The shape is the same across frameworks:</p>
+
+<pre><code>agent = create_agent(
+    model="anthropic:claude-sonnet-4-6",
+    tools=[search_docs, read_file, write_file],
+    system_prompt="You are a docs editor. ...&lt;instructions&gt;...",
+)
+
+result = agent.invoke({"messages": [HumanMessage(content="...")]})</code></pre>
+
+<p>That's Loop 1. The pattern repeats across Claude SDK, LangGraph, Cursor, and pretty much every agent framework now. Once you see it once, you see it everywhere.</p>
+
+<h2>The Three Things That Matter Most</h2>
+
+<p>Most Loop 1 failures aren't model failures. They're these three things:</p>
+
+<div class="concept-grid">
+  <div class="concept-card">
+    <h4>1. Wrong context</h4>
+    <p>If the system prompt is vague, the model improvises. Improvisation looks like work but isn't durable. Be specific about who the agent is, what success looks like, and what to do when it doesn't know.</p>
+  </div>
+  <div class="concept-card">
+    <h4>2. Wrong tools</h4>
+    <p>Too many tools = model confusion. Too few = agent can't finish. The sweet spot: as few tools as possible, each one well-named and documented in its docstring. The model reads those docs.</p>
+  </div>
+  <div class="concept-card">
+    <h4>3. No clear termination</h4>
+    <p>If the agent can't tell when it's done, it loops until it runs out of tokens. Define a "done" state — a final tool call, a structured output, a max-step budget.</p>
+  </div>
+</div>
+
+<h2>Why this is the floor, not the ceiling</h2>
+
+<p>Loop 1 produces output. Output is the easy part. The hard parts come next:</p>
+
+<ul>
+  <li><strong>Is the output good?</strong> → Loop 2 (verification)</li>
+  <li><strong>Does the agent run without you being there?</strong> → Loop 3 (event-driven)</li>
+  <li><strong>Does the agent improve without you editing its prompt?</strong> → Loop 4 (hill-climbing)</li>
+</ul>
+
+<p>Each of those questions unlocks a new rung. None of them are answered by Loop 1 alone.</p>
+
+<div class="callout warning">
+  <p><strong>The trap:</strong> you can spend months on Loop 1. Better prompts, better tool design, better context. None of that is wasted — but none of it gets you above the second rung.</p>
+</div>
+
+<h2>Exercise: Audit Your Current Loop 1</h2>
+
+<p>Pick one agent you run by hand. Answer these questions:</p>
+
+<ol class="task-list">
+  <li>
+    <strong>What's your termination condition?</strong>
+    <span>How does the agent know it's done? If the answer is "I read the output and decide," that's a Loop 1 bug — the agent should be able to terminate itself.</span>
+  </li>
+  <li>
+    <strong>How many tools does it have?</strong>
+    <span>If more than 10, suspect the model is confused. If fewer than 3, suspect the agent can't actually finish complex tasks.</span>
+  </li>
+  <li>
+    <strong>How long is your system prompt?</strong>
+    <span>If under 200 words, you probably haven't been specific enough. If over 2000 words, you probably have conflicting instructions. Both are common.</span>
+  </li>
+</ol>
+
+<p>You don't need to fix anything yet. Just measure. Lesson 0003 will add the verifier that makes Loop 1's output quality measurable.</p>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What is the Loop 1 termination condition?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">When the model runs out of tokens</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's a budget, not a termination condition. Hitting the budget means the agent didn't finish — that's a failure mode."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">The point at which the agent decides its task is complete — usually a final answer or a final tool call</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Termination is defined by the agent's task model, not by external limits." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">When the user closes the terminal</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's a human escape hatch, not the agent's termination condition."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">When the verifier gives a passing score</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 2's job — verification is a separate rung."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What is the canonical LangChain primitive for Loop 1?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">RubricMiddleware</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 2 — the verification loop."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="true">
+        <label for="q2-b">create_agent</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Loop 1 = the agent loop, and create_agent is the canonical entry point." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c">LangSmith Engine</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 4 — the hill-climbing loop."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">LangSmith Deployment</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's Loop 3 — the event-driven loop."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<footer class="lesson-foot">
+  Lesson 0002 of the <em>4-Loop Ladder</em> course. Next: <a href="0003-loop-2-verification.html">Lesson 0003 — Loop 2: Verification</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0001-the-4-loop-ladder.html">← Lesson 0001</a>
+  <a href="../index.html">All Lessons</a>
+  <a href="0003-loop-2-verification.html">Lesson 0003 →</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>The 4-Loop Ladder · Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

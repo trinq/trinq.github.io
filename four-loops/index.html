@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The 4-Loop Ladder — Course</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="index.html" class="site-logo">The 4-Loop Ladder</a>
+    <nav class="site-nav">
+      <a href="index.html" class="active">Lessons</a>
+      <a href="MISSION.md">Mission</a>
+      <a href="RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-banner">
+  <h1>The 4-Loop Ladder</h1>
+  <p>Five short lessons that show you how to climb from "agent I poke by hand" to "agent that gets 1% better every night." Based on LangChain's loop engineering ladder.</p>
+</div>
+
+<main>
+
+<h2>Lessons</h2>
+
+<div class="lesson-grid">
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0001</span>
+      <span class="card-category-badge">four-loops</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0001-the-4-loop-ladder.html">The 4-Loop Ladder</a></h3>
+    <p class="card-desc">Overview of the four rungs. The math behind 1.01^365 ≈ 37.78. Why most people plateau at rung 2.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0002</span>
+      <span class="card-category-badge">four-loops</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0002-loop-1-agent.html">Loop 1: The Agent Loop</a></h3>
+    <p class="card-desc">Model calls tools until done. The floor of the ladder. Canonical primitive: create_agent.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0003</span>
+      <span class="card-category-badge">four-loops</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0003-loop-2-verification.html">Loop 2: The Verification Loop</a></h3>
+    <p class="card-desc">Grader scores output against a rubric. Retries with feedback. Canonical primitive: RubricMiddleware.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0004</span>
+      <span class="card-category-badge">four-loops</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0004-loop-3-event-driven.html">Loop 3: The Event-Driven Loop</a></h3>
+    <p class="card-desc">The agent fires on its own — cron, webhook, Slack. No human invocation. LangSmith Deployment / Fleet.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0005</span>
+      <span class="card-category-badge">four-loops</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0005-loop-4-hill-climbing.html">Loop 4: The Hill-Climbing Loop</a></h3>
+    <p class="card-desc">Traces feed an analysis agent that patches the prompt, tools, or rubric. You wake up better. LangSmith Engine.</p>
+  </div>
+</div>
+
+<h2>Reference</h2>
+
+<div class="lesson-grid">
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Reference</span>
+      <span class="card-category-badge">four-loops</span>
+    </div>
+    <h3 class="card-title"><a href="reference/glossary.html">Glossary</a></h3>
+    <p class="card-desc">All primitives, terms, and status vocabulary. The lookup table for the four rungs.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Reference</span>
+      <span class="card-category-badge">four-loops</span>
+    </div>
+    <h3 class="card-title"><a href="reference/loop-ladder.html">Loop Ladder Cheat Sheet</a></h3>
+    <p class="card-desc">The four rungs in one page. Symptoms and next steps. Print-friendly.</p>
+  </div>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="index.html">Lessons</a></li>
+        <li><a href="MISSION.md">Mission</a></li>
+        <li><a href="RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    The 4-Loop Ladder — a self-paced course.
+  </div>
+</footer>
+
+</body>
+</html>
