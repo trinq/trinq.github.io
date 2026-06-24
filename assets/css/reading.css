@@ -339,7 +339,7 @@ body.home-body .bio {
 /* ─── Grouped Blog Grid ──────────────────────────────────── */
 
 body.home-body .home-main {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 3rem auto;
   padding: 0 1.5rem;
 }
@@ -393,12 +393,16 @@ body.home-body .cat-group-count {
 
 body.home-body .posts-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
+body.home-body .post-card {
+  min-height: 140px;
+}
+
 @media (max-width: 800px) {
-  body.home-body .posts-grid { grid-template-columns: repeat(2, 1fr); }
+  body.home-body .posts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 520px) {
