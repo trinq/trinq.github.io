@@ -1,0 +1,86 @@
+name: Broken Links Checker
+
+on:
+  schedule:
+    # Run every day at 7:00 AM UTC (2:00 PM Vietnam time)
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Find all HTML files
+        run: |
+          # Collect all HTML files to scan for links
+          find . -name "*.html" -not -path "./.git/*" > /tmp/html_files.txt
+          echo "Found $(wc -l < /tmp/html_files.txt) HTML files"
+
+      - name: Check links with lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose --no-progress --include-dir=. 'file:///tmp/html_files.txt' || true
+        continue-on-error: true
+
+      - name: Run broken-link-agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          cat << 'SCRIPT' > /tmp/analyze_links.sh
+          #!/bin/bash
+          # This script runs as a "Loop 3 agent" — triggered by cron, not human
+          # It reads the lychee report and files a GitHub issue if links are broken
+
+          LYCHEE_OUTPUT=$(lychee --no-progress . 2>&1 || true)
+
+          # Count broken links
+          BROKEN_COUNT=$(echo "$LYCHEE_OUTPUT" | grep -c "BROKEN" || true)
+
+          if [ "$BROKEN_COUNT" -gt 0 ]; then
+            echo "Found $BROKEN_COUNT broken links"
+
+            # Extract first 10 broken links for the issue body
+            BROKEN_LINKS=$(echo "$LYCHEE_OUTPUT" | grep "BROKEN" | head -10 | \
+              sed 's/^[[:space:]]*\* //' | \
+              sed 's/ ->.*$//')
+
+            BODY="## $BROKEN_COUNT Broken Link(s) Found
+
+Automated report from Loop 3 (Event-Driven Link Checker) — triggered by cron.
+
+### Broken Links (first 10)
+
+$(echo "$BROKEN_LINKS")
+
+\`\`\`
+$(echo "$LYCHEE_OUTPUT" | grep -E "BROKEN|Error" | head -30)
+\`\`\`
+
+---
+_This issue was filed automatically by a Loop 3 agent. Fix and close._
+
+---
+
+**Loop 3 trace:**"
+
+            # File issue via GitHub CLI
+            gh issue create \
+              --title "🔗 [$BROKEN_COUNT] Broken Links — $(date +'%b %d')" \
+              --body "$BODY" \
+              --label "broken-links,automated"
+
+            echo "Issue filed for $BROKEN_COUNT broken links"
+          else
+            echo "No broken links found. Loop 3 run complete."
+          fi
+          SCRIPT
+          chmod +x /tmp/analyze_links.sh
+          bash /tmp/analyze_links.sh
