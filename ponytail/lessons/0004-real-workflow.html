@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: Ponytail in a Real Workflow</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .prd-box {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+    .prd-header {
+      background: #fff;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .prd-label {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .prd-body { padding: 1.25rem; }
+    .prd-body h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin: 1.25rem 0 0.5rem;
+    }
+    .prd-body h4:first-child { margin-top: 0; }
+    .issue {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+    .issue-header {
+      padding: 0.75rem 1.25rem;
+      background: #fff;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .issue-num {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .issue-title { font-weight: 700; }
+    .issue-tag {
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tag-blocked {
+      background: #fdecea;
+      color: var(--accent);
+    }
+    .tag-parallel {
+      background: #e8f5e9;
+      color: #4caf50;
+    }
+    .tag-first {
+      background: #fff3e0;
+      color: #e67e22;
+    }
+    .issue-body { padding: 1rem 1.25rem; font-size: 0.9rem; }
+    .issue-body pre { margin: 0; font-size: 0.82rem; }
+    .log-entry {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+      background: #fff;
+    }
+    .log-rung {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .log-text { margin-top: 0.25rem; }
+    .log-code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.82rem;
+      background: var(--code-bg);
+      padding: 0.5rem 0.75rem;
+      border-radius: 3px;
+      margin-top: 0.5rem;
+      display: block;
+    }
+    .scoreboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+    .score-cell {
+      background: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    .score-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .score-label {
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.25rem;
+    }
+    .rung-counts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .rung-count {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .rung-count .num {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .rung-count .label {
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ponytail</span></span>
+  <span>Lesson 0004</span>
+  <span>2026-06-25</span>
+</div>
+
+<h1>Ponytail in a Real Workflow</h1>
+<p class="subtitle">From PRD to merged PR — the complete cycle with ladder logs and review results.</p>
+
+<p>This lesson walks through a complete feature ticket from start to finish. You will see the PRD, how it breaks into issues, how the agent applies the ladder during implementation, and what <code>/ponytail-review</code> catches before merge.</p>
+
+<p>The task: add a notification badge to the user avatar in the nav bar. A small feature. A realistic one.</p>
+
+<h2>Step 1 — The PRD</h2>
+
+<p>Before writing any code, the team writes a PRD. This captures the destination, not the implementation:</p>
+
+<div class="prd-box">
+  <div class="prd-header">
+    <span class="prd-label">PRD</span>
+    Add notification badge to user avatar
+  </div>
+  <div class="prd-body">
+    <h4>Problem</h4>
+    <p>Users miss notifications because there is no visual indicator on the nav bar. They have to click the avatar to check.</p>
+
+    <h4>Solution</h4>
+    <p>Add a red dot badge to the user avatar in the top nav. The badge shows the unread count (1–9, or "9+" for more). It disappears when the count is zero.</p>
+
+    <h4>User stories</h4>
+    <ul>
+      <li>As a logged-in user, I see a badge on my avatar when I have unread notifications, so I know to check them.</li>
+      <li>As a logged-in user, the badge shows the exact count (1–9) or "9+" when there are more.</li>
+      <li>As a logged-in user, the badge disappears when I have no unread notifications.</li>
+    </ul>
+
+    <h4>Constraints</h4>
+    <ul>
+      <li>Do not change the notification API — use the existing <code>/api/notifications/count</code> endpoint.</li>
+      <li>Do not add a new dependency.</li>
+      <li>Badge must be accessible: announce count changes to screen readers.</li>
+    </ul>
+  </div>
+</div>
+
+<p>Notice what the PRD does <em>not</em> say: what CSS framework to use, what animation library, whether to store the count in local state or a global store, how many files to create.</p>
+
+<h2>Step 2 — Break Into Vertical Slices</h2>
+
+<p>Using the <code>prd-to-issues</code> pattern from Agent Loop Skills, the PRD breaks into 4 slices. Each slice is end-to-end working code — not a horizontal layer:</p>
+
+<div class="issue">
+  <div class="issue-header">
+    <span class="issue-num">#42</span>
+    <span class="issue-title">Show badge with unread count</span>
+    <span class="issue-tag tag-first">Do first</span>
+  </div>
+  <div class="issue-body">
+    <p>Badge component. Shows 1–9 or "9+". Calls <code>/api/notifications/count</code> on mount. Accessible. Hidden when count is 0.</p>
+  </div>
+</div>
+
+<div class="issue">
+  <div class="issue-header">
+    <span class="issue-num">#43</span>
+    <span class="issue-title">Place badge on avatar in nav</span>
+    <span class="issue-tag tag-parallel">Parallel to #42</span>
+  </div>
+  <div class="issue-body">
+    <p>Position the badge on the existing avatar in the top nav. Use CSS absolute positioning. No new component files.</p>
+  </div>
+</div>
+
+<div class="issue">
+  <div class="issue-header">
+    <span class="issue-num">#44</span>
+    <span class="issue-title">Wire to notification API</span>
+    <span class="issue-tag tag-blocked">Blocked by #42</span>
+  </div>
+  <div class="issue-body">
+    <p>Replace mock data in #42 with real <code>/api/notifications/count</code> call. Add loading and error states.</p>
+  </div>
+</div>
+
+<div class="issue">
+  <div class="issue-header">
+    <span class="issue-num">#45</span>
+    <span class="issue-title">Poll for new notifications</span>
+    <span class="issue-tag tag-blocked">Blocked by #44</span>
+  </div>
+  <div class="issue-body">
+    <p>Add polling (every 60s) to keep badge in sync. Stop polling when tab is hidden.</p>
+  </div>
+</div>
+
+<h2>Step 3 — Implement with Ponytail Active</h2>
+
+<p>Each issue is picked up by the agent with <code>/ponytail full</code> active. Here are the ladder logs for issue #42 — the badge component:</p>
+
+<div class="log-entry">
+  <div class="log-rung">Rung 4 — Native platform feature</div>
+  <div class="log-text">Proposed: install a badge library (react-hot-toast, react-badge)</div>
+  <div class="log-text">Fired: <code>position: relative</code> on avatar container + <code>position: absolute</code> badge is native CSS. No library needed.</div>
+</div>
+
+<div class="log-entry">
+  <div class="log-rung">Rung 3 — Stdlib</div>
+  <div class="log-text">Proposed: custom number-clamping utility for "9+" display</div>
+  <div class="log-text">Caught: <code>Math.min(count, 9) + (count > 9 ? '+' : '')</code> — pure JS, no utility file needed.</div>
+  <span class="log-code">const display = count > 9 ? '9+' : String(count);</span>
+</div>
+
+<div class="log-entry">
+  <div class="log-rung">Rung 1 — YAGNI</div>
+  <div class="log-text">Proposed: add animation when count changes (bounce effect)</div>
+  <div class="log-text">Cut: "bounce on change" was not in the PRD. Rung 1 fires.</div>
+</div>
+
+<div class="log-entry">
+  <div class="log-rung">Rung 7 — Minimum that works</div>
+  <div class="log-text">Proposed: new file <code>components/NotificationBadge/Badge.tsx</code> with separate stylesheet</div>
+  <div class="log-text">Accepted: kept inline in Nav.tsx for now — the badge is a detail of the nav, not a standalone component.</div>
+</div>
+
+<h2>The Result</h2>
+
+<div class="callout success">
+  <p><strong>Issue #42 — badge with count — delivered in 18 lines total.</strong> Baseline agent (from benchmark): 94 lines across 4 files, 2 dependencies.</p>
+</div>
+
+<pre><code>// Rung 7 — kept inline in Nav.tsx
+const display = count > 9 ? '9+' : String(count);
+
+// Rung 3 — stdlib Math, no utility file
+// Rung 4 — native CSS position, no badge library
+
+{count > 0 && (
+  &lt;span aria-label={`${count} unread notification${count > 1 ? 's' : ''}`}>
+    {display}
+  &lt;/span>
+)}
+// Total: 18 lines including the conditional render</code></pre>
+
+<h2>Step 4 — Run /ponytail-review</h2>
+
+<p>After all 4 issues are merged into a branch, run the review before opening the PR:</p>
+
+<pre><code>/ponytail-review</code></pre>
+
+<p>The review scans the complete diff and returns a delete list. Here is the output:</p>
+
+<table style="width:100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid var(--rule);">
+      <th style="text-align:left; padding: 0.5rem 0;">Line(s)</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Rung</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Reason</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;" code>lib/badgeUtils.ts</td>
+      <td style="padding: 0.4rem 0;">Rung 3</td>
+      <td style="padding: 0.4rem 0;">2-line clamp utility in separate file. Stdlib covers it.</td>
+      <td style="padding: 0.4rem 0;">✅ Accept — delete file</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;" code>Badge.css</td>
+      <td style="padding: 0.4rem 0;">Rung 7</td>
+      <td style="padding: 0.4rem 0;">Badge kept inline in Nav.tsx — CSS in existing nav stylesheet.</td>
+      <td style="padding: 0.4rem 0;">✅ Accept — delete file</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;" code>Badge.test.tsx</td>
+      <td style="padding: 0.4rem 0;">—</td>
+      <td style="padding: 0.4rem 0;">Tests are fine — never cut tests.</td>
+      <td style="padding: 0.4rem 0;">❌ Reject — keep</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.4rem 0;" code>hooks/useNotificationPoll.ts</td>
+      <td style="padding: 0.4rem 0;">Rung 2</td>
+      <td style="padding: 0.4rem 0;">Codebase already has <code>hooks/usePolling.ts</code> with same logic.</td>
+      <td style="padding: 0.4rem 0;">✅ Accept — use existing hook</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The Scoreboard</h2>
+
+<p>After all 4 issues — baseline vs ponytail:</p>
+
+<div class="scoreboard">
+  <div class="score-cell">
+    <div class="score-value">-67%</div>
+    <div class="score-label">Lines</div>
+  </div>
+  <div class="score-cell">
+    <div class="score-value">-2</div>
+    <div class="score-label">Files</div>
+  </div>
+  <div class="score-cell">
+    <div class="score-value">0</div>
+    <div class="score-label">New deps</div>
+  </div>
+</div>
+
+<p>Rungs that fired during the session:</p>
+
+<div class="rung-counts">
+  <div class="rung-count">
+    <div class="num">1</div>
+    <div class="label">Rung 1</div>
+  </div>
+  <div class="rung-count">
+    <div class="num">1</div>
+    <div class="label">Rung 2</div>
+  </div>
+  <div class="rung-count">
+    <div class="num">1</div>
+    <div class="label">Rung 3</div>
+  </div>
+  <div class="rung-count">
+    <div class="num">1</div>
+    <div class="label">Rung 4</div>
+  </div>
+</div>
+
+<div class="callout">
+  <p><strong>Every rung fired at least once.</strong> This is normal for a real feature. Simple tickets tend to fire rungs 4, 5, 6. Feature tickets with component files tend to also fire rungs 1, 2, 3.</p>
+</div>
+
+<h2>What Never Changed</h2>
+
+<ul>
+  <li>The PRD destination stayed the same. Ponytail trims the implementation, not the goal.</li>
+  <li>Accessibility code stayed. The <code>aria-label</code> is in — it was never flagged because it's a "never cut" item.</li>
+  <li>The <code>/api/notifications/count</code> endpoint was used. Constraint from the PRD — respected by the agent.</li>
+  <li>Tests stayed. Ponytail does not touch tests. Tests are the safety net.</li>
+</ul>
+
+<h2>Exercise: Run It on Your Next Ticket</h2>
+
+<ol style="margin-left: 1.5rem;">
+  <li>Pick one feature ticket from your current sprint. It should be small enough to finish in one session.</li>
+  <li>Write the PRD first — not for your boss, just for yourself. 4 sections: Problem, Solution, User stories, Constraints. Under 20 lines.</li>
+  <li>Run <code>/ponytail full</code> and implement the ticket.</li>
+  <li>Before opening the PR, run <code>/ponytail-review</code>. Accept the deletions. Reject anything touching accessibility, validation, or error handling.</li>
+  <li>Record: how many lines did you save? Which rung fired most? Did the PRD stay the same?</li>
+</ol>
+
+<p>The first 3 tickets will feel slow. You are calibrating. By ticket 10, the ladder will feel like a reflex — the agent stops proposing things the ladder would cut before you even notice.</p>
+
+<div class="lesson-nav">
+  <a href="0003-apply-the-ladder.html">← Lesson 0003: Apply the Ladder</a>
+  <span class="nav-label">More lessons coming →</span>
+</div>
+
+</body>
+</html>

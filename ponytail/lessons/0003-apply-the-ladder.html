@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: Apply the Ladder</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .example {
+      margin: 2rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .example-header {
+      padding: 0.75rem 1.25rem;
+      background: #fff;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .example-rung {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.6rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .example-task {
+      font-weight: 700;
+    }
+    .example-body { padding: 0; }
+    .diff-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-size: 0.85rem;
+    }
+    .diff-side {
+      padding: 1.25rem;
+      overflow-x: auto;
+    }
+    .diff-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      color: var(--ink-soft);
+    }
+    .diff-before {
+      border-right: 1px solid var(--rule);
+      background: #fff;
+    }
+    .diff-after {
+      background: #f0f7f0;
+    }
+    .diff-before .diff-label { color: var(--accent); }
+    .diff-after .diff-label { color: #4caf50; }
+    .diff-before pre { border-left-color: var(--accent); margin: 0; }
+    .diff-after pre { border-left-color: #4caf50; margin: 0; }
+    .diff-side p {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      margin: 0.75rem 0 0;
+      line-height: 1.5;
+    }
+    .ladder-row {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .ladder-row:last-child { border-bottom: none; }
+    .lr-num {
+      color: var(--accent);
+      font-weight: 700;
+      min-width: 1.2rem;
+    }
+    .lr-active {
+      background: #fff3e0;
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      margin-left: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ponytail</span></span>
+  <span>Lesson 0003</span>
+  <span>2026-06-25</span>
+</div>
+
+<h1>Apply the Ladder</h1>
+<p class="subtitle">Three real before/after diffs and what each rung catches.</p>
+
+<p>You installed ponytail. You set the intensity. Now: what does it actually change in the code?</p>
+
+<p>This lesson shows three realistic examples from feature tickets. Each one illustrates a different rung catching something the baseline agent wrote. Your job is to feel the pattern — not memorize rules.</p>
+
+<div class="callout warning">
+  <p><strong>Critical reminder:</strong> The ladder runs <em>after</em> the agent understands the problem. It does not replace reading the PRD, the codebase, or thinking. It says: "Now that you know what to build, write only what is necessary."</p>
+</div>
+
+<h2>The 7 Rungs</h2>
+
+<div class="ladder-row">
+  <span class="lr-num">1.</span>
+  <span>Does this need to exist?</span>
+  <span class="lr-active">YAGNI</span>
+</div>
+<div class="ladder-row">
+  <span class="lr-num">2.</span>
+  <span>Already in this codebase?</span>
+</div>
+<div class="ladder-row">
+  <span class="lr-num">3.</span>
+  <span>Stdlib does it?</span>
+</div>
+<div class="ladder-row">
+  <span class="lr-num">4.</span>
+  <span>Native platform feature?</span>
+</div>
+<div class="ladder-row">
+  <span class="lr-num">5.</span>
+  <span>Installed dependency?</span>
+</div>
+<div class="ladder-row">
+  <span class="lr-num">6.</span>
+  <span>One line?</span>
+</div>
+<div class="ladder-row">
+  <span class="lr-num">7.</span>
+  <span>Only then: the minimum that works</span>
+</div>
+
+<h2>Example 1 — Rung 4: Native Platform Feature</h2>
+
+<p><em>"Add a date picker to the form."</em></p>
+
+<div class="example">
+  <div class="example-header">
+    <span class="example-rung">Rung 4</span>
+    <span class="example-task">Date picker component</span>
+  </div>
+  <div class="example-body">
+    <div class="diff-row">
+      <div class="diff-side diff-before">
+        <div class="diff-label">Baseline</div>
+        <pre><code>npm install flatpickr
+import Flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.css';
+
+const DatePicker = ({ value, onChange }) => {
+  useEffect(() => {
+    fp = new Flatpickr(domNode, {
+      dateFormat: 'Y-m-d',
+      altInput: true,
+      altFormat: 'F j, Y',
+    });
+  }, []);
+  return &lt;input ref={register} /&gt;;
+};</code></pre>
+        <p>54 lines including config, lifecycle, and CSS import</p>
+      </div>
+      <div class="diff-side diff-after">
+        <div class="diff-label">With ponytail</div>
+        <pre><code>&lt;input type="date" /&gt;</code></pre>
+        <p>Rung 4 fires: the browser already ships a date picker. The HTML spec solved this problem in 2012.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Example 2 — Rung 1: YAGNI</h2>
+
+<p><em>"Add user roles to the auth system."</em></p>
+
+<div class="example">
+  <div class="example-header">
+    <span class="example-rung">Rung 1</span>
+    <span class="example-task">User roles feature</span>
+  </div>
+  <div class="example-body">
+    <div class="diff-row">
+      <div class="diff-side diff-before">
+        <div class="diff-label">Baseline</div>
+        <pre><code>enum Role { Admin, Editor, Viewer, Guest,
+  Moderator, Owner, Contributor, Subscriber };
+
+type Permission = 'read' | 'write' | 'delete' |
+  'manage_users' | 'manage_billing';
+
+const rolePermissions: Record&lt;Role, Permission[]&gt; = {
+  Admin: ['read', 'write', 'delete', 'manage_users',
+          'manage_billing'],
+  // ... 7 more entries
+};
+
+export function canAccess(role: Role, perm: Permission) {
+  return rolePermissions[role].includes(perm);
+}</code></pre>
+        <p>Baseline enumerated 8 roles and 5 permissions before the ticket even mentioned what the app does</p>
+      </div>
+      <div class="diff-side diff-after">
+        <div class="diff-label">With ponytail</div>
+        <pre><code>// Only admin vs non-admin for now
+const isAdmin = (user) => user.role === 'admin';</code></pre>
+        <p>Rung 1 fires: "Only admin and non-admin were mentioned in the ticket. Guest, Subscriber, Moderator, Owner — none of these appear. Skip them."</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Example 3 — Rung 5: Installed Dependency</h2>
+
+<p><em>"Validate email input."</em></p>
+
+<div class="example">
+  <div class="example-header">
+    <span class="example-rung">Rung 5</span>
+    <span class="example-task">Email validation</span>
+  </div>
+  <div class="example-body">
+    <div class="diff-row">
+      <div class="diff-side diff-before">
+        <div class="diff-label">Baseline</div>
+        <pre><code>npm install validator
+import validator from 'validator';
+
+export const validateEmail = (email: string) => {
+  if (!email) return false;
+  if (!validator.isEmail(email)) return false;
+  return true;
+};</code></pre>
+        <p>Dependency added for a single regex</p>
+      </div>
+      <div class="diff-side diff-after">
+        <div class="diff-label">With ponytail</div>
+        <pre><code>// Checked: validator is installed
+import { isEmail } from 'validator';
+export const validateEmail = (email: string) =>
+  isEmail(email);</code></pre>
+        <p>Rung 5 fires: validator is already in package.json. Reuse the import instead of checking if it exists first.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>What the Ladder Never Cuts</h2>
+
+<div class="callout" style="background: #e8f5e9; border-left-color: #4caf50;">
+  <p>The ladder reduces code by cutting unnecessary abstractions, redundant dependencies, and features that aren't specified. It does not reduce safety.</p>
+  <p style="margin-top: 0.75rem; margin-bottom: 0;">Ponytail never removes:</p>
+  <ul style="margin: 0.5rem 0 0 1.5rem;">
+    <li><strong>Trust-boundary validation</strong> — any code that guards against external input or untrusted sources</li>
+    <li><strong>Data-loss handling</strong> — error states, undo paths, confirmation dialogs for destructive actions</li>
+    <li><strong>Security controls</strong> — auth checks, input sanitization, rate limiting, RBAC enforcement</li>
+    <li><strong>Accessibility</strong> — ARIA labels, keyboard navigation, focus management</li>
+  </ul>
+</div>
+
+<p>The agent with ponytail is not a lazy agent. It is a disciplined one. Discipline means writing exactly what the task requires — no more, no less.</p>
+
+<h2>Exercise: Find Over-Engineering in Your Own Work</h2>
+
+<p>Find one piece of code in your current project that you wrote or that an agent wrote recently. Apply the ladder mentally:</p>
+
+<ol style="margin-left: 1.5rem;">
+  <li>Read the task that produced this code (PRD, issue, or your own description). Did the code do exactly what was asked?</li>
+  <li>Scan the imports. Are they all used? Is there a package.json dependency that does one thing you could replace with stdlib?</li>
+  <li>Count the functions. Are there abstractions that aren't called from anywhere except themselves?</li>
+  <li>Run <code>/ponytail-review</code> on the diff. How many of the flagged deletions would you accept?</li>
+</ol>
+
+<div class="callout success">
+  <p><strong>Expected result:</strong> Most over-engineering comes from two sources — agents (or developers) anticipating requirements that were never in the spec, and installing libraries for single-use cases. The ladder catches both.</p>
+</div>
+
+<h2>What You Are Calibrating</h2>
+
+<p>The first few times you run ponytail, you will feel uneasy. The agent writes less code than you expect. You will wonder: "is this really enough?"</p>
+
+<p>This is the calibration. The uneasy feeling is you noticing the gap between "what I usually write" and "what the task requires." That gap is the cost of over-engineering — and it compounds across every feature, every ticket, every month.</p>
+
+<p>The ladder shrinks the gap. Trust the process for 10 tickets before you judge it.</p>
+
+<div class="lesson-nav">
+  <a href="0002-install-and-configure.html">← Lesson 0002: Install &amp; Configure</a>
+  <a href="0004-real-workflow.html">Next: Real Workflow →</a>
+</div>
+
+</body>
+</html>

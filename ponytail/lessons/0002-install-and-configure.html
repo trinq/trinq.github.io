@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: Install & Configure Ponytail</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+    }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .step {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.9rem;
+    }
+    .step-body { flex: 1; padding-top: 0.25rem; }
+    .step-title {
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ponytail</span></span>
+  <span>Lesson 0002</span>
+  <span>2026-06-25</span>
+</div>
+
+<h1>Install &amp; Configure Ponytail</h1>
+<p class="subtitle">Get ponytail into your GitHub Copilot CLI, choose your intensity, and run it on a real task.</p>
+
+<p>Ponytail is not a CLI tool you run. It's a <em>skill</em> that rides inside your AI agent. Once installed, you call it with slash commands. The agent applies the ladder every time it touches code.</p>
+
+<h2>Step 1 — Add the Ponytail Marketplace to Copilot</h2>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <div class="step-title">Open Copilot CLI</div>
+    <p>Run <code>copilot</code> in your terminal to start the interactive CLI session.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <div class="step-title">Add the marketplace</div>
+    <pre><code>/plugin marketplace add DietrichGebert/ponytail</code></pre>
+    <p>This registers the ponytail repo as a plugin source.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <div class="step-title">Install the plugin</div>
+    <pre><code>/plugin install ponytail@ponytail</code></pre>
+    <p>Reload the CLI if prompted. You should now see <code>/ponytail</code> and <code>/ponytail-review</code> in your command list.</p>
+  </div>
+</div>
+
+<div class="callout warning">
+  <p><strong>If you don't see the commands:</strong> Run <code>/help</code> and search for "ponytail". If still missing, restart the CLI and try again — sometimes the marketplace doesn't refresh until a new session.</p>
+</div>
+
+<h2>Step 2 — Pick Your Intensity</h2>
+
+<p>Ponytail is not binary. You choose how aggressive the ladder is. Match the intensity to the task and your familiarity with the codebase:</p>
+
+<pre><code>/ponytail lite    # rung 1 (YAGNI) + rung 6 (one-line) only
+/ponytail full    # all 7 rungs — the default
+/ponytail ultra   # all 7 + extra skepticism on abstractions
+/ponytail off     # turn it off; agent behaves normally</code></pre>
+
+<div class="callout">
+  <p><strong>Recommended starting point:</strong> Begin with <code>full</code> on a small, low-risk task. If the agent refuses to do something you'd normally do, drop to <code>lite</code>. If you find the codebase already has a history of over-engineering, escalate to <code>ultra</code>.</p>
+</div>
+
+<p>Intensity can be changed mid-session. <code>/ponytail off</code> is your escape hatch if the agent gets stuck on a rung that doesn't apply.</p>
+
+<h2>Step 3 — Run a Real Task</h2>
+
+<p>Pick a small piece of work from your queue. The first time you use ponytail, the task should be:</p>
+
+<ul>
+  <li><strong>Bounded</strong> — one file or one component, not a whole feature</li>
+  <li><strong>Low-risk</strong> — if you need to throw away the result, you won't lose sleep</li>
+  <li><strong>Concretely spec'd</strong> — the user stories are clear, no ambiguity about "done"</li>
+</ul>
+
+<p>Why these constraints? Because the first run is mostly about calibrating <em>your</em> trust in the skill, not testing the skill itself. You need a win you can inspect.</p>
+
+<div class="callout success">
+  <p><strong>The pattern that works best:</strong> Combine ponytail with `/prd` and `/issues` from <a href="https://github.com/mattpocock/skills">Matt Pocock's skills directory</a>. The flow:</p>
+  <ol style="margin-top: 0.5rem;">
+    <li>Write a PRD (captures the destination)</li>
+    <li>Break into vertical-slice issues (plans the journey)</li>
+    <li>Implement each issue with ponytail active (writes minimal code)</li>
+    <li>Review with <code>/ponytail-review</code> before merge (catches over-engineering)</li>
+  </ol>
+</div>
+
+<h2>Step 4 — Review the Diff</h2>
+
+<p>Once the agent finishes writing, do not merge yet. Run the review command:</p>
+
+<pre><code>/ponytail-review</code></pre>
+
+<p>Ponytail returns a <em>delete list</em> — specific lines it would cut, with the rung each deletion satisfies. You accept or reject each item. This is the moment to apply your judgment:</p>
+
+<ul>
+  <li>If the deletion violates a "never cut" rule (validation, error handling, security, accessibility), reject it.</li>
+  <li>If the deletion is genuine over-engineering the agent wrote, accept it.</li>
+  <li>If you're unsure, leave it for now — review the diff yourself before deciding.</li>
+</ul>
+
+<p>The review is interactive. Treat it as a conversation, not a CI gate.</p>
+
+<h2>The Five Commands You Will Actually Use</h2>
+
+<p>Most of the time, four commands cover 95% of work. The fifth is for audits:</p>
+
+<table style="width:100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid var(--rule);">
+      <th style="text-align:left; padding: 0.5rem 0;">Command</th>
+      <th style="text-align:left; padding: 0.5rem 0;">When to use</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.5rem 0;"><code>/ponytail full</code></td>
+      <td style="padding: 0.5rem 0;">Start of session — turn the ladder on</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.5rem 0;"><code>/ponytail-review</code></td>
+      <td style="padding: 0.5rem 0;">Before merging any change</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.5rem 0;"><code>/ponytail off</code></td>
+      <td style="padding: 0.5rem 0;">When the agent is stuck on a rung that doesn't apply</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.5rem 0;"><code>/ponytail-debt</code></td>
+      <td style="padding: 0.5rem 0;">When you accept a shortcut ponytail flags — log it</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.5rem 0;"><code>/ponytail-audit</code></td>
+      <td style="padding: 0.5rem 0;">One-time scan of an unfamiliar repo to see if the codebase has an over-engineering pattern</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>What This Lesson Did Not Cover</h2>
+
+<p>The README has more commands (<code>/ponytail-gain</code> for scoreboards, <code>/ponytail-help</code> for inline reference). You will discover those once you have run a few real cycles. The five above are the ones that compound.</p>
+
+<p>Also not covered: using ponytail on Cursor. The skill is documented for Claude Code and Copilot CLI. Cursor support is possible via rules but unverified at time of writing.</p>
+
+<h2>Next</h2>
+
+<p>→ <a href="0003-apply-the-ladder.html">Lesson 0003: Apply the Ladder</a> — three real before/after diffs and what each rung catches</p>
+
+<div class="lesson-nav">
+  <a href="0001-the-lazy-senior-dev.html">← Lesson 0001: The Lazy Senior Dev</a>
+  <a href="0003-apply-the-ladder.html">Next: Apply the Ladder →</a>
+</div>
+
+</body>
+</html>

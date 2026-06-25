@@ -10,8 +10,8 @@ title: Home
 Group posts by category: defined order, skip empty categories
 {% endcomment %}
 
-{% assign cat_order = "four-loops,agent-loop-skills,loop,reading" | split: "," %}
-{% assign name_order = "The 4-Loop Ladder,Agent Loop Skills,Loop Engineer,Reading" | split: "," %}
+{% assign cat_order = "four-loops,agent-loop-skills,loop,reading,ponytail" | split: "," %}
+{% assign name_order = "The 4-Loop Ladder,Agent Loop Skills,Loop Engineer,Reading,Ponytail" | split: "," %}
 
 {% for cat in cat_order %}
   {% assign cat_posts = site.posts | where: "category", cat %}

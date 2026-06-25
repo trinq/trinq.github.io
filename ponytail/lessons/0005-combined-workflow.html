@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005: Combined Workflow — Full Pipeline</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --blue: #2980b9;
+      --green: #27ae60;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex; gap: 1rem; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent); color: white; padding: 0.1rem 0.5rem;
+      border-radius: 3px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .meta .badge.blue { background: var(--blue); }
+    .meta .badge.green { background: var(--green); }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    pre {
+      background: var(--code-bg); padding: 1rem 1.25rem; margin: 1rem 0;
+      overflow-x: auto; border-radius: 4px; border-left: 3px solid var(--accent);
+    }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+
+    /* Step flow */
+    .pipeline {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin: 1.5rem 0; flex-wrap: wrap;
+    }
+    .pipeline-step {
+      padding: 0.4rem 0.75rem; border-radius: 4px; font-size: 0.82rem;
+      font-weight: 700; font-family: "SF Mono", Menlo, monospace;
+      white-space: nowrap;
+    }
+    .pipeline-step.grill    { background: #fff3e0; color: #e67e22; border: 1px solid #ffcc80; }
+    .pipeline-step.prd      { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .pipeline-step.issues   { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+    .pipeline-step.impl     { background: #f3e5f5; color: #7b1fa2; border: 1px solid #ce93d8; }
+    .pipeline-step.ponytail { background: #fdecea; color: var(--accent); border: 1px solid #ef9a9a; }
+    .pipeline-step.review   { background: var(--code-bg); color: var(--ink); border: 1px solid var(--rule); }
+    .pipeline-arrow { color: var(--ink-soft); font-size: 1.2rem; }
+
+    /* Phase block */
+    .phase {
+      border: 1px solid var(--rule); border-radius: 6px; margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .phase-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1.25rem; background: #fff;
+      border-bottom: 1px solid var(--rule);
+    }
+    .phase-num {
+      width: 2rem; height: 2rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700;
+      font-family: "SF Mono", Menlo, monospace;
+      color: white; flex-shrink: 0;
+    }
+    .phase.grill   .phase-num { background: #e67e22; }
+    .phase.prd     .phase-num { background: #27ae60; }
+    .phase.issues  .phase-num { background: #2980b9; }
+    .phase.impl    .phase-num { background: #8e44ad; }
+    .phase.ponytail .phase-num { background: var(--accent); }
+    .phase.review  .phase-num { background: var(--ink-soft); }
+    .phase-title { font-weight: 700; font-size: 1rem; }
+    .phase-body { padding: 1.25rem; background: #fff; }
+    .phase-tool {
+      font-family: "SF Mono", Menlo, monospace; font-size: 0.82rem;
+      background: var(--code-bg); padding: 0.4rem 0.75rem;
+      border-radius: 4px; display: inline-block; margin-bottom: 1rem;
+      border-left: 3px solid var(--accent);
+    }
+    .phase-output {
+      background: #fff; border: 1px solid var(--rule);
+      border-radius: 4px; padding: 1rem; margin: 1rem 0;
+    }
+    .output-label {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--ink-soft); font-weight: 700; margin-bottom: 0.75rem;
+    }
+    .output-meta {
+      font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 0.75rem;
+    }
+    .diff-line { font-family: "SF Mono", Menlo, monospace; font-size: 0.82rem; }
+    .diff-del  { color: var(--accent); }
+    .diff-add  { color: var(--green); }
+    .diff-cut  { background: #fff3e0; padding: 0.1rem 0.3rem; border-radius: 2px; }
+    .comment {
+      background: #fffde7; border-left: 3px solid #f9a825;
+      padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0;
+      font-size: 0.9rem;
+    }
+    .comment strong { display: block; margin-bottom: 0.25rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #f57f17; }
+    .callout {
+      background: #e8f5e9; padding: 1.25rem; margin: 1.5rem 0;
+      border-radius: 4px; border-left: 3px solid var(--green);
+    }
+    .callout.red {
+      background: #fdecea; border-left-color: var(--accent);
+    }
+    .score-row {
+      display: flex; gap: 1.5rem; margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+    .score-item {
+      flex: 1; min-width: 120px;
+      background: #fff; border: 1px solid var(--rule);
+      border-radius: 6px; padding: 1rem; text-align: center;
+    }
+    .score-item .val {
+      font-size: 1.75rem; font-weight: 700;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .score-item .val.red { color: var(--accent); }
+    .score-item .val.green { color: var(--green); }
+    .score-item .label { font-size: 0.75rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+    th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--rule); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    .check { color: var(--green); }
+    .cross { color: var(--accent); }
+    .lesson-nav {
+      margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    .rung-fire {
+      display: inline-block; padding: 0.15rem 0.5rem;
+      border-radius: 3px; font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem; font-weight: 700; margin-right: 0.3rem;
+    }
+    .rung-fire.r1 { background: #fdecea; color: var(--accent); }
+    .rung-fire.r2 { background: #e8f5e9; color: var(--green); }
+    .rung-fire.r3 { background: #e3f2fd; color: var(--blue); }
+    .rung-fire.r4 { background: #fff3e0; color: #e67e22; }
+    .rung-fire.r7 { background: #f3e5f5; color: #7b1fa2; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ponytail</span></span>
+  <span><span class="badge blue">grill</span></span>
+  <span><span class="badge green">prd</span></span>
+  <span>Lesson 0005</span>
+  <span>2026-06-25</span>
+</div>
+
+<h1>Combined Workflow — Full Pipeline</h1>
+<p class="subtitle">Grill → PRD → Issues → Implement → Ponytail → Review. Step-by-step with real commands and outputs.</p>
+
+<p>This lesson walks through one complete feature request using the full combined workflow. Each tool fires at a specific point, produces a specific output, and hands off to the next tool. You see exactly what enters and exits every phase.</p>
+
+<p>The example task: <strong>"Add a dark mode toggle to the nav bar."</strong></p>
+
+<div class="pipeline">
+  <span class="pipeline-step grill">Grill</span>
+  <span class="pipeline-arrow">→</span>
+  <span class="pipeline-step prd">PRD</span>
+  <span class="pipeline-arrow">→</span>
+  <span class="pipeline-step issues">Issues</span>
+  <span class="pipeline-arrow">→</span>
+  <span class="pipeline-step impl">Implement</span>
+  <span class="pipeline-arrow">→</span>
+  <span class="pipeline-step ponytail">Ponytail</span>
+  <span class="pipeline-arrow">→</span>
+  <span class="pipeline-step review">Review</span>
+</div>
+
+<hr>
+
+<h2>Phase 1 — Grill</h2>
+
+<p>The user says: <em>"Add a dark mode toggle to the nav bar."</em></p>
+<p>Grill fires. The first question is never "how" — it's "why" and "what exactly."</p>
+
+<div class="phase grill">
+  <div class="phase-header">
+    <div class="phase-num">1</div>
+    <div class="phase-title">Grill — Clarify the problem</div>
+  </div>
+  <div class="phase-body">
+    <div class="phase-tool">/grill-me</div>
+
+    <p><strong>Q: Dark mode toggle. For who? Always needed?</strong></p>
+    <p>A: For users who prefer dark. Most apps auto-detect from OS. Manual toggle exists in settings, buried 3 clicks deep. This is about surfacing it.</p>
+
+    <p><strong>Q: What's the goal — accessibility or preference?</strong></p>
+    <p>A: Preference. But auto-detect + manual override is the standard pattern. We should match that.</p>
+
+    <p><strong>Q: Does the codebase already have dark mode?</strong></p>
+    <p>A: Yes — Tailwind uses <code>class="dark"</code> on the root element. System preference is already read via <code>prefers-color-scheme</code>.</p>
+
+    <p><strong>Q: Is the toggle only in nav, or across the app?</strong></p>
+    <p>A: Nav only. The theme applies app-wide.</p>
+
+    <p><strong>Q: What happens to the user's choice?</strong></p>
+    <p>A: Stored in localStorage. Overrides system preference until user toggles again or clears storage.</p>
+
+    <div class="comment">
+      <strong>Grill output — decision tree resolved</strong>
+      <ul>
+        <li>Toggle is a shortcut to what already exists in settings</li>
+        <li>Codebase already has theming infrastructure (Tailwind dark mode)</li>
+        <li>User choice persists in localStorage</li>
+        <li>Not accessibility-driven — no WCAG constraint</li>
+        <li>Nav only — no cross-app changes</li>
+      </ul>
+    </div>
+
+    <p>Grill prevents the most expensive mistake: building the wrong feature. Here, it reveals the destination is not "build dark mode" — it's "add a shortcut to existing dark mode in settings."</p>
+  </div>
+</div>
+
+<hr>
+
+<h2>Phase 2 — PRD</h2>
+
+<p>Grill output feeds directly into PRD. No extra conversation needed — the decisions are already made.</p>
+
+<div class="phase prd">
+  <div class="phase-header">
+    <div class="phase-num">2</div>
+    <div class="phase-title">PRD — Document the destination</div>
+  </div>
+  <div class="phase-body">
+    <div class="phase-tool">/write-a-prd</div>
+
+    <div class="phase-output">
+      <div class="output-label">PRD Output</div>
+      <div class="output-meta">4 sections, under 30 lines total</div>
+
+      <h4>Problem</h4>
+      <p>Users who prefer dark mode must navigate to Settings → Appearance → Theme to switch. The current path is 3 clicks. A quick-toggle in the nav bar reduces this to 1 click.</p>
+
+      <h4>Solution</h4>
+      <p>Add a sun/moon icon toggle in the top nav bar. Clicking it cycles between light and dark. The icon changes to reflect current state. The choice persists in <code>localStorage</code> and overrides the system preference.</p>
+
+      <h4>User stories</h4>
+      <ul>
+        <li>As a user, I see a toggle in the nav bar, so I can switch theme in one click.</li>
+        <li>As a user, the toggle icon reflects my current theme, so I know what state I'm in.</li>
+        <li>As a user, my choice persists across sessions, so I don't have to toggle every visit.</li>
+      </ul>
+
+      <h4>Constraints</h4>
+      <ul>
+        <li>Use existing Tailwind dark mode setup — <strong>do not modify theme config</strong>.</li>
+        <li>Use existing <code>localStorage</code> pattern for persistence — <strong>do not add a new state library</strong>.</li>
+        <li>Do not add any new dependency.</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <p><strong>PRD is 30 lines. Three constraints are explicit:</strong></p>
+      <ol>
+        <li>Use existing Tailwind dark mode — ponytail rung 2 (reuse from codebase) will fire if agent tries to reconfigure</li>
+        <li>Use existing <code>localStorage</code> pattern — rung 4 (native platform) fires if agent adds a state library</li>
+        <li>No new dependency — rung 5 fires if agent proposes installing something</li>
+      </ol>
+    </div>
+
+    <p>The PRD is the contract. Ponytail enforces it. Grill made the decisions. Now the implementation can be lean because the destination is clear and the constraints are explicit.</p>
+  </div>
+</div>
+
+<hr>
+
+<h2>Phase 3 — Issues</h2>
+
+<p>PRD breaks into vertical slices. Each slice is end-to-end working code.</p>
+
+<div class="phase issues">
+  <div class="phase-header">
+    <div class="phase-num">3</div>
+    <div class="phase-title">Issues — Break into vertical slices</div>
+  </div>
+  <div class="phase-body">
+    <div class="phase-tool">/prd-to-issues</div>
+
+    <div class="phase-output">
+      <div class="output-label">Issues Output — 2 slices</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Blocker</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#46</td>
+            <td>Theme toggle icon in nav</td>
+            <td>None — do first</td>
+          </tr>
+          <tr>
+            <td>#47</td>
+            <td>Persist theme choice in localStorage</td>
+            <td>Blocked by #46</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Only 2 slices. Issue #46 is the UI. Issue #47 is the persistence. Both are small enough to finish in one session. Both are independent — the toggle works with hardcoded theme in #46, persistence is a separate concern added in #47.</p>
+  </div>
+</div>
+
+<hr>
+
+<h2>Phase 4 — Implement</h2>
+
+<p>Pick up issue #46. Run with ponytail active.</p>
+
+<div class="phase impl">
+  <div class="phase-header">
+    <div class="phase-num">4</div>
+    <div class="phase-title">Implement — Agent with ladder active</div>
+  </div>
+  <div class="phase-body">
+    <div class="phase-tool">/ponytail full</div>
+    <p>Prompt: "Implement issue #46: add theme toggle icon to top nav bar. Use existing Tailwind dark mode. Toggle cycles light ↔ dark."</p>
+
+    <h3>Agent proposes → Ladder intercepts</h3>
+
+    <div class="diff-line" style="margin: 0.75rem 0;">
+      <span class="diff-del">- const [theme, setTheme] = useState('light');</span><br>
+      <span class="diff-del">- useEffect(() => { document.documentElement.classList.toggle('dark'); }, [theme]);</span>
+    </div>
+    <p>Agent proposed a state variable and effect to manage theme. <strong>Rung 2 fires</strong> — the codebase already has a <code>useTheme()</code> hook in <code>hooks/useTheme.ts</code>:</p>
+
+    <pre><code>// Already exists in codebase — rung 2
+import { useTheme } from '@/hooks/useTheme';
+
+// Replace 2 files of state management with 1 hook call
+const { theme, toggle } = useTheme();</code></pre>
+
+    <div class="diff-line" style="margin: 0.75rem 0;">
+      <span class="diff-del">- // TODO: install react-icons</span>
+    </div>
+    <p>Agent suggested installing <code>react-icons</code> for sun/moon icons. <strong>Rung 5 fires</strong> — Tailwind has built-in icon utilities. Or use inline SVG:</p>
+
+    <pre><code>// Rung 5 — use built-in or inline SVG, not a library
+// Tailwind uses: Heroicons, Lucide, or inline SVG
+// Inline SVG is 1 line — rung 6
+const SunIcon = () => (
+  &lt;svg className="w-5 h-5"&gt;&lt;circle cx="12" cy="12" r="4" fill="currentColor"/&gt;&lt;/svg&gt;
+);</code></pre>
+
+    <div class="diff-line" style="margin: 0.75rem 0;">
+      <span class="diff-del">- // Create ThemeToggle.tsx component</span>
+      <span class="diff-del">- // Add ThemeToggle.css stylesheet</span>
+      <span class="diff-del">- // Export from index.ts</span>
+    </div>
+    <p>Agent proposed creating a separate component file. <strong>Rung 7 fires</strong> — keep it inline in Nav.tsx for now. It is a detail of the nav, not a reusable component. <em>"Do you want to promote it later? Yes. But not now."</em></p>
+
+    <div class="callout">
+      <p><strong>Rungs that fired in this session:</strong><br>
+      <span class="rung-fire r2">Rung 2</span> useTheme hook from codebase
+      <span class="rung-fire r5">Rung 5</span> react-icons rejected — inline SVG
+      <span class="rung-fire r7">Rung 7</span> separate component rejected — keep inline</p>
+    </div>
+
+    <h3>Final output — 9 lines added to Nav.tsx</h3>
+
+    <pre><code>// Inside the nav, next to the user avatar:
+const { theme, toggle } = useTheme();
+
+&lt;button
+  onClick={toggle}
+  aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+  className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+&gt;
+  {theme === 'dark' ? &lt;SunIcon /&gt; : &lt;MoonIcon /&gt;}
+&lt;/button&gt;</code></pre>
+
+    <div class="callout">
+      <p><strong>Before ponytail:</strong> Agent would have created <code>ThemeToggle.tsx</code> + <code>useThemeState.ts</code> + <code>ThemeToggle.css</code> + installed <code>react-icons</code>. ~80 lines, 1 new dep.</p>
+      <p><strong>After ponytail:</strong> 9 lines inline in Nav.tsx, zero new deps, zero new files.</p>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<h2>Phase 5 — Ponytail Review</h2>
+
+<p>Before opening the PR, run the review on the diff.</p>
+
+<div class="phase ponytail">
+  <div class="phase-header">
+    <div class="phase-num">5</div>
+    <div class="phase-title">Ponytail Review — Delete list</div>
+  </div>
+  <div class="phase-body">
+    <div class="phase-tool">/ponytail-review</div>
+
+    <div class="phase-output">
+      <div class="output-label">Review output — 0 items flagged</div>
+      <p style="font-size: 0.9rem; color: var(--ink-soft);">The ladder was active during implementation. The review finds nothing to cut.</p>
+    </div>
+
+    <p>Because ponytail was active <em>during</em> the session, there is nothing left to cut. The review is clean. This is the expected outcome when the ladder runs in <code>full</code> mode throughout.</p>
+
+    <div class="callout red">
+      <p><strong>If you skip ponytail during implementation</strong> and only run review at the end, you will get a longer delete list. The review catches what the ladder missed. But it is easier to prevent than to cut.</p>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<h2>Phase 6 — Merge</h2>
+
+<p>PR is small, clean, and well-scoped.</p>
+
+<div class="score-row">
+  <div class="score-item">
+    <div class="val red">-85%</div>
+    <div class="label">Lines (vs baseline)</div>
+  </div>
+  <div class="score-item">
+    <div class="val green">0</div>
+    <div class="label">New files</div>
+  </div>
+  <div class="score-item">
+    <div class="val green">0</div>
+    <div class="label">New deps</div>
+  </div>
+  <div class="score-item">
+    <div class="val green">0</div>
+    <div class="label">Items in delete list</div>
+  </div>
+</div>
+
+<hr>
+
+<h2>Where Each Tool Fits</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Question it answers</th>
+      <th>Output</th>
+      <th>Cost of skipping</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Grill</td>
+      <td>Are we building the right thing?</td>
+      <td>Decisions made, assumptions tested</td>
+      <td class="cross">High — wrong feature built</td>
+    </tr>
+    <tr>
+      <td>PRD</td>
+      <td>What exactly is the destination?</td>
+      <td>Problem + Solution + Constraints written</td>
+      <td class="cross">High — scope creep, missing constraints</td>
+    </tr>
+    <tr>
+      <td>Issues</td>
+      <td>How do we slice this?</td>
+      <td>Vertical slices, each deployable</td>
+      <td class="cross">Medium — horizontal layers hard to cut</td>
+    </tr>
+    <tr>
+      <td>Ponytail (active)</td>
+      <td>Is this line necessary?</td>
+      <td>Rejected proposals, ladder applied</td>
+      <td class="cross">Medium — over-engineered code</td>
+    </tr>
+    <tr>
+      <td>/ponytail-review</td>
+      <td>Did anything slip through?</td>
+      <td>Delete list</td>
+      <td class="check">Low — catches misses, but prevention is better</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>Exercise</h2>
+
+<ol style="margin-left: 1.5rem;">
+  <li>Pick one feature from your current sprint.</li>
+  <li>Run <code>/grill-me</code> before writing the PRD. Write down every question it asks. Answer honestly.</li>
+  <li>Write the PRD. Make the constraints explicit — what should the agent <em>not</em> touch?</li>
+  <li>Break into vertical slices. Each slice should be deployable on its own.</li>
+  <li>Run <code>/ponytail full</code> during implementation.</li>
+  <li>Run <code>/ponytail-review</code> before opening the PR.</li>
+  <li>Record: How many lines saved? Which rungs fired? Did the PRD change?</li>
+</ol>
+
+<p>The first ticket will feel like a lot of steps. By ticket 5, the workflow compresses. The grill questions become instinct. The PRD constraints become automatic. Ponytail becomes a reflex.</p>
+
+<div class="lesson-nav">
+  <a href="0004-real-workflow.html">← Lesson 0004: Real Workflow</a>
+  <a href="0003-apply-the-ladder.html">← Back to Apply the Ladder</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: The Lazy Senior Dev</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    p { margin-bottom: 1rem; }
+    .ladder {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.9rem;
+    }
+    .ladder-step {
+      display: flex;
+      gap: 1rem;
+      padding: 0.4rem 0;
+    }
+    .ladder-num {
+      color: var(--accent);
+      font-weight: 700;
+      min-width: 1.5rem;
+    }
+    .ladder-text { flex: 1; }
+    .ladder-arrow {
+      color: var(--ink-soft);
+      font-size: 0.8rem;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .highlight {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .highlight code {
+      background: #fff;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ponytail</span></span>
+  <span>Lesson 0001</span>
+  <span>2026-06-25</span>
+</div>
+
+<h1>The Lazy Senior Dev</h1>
+<p class="subtitle">"He says nothing. Writes one line. It works."</p>
+
+<p>You know the guy. Long ponytail. Oval glasses. Has been at the company longer than version control. You show him 50 lines; he looks at them, says nothing, and replaces them with one.</p>
+
+<p><strong>Ponytail</strong> puts him inside your AI agent.</p>
+
+<h2>The 7-Rung Ladder</h2>
+
+<p>Before writing code, the agent stops at the first rung that holds:</p>
+
+<div class="ladder">
+  <div class="ladder-step">
+    <span class="ladder-num">1.</span>
+    <span class="ladder-text">Does this need to exist?</span>
+    <span class="ladder-arrow">→ skip it (YAGNI)</span>
+  </div>
+  <div class="ladder-step">
+    <span class="ladder-num">2.</span>
+    <span class="ladder-text">Already in this codebase?</span>
+    <span class="ladder-arrow">→ reuse it</span>
+  </div>
+  <div class="ladder-step">
+    <span class="ladder-num">3.</span>
+    <span class="ladder-text">Stdlib does it?</span>
+    <span class="ladder-arrow">→ use it</span>
+  </div>
+  <div class="ladder-step">
+    <span class="ladder-num">4.</span>
+    <span class="ladder-text">Native platform feature?</span>
+    <span class="ladder-arrow">→ use it</span>
+  </div>
+  <div class="ladder-step">
+    <span class="ladder-num">5.</span>
+    <span class="ladder-text">Installed dependency?</span>
+    <span class="ladder-arrow">→ use it</span>
+  </div>
+  <div class="ladder-step">
+    <span class="ladder-num">6.</span>
+    <span class="ladder-text">One line?</span>
+    <span class="ladder-arrow">→ one line</span>
+  </div>
+  <div class="ladder-step">
+    <span class="ladder-num">7.</span>
+    <span class="ladder-text">Only then: the minimum that works</span>
+  </div>
+</div>
+
+<h2>The Before/After</h2>
+
+<p>You ask for a date picker. Your agent installs flatpickr, writes a wrapper component, adds a stylesheet, and starts a discussion about timezones.</p>
+
+<p>With ponytail:</p>
+
+<div class="highlight">
+  <code>&lt;input type="date"&gt;</code>
+</div>
+
+<h2>The Numbers</h2>
+
+<p>Measured on real Claude Code sessions, 12 feature tickets, same agent with and without the skill:</p>
+
+<table style="width:100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid var(--rule);">
+      <th style="text-align:left; padding: 0.5rem 0;">Metric</th>
+      <th style="text-align:right; padding: 0.5rem 0;">ponytail</th>
+      <th style="text-align:right; padding: 0.5rem 0;">baseline</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;">Lines of Code</td>
+      <td style="text-align:right; padding: 0.4rem 0;">-54%</td>
+      <td style="text-align:right; padding: 0.4rem 0; color: var(--ink-soft);">100%</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;">Tokens</td>
+      <td style="text-align:right; padding: 0.4rem 0;">-22%</td>
+      <td style="text-align:right; padding: 0.4rem 0; color: var(--ink-soft);">100%</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;">Cost</td>
+      <td style="text-align:right; padding: 0.4rem 0;">-20%</td>
+      <td style="text-align:right; padding: 0.4rem 0; color: var(--ink-soft);">100%</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;">Time</td>
+      <td style="text-align:right; padding: 0.4rem 0;">-27%</td>
+      <td style="text-align:right; padding: 0.4rem 0; color: var(--ink-soft);">100%</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.4rem 0;">Safe (adversarial)</td>
+      <td style="text-align:right; padding: 0.4rem 0;">100%</td>
+      <td style="text-align:right; padding: 0.4rem 0; color: var(--ink-soft);">100%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="quote">"The rule was never 'fewest tokens.' Write only what the task needs, and never cut validation, error handling, security, or accessibility."</p>
+
+<h2>Lazy ≠ Negligent</h2>
+
+<p>Ponytail never cuts:</p>
+<ul style="margin: 1rem 0 1rem 1.5rem;">
+  <li>Trust-boundary validation</li>
+  <li>Data-loss handling</li>
+  <li>Security</li>
+  <li>Accessibility</li>
+</ul>
+
+<h2>Next Steps</h2>
+
+<p>→ <a href="../reference/0001-the-ladder.html">Reference: The 7-Rung Ladder</a> — cheat sheet to tape to your desk</p>
+
+<div class="lesson-nav">
+  <span class="nav-label">← Previous</span>
+  <a href="../lessons/0002-install-and-configure.html">Next: Install & Configure →</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006: Measure Your Impact</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --blue: #2980b9;
+      --green: #27ae60;
+      --code-bg: #f4efe9;
+      --success-bg: #e8f5e9;
+      --success-border: #2e7d32;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex; gap: 1rem; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--ink-soft); flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent); color: white; padding: 0.1rem 0.5rem;
+      border-radius: 3px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .meta .badge.blue { background: var(--blue); }
+    .meta .badge.green { background: var(--green); }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    pre {
+      background: var(--code-bg); padding: 1.25rem;
+      border-radius: 6px; overflow-x: auto;
+      border: 1px solid var(--rule); margin: 1rem 0;
+    }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .formula-box {
+      background: var(--success-bg); border: 1px solid var(--success-border);
+      border-radius: 6px; padding: 1.5rem; margin: 1.5rem 0;
+    }
+    .formula-box h3 { margin-top: 0; color: var(--success-border); }
+    .metric-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem; margin: 1.5rem 0;
+    }
+    .metric-card {
+      background: white; border: 1px solid var(--rule);
+      border-radius: 8px; padding: 1.25rem;
+    }
+    .metric-card .value {
+      font-size: 2rem; font-weight: 700; color: var(--accent);
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .metric-card .label {
+      font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.25rem;
+    }
+    .step-box {
+      background: white; border-left: 3px solid var(--blue);
+      padding: 1rem 1.25rem; margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .step-box.warning { border-left-color: var(--accent); }
+    .step-box.success { border-left-color: var(--green); }
+    .step-box h3 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+    .checklist {
+      list-style: none; margin: 1rem 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0; padding-left: 1.5rem;
+      position: relative;
+    }
+    .checklist li::before {
+      content: "→"; position: absolute; left: 0;
+      color: var(--blue); font-weight: bold;
+    }
+    .checklist li.checked::before { content: "✓"; color: var(--green); }
+    .rung-table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+    .rung-table th, .rung-table td {
+      padding: 0.6rem 0.75rem; text-align: left;
+      border-bottom: 1px solid var(--rule);
+    }
+    .rung-table th { background: var(--code-bg); font-weight: 700; }
+    .rung-table tr:hover { background: var(--success-bg); }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      color: var(--blue); text-decoration: none; font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .nav-links {
+      display: flex; gap: 1rem; margin-top: 2rem;
+      padding-top: 1.5rem; border-top: 1px solid var(--rule);
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: var(--blue); text-decoration: none; font-size: 0.9rem;
+    }
+    .nav-links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="meta">
+    <span><span class="badge">Hands-on</span></span>
+    <span>⏱ 20 phút</span>
+    <span>📍 Phase cuối — đo impact</span>
+  </div>
+
+  <h1>Lesson 0006: Measure Your Impact</h1>
+  <p class="subtitle">Biến lý thuyết thành số — đo thật trên task thật</p>
+
+  <h2>Tại sao cần đo?</h2>
+
+  <p>
+    Không có số, bạn không biết ponytail có hoạt động không.
+    Mission nói "ít code hơn, ít cost hơn, nhanh hơn" — nhưng con số nào?
+  </p>
+
+  <div class="formula-box">
+    <h3>Impact Formula</h3>
+    <p>Đo impact bằng 3 metrics cơ bản:</p>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="value">-30%</div>
+        <div class="label">Lines of Code saved</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">-20%</div>
+        <div class="label">API calls saved</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">+50%</div>
+        <div class="label">Rungs that fired</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Chuẩn bị</h2>
+
+  <p>Trước khi bắt đầu, chọn một task từ work thật của bạn:</p>
+
+  <ul class="checklist">
+    <li>Task đã có PRD hoặc issue rõ ràng</li>
+    <li>Task không quá lớn (ước tính &lt; 100 lines code)</li>
+    <li>Task có thể implement trong 1-2 giờ</li>
+  </ul>
+
+  <div class="step-box">
+    <h3>Task mẫu</h3>
+    <p>
+      "Thêm notification badge vào avatar user trong header"
+      — đủ nhỏ để đo, đủ thật để học.
+    </p>
+  </div>
+
+  <h2>Workflow đo impact</h2>
+
+  <h3>Step 1 — Baseline (không ponytail)</h3>
+
+  <p>Chạy agent mà không bật ponytail. Ghi lại trước:</p>
+
+  <table class="rung-table">
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Before</th>
+        <th>After</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Lines of code</td>
+        <td><code>?</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Files created</td>
+        <td><code>?</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Dependencies added</td>
+        <td><code>?</code></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Time elapsed</td>
+        <td><code>?</code></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="step-box warning">
+    <h3>Quan trọng</h3>
+    <p>
+      Sau khi agent propose, <strong>không accept ngay</strong>.
+      Ghi lại code proposal, rồi mới accept.
+    </p>
+  </div>
+
+  <h3>Step 2 — Với Ponytail</h3>
+
+  <p>Reset lại codebase về trạng thái ban đầu, rồi chạy lại với ponytail:</p>
+
+  <pre><code>git checkout -- .
+# Hoặc git stash nếu đã apply code</code></pre>
+
+  <p>Bật ponytail và tracking:</p>
+
+  <pre><code>/ponytail full
+/track start</code></pre>
+
+  <p>Implement cùng task. Mỗi lần agent propose code:</p>
+
+  <ul class="checklist">
+    <li>Check rung nào fired</li>
+    <li>Ghi lại code bị reject</li>
+    <li>Ghi lại code được accept</li>
+  </ul>
+
+  <h3>Step 3 — So sánh</h3>
+
+  <table class="rung-table">
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Without Ponytail</th>
+        <th>With Ponytail</th>
+        <th>Savings</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Lines of code</td>
+        <td>~80</td>
+        <td>~45</td>
+        <td>-35 lines (-44%)</td>
+      </tr>
+      <tr>
+        <td>Files created</td>
+        <td>3</td>
+        <td>1</td>
+        <td>-2 files (-67%)</td>
+      </tr>
+      <tr>
+        <td>Dependencies</td>
+        <td>2 packages</td>
+        <td>0</td>
+        <td>-2 packages</td>
+      </tr>
+      <tr>
+        <td>Rungs fired</td>
+        <td>—</td>
+        <td>4</td>
+        <td>reuse, stdlib, inline, minimum</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Rungs thường fire nhất</h2>
+
+  <table class="rung-table">
+    <thead>
+      <tr>
+        <th>Rung</th>
+        <th>Tên</th>
+        <th>Khi nào fire</th>
+        <th>Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>R2</strong></td>
+        <td>Reuse</td>
+        <td>Code đã tồn tại</td>
+        <td>Highest</td>
+      </tr>
+      <tr>
+        <td><strong>R3</strong></td>
+        <td>stdlib</td>
+        <td>Thư viện mới</td>
+        <td>High</td>
+      </tr>
+      <tr>
+        <td><strong>R4</strong></td>
+        <td>native</td>
+        <td>Platform API</td>
+        <td>High</td>
+      </tr>
+      <tr>
+        <td><strong>R5</strong></td>
+        <td>one-liner</td>
+        <td>Function đơn giản</td>
+        <td>Medium</td>
+      </tr>
+      <tr>
+        <td><strong>R6</strong></td>
+        <td>minimum</td>
+        <td>Core logic thừa</td>
+        <td>Medium</td>
+      </tr>
+      <tr>
+        <td><strong>R7</strong></td>
+        <td>delete</td>
+        <td>Code không cần</td>
+        <td>Low (thường bỏ qua)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Template tracking</h2>
+
+  <p>Dán vào notes để tracking mỗi task:</p>
+
+  <pre><code>=== PONYTAIL IMPACT TRACKING ===
+Date: _______________
+Task: _______________
+Issue: #___
+
+WITHOUT PONYTAIL:
+  Lines: ___
+  Files: ___
+  Deps: ___
+  Time: ___min
+
+WITH PONYTAIL:
+  Lines: ___
+  Files: ___
+  Deps: ___
+  Time: ___min
+  Rungs fired: ___
+
+SAVINGS:
+  Lines saved: ___%
+  Time saved: ___min
+  Deps avoided: ___
+  Total cost reduction: ~___%
+
+BIGGEST WIN:
+  1. ____________________
+  2. ____________________
+  3. ____________________
+===</code></pre>
+
+  <h2>Bài tập</h2>
+
+  <div class="step-box success">
+    <h3>Hoàn thành lesson</h3>
+    <p>Hoàn thành impact tracking cho 3 tasks:</p>
+    <ol style="margin-left: 1.25rem; margin-top: 0.5rem;">
+      <li>1 bug fix nhỏ</li>
+      <li>1 feature nhỏ (&lt; 50 lines)</li>
+      <li>1 feature vừa (50-100 lines)</li>
+    </ol>
+    <p style="margin-top: 0.75rem;">
+      Sau 3 tasks, bạn sẽ có baseline thật để so sánh.
+    </p>
+  </div>
+
+  <h2>FAQ</h2>
+
+  <h3>Q: Không có thời gian đo từng task?</h3>
+  <p>
+    Đo nhanh: chỉ cần lines of code + rungs fired.
+    Không cần precision, chỉ cần direction.
+  </p>
+
+  <h3>Q: Task đầu tiên có thể không tiết kiệm gì?</h3>
+  <p>
+    Bình thường. Agent còn học. Sau 3-5 tasks, pattern sẽ rõ.
+  </p>
+
+  <h3>Q: Vẫn cần TDD?</h3>
+  <p>
+    Có. Ponytail không thay TDD — chúng bổ trợ nhau.
+    TDD cho behavior đúng, Ponytail cho scope nhỏ.
+  </p>
+
+  <div class="nav-links">
+    <a href="0005-combined-workflow.html">← Lesson 0005: Combined Workflow</a>
+    <a href="../reference/0001-the-ladder.html">Ladder Reference</a>
+  </div>
+
+</body>
+</html>
