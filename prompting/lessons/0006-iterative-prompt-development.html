@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006: Iterative Prompt Development</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --blue: #2980b9;
+      --green: #27ae60;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex; gap: 1rem; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent); color: white; padding: 0.1rem 0.5rem;
+      border-radius: 3px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    pre {
+      background: var(--code-bg); padding: 1.25rem;
+      border-radius: 6px; overflow-x: auto;
+      border: 1px solid var(--rule); margin: 1rem 0;
+    }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0; padding: 1.25rem; margin: 1.5rem 0;
+      border-radius: 4px; border-left: 3px solid var(--accent);
+    }
+    .callout.green { background: #e8f5e9; border-left-color: var(--green); }
+    .callout.blue { background: #e3f2fd; border-left-color: var(--blue); }
+    .version-track {
+      display: flex; flex-direction: column; gap: 0;
+      margin: 1.5rem 0; position: relative;
+    }
+    .version-track::before {
+      content: ""; position: absolute; left: 0.6rem; top: 0; bottom: 0;
+      width: 2px; background: var(--rule);
+    }
+    .version-item {
+      display: flex; gap: 1rem; padding: 0.75rem 0;
+      position: relative;
+    }
+    .version-dot {
+      width: 1.25rem; height: 1.25rem; border-radius: 50%;
+      background: var(--accent); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
+      position: relative; z-index: 1;
+    }
+    .version-content {
+      flex: 1; background: white; border: 1px solid var(--rule);
+      border-radius: 6px; padding: 0.75rem 1rem;
+    }
+    .version-content h4 { margin: 0 0 0.25rem; font-size: 0.9rem; }
+    .version-content p { margin: 0; font-size: 0.85rem; color: var(--ink-soft); }
+    .version-content .fix { color: var(--accent); font-weight: 700; }
+    .lesson-nav {
+      margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--blue); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="meta">
+    <span><span class="badge">Skill</span></span>
+    <span>⏱ 20 phút</span>
+  </div>
+
+  <h1>Lesson 0006: Iterative Prompt Development</h1>
+  <p class="subtitle">Cách test và improve prompt qua nhiều vòng</p>
+
+  <h2>Prompt Engineering là Empirical</h2>
+
+  <p>
+    Trong video, Hannah nói: <em>"Prompt engineering is a very iterative empirical science."</em>
+  </p>
+
+  <p>
+    Không có công thức đúng ngay. Bạn test, thấy sai, sửa, test lại.
+  </p>
+
+  <div class="callout green">
+    <strong>Feedback loop:</strong> Run → Observe → Add to system prompt → Repeat
+  </div>
+
+  <h2>Evolution của Prompt trong Video</h2>
+
+  <p>Đây là 5 versions họ tạo trong demo:</p>
+
+  <div class="version-track">
+    <div class="version-item">
+      <div class="version-dot">V1</div>
+      <div class="version-content">
+        <h4>Baseline (không context)</h4>
+        <p>Claude guess: "skiing accident on Chappangan street"</p>
+      </div>
+    </div>
+    <div class="version-item">
+      <div class="version-dot">V2</div>
+      <div class="version-content">
+        <h4>+ Task & Tone context</h4>
+        <p>Claude hiểu: car accident, nhưng còn thiếu form structure</p>
+      </div>
+    </div>
+    <div class="version-item">
+      <div class="version-dot">V3</div>
+      <div class="version-content">
+        <h4>+ Background/Data (form structure)</h4>
+        <p>Claude hiểu form, đưa ra verdict, nhưng còn loose</p>
+      </div>
+    </div>
+    <div class="version-item">
+      <div class="version-dot">V4</div>
+      <div class="version-content">
+        <h4>+ Step-by-step instructions</h4>
+        <p>Claude làm theo process: form → sketch → verdict</p>
+      </div>
+    </div>
+    <div class="version-item">
+      <div class="version-dot">V5</div>
+      <div class="version-content">
+        <h4>+ Output formatting</h4>
+        <p>Clean, parseable output — chỉ lấy verdict</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>Cách Build Prompt Hiệu Quả</h2>
+
+  <h3>Bước 1: Start Simple</h3>
+  <p>Bắt đầu với basic task description. Chạy. Xem sai ở đâu.</p>
+
+  <h3>Bước 2: Thêm Context</h3>
+  <p>Khi Claude sai, hỏi: "Nó thiếu context gì?" Thêm vào system prompt.</p>
+
+  <h3>Bước 3: Thêm Guardrails</h3>
+  <p>Khi Claude hallucinate hoặc đoán, thêm reminders: "If uncertain, say so."</p>
+
+  <h3>Bước 4: Thêm Examples</h3>
+  <p>Khi Claude sai ở một pattern cụ thể, thêm example cho pattern đó.</p>
+
+  <h3>Bước 5: Define Output</h3>
+  <p>Khi output không parse được, thêm format definition.</p>
+
+  <h2>Extended Thinking như Tool</h2>
+
+  <p>
+    Christian đề cập: Claude 3.7 và 4 có extended thinking.
+    Bạn có thể đọc scratchpad của Claude để hiểu nó suy nghĩ thế nào.
+  </p>
+
+  <div class="callout blue">
+    <strong>Use case:</strong> Đọc thinking transcript để phát hiện Claude đang suy luận sai ở step nào → thêm instruction cho step đó.
+  </div>
+
+  <h2>Template: Prompt Development Log</h2>
+
+  <pre><code>=== PROMPT DEVELOPMENT LOG ===
+Date: _______________
+Task: _______________
+
+VERSION 1 (baseline):
+[Your initial prompt]
+Result: ____________________
+Issue: ____________________
+
+VERSION 2:
+Change: ____________________
+Result: ____________________
+Issue: ____________________
+
+VERSION 3:
+Change: ____________________
+Result: ____________________
+Issue: ____________________
+
+FINAL VERSION:
+[Your final prompt]
+===</code></pre>
+
+  <h2>Summary</h2>
+
+  <p>Từ video, đây là 10 components đã học:</p>
+
+  <ol style="margin-left: 1.5rem;">
+    <li>Task context</li>
+    <li>Tone context</li>
+    <li>Background / Data</li>
+    <li>User content</li>
+    <li>Detailed instructions</li>
+    <li>Examples (few-shot)</li>
+    <li>Conversational history</li>
+    <li>Reminders / Guidelines</li>
+    <li>Output formatting</li>
+    <li>Pre-filled response</li>
+  </ol>
+
+  <div class="callout green">
+    <strong>Next step:</strong> Áp dụng vào một task thực tế của bạn.
+    Viết version 1, test, cải thiện qua mỗi vòng.
+  </div>
+
+  <div class="lesson-nav">
+    <a href="0005-output-formatting.html">← Output Formatting</a>
+    <span></span>
+  </div>
+
+</body>
+</html>

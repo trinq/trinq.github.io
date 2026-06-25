@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: Examples & Few-shot</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --blue: #2980b9;
+      --green: #27ae60;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex; gap: 1rem; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent); color: white; padding: 0.1rem 0.5rem;
+      border-radius: 3px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    pre {
+      background: var(--code-bg); padding: 1.25rem;
+      border-radius: 6px; overflow-x: auto;
+      border: 1px solid var(--rule); margin: 1rem 0;
+    }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0; padding: 1.25rem; margin: 1.5rem 0;
+      border-radius: 4px; border-left: 3px solid var(--accent);
+    }
+    .callout.green { background: #e8f5e9; border-left-color: var(--green); }
+    .callout.blue { background: #e3f2fd; border-left-color: var(--blue); }
+    .example-box {
+      border: 1px solid var(--rule); border-radius: 6px;
+      margin: 1.5rem 0; overflow: hidden;
+    }
+    .example-header {
+      padding: 0.75rem 1.25rem; background: #fff;
+      border-bottom: 1px solid var(--rule);
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .example-label {
+      background: var(--green); color: white;
+      padding: 0.15rem 0.6rem; border-radius: 3px;
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+    }
+    .example-body { padding: 1.25rem; }
+    .example-body pre { margin: 0; }
+    .quiz {
+      background: white; border: 1px solid var(--rule);
+      border-radius: 6px; padding: 1.5rem; margin: 1.5rem 0;
+    }
+    .quiz h3 { margin-top: 0; }
+    .quiz-options {
+      list-style: none; margin: 1rem 0 0;
+    }
+    .quiz-options li {
+      padding: 0.5rem 0.75rem; margin: 0.25rem 0;
+      border: 1px solid var(--rule); border-radius: 4px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .quiz-options li:hover { background: var(--code-bg); }
+    .quiz-options li input { margin-right: 0.5rem; }
+    .lesson-nav {
+      margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--blue); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="meta">
+    <span><span class="badge">Skill</span></span>
+    <span>⏱ 20 phút</span>
+  </div>
+
+  <h1>Lesson 0004: Examples & Few-shot</h1>
+  <p class="subtitle">Cách dùng examples để steer Claude đúng hướng</p>
+
+  <h2>Tại sao Examples mạnh?</h2>
+
+  <p>
+    Christian trong video: <em>"Examples or few-shot is a mechanism that really is powerful
+    in steering Claude."</em>
+  </p>
+
+  <p>
+    Thay vì mô tả bằng words, bạn cho Claude thấy: <strong>input như thế này → output như thế kia</strong>.
+  </p>
+
+  <div class="callout">
+    <strong>Few-shot prompting</strong> = cho 2-3 examples để define pattern thay vì giải thích bằng text.
+  </div>
+
+  <h2>Khi nào cần Examples?</h2>
+
+  <ul>
+    <li><strong>Edge cases</strong> — trường hợp khó, nằm ngoài common sense</li>
+    <li><strong>Format cụ thể</strong> — bạn muốn output theo một style nhất định</li>
+    <li><strong>Domain knowledge</strong> — Claude thiếu context về domain của bạn</li>
+    <li><strong>Grading criteria</strong> — bạn có labeled data cho "đúng" và "sai"</li>
+  </ul>
+
+  <h2>Cách viết Examples</h2>
+
+  <h3>Template</h3>
+
+  <pre><code>&lt;examples&gt;
+  &lt;example&gt;
+    &lt;input&gt;
+      [Mô tả tình huống đầu vào]
+    &lt;/input&gt;
+    &lt;output&gt;
+      [Kết quả mong muốn - phải là output HOÀN CHỈNH]
+    &lt;/output&gt;
+  &lt;/example&gt;
+  &lt;example&gt;
+    &lt;input&gt;
+      [Tình huống tiếp theo]
+    &lt;/input&gt;
+    &lt;output&gt;
+      [Kết quả tương ứng]
+    &lt;/output&gt;
+  &lt;/example&gt;
+&lt;/examples&gt;</code></pre>
+
+  <h3>Example: Tránh Insurance Fraud</h3>
+
+  <div class="example-box">
+    <div class="example-header">
+      <span class="example-label">Example</span>
+      Phát hiện insurance claim đáng ngờ
+    </div>
+    <div class="example-body">
+      <pre><code>&lt;example&gt;
+  &lt;input&gt;
+    Form shows Vehicle A hit from behind at stoplight.
+    Sketch shows Vehicle A swerved into oncoming traffic.
+    Checkboxes contradict the sketch description.
+  &lt;/input&gt;
+  &lt;output&gt;
+    Verdict: SUSPICIOUS
+    Reasons:
+    - Sketch contradicts form description
+    - Checkboxes do not match incident type
+    Recommendation: Manual review required
+  &lt;/output&gt;
+&lt;/example&gt;</code></pre>
+    </div>
+  </div>
+
+  <h2>3 nguyên tắc cho Examples tốt</h2>
+
+  <ol style="margin-left: 1.5rem;">
+    <li><strong>Diverse</strong> — Cover cả positive và negative cases</li>
+    <li><strong>Accurate</strong> — Output phải đúng 100% (không có "approximately" hay "something like")</li>
+    <li><strong>Concise</strong> — Không dài quá, chỉ đủ để define pattern</li>
+  </ol>
+
+  <div class="callout green">
+    <strong>Tip từ Anthropic:</strong> Bắt đầu với 1-2 examples. Thêm khi thấy Claude sai ở một pattern cụ thể.
+  </div>
+
+  <h2>Quiz</h2>
+
+  <div class="quiz">
+    <h3>Bạn đang viết prompt để Claude review code. Khi nào nên dùng few-shot?</h3>
+    <ul class="quiz-options">
+      <li>A) Khi code luôn đúng và bạn muốn Claude nói đẹp</li>
+      <li>B) Khi bạn có các examples về code "tốt" vs "xấu" để define standard</li>
+      <li>C) Khi bạn muốn Claude viết thêm test cases</li>
+      <li>D) Khi không biết nên viết gì</li>
+    </ul>
+    <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--ink-soft);">
+      → Đáp án: B. Few-shot dùng khi bạn có examples để define pattern — ở đây là "code tốt vs code xấu".
+    </p>
+  </div>
+
+  <h2>Exercise</h2>
+
+  <p>Lấy một task bạn hay dùng Claude/Copilot để làm. Viết 1 example:</p>
+
+  <pre><code>&lt;example&gt;
+  &lt;input&gt;
+    [Tình huống thực tế bạn hay gặp]
+  &lt;/input&gt;
+  &lt;output&gt;
+    [Output bạn mong đợi]
+  &lt;/output&gt;
+&lt;/example&gt;</code></pre>
+
+  <p>Test: Example này có cover được edge case khó nhất bạn từng gặp không?</p>
+
+  <h2>Next</h2>
+
+  <p>→ <a href="0005-output-formatting.html">Lesson 0005: Output Formatting</a> — Định nghĩa output để parse được dễ dàng</p>
+
+  <div class="lesson-nav">
+    <a href="0003-xml-tags-and-delimiters.html">← XML Tags & Delimiters</a>
+    <a href="0005-output-formatting.html">Next: Output Formatting →</a>
+  </div>
+
+</body>
+</html>

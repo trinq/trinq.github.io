@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: Prompt Structure Breakdown</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --blue: #2980b9;
+      --green: #27ae60;
+      --code-bg: #f4efe9;
+      --system-bg: #e8f5e9;
+      --user-bg: #e3f2fd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex; gap: 1rem; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent); color: white; padding: 0.1rem 0.5rem;
+      border-radius: 3px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    pre {
+      background: var(--code-bg); padding: 1.25rem;
+      border-radius: 6px; overflow-x: auto;
+      border: 1px solid var(--rule); margin: 1rem 0;
+    }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0; padding: 1.25rem; margin: 1.5rem 0;
+      border-radius: 4px; border-left: 3px solid var(--accent);
+    }
+    .callout.green { background: var(--system-bg); border-left-color: var(--green); }
+    .callout.blue { background: var(--user-bg); border-left-color: var(--blue); }
+    .component {
+      border: 1px solid var(--rule); border-radius: 6px;
+      margin: 1.5rem 0; overflow: hidden;
+    }
+    .component-header {
+      padding: 0.75rem 1.25rem;
+      background: #fff; border-bottom: 1px solid var(--rule);
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .component-num {
+      width: 1.75rem; height: 1.75rem;
+      background: var(--accent); color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700;
+      font-family: "SF Mono", Menlo, monospace; flex-shrink: 0;
+    }
+    .component-title { font-weight: 700; }
+    .component-type {
+      margin-left: auto; font-size: 0.75rem;
+      padding: 0.1rem 0.5rem; border-radius: 3px;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .type-system { background: var(--system-bg); color: var(--green); }
+    .type-user { background: var(--user-bg); color: var(--blue); }
+    .type-both { background: #fff3e0; color: #e67e22; }
+    .component-body { padding: 1.25rem; background: #fff; }
+    .component-body pre { margin: 0.5rem 0; }
+    .lesson-nav {
+      margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--blue); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="meta">
+    <span><span class="badge">Knowledge</span></span>
+    <span>⏱ 20 phút</span>
+  </div>
+
+  <h1>Lesson 0002: Prompt Structure Breakdown</h1>
+  <p class="subtitle">System prompt vs user prompt — đi sâu vào từng thành phần</p>
+
+  <h2>System Prompt vs User Prompt</h2>
+
+  <p>
+    Từ video, Anthropic phân chia rõ: <strong>system prompt</strong> chứa thông tin tĩnh,
+    <strong>user prompt</strong> chứa dữ liệu động.
+  </p>
+
+  <div class="callout green">
+    <strong>System prompt</strong> = stable, cached, không đổi giữa các lần gọi<br/>
+    <strong>User prompt</strong> = dynamic, thay đổi mỗi lần
+  </div>
+
+  <h2>10 Components Chi Tiết</h2>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">1</div>
+      <div class="component-title">Task Context</div>
+      <div class="component-type type-both">Both</div>
+    </div>
+    <div class="component-body">
+      <p>Claude là ai? Đang làm gì? Mục đích cuối cùng là gì?</p>
+      <pre><code>You are an AI assistant helping a human claims adjuster
+reviewing car accident report forms in Swedish.</code></pre>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">2</div>
+      <div class="component-title">Tone Context</div>
+      <div class="component-type type-both">Both</div>
+    </div>
+    <div class="component-body">
+      <p>Giọng văn, phong cách phản hồi. Quan trọng để tránh Claude "bịa đặt".</p>
+      <pre><code>Stay factual and confident. If you cannot determine
+what happened, say you cannot determine — do not guess.</code></pre>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">3</div>
+      <div class="component-title">Background / Data / Documents</div>
+      <div class="component-type type-system">System</div>
+    </div>
+    <div class="component-body">
+      <p>Thông tin tĩnh, không thay đổi giữa các lần gọi. Đặt ở system prompt.</p>
+      <pre><code>This is a Swedish car accident form. The form will be in Swedish.
+It has a title, two columns (representing Vehicle A and B),
+and 17 rows describing different aspects of the incident.</code></pre>
+      <div class="callout green">
+        <strong>Tip:</strong> Đây là nơi dùng prompt caching. Nội dung này luôn giống nhau → cache được.
+      </div>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">4</div>
+      <div class="component-title">User Content</div>
+      <div class="component-type type-user">User</div>
+    </div>
+    <div class="component-body">
+      <p>Dữ liệu động từ user — form thực tế cần analyze, ảnh, file.</p>
+      <pre><code>Please analyze this accident form and determine who is at fault:
+
+&lt;form&gt;
+[the actual form content / image]
+&lt;/form&gt;
+
+&lt;sketch&gt;
+[the drawing of the accident]
+&lt;/sketch&gt;</code></pre>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">5</div>
+      <div class="component-title">Detailed Instructions</div>
+      <div class="component-type type-both">Both</div>
+    </div>
+    <div class="component-body">
+      <p>Step-by-step cách Claude phải suy nghĩ. <strong>Order matters</strong> — thứ tự ảnh hưởng kết quả.</p>
+      <pre><code>Step 1: Carefully examine the form first. Make a list of
+       what boxes are checked for each vehicle.
+Step 2: Then examine the sketch, keeping in mind your
+       understanding from the form.
+Step 3: Make your final assessment based on both sources.</code></pre>
+      <div class="callout">
+        <strong>Key insight:</strong> Như con người, Claude cần context (form) trước khi hiểu sketch. Đổi thứ tự = đổi kết quả.
+      </div>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">6</div>
+      <div class="component-title">Examples (Few-shot)</div>
+      <div class="component-type type-system">System</div>
+    </div>
+    <div class="component-body">
+      <p>Input → Output mẫu để steer model vào đúng hướng. Dùng khi có edge cases khó.</p>
+      <pre><code>&lt;example&gt;
+  &lt;input&gt;
+    [example form with clear fault determination]
+  &lt;/input&gt;
+  &lt;output&gt;
+    Based on the form, Vehicle A was marked [details].
+    The sketch confirms [details].
+    Verdict: Vehicle B is at fault.
+  &lt;/output&gt;
+&lt;/example&gt;</code></pre>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">7</div>
+      <div class="component-title">Conversational History</div>
+      <div class="component-type type-user">User</div>
+    </div>
+    <div class="component-body">
+      <p>Cho multi-turn conversation. Không dùng trong demo nhưng quan trọng cho chatbot thực tế.</p>
+      <pre><code>&lt;history&gt;
+  User: [previous question]
+  Claude: [previous response]
+  User: [new question]
+&lt;/history&gt;</code></pre>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">8</div>
+      <div class="component-title">Reminders / Guidelines</div>
+      <div class="component-type type-both">Both</div>
+    </div>
+    <div class="component-body">
+      <p>Nhắc lại điều quan trọng, tránh hallucination. Đặt cuối prompt.</p>
+      <pre><code>Reminder:
+- Only make claims if evidence exists in the provided documents
+- If a checkbox is unclear, say "unclear" — do not assume
+- If the sketch is unintelligible, say so</code></pre>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">9</div>
+      <div class="component-title">Output Formatting</div>
+      <div class="component-type type-both">Both</div>
+    </div>
+    <div class="component-body">
+      <p>Định nghĩa format đầu ra. Quan trọng cho data engineering — bạn cần parse được output.</p>
+      <pre><code>Format your response using these XML tags:
+&lt;form_analysis&gt;...&lt;/form_analysis&gt;
+&lt;sketch_analysis&gt;...&lt;/sketch_analysis&gt;
+&lt;verdict&gt;...&lt;/verdict&gt;</code></pre>
+    </div>
+  </div>
+
+  <div class="component">
+    <div class="component-header">
+      <div class="component-num">10</div>
+      <div class="component-title">Pre-filled Response</div>
+      <div class="component-type type-system">System</div>
+    </div>
+    <div class="component-body">
+      <p>Điền sẵn đầu output để shape kết quả. Claude sẽ tiếp tục từ đó.</p>
+      <pre><code>When outputting your response, begin with:
+&lt;verdict&gt;</code></pre>
+      <div class="callout green">
+        <strong>Tip:</strong> Thay vì parse preamble thừa, chỉ cần parse phần bạn cần trong XML tags.
+      </div>
+    </div>
+  </div>
+
+  <h2>Exercise</h2>
+
+  <p>Lấy một prompt bạn đang dùng (trong Copilot, Claude Code, hoặc Cursor). Phân tích nó thuộc components nào:</p>
+
+  <ul>
+    <li>System prompt có bao gồm task context + tone?</li>
+    <li>User content có được wrap trong delimiters?</li>
+    <li>Có step-by-step instructions không?</li>
+    <li>Output format đã được định nghĩa chưa?</li>
+  </ul>
+
+  <h2>Next</h2>
+
+  <p>→ <a href="0003-xml-tags-and-delimiters.html">Lesson 0003: XML Tags & Delimiters</a> — Cách tổ chức prompt để Claude hiểu tốt nhất</p>
+
+  <div class="lesson-nav">
+    <a href="0001-what-is-production-prompt.html">← What is Production Prompt</a>
+    <a href="0003-xml-tags-and-delimiters.html">Next: XML Tags & Delimiters →</a>
+  </div>
+
+</body>
+</html>

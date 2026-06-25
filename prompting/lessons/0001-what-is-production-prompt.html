@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: What is a Production Prompt?</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --blue: #2980b9;
+      --green: #27ae60;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex; gap: 1rem; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent); color: white; padding: 0.1rem 0.5rem;
+      border-radius: 3px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    pre {
+      background: var(--code-bg); padding: 1.25rem;
+      border-radius: 6px; overflow-x: auto;
+      border: 1px solid var(--rule); margin: 1rem 0;
+    }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0; padding: 1.25rem; margin: 1.5rem 0;
+      border-radius: 4px; border-left: 3px solid var(--accent);
+    }
+    .callout.green { background: #e8f5e9; border-left-color: var(--green); }
+    .callout.blue { background: #e3f2fd; border-left-color: var(--blue); }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem; margin: 1.5rem 0;
+      color: var(--ink-soft); font-style: italic;
+    }
+    .number-list {
+      counter-reset: item;
+      list-style: none;
+      margin: 1rem 0;
+    }
+    .number-list li {
+      counter-increment: item;
+      padding-left: 2rem;
+      position: relative;
+      margin-bottom: 0.75rem;
+    }
+    .number-list li::before {
+      content: counter(item);
+      position: absolute; left: 0; top: 0;
+      width: 1.5rem; height: 1.5rem;
+      background: var(--accent); color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .lesson-nav {
+      margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--blue); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="meta">
+    <span><span class="badge">Knowledge</span></span>
+    <span>⏱ 15 phút</span>
+  </div>
+
+  <h1>Lesson 0001: What is a Production Prompt?</h1>
+  <p class="subtitle">Khác gì chat? Tại sao cần cấu trúc?</p>
+
+  <h2>Chat vs Production Prompt</h2>
+
+  <p>
+    Hầu hết chúng ta dùng LLM như chatbot — hỏi đáp, sửa code, brainstorm.
+    Đó là <strong>conversational prompting</strong>.
+  </p>
+
+  <p>
+    Production prompt khác. Mục tiêu: <strong>đánh bại LLM 1 lần, lần nào cũng đúng</strong>.
+  </p>
+
+  <div class="quote">
+    "You send one single message to Claude and have it nail the task the first time around
+    without needing to move back and forth."
+    <br/>— Hannah Moran, Anthropic Applied AI
+  </div>
+
+  <h2>10 thành phần của Production Prompt</h2>
+
+  <p>Phần này từ video "Prompting 101" của Anthropic Applied AI team:</p>
+
+  <ol class="number-list">
+    <li><strong>Task context</strong> — Claude là ai? Đang làm gì? Role và mục đích</li>
+    <li><strong>Tone context</strong> — Giọng văn, phong cách phản hồi. VD: "factual, confident, don't guess"</li>
+    <li><strong>Background/Data</strong> — Thông tin tĩnh không đổi. Đặt vào system prompt</li>
+    <li><strong>User content</strong> — Dữ liệu động từ user. Input thực tế</li>
+    <li><strong>Detailed instructions</strong> — Step-by-step cách Claude phải suy nghĩ</li>
+    <li><strong>Examples (few-shot)</strong> — Input → Output mẫu để steer model</li>
+    <li><strong>Conversational history</strong> — Nếu có multi-turn (không dùng trong demo này)</li>
+    <li><strong>Reminders</strong> — Nhắc lại điều quan trọng, tránh hallucination</li>
+    <li><strong>Output formatting</strong> — Định nghĩa format đầu ra trước</li>
+    <li><strong>Pre-filled response</strong> — Điền sẵn đầu output để shape kết quả</li>
+  </ol>
+
+  <h2>Tại sao cần system prompt riêng, user prompt riêng?</h2>
+
+  <p>Trong video, họ phân tách:</p>
+
+  <ul>
+    <li><strong>System prompt</strong> = thông tin tĩnh, không đổi giữa các lần gọi. VD: cấu trúc form, role definition, examples</li>
+    <li><strong>User prompt</strong> = dữ liệu động, thay đổi mỗi lần. VD: form thực tế cần analyze</li>
+  </ul>
+
+  <div class="callout green">
+    <strong>Tip từ video:</strong> Dùng XML tags (<code>&lt;form&gt;</code>, <code>&lt;analysis&gt;</code>) để tổ chức. Claude được fine-tune trên XML, hiểu rõ cấu trúc này.
+  </div>
+
+  <h2>Điều Claude cần để làm tốt</h2>
+
+  <ul>
+    <li><strong>Structure</strong> — Claude loves organization. Không viết tự do</li>
+    <li><strong>Order</strong> — Thứ tự thông tin quan trọng. Như con người, Claude cần đọc form trước, sketch sau</li>
+    <li><strong>Confidence bounds</strong> — Nói Claude khi nào thì "không biết thì hỏi lại" thay vì đoán</li>
+    <li><strong>Examples</strong> — Few-shot là cách nhanh nhất để steer Claude vào đúng hướng</li>
+  </ul>
+
+  <h2>Primary Source</h2>
+
+  <div class="callout blue">
+    <p>
+      <strong>Video: <a href="https://www.youtube.com/watch?v=ysPbXH0LpIE" style="color: inherit;">Prompting 101 | Code w/ Claude</a></strong><br/>
+      24 phút • Hannah Moran & Christian Ryan, Anthropic Applied AI<br/>
+      Code w/ Claude Conference, San Francisco, May 2025
+    </p>
+  </div>
+
+  <h2>Next</h2>
+
+  <p>→ <a href="0002-prompt-structure-breakdown.html">Lesson 0002: Prompt Structure Breakdown</a> — Phân tích chi tiết từng thành phần</p>
+
+  <div class="lesson-nav">
+    <span></span>
+    <a href="0002-prompt-structure-breakdown.html">Next: Prompt Structure Breakdown →</a>
+  </div>
+
+</body>
+</html>

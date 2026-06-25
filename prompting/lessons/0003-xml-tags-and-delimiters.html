@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: XML Tags & Delimiters</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --blue: #2980b9;
+      --green: #27ae60;
+      --code-bg: #f4efe9;
+      --system-bg: #e8f5e9;
+      --user-bg: #e3f2fd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex; gap: 1rem; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent); color: white; padding: 0.1rem 0.5rem;
+      border-radius: 3px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    pre {
+      background: var(--code-bg); padding: 1.25rem;
+      border-radius: 6px; overflow-x: auto;
+      border: 1px solid var(--rule); margin: 1rem 0;
+    }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0; padding: 1.25rem; margin: 1.5rem 0;
+      border-radius: 4px; border-left: 3px solid var(--accent);
+    }
+    .callout.green { background: var(--system-bg); border-left-color: var(--green); }
+    .callout.blue { background: var(--user-bg); border-left-color: var(--blue); }
+    .delimiter-demo {
+      border: 2px solid var(--rule);
+      border-radius: 6px;
+      padding: 1rem;
+      margin: 1rem 0;
+      background: white;
+    }
+    .delimiter-demo .tag {
+      color: var(--blue);
+      font-weight: 700;
+    }
+    .delimiter-demo .content {
+      background: var(--code-bg);
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--green);
+    }
+    .comparison {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 600px) { .comparison { grid-template-columns: 1fr; } }
+    .comparison-col {
+      border: 1px solid var(--rule); border-radius: 6px; overflow: hidden;
+    }
+    .comparison-header {
+      padding: 0.5rem 1rem; font-weight: 700; font-size: 0.85rem;
+    }
+    .comparison-col.bad .comparison-header { background: #fdecea; color: var(--accent); }
+    .comparison-col.good .comparison-header { background: #e8f5e9; color: var(--green); }
+    .comparison-body { padding: 1rem; background: white; }
+    .comparison-body pre { margin: 0; }
+    .lesson-nav {
+      margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--blue); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="meta">
+    <span><span class="badge">Skill</span></span>
+    <span>⏱ 15 phút</span>
+  </div>
+
+  <h1>Lesson 0003: XML Tags & Delimiters</h1>
+  <p class="subtitle">Cách tổ chức prompt để Claude hiểu rõ nhất</p>
+
+  <h2>Tại sao cần Delimiters?</h2>
+
+  <p>
+    Trong video, Hannah nói: <em>"Claude really loves structure, loves organization."</em>
+    Delimiters là cách bạn cung cấp structure đó.
+  </p>
+
+  <div class="callout">
+    <strong>Delimiters</strong> giúp Claude phân biệt:
+    thông tin tĩnh (system) vs dữ liệu động (user) vs metadata vs examples.
+  </div>
+
+  <h2>So sánh: Không dùng vs Dùng delimiters</h2>
+
+  <div class="comparison">
+    <div class="comparison-col bad">
+      <div class="comparison-header">Không dùng delimiters</div>
+      <div class="comparison-body">
+        <pre><code>Here's a form to analyze:
+Vehicle A checkbox 1: checked
+Vehicle B checkbox 12: checked
+And here's a sketch of the accident...
+
+Please determine who is at fault.</code></pre>
+        <p style="margin-top: 0.75rem; font-size: 0.85rem;">
+          Claude phải đoán đâu là instructions, đâu là data.
+        </p>
+      </div>
+    </div>
+    <div class="comparison-col good">
+      <div class="comparison-header">Dùng XML tags</div>
+      <div class="comparison-body">
+        <pre><code>&lt;task&gt;
+Analyze this accident form and determine fault.
+&lt;/task&gt;
+
+&lt;form&gt;
+[form data here]
+&lt;/form&gt;
+
+&lt;sketch&gt;
+[sketch data here]
+&lt;/sketch&gt;</code></pre>
+        <p style="margin-top: 0.75rem; font-size: 0.85rem;">
+          Claude hiểu ngay: đây là task, đây là form, đây là sketch.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h2>3 Loại Delimiters</h2>
+
+  <h3>1. XML Tags (Khuyên dùng)</h3>
+
+  <p>Claude được fine-tune trên XML → hiểu rõ nhất.</p>
+
+  <div class="delimiter-demo">
+    <p><span class="tag">&lt;task&gt;</span> What Claude should do <span class="tag">&lt;/task&gt;</span></p>
+    <p><span class="tag">&lt;form&gt;</span> User's input data <span class="tag">&lt;/form&gt;</span></p>
+    <p><span class="tag">&lt;example&gt;</span> Input → Output pairs <span class="tag">&lt;/example&gt;</span></p>
+    <p><span class="tag">&lt;history&gt;</span> Conversation context <span class="tag">&lt;/history&gt;</span></p>
+  </div>
+
+  <div class="callout green">
+    <strong>Best practice:</strong> Đặt tên tags theo ý nghĩa, không phải vị trí. VD: <code>&lt;form&gt;</code> thay vì <code>&lt;input1&gt;</code>
+  </div>
+
+  <h3>2. Markdown Headers</h3>
+
+  <p>OK cho CLI tools như Claude Code, nhưng không parse được dễ bằng XML.</p>
+
+  <pre><code>## Task
+Analyze this form...
+
+## Form Data
+[content here]
+
+## Examples
+[examples here]</code></pre>
+
+  <h3>3. Quotation Marks / Separators</h3>
+
+  <p>Ít reliable nhất. Chỉ dùng khi không còn cách nào khác.</p>
+
+  <pre><code>---
+CONTEXT:
+[content]
+---
+INPUT:
+[content]
+---
+EXPECTED OUTPUT FORMAT:
+[format]</code></pre>
+
+  <h2>Pattern: System Prompt với XML Structure</h2>
+
+  <pre><code>&lt;role&gt;
+You are an AI assistant helping a claims adjuster
+review Swedish car accident forms.
+&lt;/role&gt;
+
+&lt;instructions&gt;
+- Stay factual. If uncertain, say so.
+- Examine the form first, then the sketch.
+- Wrap your verdict in &lt;verdict&gt; tags.
+&lt;/instructions&gt;
+
+&lt;form_structure&gt;
+The form has:
+- Title
+- Two columns (Vehicle A, Vehicle B)
+- 17 rows describing incident details
+- May contain checkmarks, X marks, or circles
+&lt;/form_structure&gt;
+
+&lt;examples&gt;
+&lt;example&gt;
+  &lt;input&gt;[example form]&lt;/input&gt;
+  &lt;output&gt;Vehicle B is at fault because...&lt;/output&gt;
+&lt;/example&gt;
+&lt;/examples&gt;</code></pre>
+
+  <h2>Exercise</h2>
+
+  <p>Viết lại prompt bạn đang dùng với XML structure:</p>
+
+  <ol style="margin-left: 1.5rem;">
+    <li>Identify: đâu là system context, đâu là user input, đâu là examples</li>
+    <li>Wrap mỗi phần trong XML tags có ý nghĩa</li>
+    <li>Test: prompt này có chạy đúng không?</li>
+  </ol>
+
+  <h2>Next</h2>
+
+  <p>→ <a href="0004-examples-and-few-shot.html">Lesson 0004: Examples & Few-shot</a> — Cách dùng examples để steer Claude</p>
+
+  <div class="lesson-nav">
+    <a href="0002-prompt-structure-breakdown.html">← Prompt Structure Breakdown</a>
+    <a href="0004-examples-and-few-shot.html">Next: Examples & Few-shot →</a>
+  </div>
+
+</body>
+</html>
