@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0007: The Matt Pocock Formula</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; }
+    td { padding: 0.4rem 0; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ponytail</span></span>
+  <span>Lesson 0007</span>
+  <span>2026-06-28</span>
+</div>
+
+<h1>The Matt Pocock Formula</h1>
+<p class="subtitle">Five ideas from a one-hour talk that reframe how a solo developer should think about AI tools — and which one to act on first.</p>
+
+<p>Source: <em>Matt Pocock's Agentic Engineering Workflow (just copy him)</em>, David Ondrej podcast, 1h02m, 224K views, 2026-06-18.</p>
+
+<div class="callout">
+  <p><strong>Mission link.</strong> This lesson assumes your mission is <em>ship faster solo</em>. Every idea is filtered through that lens: not "what's interesting," but "what changes how much you ship per week."</p>
+</div>
+
+<h2>Part 1 — Stop Optimizing the Engine</h2>
+
+<p>Matt opens the talk with a framing that runs through everything else. He says it twice — once at the very start, once when David asks about his setup — almost word-for-word:</p>
+
+<blockquote>
+  "Everyone's obsessed with the engine of the Formula 1 car whereas in fact the engine is really only a part of the whole system. You've got the entire chassis. You've got how it moves through the air. Everyone's obsessed with the model and I think they should be more interested in the harness, what you can do to get the most out of the harness. Giving it the right prompts, giving it the right skills to work with and improving the environment in which the model runs, improving the codebase and all that stuff. So yeah, the model is useful, but I think the harness has an equal amount of work and you have much more control of the harness than you do the model."
+</blockquote>
+
+<p>Four levers in that quote, in order of how much you control them:</p>
+
+<ol>
+  <li><strong>Prompts</strong> — fully yours.</li>
+  <li><strong>Skills</strong> — fully yours (you write them, you install them).</li>
+  <li><strong>Harness</strong> — partially yours (sandbox, CI, GitHub Actions, parallel agents).</li>
+  <li><strong>Model</strong> — least yours (you pick from what labs ship).</li>
+</ol>
+
+<p>Matt's reasoning is brutal: <em>"if you overoptimize around a model, if you get too focused on the model, you will lose focus on the fundamentals."</em> He names this trap explicitly — it's the <strong>bitter lesson fallacy</strong>. The bitter lesson says compute will always win, so just wait. Matt's counter: waiting is stupid, <em>but</em> the inverse is also stupid. Don't model-hop. Don't believe the one-shots on Twitter. Don't patch your prompts because Fable behaves differently from Opus 4.8.</p>
+
+<p>What he <em>actually</em> does every day, in his words: <em>"figure out, okay, should I be using tmux here, should I be using a VPS, should I be using Tailscale here — trying to actively improve everything else except for the model."</em></p>
+
+<h3>Why this matters for shipping faster</h3>
+
+<p>Every hour you spend chasing "is Opus 4.9 better than Fable 1.2" is an hour not spent making your codebase easier to change. Matt's claim is testable: <em>"if your codebase architecture is better, then you can get a cheaper model to do the same work because your guard rails are better, it's easier to explore, it needs to spend fewer tokens banging its head against the wall. If you're hamstringing your model from day one, then you will need a smart model to get the most out of it."</em></p>
+
+<p>Translation for a solo dev:</p>
+
+<ul>
+  <li><strong>Don't change tools this week.</strong> Whatever you have — keep it.</li>
+  <li><strong>Change one lever you control.</strong> Pick one: prompts, skills, harness, or codebase. Improve it for a week.</li>
+  <li><strong>Measure with a real ticket.</strong> Not vibes. Pick a real ticket from your backlog, ship it, count lines/tokens/PRs.</li>
+</ul>
+
+<div class="callout">
+  <p><strong>The trap to avoid.</strong> David calls it "the quintessential vibe coder who is switching tools every single week." Replit agent → Lovable → this → that. <em>Constantly switching and never learning any programming principles.</em> That path looks productive but produces nothing. The opposite path — boring tools, good codebase, AI running faster — compounds.</p>
+</div>
+
+<h3>Exercise: One lever, one week</h3>
+
+<ol>
+  <li>Pick the lever you currently neglect most. For most solo devs, it's <em>codebase</em>.</li>
+  <li>Pick ONE change that takes 30 minutes. Examples:
+    <ul>
+      <li>Add a single file <code>docs/agents/architecture.md</code> describing module boundaries.</li>
+      <li>Extract one tiny pure function out of a 200-line component.</li>
+      <li>Add one missing test on a public interface.</li>
+      <li>Install or update one skill in your harness.</li>
+    </ul>
+  </li>
+  <li>Ship a real ticket using that change. Note: how many fewer clarifying questions did the agent ask? How many fewer tokens spent?</li>
+  <li>Don't switch models. Don't switch editors. Just measure that one lever.</li>
+</ol>
+
+<p><strong>Pass criterion:</strong> if the change made no measurable difference, the change was wrong, not the strategy. Try another change in the same lever. If the strategy made no difference after 4 changes, switch levers.</p>
+
+<h2>Part 2 — Tactical Programming Is Eaten</h2>
+
+<p>The single most important reframe in the talk. Matt sets it up via John Ousterhout's <em>A Philosophy of Software Design</em> distinction between tactical and strategic programming. Direct quote:</p>
+
+<blockquote>
+  "Tactical programming is all about the on-the-ground day-to-day stuff — the actual writing of the code, the actual messing about with the syntax, figuring out bugs as they come up, and actually creating the code, creating the commits. Strategic programming is winning the war, not the battle. It's longer-term thinking. It's the general sitting right at the top. How does the codebase need to look? What strategies can I use to improve our velocity?"
+</blockquote>
+
+<p>Then the punchline Matt is famous for in this talk:</p>
+
+<blockquote>
+  "AI has basically eaten tactical programming. It's gone, right? It's all gone. AI is just better at doing tactical programming than you are because it can do it for cheaper. And so you need to be great at strategic programming in order to get the most out of this infinite fleet of tactical programmers that you now have access to."
+</blockquote>
+
+<p>"Infinite fleet of tactical programmers." That's the frame. Not one assistant — a fleet. Each one is a junior that you, the senior, scope, brief, and review. Your job stopped being "writing code" on the day you wired up an agent. Your job is now "designing the conditions under which the fleet writes code that doesn't make me regret it."</p>
+
+<h3>What strategic programming looks like in 2026</h3>
+
+<p>Matt lists what strategic programming means now:</p>
+
+<blockquote>
+  "You need to design the hard parts up front. You need to make sure those tasks are really, really well scoped. You need to be thinking about the interfaces between all of the modules in your codebase. You need to be thinking about test scenes and good tests. You need to essentially design a codebase that's easy to work in and have just enough documentation that can point AI to the right places where it's going to make those changes and make them effectively."
+</blockquote>
+
+<p>Notice what he <em>doesn't</em> list: TypeScript tricks, regex wizardry, knowing which Redis method to call. Those are tactical. The strategic list:</p>
+
+<ul>
+  <li><strong>Design the hard parts up front</strong> — PRD work, not coding work.</li>
+  <li><strong>Scope tasks well</strong> — <code>/to-issues</code> work, not coding work.</li>
+  <li><strong>Think about interfaces between modules</strong> — architectural work, not coding work.</li>
+  <li><strong>Design good tests</strong> — specification work, not coding work.</li>
+  <li><strong>Document enough for AI to find the right places</strong> — harness work, not coding work.</li>
+</ul>
+
+<div class="callout">
+  <p><strong>Ship-faster implication.</strong> The five things above are what <em>multiplies</em> your output. The agent can write code 24/7. The bottleneck is no longer code — it's decisions about scope, interfaces, and tests. If you're a solo dev, your job is to spend <em>less</em> time coding and <em>more</em> time on these five levers.</p>
+</div>
+
+<h3>Exercise: Audit your last week</h3>
+
+<ol>
+  <li>Pull up your git log from the last 7 days.</li>
+  <li>For each commit, tag it <code>T</code> (tactical: bug fix, syntax tweak, type errors) or <code>S</code> (strategic: new module, refactor, test scaffolding, docs).</li>
+  <li>Count: what percentage of your time went to <code>T</code>?</li>
+  <li>If <code>T &gt; 50%</code>: those tasks should be going to the agent. Hand them the next time they come up.</li>
+  <li>If <code>S &lt; 30%</code>: you're not actually programming strategically yet. Pick one of the five levers above and ship something for it this week.</li>
+</ol>
+
+<h2>Part 3 — Skills Are Procedures, Not Abilities</h2>
+
+<p>Around the 18-minute mark, David asks: <em>"What separates a good agent skill from a bad one?"</em> Matt's answer reshapes how you should think about every skill you install.</p>
+
+<blockquote>
+  "You can think of there as being two types of skills. There are skills that are procedures — skills that you intend to run yourself — and there are skills that are more like abilities — things that you intend the model to invoke itself. [...] A good ability for instance might be your coding standards. So let's say your agent is doing its own thing, working along, and it needs to check how you like your React code written. So it's going to pull in the ability, great React coding standards, and then it reads it and it understands: okay, I shouldn't use useEffect, I should use something different. A procedure is more like something you invoke yourself to get the model to behave a certain way."
+</blockquote>
+
+<p>Then Matt reveals his preference:</p>
+
+<blockquote>
+  "I tend to prefer my skills as procedures. I like to be the one in control. I like to go, okay, we'll do grill-me and then we'll go, let's write a product requirements document. So we use two — PRD for instance. Then let's take that PRD and turn it into individual issues so that we can work through them. That's just personally how I like to do it."
+</blockquote>
+
+<p>And a critical warning about abilities:</p>
+
+<blockquote>
+  "Skills are really hard to write because every single skill that you write leaks a description into the context window. And you can disable this. So there are some skills in here — I think in my engineering zoom out — which has disable model invocation true. This skill can only be invoked by the user, and this means its description is not leaked into context. Every single ability — let's say we have 100 different skills — you're going to be leaking 100 descriptions into the context window."
+</blockquote>
+
+<p>The context window is expensive real estate. Every ability you install without <code>disable_model_invocation</code> takes up space whether it fires or not. Matt's fix: <em>"I prefer to hide most of these descriptions from the AI itself and keep all of that knowledge inside the human, right, inside the developer."</em></p>
+
+<h3>Three dimensions of a skill</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>Procedure</th>
+      <th>Ability</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Who invokes it</td>
+      <td>You (the human)</td>
+      <td>The model itself</td>
+    </tr>
+    <tr>
+      <td>Context window cost</td>
+      <td>Zero until invoked</td>
+      <td>Always present</td>
+    </tr>
+    <tr>
+      <td>You control the flow</td>
+      <td><strong>Yes — you're driving</strong></td>
+      <td>No — model decides when</td>
+    </tr>
+    <tr>
+      <td>Matt's recommendation</td>
+      <td><strong>Preferred</strong></td>
+      <td>Use sparingly</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>There's a third dimension: <strong>stateless vs stateful</strong>. A stateless skill doesn't need to remember anything between runs. A stateful skill — like <code>/teach</code> — saves state locally so it can track your progress across sessions.</p>
+
+<div class="callout">
+  <p><strong>Applying this to your setup.</strong> The skills you installed because someone said "this is amazing" — go check their descriptions. Are they leaking into your context window right now? Matt's action at the end of the talk: <em>"Delete every single skill, every single plugin, every single MCP server. Go back to absolutely nothing, and then observe the agent. See what it does. Once you're seeing what the agent does in that basic mode, then layer things on top of it — and make sure those things are procedures, procedure skills, not ability skills."</em></p>
+</div>
+
+<h3>Exercise: Audit your skills for context leak</h3>
+
+<ol>
+  <li>List every skill currently active in your editor.</li>
+  <li>For each one, check: does it have <code>modelInvocation: false</code> (or equivalent)? If not, it leaks into your context window always.</li>
+  <li>Count: how many descriptions are currently in your context window without you invoking them?</li>
+  <li>Delete the ones you haven't explicitly used in the last 7 days.</li>
+  <li>For each remaining skill, tag it <code>P</code> (procedure) or <code>A</code> (ability). Aim for zero <code>A</code> skills unless you can justify the context cost.</li>
+</ol>
+
+<h2>Part 4 — The 10 Consequential Decisions</h2>
+
+<p>David proposes a pattern he's discovered for working with AI. Matt validates it immediately. This is the most directly applicable idea in the entire conversation for a solo dev building something real:</p>
+
+<blockquote>
+  "The biggest difference instead of saying one-shot this app — I describe my vision for this app and say: list out the 10 most consequential decisions — the software design decisions, architectural decisions, product decisions that will shape this project. And ask — interview me — until you understand 98% about it."
+</blockquote>
+
+<p>Matt's response: <em>"Absolutely."</em> No qualification.</p>
+
+<p>This is the <strong>grill-me pattern</strong> in practice. Matt describes it:</p>
+
+<blockquote>
+  "The grill-me skill — this is under productivity under grill-me — it's incredibly short. I think this skill maybe five sentences. And it's unreasonably effective because it just turns the agent into an adversarial interviewer asking you questions, interviewing you, and popping up with ideas that you might not have considered — until you reach a shared understanding."
+</blockquote>
+
+<p>Five sentences. That's what it takes to turn any agent into a first-principles interviewer. The goal isn't to build faster — it's to <em>not build the wrong thing</em>. Because once you start building, the cost of changing a consequential decision is high. The cost of an adversarial question before you write a line of code is zero.</p>
+
+<h3>What "10 most consequential decisions" actually means</h3>
+
+<p>In a real project, the list looks something like this — not code decisions, but commitment decisions:</p>
+
+<ul>
+  <li>Who is this for, really? (Not "users" — a specific person with a specific problem.)</li>
+  <li>What does done look like? (Not "shipped" — a specific outcome the user notices.)</li>
+  <li>Monolith or separate services? (For a solo dev: probably monolith.)</li>
+  <li>Database now or later? (And: which one, and why?)</li>
+  <li>Auth from day zero or gate it? (Skip auth until you need it.)</li>
+  <li>How many environments? (Dev + prod = minimum viable.)</li>
+  <li>Public or private? (Private = fewer security constraints.)</li>
+  <li>Who pays for infrastructure? (Solo dev = one place, minimize options.)</li>
+  <li>What breaks if I'm wrong? (Measure: reversibility.)</li>
+  <li>What does version 2 look like? (If you can't answer this, you haven't thought hard enough about v1.)</li>
+</ul>
+
+<p>Most of these aren't code. They're conversations. And conversations are what <code>/grill-me</code> does.</p>
+
+<div class="callout">
+  <p><strong>Why this compounds for solo devs.</strong> You don't have a co-founder to push back. You don't have a CTO to say "wait, have you thought about X?" The agent running <code>/grill-me</code> is the pushback. It asks the uncomfortable question you would have gotten in a code review — before the code exists. The earlier the pushback, the cheaper the fix.</p>
+</div>
+
+<h3>Exercise: Run grill-me on your next feature</h3>
+
+<ol>
+  <li>Before writing any code for your next feature, invoke <code>/grill-me</code>.</li>
+  <li>Paste your feature description. Let the agent interview you for 5–15 minutes.</li>
+  <li>After the interview, write down: what did you change in your mental model? What decision did you revise?</li>
+  <li>Then: did you feel "interviewed" or "interrogated"? If interrogated — the skill needs a better prompt from you. Personalize it.</li>
+</ol>
+
+<p><strong>The metric.</strong> Track how many consequential decisions changed after the grill-me session vs how many changed after implementation started. If grill-me caught decisions before coding, the cost was ~0. If changes happened after coding, the cost was tokens + time + context switching.</p>
+
+<h2>Part 5 — Queues, Not Loops</h2>
+
+<p>The conversation shifts to agentic loops. Matt cuts through it with characteristic clarity:</p>
+
+<blockquote>
+  "What we're essentially talking about here is the difference between human in the loop work and AFK work. Human in the loop — the human is there with the agent, talking together, figuring something out. Really useful for planning, really useful for some kind of more complicated implementations, really useful for unscoped work. And then we're talking about AFK stuff — away from keyboard — you ping off the agent and it goes and does something."
+</blockquote>
+
+<p>The moment Matt discovered AFK was, in his words, <em>"the moment I really got into AI coding and the moment I was really able to massively increase my output because then instead of me having to sit in the loop, handle all the permissions requests, handle anything the agent needs to ask me — the moment I can just remove myself from the equation, I've paralyzed myself. Suddenly there are two of me. Or three of me. Four of me. Five of me. Able to go and produce so much more code that I then go and review."</em></p>
+
+<h3>Why loops are the wrong mental model</h3>
+
+<p>The hype uses "loop" language: <em>"run your agent in a loop"</em>, <em>"while loop with claude code"</em>, <em>"the Ralph loop."</em> Matt's reframe:</p>
+
+<blockquote>
+  "I don't really need to run this as a loop, right? The only thing I need out of this is the AFK agent to take on a specific task and do that task. The way I mostly think about these things is as queues. Okay? Cues — not loops. The Q is really the backlog of tasks that I need to complete."
+</blockquote>
+
+<p>Queues are GitHub issues, Linear tickets, Notion tasks. Each item:</p>
+
+<ul>
+  <li>Has a clear scope (one thing, not "run forever")</li>
+  <li>Can be picked up by anyone (human or agent)</li>
+  <li>Produces a done/not-done result</li>
+  <li>Can be parallelized across multiple agents</li>
+</ul>
+
+<blockquote>
+  "This isn't a loop really — it's just a queue that eventually gets resolved. This will come off the queue once the pull request gets merged. And that's all development is really. You just have a queue of tasks that you need to get done. Project managers add more stuff to the queue. You complete the tasks in the queue. And there are multiple nodes picking stuff off the queue, multiple developers. And so an idea that there's a single loop that just sort of goes and completes all the tasks doesn't really match with how developer teams generally work."
+</blockquote>
+
+<h3>The queue-based workflow in practice</h3>
+
+<pre><code>Backlog (your task list)
+├── Feature ideas (scoped enough to be an issue)
+├── Bugs (triage: critical / can-wait / wont-fix)
+├── Experiments (bounded time box: "try X, report back")
+└── Reviews (PRs, architecture decisions)
+
+When you pick something up:
+  - Needs a human in the loop → do it with agent, together
+  - Scoped, done-able, no judgment needed → send AFK
+  - Blocked → don't pick it up</code></pre>
+
+<div class="callout">
+  <p><strong>Implication for shipping faster.</strong> Your bottleneck isn't code generation. It's scoping. If you can't write a GitHub issue that an AFK agent can pick up and complete without asking you follow-up questions, the issue isn't ready. <strong>The skill of shipping faster is the skill of writing good issues</strong>, not the skill of writing good code.</p>
+</div>
+
+<h3>Exercise: Convert your task list to a queue</h3>
+
+<ol>
+  <li>Take your current task list (Notion, text file, your head).</li>
+  <li>Write each item as a GitHub issue: one sentence title, 2–3 sentence description, acceptance criteria.</li>
+  <li>For each issue: can an AFK agent complete this without asking you questions? If no — what's the blocker? (Usually: not scoped enough, or requires judgment you haven't encoded.)</li>
+  <li>Send one AFK agent on one well-scoped issue. Track: how long did it take? How many clarifying questions? What was the result?</li>
+</ol>
+
+<p><strong>Pass criterion.</strong> If the AFK agent came back with more questions than answers, the issue wasn't scoped. Rescope it. If it came back with done work, the queue model is working — scale it up.</p>
+
+<h2>Part 6 — Knowledge, Skills, and Wisdom</h2>
+
+<p>Matt introduces a framework that quietly explains why some skills are learnable and some aren't:</p>
+
+<blockquote>
+  "I think of there as being three things that you need to be good at anything. You need knowledge — you need the fundamental, what is that thing, understanding it in your head. You need the skills — you need to be able to have done it a bunch of times, in muscle memory. And then you need wisdom — you need to know when to do it. You need to know how it fits in the real world. And wisdom is almost impossible to obtain without actually having done the thing in the exact context where you need to do it."
+</blockquote>
+
+<p>This is the most clarifying thing Matt says about what can and cannot be delegated to AI. Knowledge and skills can be bundled into procedures. Wisdom? Wisdom requires context. It requires having been wrong before in exactly that situation.</p>
+
+<p>His example is sharp: <em>"if you want to be like someone at Anthropic, sure you can gain the knowledge, you can gain the skills, but then how are you going to gain the wisdom? Like you need to probably go to Anthropic to gain the wisdom to actually understand how to do the thing."</em></p>
+
+<h3>Triad for the solo dev</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Can AI help?</th>
+      <th>Must you build it?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Knowledge</strong></td>
+      <td>Yes — instantly</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td><strong>Skills</strong></td>
+      <td>Yes — with practice</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td><strong>Wisdom</strong></td>
+      <td>Only from real context</td>
+      <td>Yes — through shipping</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The implication: don't spend time acquiring knowledge. The agent has it. Spend time building skills and, over time, accumulating wisdom. The fastest path to wisdom is shipping things and watching what breaks.</p>
+
+<div class="callout">
+  <p><strong>Ship-faster implication.</strong> Every ticket you ship is a wisdom unit. Not code — wisdom units. The agent does the knowledge work and the skill work. You accumulate the wisdom: knowing when to trust the agent, when to push back, when a decision will cost you later, when to say no to a feature. That's the ceiling that Matt talks about.</p>
+</div>
+
+<h3>Exercise: Map your triad</h3>
+
+<ol>
+  <li>Pick your current project.</li>
+  <li>List 3 things you know (knowledge) — you could explain them to someone.</li>
+  <li>List 3 things you can do without thinking (skills) — muscle memory.</li>
+  <li>List 3 decisions you made that turned out right or wrong — and why (wisdom).</li>
+  <li>For each item: where did it come from? Book/course/video? Practice? Real experience?</li>
+  <li>Your goal: convert knowledge to skills through deliberate practice. Convert skills to wisdom through shipping. The agent handles the knowledge layer — make sure you're spending your time on the layers that compound.</li>
+</ol>
+
+<h2>Part 7 — Build Self-Improving Systems</h2>
+
+<p>David shares a story about Fable finding a security bug he had missed for months. His instinct: <em>"that means AI is more involved."</em> Matt's response is the most quietly radical thing in the talk:</p>
+
+<blockquote>
+  "What you've actually learned? Sure, you've learned that Fable is good definitely, but you've also learned that there are security issues in your code, right? And you should probably have something that runs and checks for more security issues in the future. We need to build loops into our systems. You need to figure out why it happened. Why did that even get to this place? You know, it's like if someone keeps stealing your bike, maybe buy a lock."
+</blockquote>
+
+<p>The question isn't "is Fable better than Opus?" The question is: <em>"why did I have this bug for so long and not notice it?"</em> That question has a systematic answer — and the fix is systematic too. Not a new model. A new process.</p>
+
+<blockquote>
+  "We need to be designing systems that are self-improving over time, right? And this is something that we've been doing as software engineers for a long time. We write test suites so that we can test our own code. We do human reviews so that we can make sure things are looking the way they need to. We refactor so that we can change code better in the future. And sure, a model has uncovered that we need to do a bit more of that. So let's do a bit more of it. But we don't need to use the fancy model in order to get those insights."
+</blockquote>
+
+<p>Matt's rule of thumb: if a model found something, <em>you should be able to find it again with a cheaper model + the right harness</em>. The goal is not to depend on the fancy model. The goal is to build the system that catches the bug without needing the fancy model to be there.</p>
+
+<h3>The three-system view</h3>
+
+<ul>
+  <li><strong>The agent</strong> — executes tasks, writes code, proposes solutions. Powered by whatever model you choose.</li>
+  <li><strong>The harness</strong> — skills, prompts, sandbox, parallelization. Fully in your control.</li>
+  <li><strong>The system</strong> — the process that catches what the agent misses. Tests, reviews, linting, security scanning. This is the loop that improves over time.</li>
+</ul>
+
+<p>Most devs focus entirely on the agent. Matt's point: the system is where the compounding happens. A better agent writes code faster. A better system catches more bugs before they ship, forever, without you being there.</p>
+
+<div class="callout">
+  <p><strong>Ship-faster implication.</strong> The fastest devs aren't the ones with the best model. They're the ones who, after every significant bug or mistake, ask: how do I build a system so this doesn't happen again? Not "how do I be more careful?" — "how do I make the system catch this next time?" The answer is usually: a test, a lint rule, a checklist, or a skill.</p>
+</div>
+
+<h3>Exercise: The bug retrospective</h3>
+
+<ol>
+  <li>Pick one bug you shipped in the last 3 months.</li>
+  <li>Answer: how did the bug get past you? (No test? No staging? Didn't read the error? Made an assumption?)</li>
+  <li>Design a system that would have caught it. Options: a test, a lint rule, a staging check, a skill that runs before every deploy, a code review checklist item.</li>
+  <li>Build that system. Delegate to an AFK agent if it's a coding task.</li>
+  <li>Verify: does the new system catch the bug on a sample of old code?</li>
+</ol>
+
+<p>One retrospective per month. By month 6, your codebase has started catching its own mistakes.</p>
+
+<h2>Part 8 — DX vs AX</h2>
+
+<p>The hiring discussion leads Matt to articulate the connection between developer experience and agent experience. He names it explicitly:</p>
+
+<blockquote>
+  "I think of there as being a difference between DX — developer experience — and AX, right? Agent experience. And so agent experience is the experience that the agent has working in the codebase. And anything you can do — whether that's better skills, increasing the power of the model, improving the harness, improving the codebase — improving the codebase for better AX is something people forget about. They forget about all the edges you can get with good software fundamentals. And so that's where the senior will be useful — because the senior knows how to build good DX. If they're a good senior, they know how to build a codebase that can work well with humans. And there's a huge overlap between good DX and good AX, but they're just coming at it from different angles."
+</blockquote>
+
+<p>This is the technical core of why senior devs get 10x and juniors don't. A senior with 10 years of DX knowledge doesn't just know how to write code — they know how to structure a codebase so that the next person (or the next agent) can understand it, change it, and extend it without breaking it. That's AX thinking.</p>
+
+<p>And the converse is equally true: a codebase that's painful for humans to work in is painful for agents too. Good interfaces, clear module boundaries, minimal hidden state, explicit dependencies — these make the agent's job easier the same way they make a new human developer's job easier.</p>
+
+<h3>The overlap</h3>
+
+<pre><code>    DX (humans)     AX (agents)
+         \            /
+          \          /
+           \________/
+          Codebase quality
+          Module boundaries
+          Explicit interfaces
+          Minimal hidden state
+          Good tests at public APIs
+          Enough documentation
+          Consistent patterns
+
+  "Anything good for DX is good for AX"</code></pre>
+
+<p>Matt's point earlier in the talk is confirmed here: <em>"if your codebase architecture is better, then you can get a cheaper model to do the same work."</em> You are building AX every time you improve DX.</p>
+
+<div class="callout">
+  <p><strong>Ship-faster implication.</strong> If you have been focused on "shipping features" without investing in codebase quality, you have been simultaneously hurting DX and AX. The good news: everything you do to improve your codebase — cleaner interfaces, better tests, extracting shared logic, documenting module purpose — helps both you and your agent. One investment, double return.</p>
+</div>
+
+<h3>Exercise: Check your AX/DX gap</h3>
+
+<ol>
+  <li>Pick a module in your codebase that an agent (or a new human) would struggle to modify safely.</li>
+  <li>List the DX problems: unclear what it does, hidden dependencies, implicit assumptions, no tests on public interface.</li>
+  <li>Each DX problem is also an AX problem. Fix one — refactor the interface, add a test, extract the hidden dependency.</li>
+  <li>Ship the fix with your agent. Note: does the agent make fewer mistakes in that module after the refactor?</li>
+</ol>
+
+<h2>Part 9 — One Thing to Do Today</h2>
+
+<p>David's closing question: <em>"If you could take the average AI enthusiast and give them one or two action steps to do today, what would they be?"</em></p>
+
+<p>Matt's answer is a single instruction followed by a single permission:</p>
+
+<blockquote>
+  "First thing I would do is I would delete every single skill, every single plugin, every single MCP server. I would go back. Delete your claude.md, delete your agents.md, go back to absolutely nothing, and then observe the agent. See what it does. In my experience, everyone bloats up their context window with too much stuff, with too many instructions."
+</blockquote>
+
+<p>Then:</p>
+
+<blockquote>
+  "Go back to a blank slate and see what the agent does. Once you're seeing what the agent does in that basic mode, then layer things on top of it — and make sure those things are procedures, procedure skills, not ability skills. Layer things on that you yourself decide. If you're noticing problems, then try to find solutions to fix those problems. And try as much as you can to delegate the implementation to an AFK agent. AFK is just incredible way to work. It's just takes a little bit of setup, but once it's set up, it just goes crazy."
+</blockquote>
+
+<h3>The two-step protocol</h3>
+
+<ol>
+  <li><strong>Subtract.</strong> Delete everything. Start from zero. Watch what the agent does with nothing. This is your baseline.</li>
+  <li><strong>Layer back.</strong> Add one procedure at a time. Each layer should solve a specific problem you've observed, not a hypothetical one. No layer before you have the problem.</li>
+</ol>
+
+<p>The discipline is to never add a layer you haven't earned — that you haven't noticed the agent failing at first. The skill comes from watching the agent fail, not from reading about what skills other people use.</p>
+
+<div class="callout success">
+  <p><strong>The one action.</strong> Right now, before your next coding session: open your editor's skills folder. Delete everything you installed because a YouTuber said it was amazing. Keep nothing. Start with a blank slate. Watch your agent for one session. Then decide what you actually need.</p>
+</div>
+
+<h3>Exercise: Start from zero</h3>
+
+<ol>
+  <li>Uninstall or disable every skill, plugin, MCP server, and custom instruction file.</li>
+  <li>Run your agent on a real task — not a demo, something you're actually trying to ship.</li>
+  <li>Log what it did well. Log what it struggled with.</li>
+  <li>For each struggle: is it a skill problem? A harness problem? A codebase problem? A scoping problem? Identify the right lever.</li>
+  <li>Add exactly one layer to address one specific struggle. No more.</li>
+  <li>Repeat.</li>
+</ol>
+
+<p>That's the protocol. Not: install 20 skills and wonder why your context window is bloated. But: observe, diagnose, fix, layer, repeat. Forever.</p>
+
+<div class="lesson-nav">
+  <a href="0006-measure-impact.html">← Lesson 0006: Measure Impact</a>
+  <a href="0001-the-lazy-senior-dev.html">Lesson 0001: The Lazy Senior Dev →</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Reference — Ponytail</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --blue: #2980b9;
+      --green: #27ae60;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    h1 { font-size: 1.75rem; font-weight: 400; margin-bottom: 1.5rem; }
+    h2 {
+      font-size: 0.9rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2rem 0 0.75rem;
+      padding-bottom: 0.4rem; border-bottom: 1px solid var(--rule);
+    }
+    p { margin-bottom: 0.75rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    pre {
+      background: var(--code-bg); padding: 1rem;
+      border-radius: 6px; overflow-x: auto;
+      border: 1px solid var(--rule); margin: 0.75rem 0;
+    }
+    code { background: var(--code-bg); padding: 0.1rem 0.3rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .cmd { font-weight: 700; color: var(--blue); }
+    .rung { display: inline-block; background: var(--accent); color: white;
+      padding: 0.05rem 0.4rem; border-radius: 3px; font-size: 0.75rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+    ul { margin: 0.5rem 0 0.75rem 1.25rem; }
+    li { margin-bottom: 0.25rem; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      color: var(--blue); text-decoration: none; font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Quick Reference — Ponytail</h1>
+
+  <h2>Lệnh cơ bản</h2>
+  <pre><code><span class="cmd">/ponytail full</span>    # Bật khi agent propose code — chặn code thừa
+<span class="cmd">/ponytail-review</span>  # Review diff sau khi code xong</code></pre>
+
+  <h2>7 Rung Ladder</h2>
+  <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0.5rem 0;">
+    <thead>
+      <tr style="border-bottom: 1px solid var(--rule);">
+        <th style="text-align: left; padding: 0.4rem 0.5rem 0.4rem 0;">Rung</th>
+        <th style="text-align: left; padding: 0.4rem 0.5rem;">Check</th>
+        <th style="text-align: left; padding: 0.4rem 0;">Nếu có</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--rule);">
+        <td style="padding: 0.4rem 0.5rem;"><span class="rung">R1</span></td>
+        <td style="padding: 0.4rem 0.5rem;">YAGNI?</td>
+        <td style="padding: 0.4rem 0;">Reject — không cần</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--rule);">
+        <td style="padding: 0.4rem 0.5rem;"><span class="rung">R2</span></td>
+        <td style="padding: 0.4rem 0.5rem;">Reuse?</td>
+        <td style="padding: 0.4rem 0;">Dùng lại code cũ</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--rule);">
+        <td style="padding: 0.4rem 0.5rem;"><span class="rung">R3</span></td>
+        <td style="padding: 0.4rem 0.5rem;">stdlib?</td>
+        <td style="padding: 0.4rem 0;">Dùng thư viện có sẵn</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--rule);">
+        <td style="padding: 0.4rem 0.5rem;"><span class="rung">R4</span></td>
+        <td style="padding: 0.4rem 0.5rem;">native?</td>
+        <td style="padding: 0.4rem 0;">Dùng platform API</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--rule);">
+        <td style="padding: 0.4rem 0.5rem;"><span class="rung">R5</span></td>
+        <td style="padding: 0.4rem 0.5rem;">one-liner?</td>
+        <td style="padding: 0.4rem 0;">Inline đủ</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--rule);">
+        <td style="padding: 0.4rem 0.5rem;"><span class="rung">R6</span></td>
+        <td style="padding: 0.4rem 0.5rem;">minimum?</td>
+        <td style="padding: 0.4rem 0;">Giữ code tối thiểu</td>
+      </tr>
+      <tr>
+        <td style="padding: 0.4rem 0.5rem;"><span class="rung">R7</span></td>
+        <td style="padding: 0.4rem 0.5rem;">delete?</td>
+        <td style="padding: 0.4rem 0;">Xóa hoàn toàn</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Combined Workflow</h2>
+  <pre><code>Grill → PRD → Issues → Implement → Review → Merge
+                    ↑
+              /ponytail full
+              Viết test (TDD) trước</code></pre>
+
+  <h2>Questions to ask</h2>
+  <ul>
+    <li>Đã cần feature này chưa? (R1 YAGNI)</li>
+    <li>Code tương tự đã có chưa? (R2 reuse)</li>
+    <li>Thư viện stdlib đủ chưa? (R3 stdlib)</li>
+    <li>Platform API đủ chưa? (R4 native)</li>
+    <li>Có inline được không? (R5 one-liner)</li>
+    <li>Cắt bớt được không? (R6 minimum)</li>
+    <li>Có thể xóa không? (R7 delete)</li>
+  </ul>
+
+  <a class="back-link" href="../lessons/0006-measure-impact.html">Lesson 0006: Measure Impact →</a>
+
+</body>
+</html>

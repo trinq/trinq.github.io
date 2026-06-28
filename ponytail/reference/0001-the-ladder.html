@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference: The 7-Rung Ladder</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    @media print {
+      body { max-width: 100%; padding: 0; }
+      .no-print { display: none; }
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--ink);
+    }
+    .ladder {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      margin: 1.5rem 0;
+    }
+    .ladder-row {
+      display: flex;
+      align-items: baseline;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .ladder-row:last-child { border-bottom: none; }
+    .num {
+      width: 2rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .question { flex: 1; }
+    .answer { color: var(--ink-soft); font-style: italic; }
+    .never-cut {
+      background: #e8f5e9;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid #4caf50;
+    }
+    .never-cut h2 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 0 0 0.5rem;
+      border: none;
+      padding: 0;
+    }
+    .never-cut ul { margin: 0; padding-left: 1.25rem; }
+    .never-cut li { margin: 0.25rem 0; }
+    .meta {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--rule);
+    }
+  </style>
+</head>
+<body>
+
+<h1>The 7-Rung Ladder</h1>
+
+<div class="ladder">
+  <div class="ladder-row">
+    <span class="num">1.</span>
+    <span class="question">Does this need to exist?</span>
+    <span class="answer">→ YAGNI: skip it</span>
+  </div>
+  <div class="ladder-row">
+    <span class="num">2.</span>
+    <span class="question">Already in codebase?</span>
+    <span class="answer">→ reuse it</span>
+  </div>
+  <div class="ladder-row">
+    <span class="num">3.</span>
+    <span class="question">Stdlib does it?</span>
+    <span class="answer">→ use it</span>
+  </div>
+  <div class="ladder-row">
+    <span class="num">4.</span>
+    <span class="question">Native platform feature?</span>
+    <span class="answer">→ use it</span>
+  </div>
+  <div class="ladder-row">
+    <span class="num">5.</span>
+    <span class="question">Installed dependency?</span>
+    <span class="answer">→ use it</span>
+  </div>
+  <div class="ladder-row">
+    <span class="num">6.</span>
+    <span class="question">One line?</span>
+    <span class="answer">→ one line</span>
+  </div>
+  <div class="ladder-row">
+    <span class="num">7.</span>
+    <span class="question">Only then...</span>
+    <span class="answer">→ minimum that works</span>
+  </div>
+</div>
+
+<div class="never-cut">
+  <h2>Never Cut These</h2>
+  <ul>
+    <li>Trust-boundary validation</li>
+    <li>Data-loss handling</li>
+    <li>Security</li>
+    <li>Accessibility</li>
+  </ul>
+</div>
+
+<div class="meta">
+  <strong>Ponytail Reference</strong> · Source: <a href="https://github.com/DietrichGebert/ponytail">github.com/DietrichGebert/ponytail</a>
+</div>
+
+</body>
+</html>
