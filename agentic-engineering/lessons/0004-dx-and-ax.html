@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004 — DX and AX, or: Design for the Reader Who Reads Everything</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .exercise .step {
+      counter-increment: step;
+      margin-bottom: 0.75rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .exercise .step::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .exercise ol { counter-reset: step; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare > div {
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .compare .bad {
+      background: #fdecea;
+      border-left: 3px solid var(--accent);
+    }
+    .compare .good {
+      background: #e8f5e9;
+      border-left: 3px solid #4caf50;
+    }
+    .compare .label {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol { margin-top: 0.75rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+  </style>
+</head>
+<body>
+  <h1>DX and AX, or: Design for the Reader Who Reads Everything</h1>
+  <p class="subtitle">Lesson 0004 · ~12 min · Codebases that humans love usually already love agents too — with a few adjustments</p>
+
+  <div class="meta">
+    <span class="badge">Architectural</span>
+    <span>Source: <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> at 38:30, 38:50</span>
+  </div>
+
+  <p>A queue of well-scoped tasks (lesson 0003) gets you nothing if the codebase the agent inherits is hostile. A well-scoped task on a hostile codebase produces a hostile PR. You end up reviewing twice as much because every change touches five modules and breaks two conventions.</p>
+
+  <p>Matt's answer is to design codebases with two readers in mind: the human (DX, developer experience) and the agent (AX, agent experience). The good news: good DX usually already <em>is</em> good AX. The bad news: there are adjustments only a senior dev who has actually worked with agents will know to make.</p>
+
+  <p>This lesson teaches you to read your codebase through both lenses at once.</p>
+
+  <h2>1. The two readers, stated plainly</h2>
+
+  <blockquote>
+    I think of there as being a difference between DX &mdash; developer experience &mdash; and AX, right? Agent experience. And so agent experience is the experience that the agent has working in the codebase.
+    <span class="src">— Matt Pocock, <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Agentic Engineering Workflow</a>, 38:30</span>
+  </blockquote>
+
+  <p>DX is the traditional software-design goal: clear module boundaries, good tests, intentional naming, small interfaces, deep modules. You already know most of this. AX is the same goal with one extra reader: an agent that has no prior context, no implicit knowledge of "the way we do things here," and no instinct for what broke last time someone touched this file.</p>
+
+  <p>Matt's other quote from the same stretch of the talk:</p>
+
+  <blockquote>
+    Often people forget about improving the codebase actually for better AX. They forget about all the edges you can get with like good software fundamentals and so that's where the senior will be useful, because the senior knows how to build good DX.
+    <span class="src">— Matt Pocock, 38:50</span>
+  </blockquote>
+
+  <p>That last sentence is the thesis. A senior dev who knows good DX has most of what AX needs. The work is mostly adjustment, not rebuild.</p>
+
+  <h2>2. The overlap is huge</h2>
+
+  <p>List things that help DX. Then ask: does this help AX too?</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>DX practice</th>
+        <th>Helps AX too?</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Clear module boundaries</td>
+        <td><strong>Yes</strong></td>
+        <td>Agent knows where to put a change without asking</td>
+      </tr>
+      <tr>
+        <td>Good test coverage</td>
+        <td><strong>Yes</strong></td>
+        <td>Agent can verify its own work without you in the loop</td>
+      </tr>
+      <tr>
+        <td>Intentional naming</td>
+        <td><strong>Yes</strong></td>
+        <td>Agent doesn't have to guess what <code>helper2</code> means</td>
+      </tr>
+      <tr>
+        <td>Types / contracts</td>
+        <td><strong>Yes</strong></td>
+        <td>Agent catches its own mistakes at compile time</td>
+      </tr>
+      <tr>
+        <td>DRY / single source of truth</td>
+        <td><strong>Yes</strong></td>
+        <td>Agent edits one place, not five</td>
+      </tr>
+      <tr>
+        <td>Top-of-file context docs</td>
+        <td><strong>Even more so</strong></td>
+        <td>Agent reloads context on every task; humans can hold context in their head</td>
+      </tr>
+      <tr>
+        <td>Tight feedback loops (fast tests, fast lint)</td>
+        <td><strong>Even more so</strong></td>
+        <td>Agent iterates many times in one task; humans iterate once or twice</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Most senior devs already do the left column. The bottom two rows are where AX adds new pressure. Both are easy to fix; neither is intuitive without seeing an agent fail at them.</p>
+
+  <h2>3. The "top-of-file context" pattern</h2>
+
+  <p>An agent reading a 600-line file for the first time doesn't know what it's looking at. You, the human author, have the file's purpose in your head — you've been working on it all week. The agent starts cold.</p>
+
+  <p>The fix is small: write 5–10 lines at the top of every file that say what it is, what it owns, what it depends on, and what it deliberately does not do. Not a JSDoc per function — a single block at the top.</p>
+
+  <div class="compare">
+    <div class="bad">
+      <div class="label">Without context</div>
+      <pre><code>// users.ts
+
+import { db } from './db';
+import { mailer } from './mailer';
+
+export async function createUser(...) { ... }
+export async function deleteUser(...) { ... }
+export async function updateUser(...) { ... }</code></pre>
+      <p>An agent landing here has to read the whole file to figure out scope. It might reach for <code>mailer</code> or <code>db</code> when it shouldn't.</p>
+    </div>
+    <div class="good">
+      <div class="label">With context</div>
+      <pre><code>// users.ts
+//
+// Owns: user CRUD (create, read, update, delete) and auth helpers.
+// Depends on: db (users table only), mailer (welcome emails).
+// Does NOT: handle permissions (see permissions.ts),
+//   billing (see billing.ts), or session state (see sessions.ts).
+// Touch this file when: adding user fields, changing
+//   validation, or adjusting the welcome flow.
+
+import { db } from './db';
+import { mailer } from './mailer';
+
+export async function createUser(...) { ... }</code></pre>
+      <p>An agent landing here knows the boundaries immediately. It doesn't reach for <code>permissions</code> through this file. It knows when it's allowed to touch this file.</p>
+    </div>
+  </div>
+
+  <p>This is not documentation for documentation's sake. It's how you give the agent the context you have in your head, in a form it can ingest in one read.</p>
+
+  <h2>4. The tight feedback loop</h2>
+
+  <p>When you, the human, edit a file, you run the tests, see a red bar, fix it, run again. That's a slow loop for you — three round-trips in a row is annoying.</p>
+
+  <p>An agent does this loop twenty times in one task. The agent writes code, runs the test, reads the failure, fixes the code, runs again. If each loop takes 60 seconds, the task takes 20 minutes. If each loop takes 5 seconds, the task takes 2 minutes. The math compounds.</p>
+
+  <p>What makes the loop slow:</p>
+  <ul>
+    <li>Test suite that takes 10 minutes to run end-to-end</li>
+    <li>Linter that hangs for 30 seconds before failing</li>
+    <li>Build step that has to compile the whole monorepo</li>
+    <li>Tests that need a live database to start</li>
+    <li>Tests that don't isolate state and so one failure cascades</li>
+  </ul>
+
+  <p>What makes the loop fast:</p>
+  <ul>
+    <li>Unit tests that run in &lt;1s</li>
+    <li>Tests that mock external services, not real ones</li>
+    <li>Lint and typecheck on save (instant feedback)</li>
+    <li>A test runner that watches files and re-runs only changed tests</li>
+    <li>CI that fails in 2 minutes, not 20</li>
+  </ul>
+
+  <p>You, the human, would prefer a 2-minute CI too. The agent <em>needs</em> it. This is the AX adjustment that pays for itself the first time you ask an agent to do something it would have abandoned at the 15-minute mark.</p>
+
+  <h2>5. Module boundaries &mdash; the rule that's the same for both</h2>
+
+  <p>Ousterhout's <em>deep modules</em> idea (which Matt cites): a module with a small public interface and a lot of complex behaviour behind it. The opposite is a "shallow" module where every internal concept leaks out.</p>
+
+  <p>Both DX and AX prefer deep modules. For DX: humans don't have to read 200 functions to understand the surface. For AX: the agent doesn't have to decide which of 200 functions is the right entry point for this task.</p>
+
+  <p>Concretely: if you're tempted to export an internal helper because "the tests need it," wrap it. The tests should import from the module's public interface, not from its internals. If they can't, that's a signal the module is doing too much and should be split.</p>
+
+  <h2>6. Exercise: audit one module for AX</h2>
+
+  <div class="exercise">
+    <h4>Pick your worst file, read it like an agent</h4>
+    <ol>
+      <li class="step">Open a module in your repo that an agent would plausibly be asked to modify. Something with non-trivial logic. (Not <code>index.ts</code>, not a config file.)</li>
+      <li class="step">Read it cold, pretending you've never seen the codebase. For each function, ask: <em>what is this for, and when would I call it?</em> If you can't answer in 5 seconds, the function is missing context.</li>
+      <li class="step">Check the top of the file. Is there a 5–10 line block explaining what the module owns, what it depends on, and what it deliberately does not do? If not, write one. Commit it as its own PR.</li>
+      <li class="step">Run the tests for this module alone. Time them. If they take more than 10 seconds, find the slowest test and ask why.</li>
+      <li class="step">Hand the file to Claude Code with the prompt: "Add a function <code>archiveThing(id: string)</code> that marks a thing as archived (don't actually delete it). Don't ask me any questions." Watch what the agent does. The places it gets stuck are exactly the AX problems in your codebase.</li>
+    </ol>
+  </div>
+
+  <div class="callout warning">
+    <strong>The signal.</strong> If the agent finishes the task in one shot, your AX is good. If it asks three clarifying questions, those are the three places where the file's context was missing. If it produces code that doesn't match the rest of the module's conventions, that's a deeper-module problem. None of these are the agent's fault &mdash; they're the codebase's fault, and yours to fix.
+  </div>
+
+  <h2>7. The strategic-programming layer</h2>
+
+  <p>This is the strategic-programming move from lesson 0001 in concrete form. Tactical programming is "make this change work." Strategic programming is "make this change easy for the next person &mdash; or the next agent &mdash; to make too." AX is just strategic programming with a specific reader in mind.</p>
+
+  <p>When you add the top-of-file context block, you're not adding documentation. You're investing in the harness. When you tighten the feedback loop, you're not optimizing CI. You're investing in the harness. When you extract a deep module from a shallow one, you're not refactoring for fun. You're investing in the harness.</p>
+
+  <p>These investments compound. The next agent task on the same module moves faster. The task after that, faster still. That's the bet Matt is making: that the senior dev who quietly raises the AX of their codebase will out-ship the senior dev who chases the next model.</p>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>What's the difference between DX and AX?</li>
+    <li>True or false: a codebase with great DX automatically has great AX with no additional work.</li>
+    <li>What's the cheapest single change you can make to a file to raise its AX?</li>
+    <li>An agent's task is taking 20 minutes when you expected 2. The agent is doing 60 round-trips of "write code, run test, read failure." What's the most likely cause?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li>DX is the experience of a human developer working in the codebase. AX is the same idea applied to an AI agent &mdash; a reader who has no prior context, no implicit knowledge, and no instinct for what "the way we do things here" means.</li>
+      <li>False. Most DX practices transfer, but two are extra-important for AX: top-of-file context docs and tight feedback loops. These need specific attention.</li>
+      <li>Add a 5&ndash;10 line block at the top of the file explaining what the module owns, what it depends on, and what it deliberately does not do.</li>
+      <li>The feedback loop is too slow. Each round-trip costs seconds; over 60 round-trips, that's the difference between 2 minutes and 20. Fix the test suite, mock the external services, get the loop under 10s.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>From the talk, the two-minute segment <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">38:00&ndash;40:00</a> contains the DX/AX framing in Matt's own words, including the "senior will be useful because the senior knows how to build good DX" line. Listen to that, then look at one of your own modules and ask which half of the table above it scores better on.</p>
+
+  <p>For the deep-modules grounding, John Ousterhout's <em><a href="https://web.stanford.edu/~ouster/cgi-bin/book.php">A Philosophy of Software Design</a></em> is the source. Chapter 4 ("Modules should be deep") is the relevant one. Matt quotes it directly in the talk.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Run the exercise above on one file. Commit the top-of-file context block as its own PR.</li>
+    <li>Time your test suite. If it's slow, identify the slowest test and ask why.</li>
+    <li>The next lesson ties this back to the agent's workflow: <strong>/grill-me</strong> &mdash; the procedure skill Matt uses to turn a vague feature request into the kind of well-scoped queue item you can hand to an AFK agent. That's where DX/AX, queue/loop, and procedure/ability all meet.</li>
+    <li>Ask your teacher anything that wasn't clear. AX is the lesson where senior devs most often realize their codebase has been quietly hostile for years &mdash; that's not a failure, it's just visibility.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0003-queues-not-loops.html">&larr; Lesson 0003: Queues</a>
+    <a href="../reference/0001-vocabulary.html">Vocabulary reference &rarr;</a>
+  </div>
+</body>
+</html>

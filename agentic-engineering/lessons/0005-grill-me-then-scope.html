@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005 — Grill Me, Then Scope It</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .exercise .step {
+      counter-increment: step;
+      margin-bottom: 0.75rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .exercise .step::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .exercise ol { counter-reset: step; }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol { margin-top: 0.75rem; }
+    .skeleton {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+    }
+    .skeleton .label {
+      font-weight: 700;
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+  </style>
+</head>
+<body>
+  <h1>Grill Me, Then Scope It</h1>
+  <p class="subtitle">Lesson 0005 · ~11 min · The procedure that turns a wish into a queue item</p>
+
+  <div class="meta">
+    <span class="badge">Procedural</span>
+    <span>Source: derived from <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> at 11:40; pattern names from Matt's repo</span>
+  </div>
+
+  <p>You have a clean harness (lesson 0001). You know which skills are procedures and which are abilities (0002). You think in queues, not loops (0003). Your codebase has decent AX (0004). The only thing left is the moment you actually start work: a vague request lands in your inbox. "We need a notification system." "Make the dashboard faster." "Add SSO."</p>
+
+  <p>Lesson 0003 said: the agent needs a well-scoped task. Lesson 0003 did not say: how do you produce one, in 5 minutes, without going to 12 meetings?</p>
+
+  <p>Matt's answer, in the talk, is to lean on a procedure skill called <code>/grill-me</code>. The agent becomes an adversarial interviewer. You answer. The conversation turns a half-formed wish into a queue item that's specific, bounded, and verifiable. This lesson teaches you what the skill does, why it's a procedure (not an ability), and how to write your own version.</p>
+
+  <h2>1. The problem in one sentence</h2>
+
+  <p>The gap between <em>"I want to add SSO"</em> and <em>"a one-PR change to <code>auth.ts</code> that integrates with Okta SAML and adds a login button to <code>LoginPage.tsx</code>"</em> is huge, and the gap is where most failed agent tasks live. An agent handed the first version will spend 30 minutes asking what you meant and produce nothing.</p>
+
+  <p>You, the human, can fill the gap. But you can also avoid the gap by never letting yourself hand the agent the first version. The work is turning the first version into the second version before you hand anything over.</p>
+
+  <p>That's what <code>/grill-me</code> does. It gives you a structured way to interrogate your own request until you've made it well-scoped.</p>
+
+  <h2>2. The skill, in skeleton</h2>
+
+  <div class="skeleton">
+    <div><span class="label"># ~/.claude/skills/grill-me/SKILL.md</span></div>
+    <br>
+    <div><span class="label">---</div>
+    <div>name: grill-me</div>
+    <div>description: Interview the user adversarially about a plan or design until the design is well-scoped enough to hand to an agent.</div>
+    <div>disable-model-invocation: true</div>
+    <div><span class="label">---</div>
+    <br>
+    <div><span class="label"># Grill Me</span></div>
+    <br>
+    <div>You are an adversarial interviewer. The user has a request &mdash; a feature,</div>
+    <div>a refactor, a bug. Your job: ask hard questions until the request is</div>
+    <div>well-scoped (specific, bounded, verifiable).</div>
+    <br>
+    <div><span class="label">Rules:</span></div>
+    <div>1. One question at a time. Never batch.</div>
+    <div>2. Push back on vagueness. If the answer is "TBD", ask what would</div>
+    <div>&nbsp;&nbsp;&nbsp;change the answer.</div>
+    <div>3. After 5 questions, write the queue item yourself and ask the</div>
+    <div>&nbsp;&nbsp;&nbsp;user to confirm or correct.</div>
+    <div>4. The queue item must end with: &lt;done means&gt; + &lt;not done means&gt;.</div>
+  </div>
+
+  <p>Read it again. Notice: <code>disable-model-invocation: true</code>. This is a procedure (lesson 0002). The model only runs it when you type <code>/grill-me</code>. The skill does not exist to be triggered by the model on its own &mdash; it exists to be triggered by you when you have a request you don't yet know how to scope.</p>
+
+  <h2>3. The four kinds of questions</h2>
+
+  <p>The skill works because the questions are constrained. Without a constraint, "adversarial" becomes "rude" and the user disengages. The four kinds of questions are:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Question kind</th>
+        <th>What it forces</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Concrete</strong></td>
+        <td>Replace abstraction with specifics</td>
+        <td>"You said 'fast' &mdash; in milliseconds, for which screen, in which percentile?"</td>
+      </tr>
+      <tr>
+        <td><strong>Boundary</strong></td>
+        <td>Find what's in scope and what isn't</td>
+        <td>"Does this touch the mobile app, or just web?"</td>
+      </tr>
+      <tr>
+        <td><strong>Inverse</strong></td>
+        <td>Define done by defining not-done</td>
+        <td>"If the user sees X, is the feature shipped or not?"</td>
+      </tr>
+      <tr>
+        <td><strong>Risk</strong></td>
+        <td>Find the failure mode that would force a redo</td>
+        <td>"What breaks if we ship this and it's wrong?"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>One question at a time (rule 1) is the constraint that keeps this from feeling like an interrogation. The user answers one thing, the agent pushes on the answer, repeat. Five questions in, most requests have crystallized.</p>
+
+  <h2>4. The "done means / not done means" ending</h2>
+
+  <p>Rule 4 is the one that converts a conversation into a queue item. The agent is required to end with two sentences:</p>
+
+  <ul>
+    <li><strong>Done means:</strong> ...</li>
+    <li><strong>Not done means:</strong> ...</li>
+  </ul>
+
+  <p>This is the test for "verifiable" from lesson 0003. If you can write the two sentences clearly, the agent can test its way to done. If you can't, the task isn't ready to hand off yet.</p>
+
+  <p>Example, for the SSO request:</p>
+
+  <pre><code>Done means: A user with a valid Okta account can click "Sign in
+with Okta" on /login, complete SAML auth, and reach /dashboard
+with a session cookie set. Authenticated via the new
+oktaAuthProvider.ts module. Old email/password login still works.
+
+Not done means: User can complete the flow but no session cookie
+is set. Old login is broken. Tests don't pass. PR touches more
+than 3 files outside of auth/ and the login page.</code></pre>
+
+  <p>That last line ("PR touches more than 3 files") is a boundary clause &mdash; a hard limit on the scope. If the agent's PR would have to violate that boundary, the task is too big and should be split. The "grill me" conversation should have caught that earlier, but the done/not-done sentence catches it late.</p>
+
+  <h2>5. Why it's a procedure, not an ability</h2>
+
+  <p>Lesson 0002's rule: decision-shaped skills that change the workflow should be procedures. <code>/grill-me</code> is the purest case.</p>
+
+  <ul>
+    <li>The <em>act</em> of running the skill is a decision you make consciously.</li>
+    <li>The <em>output</em> is a queue item that the rest of the workflow depends on.</li>
+    <li>The <em>cost</em> of letting the model invoke it at will is high &mdash; it would interrupt every conversation to ask you clarifying questions.</li>
+  </ul>
+
+  <p>If you make <code>/grill-me</code> an ability, you'll see the model invoke it mid-task when it's confused, and the result is the agent turning your one-line prompt into a 12-question survey. That's the wrong direction. The right direction is: you see a vague request, you invoke <code>/grill-me</code> explicitly, you answer 5 questions, you get a queue item, you put it on the queue (lesson 0003), you hand it to an AFK agent.</p>
+
+  <h2>6. The contrast: features vs bugs</h2>
+
+  <p>The skill is most useful for <strong>features</strong>, where the user typically has a vague wish. For <strong>bugs</strong>, the situation is often reversed: the user has a specific symptom ("login is broken") and the grill-me process is shorter. For <strong>refactors</strong>, the questions are mostly boundary questions: "what's in scope, what's out, what's the test that proves the refactor preserves behaviour?"</p>
+
+  <p>Matt's <code>/create-issues</code> skill (mentioned in the same repo, also a procedure) is the step after: take the queue item the grill-me produced and turn it into a GitHub issue. The two skills chain. Grill me first, then create-issues, then the AFK agent picks it up.</p>
+
+  <h2>7. Exercise: grill yourself, once</h2>
+
+  <div class="exercise">
+    <h4>Pick one vague request, run the four question kinds on it</h4>
+    <ol>
+      <li class="step">Pick one item from your current backlog that you've been avoiding because it's vague. Write the one-line version here, before you read further. (If nothing is vague, pick any "improve X" task and treat it as the prompt.)</li>
+      <li class="step">Run the four question kinds in order. Concrete &rarr; Boundary &rarr; Inverse &rarr; Risk. One question at a time. Don't batch.</li>
+      <li class="step">After the four questions, write the done-means / not-done-means pair. If you can't, that's a signal the request is still vague &mdash; ask one more risk question and try again.</li>
+      <li class="step">Open Claude Code, type <code>/grill-me</code>, paste your one-line request, and let the agent drive the same process. Compare its questions to yours. Notice what it caught that you missed.</li>
+      <li class="step">Take the resulting queue item and add it to your real issue tracker. (If you don't have a tracker, the next lesson covers the lighter-weight version of this workflow.)</li>
+    </ol>
+  </div>
+
+  <div class="callout warning">
+    <strong>The surprising thing.</strong> Most people who try this discover that the first 2&ndash;3 questions they ask themselves are surface questions ("what does the user see?"). The useful questions are risk questions ("what breaks if we ship this wrong?"). Risk questions are where the real scope hides. If you only do one kind of question, do risk.
+  </div>
+
+  <h2>8. The whole sequence, in one diagram</h2>
+
+  <div class="skeleton">
+    <div><span class="label">1.</span> Vague request lands &nbsp;&nbsp; &nbsp; <span class="label">&rarr;</span> &nbsp; "We need a notification system"</div>
+    <br>
+    <div><span class="label">2.</span> <code>/grill-me</code> &nbsp;&nbsp; <span class="label">&rarr;</span> &nbsp; 5 questions answered</div>
+    <br>
+    <div><span class="label">3.</span> Queue item &nbsp;&nbsp; <span class="label">&rarr;</span> &nbsp; specific, bounded, verifiable</div>
+    <br>
+    <div><span class="label">4.</span> <code>/create-issues</code> &nbsp;&nbsp; <span class="label">&rarr;</span> &nbsp; GitHub issue filed</div>
+    <br>
+    <div><span class="label">5.</span> Issue goes to the queue (lesson 0003)</div>
+    <br>
+    <div><span class="label">6.</span> AFK agent picks it up, opens PR</div>
+    <br>
+    <div><span class="label">7.</span> You review the PR, merge, item comes off the queue</div>
+  </div>
+
+  <p>Steps 1&ndash;3 are this lesson. Steps 4&ndash;5 are the next two lessons. Steps 6&ndash;7 are AFK agents, which is lesson 0008. You're roughly halfway through the workflow. The earlier lessons were about the harness and the codebase; the next three are about the agent loop itself.</p>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>What frontmatter flag should <code>/grill-me</code> have, and why?</li>
+    <li>Name the four kinds of questions the skill should ask.</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li><code>disable-model-invocation: true</code>. It's a procedure &mdash; you invoke it when you have a vague request. Letting the model invoke it on its own would cause it to interrupt every task with clarifying questions. The cost of an ability that "interviews you" is unbounded context and broken flow.</li>
+      <li>Concrete (force specifics), Boundary (find scope), Inverse (define done by defining not-done), Risk (find the failure mode).</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>The skill itself is Matt Pocock's <a href="https://github.com/mattpocock/skills/tree/main/skills/productivity/grill-me"><code>grill-me</code></a> on GitHub. The four-question structure and the "done means / not done means" rule are the canonical pattern &mdash; they show up in the same form in the related <a href="https://github.com/mattpocock/skills/tree/main/skills/productivity">productivity skills</a> in his repo. Read the actual <code>SKILL.md</code> for the full wording; the version in §2 above is the skeleton, not the full skill.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Run the exercise above on one vague request. Put the resulting queue item in your tracker.</li>
+    <li>The next lesson is <strong>writing a PRD</strong> &mdash; the procedure skill that turns a grill-me queue item into a design document the agent can read to understand context the code doesn't show. PRDs are how the AFK agent gets the "why" the codebase can't tell it.</li>
+      <li>Ask your teacher anything that wasn't clear. <code>/grill-me</code> is the most-used procedure in Matt's setup, and the one with the widest quality range between a good and bad version &mdash; small wording changes matter a lot.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0004-dx-and-ax.html">&larr; Lesson 0004: DX and AX</a>
+    <a href="0006-write-a-prd.html">Lesson 0006: Write a PRD &rarr;</a>
+  </div>
+</body>
+</html>

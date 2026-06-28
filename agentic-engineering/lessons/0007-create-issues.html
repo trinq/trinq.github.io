@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0007 — Create Issues, Atomic Work Units</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .exercise .step {
+      counter-increment: step;
+      margin-bottom: 0.75rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .exercise .step::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .exercise ol { counter-reset: step; }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol { margin-top: 0.75rem; }
+    .skeleton {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+    }
+    .skeleton .label {
+      font-weight: 700;
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare > div {
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .compare .bad {
+      background: #fdecea;
+      border-left: 3px solid var(--accent);
+    }
+    .compare .good {
+      background: #e8f5e9;
+      border-left: 3px solid #4caf50;
+    }
+    .compare .label {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <h1>Create Issues, Atomic Work Units</h1>
+  <p class="subtitle">Lesson 0007 · ~10 min · The procedure that turns a PRD into one-merge-per-PR work</p>
+
+  <div class="meta">
+    <span class="badge">Procedural</span>
+    <span>Source: derived from <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> at 11:40, 24:10; <code>/create-issues</code> from his skills repo</span>
+  </div>
+
+  <p>You have a PRD (lesson 0006) that captures the why, the non-goals, the decisions, the plan. The PRD is 400 lines. The plan section lists six files that need to change. Hand that single PRD to an AFK agent and you get a single 800-line PR that touches all six files at once.</p>
+
+  <p>That's the worst case for review. Six files of changes, no clean point to revert, no way to bisect if a regression lands three weeks later, no way to merge the safe half while the risky half gets more review. Lesson 0003 already said: well-scoped = one PR, mergeable on its own. The PRD is not yet one PR. It's a feature.</p>
+
+  <p>This lesson teaches you to decompose the PRD into atomic issues &mdash; each one sized to a single PR that can be reviewed, merged, and reverted independently. The skill that does this is <code>/create-issues</code>, and it's the last procedure in the queue-prep chain before the AFK agent takes over.</p>
+
+  <h2>1. The decomposition principle</h2>
+
+  <p>The rule, stated once:</p>
+
+  <p style="border-left: 3px solid var(--accent); padding-left: 1rem; margin: 1.5rem 0; font-style: italic;">Each issue should be mergeable on its own. If the agent's PR for issue N is rejected, every other issue (N+1, N+2, ...) should still make sense as its own PR.</p>
+
+  <p>This is the same rule from lesson 0003 about queue items &mdash; now applied at a finer grain, inside a single PRD. The PRD is a feature. The issues are the steps to build the feature. Each step is independently mergeable.</p>
+
+  <p>The boundary you should feel while decomposing is the order of dependencies. If issue B requires the file changes from issue A, you can still merge them separately &mdash; issue B's branch just sits behind A's branch until A merges. That is fine and normal. What you cannot do is have issue C that requires both A and B to be merged <em>at the same time</em>. That is one issue disguised as two.</p>
+
+  <h2>2. The skill, in skeleton</h2>
+
+  <div class="skeleton">
+    <div><span class="label"># ~/.claude/skills/create-issues/SKILL.md</span></div>
+    <br>
+    <div><span class="label">---</div>
+    <div>name: create-issues</div>
+    <div>description: Take a PRD and decompose it into atomic GitHub issues, each sized to one mergeable PR.</div>
+    <div>disable-model-invocation: true</div>
+    <div><span class="label">---</div>
+    <br>
+    <div><span class="label"># Create Issues</span></div>
+    <br>
+    <div>Given a PRD path, produce N issues where:</div>
+    <br>
+    <div>1. <span class="label">N &gt;= 1</span>. Single-issue PRDs are allowed but rare.</div>
+    <div>2. Each issue references the PRD by path.</div>
+    <div>3. Each issue ends with: <span class="label">Done means</span> / <span class="label">Not done means</span>.</div>
+    <div>4. <span class="label">Dependency edges</span> between issues are explicit</div>
+    <div>&nbsp;&nbsp;&nbsp;(issue N+1 may depend on N).</div>
+    <div>5. <span class="label">No two issues depend on each other circularly</span>.</div>
+    <div>6. Issues are filed with: <span class="label">gh issue create</span> using</div>
+    <div>&nbsp;&nbsp;&nbsp;the org's template.</div>
+  </div>
+
+  <p>Same frontmatter as the other two procedures &mdash; <code>disable-model-invocation: true</code>. You invoke it when a PRD is committed and ready to be broken into work units. You do not let the model invoke it on its own.</p>
+
+  <h2>3. The order matters, but only weakly</h2>
+
+  <p>Decomposition order is one of the few decisions where you have real choice. The defaults:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Decomposition axis</th>
+        <th>Best for</th>
+        <th>Risk</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>By layer (bottom-up)</strong></td>
+        <td>New features with a clear data flow</td>
+        <td>Early PRs have no UI to click</td>
+      </tr>
+      <tr>
+        <td><strong>By user-visible slice (vertical)</strong></td>
+        <td>PRDs with multiple user flows</td>
+        <td>Later slices rework earlier ones</td>
+      </tr>
+      <tr>
+        <td><strong>By risk (risky first)</strong></td>
+        <td>PRDs with an unknown-decision inside</td>
+        <td>Risky issue may block simpler ones</td>
+      </tr>
+      <tr>
+        <td><strong>By parallel (independent first)</strong></td>
+        <td>PRDs that need to be split across multiple agents</td>
+        <td>Risk of duplication if boundaries slip</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Matt's default, in the talk, is <strong>vertical</strong>: each issue ships a thin slice of the user flow. The reasoning: every merged PR gives you a checkpoint where the system is in a working state, even if the feature is partial. That's better than shipping a complete data layer and no UI, then a complete UI and no data, then trying to merge them and discovering the contract was wrong.</p>
+
+  <p>For the SSO example, the vertical split might be:</p>
+
+  <pre><code>#1: Add Okta SAML config + env vars (config only, no UI)
+     → verifiable by: env loads, config validates
+#2: Add /api/auth/okta/callback route + handler
+     → verifiable by: hitting the route returns 302 to Okta
+#3: Add "Sign in with Okta" button to /login
+     → verifiable by: clicking it starts the flow
+#4: Add session-cookie wiring + redirect to /dashboard
+     → verifiable by: completing flow lands user on dashboard
+#5: Add tests for the happy path + a sad-path case
+     → verifiable by: new tests pass, no regressions</code></pre>
+
+  <p>Each is one PR. Each is mergeable on its own. The dependency graph is a chain (#5 needs #1&ndash;#4), but no two issues depend on each other circularly. The system is in a working state at every merge &mdash; except #2 and #3 might temporarily expose a button that doesn't fully work, which is acceptable if you wrap them in a feature flag.</p>
+
+  <h2>4. The "feature flag" escape hatch</h2>
+
+  <p>When a vertical slice is incomplete, you have two choices: merge anyway and accept that the feature is half-built in main, or hide it behind a feature flag. The flag is the safer default for any user-visible work.</p>
+
+  <pre><code>// auth.ts
+if (featureFlags.oktaSso &amp;&amp; user.clickedOktaButton) {
+  return oktaAuthenticate();
+}
+return passwordAuthenticate();</code></pre>
+
+  <p>This is the only acceptable way to merge PRs that depend on each other in the user-visible sense but are independent in the codebase sense. The flag is the temporary contract. It comes out in the last issue, after the full flow works end-to-end.</p>
+
+  <p>Lesson 0004's deep-module rule still applies: the flag should live in one place (often <code>featureFlags.ts</code>), not be sprinkled across files. The agent will probably reach for the sprinkled version if you don't say otherwise &mdash; this is exactly the kind of decision the PRD's "Decisions" section should have captured.</p>
+
+  <h2>5. When to use a single issue instead</h2>
+
+  <p>Not every PRD needs to be decomposed. Use one issue when:</p>
+
+  <ul>
+    <li>The PRD is already small (under ~150 lines).</li>
+    <li>The plan touches &lt;3 files.</li>
+    <li>There is no clean vertical cut &mdash; the change is genuinely one thing.</li>
+    <li>Splitting would force a feature flag for a 50-line change that doesn't justify the complexity.</li>
+  </ul>
+
+  <p>In that case, <code>/create-issues</code> still runs &mdash; it just produces one issue, and the issue body is the PRD's plan section verbatim. The skill is the boundary between "PRD-level thinking" and "issue-level execution"; running it confirms you considered the decomposition and decided against it.</p>
+
+  <h2>6. The issue body format</h2>
+
+  <p>Matt's repo includes an issue template. The skeleton that works:</p>
+
+  <pre><code>## Context
+[1–2 paragraphs from the PRD's Context section]
+
+## Plan
+[numbered list from the PRD's Plan section]
+
+## Done means
+[verbatim from the PRD]
+
+## Not done means
+[verbatim from the PRD]
+
+## Depends on
+[#issue-number, if any]
+
+## Reference
+- PRD: docs/prd/okta-sso.md
+- Related decisions: see PRD &sect;Decisions
+- Touch-this-file-when: see PRD &sect;Non-goals</code></pre>
+
+  <p>The Done/Not done lines are the load-bearing ones. They get copy-pasted into the PR description by the agent later (lesson 0008). If you change the wording between the PRD and the issue, you have introduced a place for the agent to get confused. Keep them identical.</p>
+
+  <h2>7. Filing: gh CLI, not the web UI</h2>
+
+  <p>Use <code>gh issue create</code> from the terminal, not the GitHub web form. Reasons:</p>
+
+  <ul>
+    <li>The body is local-first &mdash; you can edit it in your editor with full tooling.</li>
+    <li>You can dry-run the body, eyeball it, then file.</li>
+    <li>The PR description later (lesson 0008) is generated by the agent reading the issue body &mdash; so the body is the source of truth, not the GitHub-rendered version.</li>
+    <li>Scriptable. If you have 5 issues to file from one PRD, you script them all.</li>
+  </ul>
+
+  <p>The skill's <code>gh issue create</code> line in §2 is the directive. Don't web-UI it.</p>
+
+  <h2>8. The queue, finally</h2>
+
+  <p>Once issues are filed, they go on the queue from lesson 0003. The PR references the issue number (with "Closes #N"), the issue body becomes the PR description, and the queue item comes off when the PR merges.</p>
+
+  <pre><code>PRD (1 file, decision-shaped)
+  &darr;
+create-issues
+  &darr;
+Issues (N files, atomic, mergeable)
+  &darr;
+Issue tracker (the queue from lesson 0003)
+  &darr;
+AFK agent picks one, opens PR
+  &darr;
+PR description = issue body
+  &darr;
+Review, merge, item comes off the queue</code></pre>
+
+  <p>You're at the bottom of the queue-prep chain. Lessons 0005&ndash;0007 are the three procedures that turn "a vague request" into "the next item the AFK agent should work on." Tomorrow's lesson (0008) is the AFK agent itself &mdash; what it reads, what it does, what it produces.</p>
+
+  <h2>9. Exercise: decompose your PRD from lesson 0006</h2>
+
+  <div class="exercise">
+    <h4>Take the PRD from lesson 0006 and decompose it</h4>
+    <ol>
+      <li class="step">Open the PRD you committed in lesson 0006's exercise. Re-read the Plan section.</li>
+      <li class="step">Decide on an axis (vertical, by-layer, by-risk, by-parallel). State which one and why in one sentence at the top of your decomposition.</li>
+      <li class="step">For each issue, write: title, 1-paragraph context, plan, done-means, not-done-means, depends-on. Aim for 3&ndash;5 issues. Fewer is fine. More than 7 means your PRD was actually two features.</li>
+      <li class="step">Run the "mergeable on its own" test on each issue: if this PR is rejected, do the remaining issues still make sense? If not, you've drawn a dependency wrong.</li>
+      <li class="step">File them with <code>gh issue create</code> from your terminal. Use the body format from &sect;6. Reference the PRD path in each one.</li>
+      <li class="step">Add a label like <code>prd:okta-sso</code> to each so they're findable as a group.</li>
+    </ol>
+  </div>
+
+  <div class="callout">
+    <strong>The label trick.</strong> Once you've filed 4&ndash;5 issues from one PRD, add a shared label (e.g., <code>prd:okta-sso</code>). Now the AFK agent can be pointed at "all issues with this label" and work them in order. The label is how you turn a PRD into a queue of queue items &mdash; a queue of queues.
+  </div>
+
+  <div class="callout warning">
+    <strong>The signal that you decomposed wrong.</strong> If you find yourself writing "and then update the tests" in more than one issue's plan, the test work is its own issue. If you find yourself writing "and add a feature flag for X" in more than one issue, the flag is its own issue. The decomposition test is: can the agent implement this issue without reading the other issues' plans? If no, the boundaries are wrong.
+  </div>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>State the "mergeable on its own" rule in one sentence.</li>
+    <li>What frontmatter flag should <code>/create-issues</code> have, and why?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li>Each issue should be mergeable on its own. If the agent's PR for issue N is rejected, every other issue (N+1, N+2, ...) should still make sense as its own PR.</li>
+      <li><code>disable-model-invocation: true</code>. It's a procedure &mdash; you invoke it deliberately when a PRD is ready to be decomposed. Letting the model invoke it on its own would cause it to decompose PRDs unsolicited, fragmenting work the user hasn't approved.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>The skill itself is Matt Pocock's <a href="https://github.com/mattpocock/skills/tree/main/skills/productivity/create-issues"><code>create-issues</code></a> on GitHub. The "atomic work units" framing combines that skill with the queue-not-loop argument at <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">24:10</a> in the talk, where Matt explains why well-scoped queue items (not well-scoped loops) are what AFK agents actually consume.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Run the exercise above. File real issues from your PRD with <code>gh</code>. Add a shared label.</li>
+    <li>The next lesson is <strong>AFK agents</strong> &mdash; the agent loop itself. What the agent reads (issue + PRD), what it produces (PR + tests), and what you review when you come back. The agent is the consumer of every artifact the previous lessons produced.</li>
+      <li>Ask your teacher anything that wasn't clear. The decomposition step is where most PRDs fail in practice &mdash; people skip it because "the PRD is small enough," then ship a 600-line PR. The skill exists for a reason.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0006-write-a-prd.html">&larr; Lesson 0006: Write a PRD</a>
+    <a href="0008-afk-agents.html">Lesson 0008: AFK Agents &rarr;</a>
+  </div>
+</body>
+</html>

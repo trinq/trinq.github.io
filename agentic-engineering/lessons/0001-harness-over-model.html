@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001 — The Harness Is the Whole Game</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .exercise .step {
+      counter-increment: step;
+      margin-bottom: 0.75rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .exercise .step::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .exercise ol { counter-reset: step; }
+  </style>
+</head>
+<body>
+  <h1>The Harness Is the Whole Game</h1>
+  <p class="subtitle">Lesson 0001 · ~10 min · For senior devs on Claude Code</p>
+
+  <div class="meta">
+    <span class="badge">Strategic</span>
+    <span>Source: <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> at 0:18, 17:30, 42:50</span>
+  </div>
+
+  <p>Most of the leverage in AI-assisted engineering is not in the model. It's in everything around the model — your prompts, your skills, your <code>CLAUDE.md</code>, your MCP servers, your codebase. Matt Pocock calls this bundle of things the <strong>harness</strong>, and his whole claim is that the harness is about 50% of the work, fully under your control, and most people ignore it.</p>
+
+  <p>This lesson makes the claim concrete, gives you one piece of vocabulary to lock in (<a href="../reference/0001-vocabulary.html#harness">harness</a>), and ends with a 5-minute exercise you can run today on your own machine.</p>
+
+  <h2>1. The model is the engine. The harness is the chassis.</h2>
+
+  <blockquote>
+    Everyone's obsessed with the model and I think they should be more interested in the harness, what you can do to get the most out of the harness, giving it the right prompts, giving it the right skills to work with and improving the environment in which the model runs.
+    <span class="src">— Matt Pocock, <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Agentic Engineering Workflow</a>, 0:18</span>
+  </blockquote>
+
+  <p>The metaphor: the engine matters, but in Formula 1 the chassis, the aerodynamics, the tyres win races. You can swap the engine and the car still goes. You can't say the same about the chassis.</p>
+
+  <p>What this means concretely:</p>
+  <ul>
+    <li><strong>Prompts</strong> — what you actually say to the model. Quality, specificity, examples.</li>
+    <li><strong>Skills</strong> — reusable procedures (like <code>/grill-me</code>) and abilities (like "React coding standards") that shape behaviour.</li>
+    <li><strong>The codebase</strong> — module boundaries, tests, naming, types. The agent's working environment.</li>
+    <li><strong>Configuration</strong> — <code>CLAUDE.md</code>, <code>AGENTS.md</code>, MCP servers, hooks, custom commands.</li>
+  </ul>
+
+  <p>If you change only the model, you get a small bump. If you change the harness, the <em>same</em> model starts doing dramatically better work. Or — Matt's favourite formulation — you can drop down to a cheaper model and it still works.</p>
+
+  <h2>2. The strategic-programming lens</h2>
+
+  <p>Matt borrows John Ousterhout's split between <strong>tactical</strong> and <strong>strategic</strong> programming.</p>
+
+  <ul>
+    <li><strong>Tactical</strong> is the on-the-ground day-to-day: writing code, debugging, making commits. AI has eaten this. Don't compete on it; delegate it.</li>
+    <li><strong>Strategic</strong> is winning the war: how does the codebase need to look? What module boundaries help? What's the right interface? This is your job now.</li>
+  </ul>
+
+  <blockquote>
+    Your skills are the ceiling on what AI can do. And if your skills are low, then AI is not going to be able to go past that.
+    <span class="src">— Matt Pocock, 4:08</span>
+  </blockquote>
+
+  <p>This reframes the question. Not "what's the best model?" but "what's the cheapest model that can do this work in my codebase?" The lower the answer, the better your harness.</p>
+
+  <h2>3. The bitter lesson trap to avoid</h2>
+
+  <p>There's a famous idea in ML called <a href="https://www.cs.utexas.edu/~sutton/writings/the-bitter-lesson.html">the bitter lesson</a> (Rich Sutton, 2019): general methods that leverage computation always beat clever hand-engineering. So wait for the next model, don't bother optimising.</p>
+
+  <p>Matt's pushback: yes, on the model side. But <em>also</em> build the harness. When the next model arrives, your harness multiplies it.</p>
+
+  <blockquote>
+    If I try to overoptimize around a model, if I get too focused on the model, I will lose focus on the fundamentals. People are focused on the wrong thing. They're looking at the big shiny new thing when in fact just focus on the stuff that's been working for 30, 40 years.
+    <span class="src">— Matt Pocock, 19:30</span>
+  </blockquote>
+
+  <p>His pragmatic move: he uses Opus 4.8 with medium effort. That's it. He doesn't switch models every release. He waits a month. The thing he does every day is improve the harness.</p>
+
+  <h2>4. The diagnosis: context bloat</h2>
+
+  <p>If the harness is so important, what does bad harness look like in practice? Matt's diagnosis: <strong>context bloat</strong>.</p>
+
+  <p>Most people, after a few months of using an agent, have accumulated:</p>
+  <ul>
+    <li>A long <code>CLAUDE.md</code> with rules that may or may not still be true</li>
+    <li>10–20 skills, half of which they no longer remember installing</li>
+    <li>5+ MCP servers, several of which are slow or noisy</li>
+    <li>Custom agents, hooks, and instructions everywhere</li>
+  </ul>
+
+  <p>All of that gets loaded into the model's context on every turn. The model now has to find the signal in the noise. The thing you actually care about — your repo's real conventions, the test layout, the architecture — gets drowned out by the stuff you put there three months ago and never reviewed.</p>
+
+  <h2>5. The one move that fixes most of it</h2>
+
+  <p>Matt's closing advice in the talk, almost word for word:</p>
+
+  <blockquote>
+    First thing I would do is I would delete every single skill, every single plugin, every single MCP server. I would go back. I'd delete your <code>CLAUDE.md</code>, delete your <code>AGENTS.md</code>, go back to absolutely nothing, and then observe the agent. See what it does. In my experience, everyone bloats up their context window with too much stuff, with too many instructions. Go back to a blank slate and see what the agent does. Once you're seeing what the agent does in that basic mode, then layer things on top of it and make sure those things are procedures, procedure skills, not ability skills. Layer things on that you yourself decide.
+    <span class="src">— Matt Pocock, 42:50</span>
+  </blockquote>
+
+  <p>The discipline: <strong>observe first, add only what you personally decided you needed.</strong></p>
+
+  <h2>Exercise: 5 minutes, do it now</h2>
+
+  <div class="exercise">
+    <h4>Audit your harness</h4>
+    <ol>
+      <li class="step">Open your terminal and run <code>ls -la ~/.claude/</code> (or wherever your Claude Code config lives). Note how many files are there.</li>
+      <li class="step">Run <code>find ~/.claude/skills ~/.claude/agents ~/.claude/commands -type f 2&gt;/dev/null</code>. Count the skills, agents, and slash commands. Write the number down.</li>
+      <li class="step">Run <code>cat ~/.claude/CLAUDE.md 2&gt;/dev/null | wc -l</code>. That's the line count of your agent's standing instructions.</li>
+      <li class="step">For each skill/agent/command, ask: <em>have I used this in the last 30 days?</em> If not, mark it for deletion.</li>
+      <li class="step">For your <code>CLAUDE.md</code>, read each line and ask: <em>does this still match how I want to work?</em> Mark stale lines.</li>
+      <li class="step"><strong>Do not delete anything yet.</strong> Just produce the list. We'll act on it in lesson 0002.</li>
+    </ol>
+  </div>
+
+  <div class="callout">
+    <strong>What you're looking for.</strong> A typical senior dev on Claude Code has 30–100 installed skills and a <code>CLAUDE.md</code> in the hundreds of lines. The exercise is not to make you feel bad — it's to give you a baseline so you can see what the "blank slate" comparison feels like.
+  </div>
+
+  <h2>Quiz</h2>
+
+  <p>Don't over-think these. First instinct.</p>
+
+  <ol>
+    <li>What does Matt mean by "harness"?</li>
+    <li>True or false: switching to the newest model is the highest-leverage move you can make this month.</li>
+    <li>When you add a new skill, what's the difference between a procedure and an ability?</li>
+    <li>What is the bitter lesson trap?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li>Everything outside the model that shapes its behaviour — prompts, skills, the codebase, the tooling, the rules of engagement.</li>
+      <li>False. Most leverage is in the harness, and a well-built harness lets a cheaper model do the same work.</li>
+      <li>A procedure is one you invoke by typing <code>/name</code>; an ability is one the model can invoke itself (and whose description is always in the context window).</li>
+      <li>Believing that the next model will solve your problems so you don't have to invest in the harness. Don't fall for it.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>If you only have 5 more minutes today, listen to <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">the talk at 0:18–1:00 and 42:50–44:00</a>. The first minute sets up the harness claim; the last minute is the practical advice to delete everything.</p>
+
+  <p>If you have 20 minutes, read <a href="https://www.aihero.dev/5-agent-skills-i-use-every-day">5 Agent Skills I Use Every Day</a>. It shows the same harness-first thinking applied to specific tools.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Run the exercise above. Get your baseline numbers.</li>
+    <li>Bring the numbers to your next session and we'll design the rollback plan together.</li>
+    <li>Ask your teacher (me) anything that wasn't clear. The model is the engine — but I'm here to help you build the harness.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="../MISSION.html">← Mission</a>
+    <a href="../reference/0001-vocabulary.html">Reference: vocabulary →</a>
+  </div>
+</body>
+</html>

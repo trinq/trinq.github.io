@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference 0001 — Agentic Engineering Vocabulary</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .term {
+      margin: 1.5rem 0 0;
+      padding: 0;
+    }
+    .term .name {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .term .pronunciation {
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      font-style: italic;
+      margin-left: 0.5rem;
+    }
+    .term .definition {
+      margin-top: 0.4rem;
+    }
+    .term .quote {
+      border-left: 3px solid var(--rule);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 0.75rem 0 0;
+      color: var(--ink-soft);
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+    .term .quote::before {
+      content: "“";
+    }
+    .term .quote::after {
+      content: "”";
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+    }
+    pre, code { font-family: "SF Mono", Menlo, monospace; }
+    a { color: var(--accent); }
+    hr { border: 0; border-top: 1px solid var(--rule); margin: 2rem 0; }
+    .related {
+      margin-top: 2rem;
+      padding: 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .related h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .related ul { padding-left: 1.25rem; }
+    .related li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Agentic Engineering Vocabulary</h1>
+  <p class="subtitle">Reference 0001 · The 10 words Matt uses that you should too</p>
+
+  <div class="meta">
+    <span class="badge">Reference</span>
+    <span>Source: <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> (18 Jun 2026)</span>
+  </div>
+
+  <p>This is the spine of the course. Every lesson links back to one of these. Print it. Tape it to your monitor. Use these words in standups, PR descriptions, and <code>CLAUDE.md</code> comments — they are the shared vocabulary that makes the rest of the work legible.</p>
+
+  <h2>Core distinction</h2>
+
+  <div class="term">
+    <p><span class="name">Harness</span><span class="pronunciation">/ˈhɑː.nɪs/</span></p>
+    <p class="definition">Everything outside the model that shapes its behaviour: prompts, skills, the codebase, the tooling, the rules of engagement. The opposite of the model is the harness, and Matt's whole claim is that the harness is 50% of the work, fully under your control, and most people ignore it.</p>
+    <p class="quote">Everyone's obsessed with the model and I think they should be more interested in the harness, what you can do to get the most out of the harness, giving it the right prompts, giving it the right skills to work with and improving the environment in which the model runs.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Model</span></p>
+    <p class="definition">The thing you can't easily change this month — Opus 4.8, Fable, GPT-6, whatever. Useful but not the lever. "The engine of the Formula 1 car."</p>
+  </div>
+
+  <hr>
+
+  <h2>The two kinds of work</h2>
+
+  <div class="term">
+    <p><span class="name">Tactical programming</span></p>
+    <p class="definition">Day-to-day coding. Syntax, debugging, commits, scaffolding a feature. This is what AI has eaten. Don't compete on this; delegate it.</p>
+    <p class="quote">AI has basically eaten tactical programming. It's gone, right? It's all gone.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Strategic programming</span></p>
+    <p class="definition">Winning the war, not the battle. How does the codebase need to look? What slows us down? What module boundaries make the agent's job easier? This is your job now.</p>
+    <p class="quote">You need to be great at strategic programming in order to get the most out of this infinite fleet of tactical programmers that you now have access to.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Vibe coder</span></p>
+    <p class="definition">Someone who ships with AI but has weak software fundamentals. They can read code, run a terminal, and prompt. They cannot design a module boundary, write a test that survives a refactor, or scope a task. The whole "build a scheduling app" demo in the talk is Matt pretending to be one to show the teach skill filling in the gap.</p>
+  </div>
+
+  <hr>
+
+  <h2>The two kinds of skills</h2>
+
+  <div class="term">
+    <p><span class="name">Procedure skill</span></p>
+    <p class="definition">A skill <em>you</em> invoke by typing <code>/name</code>. The model only does the work when you trigger it. Matt strongly prefers this. The model's context window does not get polluted with the skill's description unless you call it.</p>
+    <p class="quote">I prefer my skills as procedures. I like to be the one in control.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Ability skill</span></p>
+    <p class="definition">A skill the <em>model</em> can invoke itself when it thinks the situation matches. The skill's description is always loaded into the model's context window so it can decide. Useful for "React coding standards" that the agent should silently follow. Expensive at scale — 100 abilities = 100 leaked descriptions.</p>
+    <p class="quote">Every single ability… you're going to be leaking 100 descriptions into the context window.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">disable-model-invocation</span></p>
+    <p class="definition">The YAML frontmatter flag that turns an ability into a procedure. <code>disable-model-invocation: true</code> in a <code>SKILL.md</code> means only the human can run it. Use this for anything that decides <em>how</em> you work (grill-me, to-prd, triage) — not for "the agent should remember our test style."</p>
+  </div>
+
+  <hr>
+
+  <h2>How you work with the agent</h2>
+
+  <div class="term">
+    <p><span class="name">Human-in-the-loop (HITL)</span></p>
+    <p class="definition">You are sitting with the agent. You answer its questions, grant permissions, steer it. Good for planning, unscoped work, and "I don't know what I want yet."</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">AFK (away from keyboard)</span></p>
+    <p class="definition">You ping an agent with a task and walk away. The agent runs in a sandbox (Docker, Vercel, GitHub Actions). You come back to a pull request. The moment Matt discovered this, his output multiplied.</p>
+    <p class="quote">The moment that I discovered AFK was the moment I really got into AI coding and the moment I was really able to massively increase my output because then instead of me having to sit in the loop, handle all the permissions requests… I've paralyzed myself. Suddenly there are two of me, you know, or three of me, four of me, five of me.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Sandbox</span></p>
+    <p class="definition">An isolated environment the agent runs in. Without one, the agent can wipe your home directory or exfiltrate your env vars. Matt's tool is called <em>Sandcastle</em> — it lets you spin up Docker/Podman/Vercel sandboxes for Claude Code. A GitHub Actions workflow is the lightweight version of the same idea.</p>
+  </div>
+
+  <hr>
+
+  <h2>How you model the work</h2>
+
+  <div class="term">
+    <p><span class="name">Queue</span></p>
+    <p class="definition">A backlog of well-scoped tasks. Items come in (from bug reports, user requests, your own ideas), get triaged, get picked up by an agent or a human, and come off when their PR merges. This is how Matt actually thinks about development. Not an infinite loop — a queue.</p>
+    <p class="quote">That's all development is really. You just have a queue of tasks that you need to get done. Project managers add more stuff to the queue. You complete the tasks in the queue.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Loop</span></p>
+    <p class="definition">The viral "Ralph loop" pattern: a <code>while</code> that re-invokes the agent with the same prompt until done. Useful for the narrow case of "do this one thing, then check, then repeat." Matt's claim: most of what people call a loop is really just an AFK agent on a single task. The loop is an implementation detail, not a paradigm.</p>
+    <p class="quote">This idea that loops are the only way to do it is crazy, you know, like we're essentially talking about the history of this goes back to Jeffrey Huntley… the Ralph loop. And what I realized is I don't really need to run this as a loop, right. The only thing I need out of this is the AFK agent to take on a specific task and do that task.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Tracer bullet</span></p>
+    <p class="definition">A thin vertical slice through the whole stack — UI, API, DB, tests — that proves the path works end-to-end before you build out the breadth. Each TDD iteration should be a tracer bullet, not a horizontal layer.</p>
+  </div>
+
+  <hr>
+
+  <h2>How you design the codebase</h2>
+
+  <div class="term">
+    <p><span class="name">DX (developer experience)</span></p>
+    <p class="definition">How easy the codebase is for a human to work in. Clear module boundaries, good tests, deep modules with thin interfaces, intentional naming. The traditional software-design goal.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">AX (agent experience)</span></p>
+    <p class="definition">How easy the codebase is for the agent to work in. Massive overlap with DX — good module boundaries help both. The differences: agents need clearer seams (to know where to put a change), better docs at the top of files (so they don't have to re-derive intent), and tighter feedback loops (so they can self-correct).</p>
+    <p class="quote">I think of there as being a difference between DX developer experience and AX, right? Agent experience. And so agent experience is the experience that the agent has working in the codebase.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Deep module</span></p>
+    <p class="definition">A module with a small public interface and a lot of complex behaviour behind it. The opposite of a "shallow" module where every internal concept is exposed. John Ousterhout's term, and the thing <code>/improve-codebase-architecture</code> is hunting for.</p>
+  </div>
+
+  <hr>
+
+  <h2>Failure mode to avoid</h2>
+
+  <div class="term">
+    <p><span class="name">The bitter lesson trap</span></p>
+    <p class="definition">Sutton's bitter lesson says compute always wins — so don't bother optimising. Matt's warning: don't fall for it on the harness side. Yes, wait for the next model. <em>Also</em> build the harness so the next model is 10x more effective when it arrives.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">AI slop</span></p>
+    <p class="definition">Code that compiles, passes tests, and ships — but adds nothing, ignores the project's conventions, and slowly corrupts the codebase. The opposite of "codebases agents love." Matt's <code>/improve-codebase-architecture</code> and <code>/tdd</code> are the antidotes.</p>
+  </div>
+
+  <div class="term">
+    <p><span class="name">Context bloat</span></p>
+    <p class="definition">Loading your <code>CLAUDE.md</code>, your skill descriptions, your MCP servers, and your custom instructions into every conversation. The thing Matt says is the #1 mistake. The fix: delete everything, observe the agent, add only what you personally decided.</p>
+  </div>
+
+  <div class="related">
+    <h4>Use this reference</h4>
+    <ul>
+      <li><a href="../lessons/0001-harness-over-model.html">Lesson 0001 — Harness over model</a></li>
+      <li><a href="../lessons/0002-the-vocabulary-you-actually-use.html">Lesson 0002 — The vocabulary you actually use</a> (next)</li>
+      <li><a href="../MISSION.md">Back to mission</a></li>
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003 — Queues, Not Loops</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .exercise .step {
+      counter-increment: step;
+      margin-bottom: 0.75rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .exercise .step::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .exercise ol { counter-reset: step; }
+    .diagram {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+    }
+    .diagram .label {
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .diagram .arrow {
+      color: var(--ink-soft);
+    }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol { margin-top: 0.75rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+  </style>
+</head>
+<body>
+  <h1>Queues, Not Loops</h1>
+  <p class="subtitle">Lesson 0003 · ~10 min · How to model your work so agents can pick it up</p>
+
+  <div class="meta">
+    <span class="badge">Structural</span>
+    <span>Source: <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> at 25:40, 26:00, 27:15, 43:35</span>
+  </div>
+
+  <p>There is a version of AI-assisted development that looks like this: you write a prompt, the agent writes some code, you check it, the agent fixes it, you check it again, and you keep doing this until the work is done. A while-loop with a human inside it.</p>
+
+  <p>Matt calls this the <strong>loop pattern</strong>, after the <a href="https://github.com/ghuntley/ralph-wiggum">Ralph Wiggum</a> coding pattern from 2025 that made it viral. It's seductive because it feels productive — the agent is always working. But it's also the pattern that makes you feel like you're babysitting the agent instead of working with it.</p>
+
+  <p>The alternative Matt describes is the <strong>queue pattern</strong>: your work is a backlog of well-scoped tasks. You add items. Agents pick them up when they're ready. Items come off the queue when their pull request merges. That's it. No loop. No babysitting.</p>
+
+  <p>This lesson teaches you to stop thinking in loops and start thinking in queues — and gives you the structural setup to make that switch without losing control.</p>
+
+  <h2>1. Why the loop pattern feels good and performs badly</h2>
+
+  <p>Here's what a loop session looks like in practice. You start a Claude Code session and ask it to build a feature. It writes code. You review it. It asks a question. You answer. It writes more code. You review again. Three hours later you have a feature and you're exhausted, because you were in the loop the whole time.</p>
+
+  <p>The loop pattern isn't wrong — it's just expensive in a specific way. Every time the agent needs you to answer a question, make a decision, or grant a permission, the loop has to pause. If you're the kind of senior dev who has strong opinions about module boundaries, naming, and test strategy, you're going to be in the loop a lot. The agent is fast; you're the bottleneck.</p>
+
+  <blockquote>
+    The moment that I discovered AFK was the moment I really got into AI coding and the moment I was really able to massively increase my output because then instead of me having to sit in the loop, handle all the permissions requests&hellip; I've paralyzed myself. Suddenly there were two of me, you know, or three of me, four of me, five of me.
+    <span class="src">— Matt Pocock, <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Agentic Engineering Workflow</a>, 43:35</span>
+  </blockquote>
+
+  <p>"Paralyzed myself." That's the loop tax. Every round-trip is a context switch, and if you're the one doing the round-tripping, the agent isn't really working for you — you're working with it, which is a different thing.</p>
+
+  <h2>2. The queue model, illustrated</h2>
+
+  <div class="diagram">
+    <div><span class="label">Your queue (backlog):</span></div>
+    <div><span class="arrow">&nbsp;&nbsp;[ ] Refactor auth module into a service class</span></div>
+    <div><span class="arrow">&nbsp;&nbsp;[ ] Add rate limiting to the /api/search endpoint</span></div>
+    <div><span class="arrow">&nbsp;&nbsp;[ ] Write integration tests for payment flow</span></div>
+    <div><span class="arrow">&nbsp;&nbsp;[x] <del>Update README with new environment variables</del> &nbsp;<em>(PR merged)</em></span></div>
+    <div><span class="arrow">&nbsp;&nbsp;[ ] Write a design doc for the notification system</span></div>
+    <br>
+    <div><span class="label">Agent picks up:</span> one task at a time</div>
+    <div><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
+    <div><span class="label">Agent works AFK:</span> sandbox, git push, PR opens</div>
+    <div><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
+    <div><span class="label">You review PR</span> &mdash; you&rsquo;re back in only when it matters</div>
+    <div><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
+    <div><span class="label">PR merges</span> &mdash; task comes off the queue</div>
+  </div>
+
+  <p>The key property: the agent works on one task at a time, in a sandbox, without you in the loop. You come back for the PR review. The review is a focused, bounded decision — does this PR solve the task? Yes or no. Much less cognitively expensive than sitting in the loop for three hours.</p>
+
+  <blockquote>
+    That's all development is really. You just have a queue of tasks that you need to get done. Project managers add more stuff to the queue. You complete the tasks in the queue.
+    <span class="src">— Matt Pocock, 26:00</span>
+  </blockquote>
+
+  <h2>3. The scoping requirement</h2>
+
+  <p>The queue pattern only works if the tasks are <strong>well-scoped</strong>. A well-scoped task is one the agent can pick up and complete without asking you a question it doesn't already know the answer to.</p>
+
+  <p>The contrast is an ill-scoped task: "improve the auth system." The agent will spend the first 20 minutes asking you what "improve" means, what the current state is, and what "good" looks like. That's you in the loop again, just slower.</p>
+
+  <p>Well-scoped tasks look like this:</p>
+
+  <ul>
+    <li><strong>Specific</strong>: "Refactor <code>auth.js</code> to extract a <code>TokenService</code> class with <code>generate()</code> and <code>validate()</code> methods" — not "improve auth."</li>
+    <li><strong>Bounded</strong>: one module, one feature, one fix — not "rewrite the frontend."</li>
+    <li><strong>Verifiable</strong>: the agent can write a test that proves the work is done — not "make it better."</li>
+  </ul>
+
+  <p>Note what's in that list: not "small." A task can be large as long as it's specific, bounded, and verifiable. The Ralph loop works best for small tasks precisely because the scope is tight. The queue works for tasks of any size as long as the scope is clear.</p>
+
+  <h2>4. The medieval kingdom framing</h2>
+
+  <blockquote>
+    If you deployed a minister into some region, far region and you never heard from him&hellip; ultimately as the king in that medieval kingdom, you want to do the Q approach. You want to have people come to you and say we have a problem — there's an upcoming invasion, or there's a famine in this region — and you have this queue of problems, and you are still in charge.
+    <span class="src">— Matt Pocock, 27:15</span>
+  </blockquote>
+
+  <p>This framing is worth sitting with. In the loop pattern, you're inside the system. You see every decision as it happens. You feel productive but you're actually executing, not directing. In the queue pattern, you're the king. The ministers — your agents — go out, do the work, and come back with a result. You make the decisions that matter: which task to prioritize, what to do about the PR, when to change direction.</p>
+
+  <p>The skill of being a good king is different from the skill of being a good worker. Matt is explicitly teaching the king skill here, not the worker skill.</p>
+
+  <h2>5. What the queue actually is in practice</h2>
+
+  <p>For most solo devs, the queue lives in their issue tracker. GitHub Issues, Linear, Trello — doesn't matter. The structure that matters is:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Queue element</th>
+        <th>What it contains</th>
+        <th>Who adds it</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Task</td>
+        <td>Well-scoped description (specific, bounded, verifiable)</td>
+        <td>You or the agent</td>
+      </tr>
+      <tr>
+        <td>State</td>
+        <td><code>needs-scoping</code> &rarr; <code>ready-for-agent</code> &rarr; <code>in-review</code> &rarr; <code>done</code></td>
+        <td>You</td>
+      </tr>
+      <tr>
+        <td>Context</td>
+        <td>Links to relevant files, prior decisions, the original PRD</td>
+        <td>You (when scoping)</td>
+      </tr>
+      <tr>
+        <td>Exit criteria</td>
+        <td>What "done" looks like — tests pass, PR open, etc.</td>
+        <td>You (implicit in well-scoped tasks)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The state machine above is Matt's <code>/triage</code> skill in practice. Tasks in <code>needs-scoping</code> are not ready for the agent — they're waiting for you to make them well-scoped. Tasks in <code>ready-for-agent</code> are fair game for AFK agents. Tasks in <code>in-review</code> are the moment you come back into the loop.</p>
+
+  <h2>6. Exercise: Audit your current work model</h2>
+
+  <div class="exercise">
+    <h4>Find out if you're looping or queuing</h4>
+    <ol>
+      <li class="step">Open your terminal and run a mental experiment: <em>what is the longest you've ever been in a Claude Code session, actively answering questions and making decisions?</em> Write that time down.</li>
+      <li class="step">For each session in the last week, ask: <em>was I scoping work, reviewing work, or executing work?</em> If you were executing — answering the agent's questions, approving its changes, guiding its decisions — you were in the loop. That's the tax.</li>
+      <li class="step">Pick one task you did this week. Write it as a queue item: specific, bounded, verifiable. Does it fit in one PR? If yes, it's a well-scoped queue item. If no, what's missing from the description?</li>
+      <li class="step">This week, before starting any new work, write the queue item first. Not a prompt — a task description. Then hand it to the agent and step away. See what comes back.</li>
+    </ol>
+  </div>
+
+  <div class="callout success">
+    <strong>The goal.</strong> A healthy solo dev session looks like: (1) you scope a task in 5 minutes, (2) you hand it to an AFK agent and go do something else, (3) you come back to a PR in 20–60 minutes, (4) you review and merge. If your sessions look like this, the queue pattern is working. If you're still in the loop for most of it, something about the scoping broke down.
+  </div>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>What's the main cognitive cost of the loop pattern for a solo senior dev?</li>
+    <li>Name the three properties of a well-scoped queue item.</li>
+    <li>True or false: a queue item can be large (many files, many changes) as long as it's specific, bounded, and verifiable.</li>
+    <li>What's the state a queue item should be in before an AFK agent picks it up?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li>The solo dev is the bottleneck. Every agent question, decision, and permission request requires a context switch from the human. The agent is fast; the human is the tax.</li>
+      <li>Specific (clearly describes the change), Bounded (one module/feature/fix), Verifiable (the agent can test its way to done).</li>
+      <li>True. Size is not the scoping variable. The Ralph loop works for small tasks because they're tightly bounded by accident — a large task is fine on the queue if the scope is explicit.</li>
+      <li><code>ready-for-agent</code> (or equivalent). Tasks in <code>needs-scoping</code> are not ready — the agent will ask questions that bring you back into the loop.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>From the talk, the three-minute segment <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">25:40–28:30</a> covers the queue framing, the medieval kingdom analogy, and the scoping requirement in one tight sequence. Listen to that before anything else for this lesson.</p>
+
+  <p>The Ralph Wiggum loop pattern that Matt references is documented at <a href="https://github.com/ghuntley/ralph-wiggum">ghuntley/ralph-wiggum</a> on GitHub. It's a short read — useful context for understanding why Matt is so emphatic about the queue.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Audit one past session. Write it as a queue item. Notice what's missing when you try to scope it.</li>
+    <li>Next time you start a session, write the queue item first, then hand it to the agent.</li>
+    <li>The next lesson is <strong>DX and AX</strong> — how to design codebases that agents love working in, which is the other half of making the queue work. A perfectly scoped task still fails if the codebase gives the agent a bad experience.</li>
+    <li>Ask your teacher anything that wasn't clear. The queue pattern takes practice — the first few times you try to hand off a task and step away, you'll feel the urge to check in. That's normal.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0002-procedures-you-drive.html">← Lesson 0002: Procedures vs Abilities</a>
+    <a href="../reference/0001-vocabulary.html">Vocabulary reference →</a>
+  </div>
+</body>
+</html>

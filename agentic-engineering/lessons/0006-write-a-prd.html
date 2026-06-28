@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006 — Write a PRD the Agent Can Read</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .exercise .step {
+      counter-increment: step;
+      margin-bottom: 0.75rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .exercise .step::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .exercise ol { counter-reset: step; }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol { margin-top: 0.75rem; }
+    .skeleton {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+    }
+    .skeleton .label {
+      font-weight: 700;
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare > div {
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .compare .bad {
+      background: #fdecea;
+      border-left: 3px solid var(--accent);
+    }
+    .compare .good {
+      background: #e8f5e9;
+      border-left: 3px solid #4caf50;
+    }
+    .compare .label {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <h1>Write a PRD the Agent Can Read</h1>
+  <p class="subtitle">Lesson 0006 · ~10 min · The document that tells the AFK agent what the code can't</p>
+
+  <div class="meta">
+    <span class="badge">Procedural</span>
+    <span>Source: derived from <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> at 11:40; <code>/write-a-prd</code> from his skills repo</span>
+  </div>
+
+  <p>You have a queue item from <code>/grill-me</code>. It's specific, bounded, and verifiable. You could hand it to an AFK agent right now. The agent will read the queue item, look at the codebase, and start working. Two hours later you'll come back to a PR that solves the letter of the request but misses the point entirely.</p>
+
+  <p>The point isn't in the code. The code is what you asked for. The point is <em>why</em> you asked for it, <em>what you decided to not do</em>, and <em>what you assumed would be true</em>. None of that lives in the codebase. If you don't write it down, the agent makes it up.</p>
+
+  <p>This lesson teaches you to write the document the AFK agent reads before it touches the code: a PRD that captures the things the queue item can't.</p>
+
+  <h2>1. What a PRD is, here</h2>
+
+  <p>A PRD (Product Requirements Document) in this workflow is not the 30-page corporate document. It's a short, decision-shaped file &mdash; typically 200&ndash;800 lines &mdash; that lives next to the code it describes. Matt calls it a PRD because that's the word the industry uses; you could call it <em>the spec</em>, <em>the design doc</em>, or <em>the context file</em>. The label matters less than the structure.</p>
+
+  <p>The PRD's job is to be the file the AFK agent reads first. It's how you put the "why" into a form the agent can ingest, so that when it makes the inevitable mid-task decision, it makes the same decision you would have made.</p>
+
+  <h2>2. The skill, in skeleton</h2>
+
+  <div class="skeleton">
+    <div><span class="label"># ~/.claude/skills/write-a-prd/SKILL.md</span></div>
+    <br>
+    <div><span class="label">---</div>
+    <div>name: write-a-prd</div>
+    <div>description: Turn a queue item (from /grill-me) into a short PRD that captures the context an AFK agent can't infer from the code.</div>
+    <div>disable-model-invocation: true</div>
+    <div><span class="label">---</div>
+    <br>
+    <div><span class="label"># Write a PRD</span></div>
+    <br>
+    <div>Given a queue item (specific, bounded, verifiable), produce a</div>
+    <div>PRD with these sections:</div>
+    <br>
+    <div>1. <span class="label">Context</span> &mdash; why this work exists. Who asked, what</div>
+    <div>&nbsp;&nbsp;&nbsp;triggered it, what changes if it ships.</div>
+    <div>2. <span class="label">Non-goals</span> &mdash; what is explicitly out of scope.</div>
+    <div>&nbsp;&nbsp;&nbsp;This is the most important section.</div>
+    <div>3. <span class="label">Decisions</span> &mdash; what was decided, when, and why.</div>
+    <div>&nbsp;&nbsp;&nbsp;Including rejected alternatives.</div>
+    <div>4. <span class="label">Open questions</span> &mdash; things still uncertain.</div>
+    <div>&nbsp;&nbsp;&nbsp;If any, the work isn't ready for AFK.</div>
+    <div>5. <span class="label">Done means / not done means</span> &mdash; copied</div>
+    <div>&nbsp;&nbsp;&nbsp;verbatim from the queue item.</div>
+    <div>6. <span class="label">Plan</span> &mdash; short numbered list of file-level changes.</div>
+  </div>
+
+  <p>Same frontmatter pattern as <code>/grill-me</code> &mdash; <code>disable-model-invocation: true</code>. Procedure. You invoke it when you have a queue item you want to commit to. You don't let the model invoke it on its own.</p>
+
+  <h2>3. The sections that matter most</h2>
+
+  <p>Sections 1, 5, and 6 are mechanical: context is what you know, done-means is the line from the grill-me session, plan is a list of files you'll touch. The interesting ones are 2, 3, and 4.</p>
+
+  <h3>3.1 Non-goals (the most important section)</h3>
+
+  <p>The agent's job is to maximize "did the work get done" given a fixed context window. If you don't tell it what <em>not</em> to do, it will infer the scope from the codebase and its training data. Both sources will be slightly wrong. The result: the agent does more than you asked, touches files it shouldn't, and produces a PR that solves adjacent problems you didn't want solved.</p>
+
+  <p>Non-goals fix this. They are explicit, written, scoped-out statements. For the SSO example from lesson 0005:</p>
+
+  <pre><code>## Non-goals
+
+- Mobile app SSO. Web only.
+- Migrating existing users off email/password.
+- SSO for admin users (they keep using email/password + MFA).
+- Refactoring the existing auth module beyond the minimum
+  surface needed for the new Okta provider.
+- Any change to billing, permissions, or session state.
+- Adding new analytics events.</code></pre>
+
+  <p>Notice the specificity. "We won't do mobile SSO" is too vague &mdash; does that mean iOS only, or Android too, or the mobile web? "Mobile SSO. Web only." is the version that stops the agent from guessing.</p>
+
+  <h3>3.2 Decisions, including rejected alternatives</h3>
+
+  <p>Mid-task, the agent will face a fork: "should I use the existing logger or add a new one?" "Should this go in <code>auth.ts</code> or in a new file?" Without context, the agent picks something reasonable and you review it later. With context, the agent picks the thing <em>you</em> would have picked, which is the point of the whole exercise.</p>
+
+  <p>Decisions section captures the forks you've already resolved. Example:</p>
+
+  <pre><code>## Decisions
+
+- **Okta over Auth0**: existing vendor relationship, SAML
+  already configured in Okta dashboard.
+- **New file `oktaAuthProvider.ts` over extending `auth.ts`**:
+  keeps the existing email/password path untouched, which is
+  the lowest-risk change for non-SSO users.
+- **No state library**: session cookie + server check is
+  sufficient for this scope. Rejected: Zustand (overkill),
+  React Context (causes re-renders).
+- **Login button on `/login`, not in nav**: marketing wants
+  SSO and password users to land on the same page.</code></pre>
+
+  <p>The "rejected" parts are the expensive ones to discover from scratch. They save the agent from spending 10 minutes considering Auth0.</p>
+
+  <h3>3.3 Open questions</h3>
+
+  <p>If there are open questions, the work isn't ready for AFK. That's the rule. An agent handed a PRD with open questions will answer them &mdash; plausibly, confidently, and often wrongly. The grill-me session (lesson 0005) should have caught most of them. If any survive into the PRD, the work isn't ready and you should finish the scoping before proceeding.</p>
+
+  <p>Open questions can also be a deliberate handoff. "We don't know the rate limit; pick a sensible default and document your choice in the PR description." That's a legitimate open question with a fallback decision. The agent can proceed.</p>
+
+  <h2>4. Why a doc, not a prompt</h2>
+
+  <p>You could put all of this in a long prompt. The agent would read it once. If it needed the same context again ten minutes later &mdash; because the prompt scrolled off or because a sub-task forgot the parent context &mdash; it would re-derive it, badly.</p>
+
+  <p>A doc on disk has different properties:</p>
+
+  <ul>
+    <li>The agent can re-read it whenever it needs to.</li>
+    <li>Multiple agents (parallel AFK workers) can share the same context.</li>
+    <li>The doc survives across sessions &mdash; it's the artifact that remains when the conversation is gone.</li>
+    <li>You can edit it without re-running the skill. If a decision changes, you change one paragraph.</li>
+    <li>It doubles as documentation for humans &mdash; your future self, six months from now, when the AFK agent is long gone.</li>
+  </ul>
+
+  <p>Lesson 0001 said strategic programming compounds. The PRD is the slowest-compounding artifact in the workflow &mdash; the one that pays back over months, not hours. But it pays back hardest.</p>
+
+  <h2>5. PRD vs the codebase context doc (lesson 0004)</h2>
+
+  <p>Lesson 0004 said every file should have a 5&ndash;10 line top-of-file context block. The PRD is the same idea at a different altitude. The hierarchy:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Lives in</th>
+        <th>Scope</th>
+        <th>Audience</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Top-of-file context</td>
+        <td>Each module file</td>
+        <td>One module</td>
+        <td>Any reader of that file</td>
+      </tr>
+      <tr>
+        <td>PRD</td>
+        <td><code>docs/prd/&lt;feature&gt;.md</code></td>
+        <td>One feature or change</td>
+        <td>Any agent working on this feature</td>
+      </tr>
+      <tr>
+        <td>Architecture decision record</td>
+        <td><code>docs/adr/</code></td>
+        <td>System-wide decisions</td>
+        <td>Any reader of the system</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>ADRs are the slowest layer. PRDs sit in the middle. Top-of-file context is the fastest layer. All three are needed; none replaces the others.</p>
+
+  <h2>6. The "PRD or no PRD" decision</h2>
+
+  <p>Not every queue item deserves a PRD. The rule of thumb:</p>
+
+  <div class="compare">
+    <div class="bad">
+      <div class="label">Skip the PRD</div>
+      <ul style="margin: 0 0 0 1rem;">
+        <li>One-line bug fix.</li>
+        <li>Typo / docs-only change.</li>
+        <li>Refactor with no behaviour change.</li>
+        <li>Task fits in a single file edit.</li>
+      </ul>
+    </div>
+    <div class="good">
+      <div class="label">Write the PRD</div>
+      <ul style="margin: 0 0 0 1rem;">
+        <li>New feature touching 3+ modules.</li>
+        <li>Anything with multiple stakeholders.</li>
+        <li>Anything where the "why" isn't obvious from the code.</li>
+        <li>Anything you'd otherwise have to re-explain in 6 months.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>Most queue items are the "skip" case. PRDs are for the work that, without context, the agent will get wrong.</p>
+
+  <h2>7. Exercise: write one PRD, by hand</h2>
+
+  <div class="exercise">
+    <h4>Take the queue item from lesson 0005 and produce a PRD</h4>
+    <ol>
+      <li class="step">Open the queue item you wrote during the lesson 0005 exercise. If you didn't do it, pick any non-trivial feature request from your backlog.</li>
+      <li class="step">Write the six sections in order. The two hardest are Non-goals and Decisions &mdash; those are where you should spend the most time.</li>
+      <li class="step">Read the PRD back to yourself and ask: <em>if I were an agent with no prior context, would this tell me what to do, what not to do, and why?</em> If not, the missing section is your next 15 minutes.</li>
+      <li class="step">Save it to <code>docs/prd/&lt;feature-name&gt;.md</code> in your repo and commit. Don't open a PR yet &mdash; the PRD is its own commit so reviewers can see the design before the code.</li>
+      <li class="step">Optional: hand the PRD to Claude Code with the prompt "Read this PRD and tell me what you'd do, what questions you have, and what the riskiest decision is." Notice where the agent's questions match your Open Questions section.</li>
+    </ol>
+  </div>
+
+  <div class="callout">
+    <strong>The compounding effect.</strong> Six months from now, when you need to change the SSO integration, you open the PRD. The PRD tells you what was decided and why. You don't re-derive the architecture from the code. You update the PRD, then update the code to match. The codebase and the doc drift together &mdash; but slowly, and intentionally.
+  </div>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>What frontmatter flag should <code>/write-a-prd</code> have, and why?</li>
+    <li>Why is the "Non-goals" section the most important?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li><code>disable-model-invocation: true</code>. It's a procedure &mdash; you invoke it deliberately when a queue item is ready to commit to a doc. Letting the model invoke it on its own would cause it to write PRDs unsolicited, polluting the repo with speculative docs.</li>
+      <li>Because the agent's job is to maximize "done" given a fixed context. Without explicit non-goals, the agent will infer scope from the codebase and its training data &mdash; both slightly wrong &mdash; and produce a PR that solves adjacent problems you didn't ask for.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>The PRD skill itself is Matt Pocock's <a href="https://github.com/mattpocock/skills/tree/main/skills/productivity/write-a-prd"><code>write-a-prd</code></a> on GitHub. The section structure (Context, Non-goals, Decisions, Open questions, Done/Not done, Plan) is the canonical pattern from the same productivity-skills folder where <code>grill-me</code> lives.</p>
+
+  <p>For grounding in the broader "docs that compound" idea, the relevant background is the talk at <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">11:40</a> where Matt describes the chain <code>/grill-me</code> &rarr; <code>/write-a-prd</code> &rarr; <code>/create-issues</code> &rarr; AFK agent. This lesson is the middle of that chain.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Run the exercise above. Commit a real PRD to your repo.</li>
+    <li>The next lesson is <strong>create-issues</strong> &mdash; the procedure that takes the PRD (this lesson) and turns it into one or more GitHub issues that match the queue item's done-means / not-done-means line. That's where the design doc becomes actionable work units.</li>
+      <li>Ask your teacher anything that wasn't clear. PRDs are the most-skipped step in this workflow because they feel redundant &mdash; "the code is the doc." Resist that feeling for at least one PRD before deciding.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0005-grill-me-then-scope.html">&larr; Lesson 0005: Grill Me</a>
+    <a href="0007-create-issues.html">Lesson 0007: Create Issues &rarr;</a>
+  </div>
+</body>
+</html>

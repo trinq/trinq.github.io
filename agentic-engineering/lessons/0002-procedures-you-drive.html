@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002 — Procedures You Drive, Abilities You Lend</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .exercise .step {
+      counter-increment: step;
+      margin-bottom: 0.75rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .exercise .step::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .exercise ol { counter-reset: step; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol { margin-top: 0.75rem; }
+  </style>
+</head>
+<body>
+  <h1>Procedures You Drive, Abilities You Lend</h1>
+  <p class="subtitle">Lesson 0002 · ~12 min · The two kinds of skills, and how to keep yourself in the loop</p>
+
+  <div class="meta">
+    <span class="badge">Procedural</span>
+    <span>Source: <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> at 11:40, 12:25, 42:50</span>
+  </div>
+
+  <p>Every skill you install is a small choice about who is in control. A <strong>procedure</strong> is one you trigger by typing <code>/name</code> — the agent does the work because you asked, and only because you asked. An <strong>ability</strong> is one the agent can trigger on its own — when it thinks the situation matches, it pulls the skill into the work without you.</p>
+
+  <p>The distinction sounds academic. It isn't. Every ability you install leaks its description into the model's context window on every turn. Matt's standing rule: <em>procedures you drive, abilities you lend</em>. This lesson teaches you how to tell them apart, when to convert one to the other, and how to clean up your list from lesson 0001 using that lens.</p>
+
+  <h2>1. The leak you don't see</h2>
+
+  <p>Picture your <code>~/.claude/skills/</code> folder. Whatever's in there has a <code>SKILL.md</code> with a description at the top — usually one or two sentences telling the model what the skill is for. If the skill is an ability, that description is loaded into every conversation, every turn, so the model can decide when to use the skill.</p>
+
+  <blockquote>
+    Every single ability — let's say we have a list. Let's say we have a 100 different skills. You're going to be leaking 100 descriptions into the context window.
+    <span class="src">— Matt Pocock, <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Agentic Engineering Workflow</a>, 12:25</span>
+  </blockquote>
+
+  <p>100 skills × ~50 words per description = ~5,000 tokens of standing noise. That doesn't sound like much until you remember it's paid for on every turn and it sits there competing for attention with your actual repo, your actual task, and your actual <code>CLAUDE.md</code>. The signal drowns.</p>
+
+  <p>Procedures have the same descriptions, but they're hidden behind a flag: <code>disable-model-invocation: true</code> in the YAML frontmatter. That flag tells the model "don't try to call this — only the human can." The description is invisible until you type <code>/name</code>, at which point the skill loads into the context for that one turn only.</p>
+
+  <h2>2. The taxonomy, in one table</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Procedure</th>
+        <th>Ability</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Who invokes</td>
+        <td>You (the human)</td>
+        <td>The model, when it decides</td>
+      </tr>
+      <tr>
+        <td>Frontmatter flag</td>
+        <td><code>disable-model-invocation: true</code></td>
+        <td>(flag absent or false)</td>
+      </tr>
+      <tr>
+        <td>Description in context</td>
+        <td>Hidden until <code>/name</code></td>
+        <td>Always loaded</td>
+      </tr>
+      <tr>
+        <td>Cost at scale</td>
+        <td>Zero until used</td>
+        <td>Linear in # of skills</td>
+      </tr>
+      <tr>
+        <td>You control the flow</td>
+        <td><strong>Yes — you're driving</strong></td>
+        <td>No — model decides when</td>
+      </tr>
+      <tr>
+        <td>Best for</td>
+        <td>Decision-shaped work: interview me, write the PRD, scope the issue</td>
+        <td>Convention-shaped work: "our tests look like X", "our naming is Y"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Matt's preference, stated directly in the talk: <em>"I tend to prefer my skills as procedures. I like to be the one in control."</em> The reason is not dogmatic — it's the cost. If a skill is decision-shaped (it changes how the agent thinks about a problem, asks you questions, writes a doc), you want to invoke it deliberately. If it's convention-shaped (the agent should just always do X), an ability is fine.</p>
+
+  <h2>3. The decision rule</h2>
+
+  <p>When you look at a skill on your list, ask two questions:</p>
+
+  <ol>
+    <li><strong>Does the skill make a decision, or does it encode a convention?</strong></li>
+    <li><strong>Would you notice if the agent invoked it without you?</strong></li>
+  </ol>
+
+  <p>If the skill is making a decision — "interview me about this feature," "scope this into issues," "triage this bug report" — you almost always want it to be a procedure. The whole point is that <em>you</em> chose to run it. If the agent decided on its own, the work would be different.</p>
+
+  <p>If the skill encodes a convention — "our React components use functional syntax with hooks, never classes" — the agent should just do that without asking. An ability is fine. The model notices the situation, applies the rule, moves on. You don't need to be in the loop on a per-task basis.</p>
+
+  <p>The interesting case: skills that look like both. Matt's <code>/grill-me</code> encodes a convention (interview me aggressively) but is decision-shaped (the result changes what gets built). He makes it a procedure so he can choose when to enter that mode.</p>
+
+  <h2>4. The flag in practice</h2>
+
+  <p>Open any skill in <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code>. You'll see YAML frontmatter at the top, before the markdown body:</p>
+
+  <pre><code>---
+name: grill-me
+description: Turn the agent into an adversarial interviewer...
+disable-model-invocation: true
+---
+
+# Grill Me
+
+...</code></pre>
+
+  <p>Three fields matter here:</p>
+
+  <ul>
+    <li><code>name</code> — what you type to invoke it (<code>/grill-me</code>).</li>
+    <li><code>description</code> — the bit that leaks into context if it's an ability. Make it short. Make it specific.</li>
+    <li><code>disable-model-invocation</code> — <code>true</code> means procedure, absent/false means ability.</li>
+  </ul>
+
+  <p>If you want to convert a skill from ability to procedure, add the flag. One line. No code changes. The skill now loads only when you type its name.</p>
+
+  <h2>5. The cleanup, applied to your list</h2>
+
+  <p>You have a list from the lesson 0001 audit. For each skill on it, run this:</p>
+
+  <div class="exercise">
+    <h4>Re-audit by kind</h4>
+    <ol>
+      <li class="step">Pick the first skill on your audit list. Open its <code>SKILL.md</code>.</li>
+      <li class="step">Read its <code>description</code> field. Is it a convention ("React coding standards", "use Prettier") or a decision ("interview me", "scope this", "review my PR")?</li>
+      <li class="step">Check whether it has <code>disable-model-invocation: true</code>. If it's a decision-shaped skill and the flag is missing, <strong>add the flag</strong>. That's your edit. No other changes.</li>
+      <li class="step">If the skill is convention-shaped and you use it daily, leave it as an ability. The context cost is the price of consistency.</li>
+      <li class="step">If the skill is convention-shaped and you've used it once in the last 60 days, delete it. The model will infer the convention from your codebase anyway.</li>
+      <li class="step">Repeat for the next 5 skills. Stop after 5. That's enough pattern to feel the rule.</li>
+    </ol>
+  </div>
+
+  <p>The point is not to do a heroic refactor in one sitting. The point is to feel the difference between a skill you want to drive and a skill you want to lend. After 5, you'll know which side of the line each remaining skill sits on. You can come back for the rest later.</p>
+
+  <h2>6. The description is the cost</h2>
+
+  <p>When you write or modify a skill, the description field is the most expensive part. Every word in it is a word the model sees on every turn (for abilities) or on every invocation (for procedures, which still pay once when you call them). Matt's rule of thumb, paraphrased from the talk: descriptions should be <em>specific enough that the model can match the situation, short enough that the cost is negligible</em>.</p>
+
+  <p>Compare:</p>
+
+  <pre><code># Bad — vague, leaks a lot of context for little signal
+description: "Coding best practices"
+
+# Bad — too long, the cost exceeds the value
+description: "Apply React best practices including hooks, memo, useCallback, useMemo when needed, avoid stale closures, prefer composition over inheritance, use TypeScript..."
+
+# Good — short, specific, matches one situation
+description: "Apply our React component conventions (functional only, hooks, no classes)"</code></pre>
+
+  <p>The third one is roughly 12 words. The second is roughly 30. If you have 50 React-component-related skills in your harness, the difference is 18 × 50 = 900 tokens on every turn. That's not nothing.</p>
+
+  <div class="callout">
+    <strong>The compounding insight.</strong> Procedures have zero context cost when not in use. Abilities have a flat cost that scales with the number of skills you install. The first time you delete an unused ability is the most expensive context-bloat fix you'll ever do, because every subsequent turn also gets the benefit. Audit one skill per week and your context stays clean without you noticing.
+  </div>
+
+  <h2>Quiz</h2>
+
+  <p>Don't over-think these. First instinct.</p>
+
+  <ol>
+    <li>What frontmatter flag turns an ability into a procedure?</li>
+    <li>You install a skill called <code>/pr-review</code> that runs a thorough PR review checklist. Should it be a procedure or an ability?</li>
+    <li>You install a skill called <code>/react-style</code> that reminds the agent to use functional components with hooks. Procedure or ability?</li>
+    <li>True or false: the bigger your skills folder, the worse your agent performs, regardless of which kind of skills you install.</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li><code>disable-model-invocation: true</code></li>
+      <li>Procedure. You want to choose when a full PR review runs, and the review itself produces a decision-shaped artifact. Letting the model invoke it at will would change the workflow.</li>
+      <li>Ability. It's a convention. The agent should just apply it on every React task without you invoking it. The context cost is worth the consistency.</li>
+      <li>False. A large folder of procedures has zero context cost until you invoke one. A large folder of abilities has linear cost. The kind matters, not just the count.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>From the talk, the three minutes that matter for this lesson: <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">11:40–13:30 and 42:50–44:00</a>. The first segment introduces the procedure/ability split and the context-leak problem. The second is Matt's closing advice: delete everything, observe, then layer back as procedures.</p>
+
+  <p>For the actual flag and how to write your own skill, the canonical reference is <a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/SKILL.md"><code>setup-matt-pocock-skills</code></a> and any of the <a href="https://github.com/mattpocock/skills/tree/main/skills/productivity">productivity skills</a> in his repo. They're short — read three of them, you'll see the pattern.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Re-audit the first 5 skills on your list using the rule above.</li>
+    <li>Add the flag to any decision-shaped skill that's missing it.</li>
+    <li>Note: did any of the 5 turn out to be decision-shaped skills you'd been letting the model invoke? That's the surprise — most people find at least one.</li>
+    <li>Ask your teacher anything that wasn't clear. The rule has corner cases — write your own and we'll work through them.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0001-harness-over-model.html">← Lesson 0001: Harness</a>
+    <a href="../reference/0001-vocabulary.html">Vocabulary reference →</a>
+  </div>
+</body>
+</html>

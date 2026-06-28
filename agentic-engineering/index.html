@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Engineering — Self-paced Course</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="index.html" class="site-logo">Agentic Engineering</a>
+    <nav class="site-nav">
+      <a href="index.html" class="active">Lessons</a>
+      <a href="MISSION.md">Mission</a>
+      <a href="RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-banner">
+  <h1>Agentic Engineering</h1>
+  <p>An 8-lesson course on Matt Pocock's workflow for shipping software with AI agents. The harness, not the model, is the whole game. Built on queues, procedures, and code the agent can read.</p>
+</div>
+
+<main>
+
+<h2>Lessons</h2>
+
+<div class="lesson-grid">
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0001</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0001-harness-over-model.html">The Harness Is the Whole Game</a></h3>
+    <p class="card-desc">Most of the leverage in AI-assisted engineering is in the harness, not the model. The harness is everything outside the model that shapes its behaviour — prompts, skills, CLAUDE.md, MCP servers, the codebase.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0002</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0002-procedures-you-drive.html">Procedures You Drive, Abilities You Lend</a></h3>
+    <p class="card-desc">Distinguish procedure skills (you invoke them, you stay in control) from ability skills (the model invokes them when relevant). Get the frontmatter flag wrong and you'll leak control of your workflow to the model.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0003</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0003-queues-not-loops.html">Queues, Not Loops</a></h3>
+    <p class="card-desc">A while-loop running the agent forever sounds appealing but performs badly. Replace it with an issue-tracker queue: well-scoped items, mergeable on their own, item comes off when the PR merges.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0004</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0004-dx-and-ax.html">DX and AX, or: Design for the Reader Who Reads Everything</a></h3>
+    <p class="card-desc">DX is for the human reader. AX is for the agent reader. The overlap is huge — same rules (deep modules, clear interfaces, no deep nesting). Add top-of-file context blocks so the agent inherits what you'd otherwise explain verbally.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0005</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0005-grill-me-then-scope.html">Grill Me, Then Scope It</a></h3>
+    <p class="card-desc">The grill-me skill turns a vague request into a well-scoped queue item through 30–50 questions. Output ends with explicit Done means / Not done means lines. The highest-leverage skill in the workflow.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0006</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0006-write-a-prd.html">Write a PRD the Agent Can Read</a></h3>
+    <p class="card-desc">A PRD is a 200–800 line decision-shaped file that captures the why (non-goals, rejected alternatives, decisions) the codebase can't. Six canonical sections. The agent reads it before touching code.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0007</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0007-create-issues.html">Create Issues, Atomic Work Units</a></h3>
+    <p class="card-desc">Decompose a PRD into atomic GitHub issues, each sized to one mergeable PR. Vertical slicing is the default. Feature flags hide incomplete slices. Filed with gh CLI, not the web UI.</p>
+  </div>
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Lesson 0008</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="lessons/0008-afk-agents.html">AFK Agents, the Loop Closes</a></h3>
+    <p class="card-desc">An AFK agent reads the issue and PRD, works in a sandbox, opens a PR. A review agent in CI filters broken PRs. You review the survivors. All eight lessons form one chain: scope, document, decompose, execute.</p>
+  </div>
+</div>
+
+<h2>Reference</h2>
+
+<div class="lesson-grid">
+  <div class="card">
+    <div class="card-meta">
+      <span class="card-num">Reference</span>
+      <span class="card-category-badge">agentic-engineering</span>
+    </div>
+    <h3 class="card-title"><a href="reference/0001-vocabulary.html">Agentic Engineering Vocabulary</a></h3>
+    <p class="card-desc">The 10 words Matt Pocock uses that you should too: harness, procedure, ability, queue, loop, AX, DX, PRD, issue, AFK. Shared vocabulary across the entire course.</p>
+  </div>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="index.html">Lessons</a></li>
+        <li><a href="MISSION.md">Mission</a></li>
+        <li><a href="RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor AI</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-a-claude-agent" target="_blank" rel="noopener">Anthropic Agent Docs</a></li>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Agentic Engineering &mdash; a self-paced course.
+  </div>
+</footer>
+
+</body>
+</html>

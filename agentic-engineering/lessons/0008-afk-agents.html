@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0008 — AFK Agents, the Loop Closes</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .exercise .step {
+      counter-increment: step;
+      margin-bottom: 0.75rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .exercise .step::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .exercise ol { counter-reset: step; }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol { margin-top: 0.75rem; }
+    .skeleton {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+    }
+    .skeleton .label {
+      font-weight: 700;
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare > div {
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .compare .bad {
+      background: #fdecea;
+      border-left: 3px solid var(--accent);
+    }
+    .compare .good {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .compare .good {
+      background: #e8f5e9;
+      border-left: 3px solid #4caf50;
+    }
+    .compare .label {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .summary {
+      background: var(--code-bg);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+    }
+    .summary h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>AFK Agents, the Loop Closes</h1>
+  <p class="subtitle">Lesson 0008 · ~12 min · The agent that consumes everything the previous lessons produced</p>
+
+  <div class="meta">
+    <span class="badge">Operational</span>
+    <span>Source: <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">Matt Pocock's Agentic Engineering Workflow</a> at 24:10 (Ralph-loop pushback), 43:35 (AFK quote); Sandcastle (his tool) from transcript §83</span>
+  </div>
+
+  <p>You have a queue (lesson 0003) of well-scoped issues (lesson 0007), each backed by a PRD (lesson 0006), each driven by a grill-me conversation (lesson 0005). Your harness is set up (0001). You know which skills are procedures (0002). Your codebase has AX (0004). The only thing left is: who actually does the work?</p>
+
+  <p>An AFK agent does. "AFK" means Away From Keyboard &mdash; you start the agent, walk away, come back to a PR. The agent reads the issue, reads the PRD, explores the codebase, writes the code, writes the tests, opens the PR. When you return, you review, not author.</p>
+
+  <blockquote>
+    "AFK is just incredible way to work. It's just takes a little bit of setup, but once it's set up, it's just goes crazy."
+    <span class="src">— Matt Pocock, 43:35</span>
+  </blockquote>
+
+  <p>This lesson is the loop closing. Lessons 0001&ndash;0004 set up the world; lessons 0005&ndash;0007 produced the queue; this lesson runs the consumer.</p>
+
+  <h2>1. What the AFK agent reads, in order</h2>
+
+  <p>The agent's first action is to ingest its context. The order matters &mdash; the agent should read the most-focused doc first, then the wider context, then the code:</p>
+
+  <ol>
+    <li><strong>The issue body</strong> &mdash; the plan, the done-means, the not-done-means. The most specific.</li>
+    <li><strong>The PRD</strong> (linked from the issue) &mdash; the why, the non-goals, the decisions, the rejected alternatives.</li>
+    <li><strong>The codebase</strong> &mdash; top-of-file context blocks (lesson 0004), then the relevant modules, then anything the agent needs to extend.</li>
+    <li><strong>The issue's prior PRs in the same label</strong> &mdash; if issues share a <code>prd:</code> label (lesson 0007's trick), the agent should check what the previous issue's PR did, to maintain consistency.</li>
+  </ol>
+
+  <p>This order is the one you set in the harness. If the harness's startup prompt says "read <code>.claude/CLAUDE.md</code> first," that file should encode this read-order. If it doesn't, the agent will invent its own order, and you will spend the first 20 minutes of every AFK session re-deriving what the agent should already know.</p>
+
+  <h2>2. The agent's environment: a sandbox</h2>
+
+  <p>The AFK agent runs in a sandbox &mdash; an environment isolated from your machine, your main branch, and your secrets. Two reasons:</p>
+
+  <ul>
+    <li><strong>Safety.</strong> The agent is going to run shell commands. Most of them are fine. Some aren't. The sandbox is the boundary that lets you walk away without worrying.</li>
+    <li><strong>Reproducibility.</strong> The agent needs to start from a clean state every time. Your local working tree has uncommitted changes, stale branches, half-finished work. The sandbox doesn't.</li>
+  </ul>
+
+  <p>Matt's tool for this is <a href="https://github.com/mattpocock/sandcastle">Sandcastle</a> &mdash; runs Claude Code inside Docker/Podman sandboxes locally, or in Vercel sandboxes for remote AFK agents. The pattern, not the tool, is the lesson:</p>
+
+  <pre><code># pseudocode for an AFK agent invocation
+agent.spawn({
+  environment: "sandbox",           # isolated, ephemeral
+  startingPoint: "main",            # clean checkout
+  context: [
+    "issue: #1234",                 # the queue item
+    "prd: docs/prd/okta-sso.md",   # the design
+    "constraints: .claude/CLAUDE.md" # your harness rules
+  ],
+  tools: ["bash", "edit", "github", "test-runner"],
+  budget: { tokens: 200_000, wallTime: "2h" }
+})</code></pre>
+
+  <p>When the agent finishes &mdash; either successfully or by hitting the budget &mdash; the sandbox is destroyed. The commits it produced are pulled back into your local workspace. You review the PR there.</p>
+
+  <h2>3. The loop, as the agent runs it</h2>
+
+  <p>Inside the sandbox, the agent runs a loop. Each iteration:</p>
+
+  <ol>
+    <li>Pick the next sub-task from the issue's plan.</li>
+    <li>Read the relevant code (file-level context, then function-level).</li>
+    <li>Make the change.</li>
+    <li>Run the tests.</li>
+    <li>If tests pass, commit. If not, debug (up to N retries).</li>
+    <li>Move to the next sub-task.</li>
+  </ol>
+
+  <p>This is the "Ralph loop" pattern &mdash; the <code>while</code> loop that keeps invoking the agent until the task is done. Lesson 0003 said you don't need a Ralph loop at the <em>queue</em> level. But at the <em>agent</em> level, you absolutely do. The contradiction is fake: the outer loop (queue &rarr; PR &rarr; merge &rarr; next item) is replaced by your issue tracker; the inner loop (sub-task &rarr; code &rarr; test &rarr; commit) is the agent's own. Both loops exist. They exist at different scales.</p>
+
+  <blockquote>
+    "Half of it I would say is like the research labs selling more tokens. You know basically you should be running loops to pay us more endless tokens. Stop prompting your agents. Figure out what loops it can run forever permanently. Half of it could be useful."
+    <span class="src">— Matt Pocock, 24:08</span>
+  </blockquote>
+
+  <p>Read that quote again. "Half of it could be useful." The inner loop (this lesson) is the half that's useful. The outer loop (Ralph loops running the whole workflow) is the half that's not. The distinction is <em>what the loop is wrapping</em>: well-scoped atomic work, or vague user intent. Wrap atomic work &mdash; useful. Wrap vague intent &mdash; expensive.</p>
+
+  <h2>4. What the agent produces</h2>
+
+  <p>When the agent finishes, it should have produced:</p>
+
+  <ul>
+    <li><strong>A branch</strong> with commits matching the issue's plan.</li>
+    <li><strong>Tests</strong> covering the new code &mdash; the done-means line should be testable as written.</li>
+    <li><strong>A PR description</strong> that is the issue body verbatim, plus a "What changed" section listing the commits.</li>
+    <li><strong>A "Closes #N"</strong> reference, so merging the PR closes the issue and the item comes off the queue (lesson 0003).</li>
+    <li><strong>Updated top-of-file context blocks</strong> (lesson 0004) for any file the agent created or significantly changed. This is the AX payoff &mdash; the next agent that reads the file inherits the new context.</li>
+  </ul>
+
+  <p>If the agent produces a PR without tests, or with a PR description that's a rewrite of the issue body (not a copy), or without updating context blocks &mdash; you know the harness isn't enforcing the contracts. Fix the harness, not the agent's prompt. Lesson 0001's rule applies: spend the time on the system, not the call.</p>
+
+  <h2>5. The review agent</h2>
+
+  <p>Once the AFK agent opens the PR, a second agent reviews it. This is where the second loop lives: the review agent runs in CI (Matt uses GitHub Actions for this &mdash; see transcript §84), reads the diff, checks against the issue's done-means / not-done-means, leaves comments, and either approves or requests changes.</p>
+
+  <p>The review agent is cheaper than the AFK agent (less context, less reasoning), runs unattended, and gives you a first-pass filter before you read the diff yourself. You still review &mdash; the review agent doesn't replace you, it just ensures you don't waste 30 minutes on a PR that's clearly broken.</p>
+
+  <div class="compare">
+    <div class="bad">
+      <div class="label">Without review agent</div>
+      <p style="margin: 0;">You come back to 5 PRs. 2 are obviously broken (failing tests, missing files). You spend 10&ndash;15 minutes on each before realizing they need a complete rewrite. The other 3 are reasonable. Total time: 90 minutes.</p>
+    </div>
+    <div class="good">
+      <div class="label">With review agent</div>
+      <p style="margin: 0;">You come back to 5 PRs. 2 have "REQUEST CHANGES" comments and a list of specific fixes. You skip them or send them back. 3 are approved. You review the 3 reasonable ones. Total time: 40 minutes.</p>
+    </div>
+  </div>
+
+  <h2>6. The "what if it fails" cases</h2>
+
+  <p>The AFK agent will fail in three ways, and the harness should be designed to handle each:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Failure mode</th>
+        <th>Signal</th>
+        <th>Recovery</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Wrong code</strong></td>
+        <td>PR merges, tests pass, but the behaviour is wrong</td>
+        <td>Revert, rewrite the issue (the scoping was bad), re-run</td>
+      </tr>
+      <tr>
+        <td><strong>Stuck loop</strong></td>
+        <td>Agent burns budget on the same sub-task, makes no progress</td>
+        <td>Kill the sandbox, review what it tried, fix the harness or the issue, re-run</td>
+      </tr>
+      <tr>
+        <td><strong>Out of scope</strong></td>
+        <td>PR touches files the non-goals section forbids</td>
+        <td>Reject the PR, fix the harness to enforce non-goals as a pre-commit check, re-run</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The third case is the most common. The agent doesn't know what it doesn't know, and without explicit enforcement, it will quietly expand scope. The fix is to make non-goals machine-checkable &mdash; a lint rule, a file-touch allow-list, or a review-agent prompt that greps the diff against the PRD's non-goals section.</p>
+
+  <h2>7. The whole workflow, end to end</h2>
+
+  <p>Here's the chain that the eight lessons build. Each lesson is one box:</p>
+
+  <pre><code>0001 Strategic programming
+  &darr;  mindset: spend time on the system
+0002 Procedures vs abilities
+  &darr;  harness: know which skill fires when
+0003 Queues not loops
+  &darr;  workflow shape: issue tracker, not Ralph loop
+0004 DX and AX
+  &darr;  codebase: every file has context, every tool is callable
+0005 Grill me
+  &darr;  procedure: vague request &rarr; well-scoped item
+0006 Write a PRD
+  &darr;  procedure: queue item &rarr; decision-shaped doc
+0007 Create issues
+  &darr;  procedure: PRD &rarr; atomic GitHub issues
+0008 AFK agents              &larr;  YOU ARE HERE
+  &darr;  agent: issue &rarr; PR, in a sandbox, unattended
+  &darr;  review agent: PR &rarr; comments, in CI
+  &darr;  you: PR &rarr; review &rarr; merge
+  &darr;  issue closes, item comes off the queue
+  &darr;  next issue is the next AFK session</code></pre>
+
+  <p>Lessons 0005&ndash;0008 form a single arc: scope, document, decompose, execute. Each one is necessary. Skip 0005 and 0006, the agent builds the wrong thing. Skip 0007, the agent builds a 1000-line PR. Skip 0008, you've produced the artifacts but never consumed them.</p>
+
+  <h2>8. Exercise: run one AFK session, end to end</h2>
+
+  <div class="exercise">
+    <h4>The whole chain, in one sitting</h4>
+    <ol>
+      <li class="step">Pick a fresh vague request (a feature you've been avoiding). Run <code>/grill-me</code> (lesson 0005). Get the queue item.</li>
+      <li class="step">Run <code>/write-a-prd</code> (lesson 0006). Commit the PRD.</li>
+      <li class="step">Run <code>/create-issues</code> (lesson 0007). File 3&ndash;5 issues with <code>gh</code>. Add a shared label.</li>
+      <li class="step">Set up an AFK harness. Sandcastle (Matt's tool), or Claude Code in a Docker container, or a GitHub Actions workflow that runs on <code>issue labeled</code>. The harness should: clone the repo, checkout main, read the issue, run the agent, push the branch, open the PR.</li>
+      <li class="step">Point the harness at issue #1. Start it. Walk away for 1&ndash;2 hours.</li>
+      <li class="step">Come back. Review the PR. If it satisfies the done-means line, merge. If not, leave comments and re-run.</li>
+      <li class="step">Watch the issue close automatically when the PR merges. The queue item comes off. The next issue is the next AFK session.</li>
+    </ol>
+  </div>
+
+  <div class="callout">
+    <strong>The throughput jump.</strong> Once the harness is set up, your week looks like: 1 hour of scoping (lessons 0005&ndash;0007), 5&ndash;10 hours of AFK sessions (lesson 0008), 1&ndash;2 hours of reviewing the PRs. Net: a feature that would have taken 2&ndash;3 weeks of focused work gets shipped in a week, with most of your time spent on the parts only you can do &mdash; the scoping, the reviewing, the design calls. The middle (the typing) is what the agent is for.
+  </div>
+
+  <div class="callout warning">
+    <strong>The failure mode to watch.</strong> AFK agents make it cheap to produce code. Cheap code production is not the same as cheap shipping. If your review loop is slow, your merge queue is full, your test infrastructure is flaky &mdash; AFK agents just push more broken PRs into the bottleneck faster. The workflow compounds. So does the garbage. Fix the slow parts of the loop before scaling up the agent count.
+  </div>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>In what order does the AFK agent read its context? Why does order matter?</li>
+    <li>What's the difference between the "Ralph loop" at the agent level and the "Ralph loop" at the workflow level? Which one is useful?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li>Issue body &rarr; PRD &rarr; codebase &rarr; sibling PRs (in the same label). Order matters because the agent should ingest the most-specific scope first, then the wider context. If it reads the codebase first, it will infer scope from the code and miss the PRD's non-goals. If it reads sibling PRs first, it will pattern-match from previous decisions that may not apply.</li>
+      <li>The agent-level loop wraps atomic, well-scoped work (one sub-task at a time, within a single issue). It's useful: it lets the agent iterate without re-prompting. The workflow-level loop wraps the whole queue (issue after issue, forever). It's not useful: it bypasses your scoping step, runs on vague intent, and produces unbounded work. Lesson 0003's queue replaces the workflow-level loop; this lesson keeps the agent-level loop.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>The AFK framing is Matt's, from <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">43:35</a> in the talk. The Ralph-loop pushback at <a href="https://www.youtube.com/watch?v=nQwJVHCtDDY">24:08</a> provides the contrast: inner loops are useful, outer loops are not. The sandbox pattern is from <a href="https://github.com/mattpocock/sandcastle">Sandcastle</a>, his own tool for running Claude Code in Docker/Podman/Vercel sandboxes; the GitHub Actions review-agent pattern is from his own repo (transcript §84).</p>
+
+  <p>For the wider context of "what the loop is wrapping," see lesson 0003's note on the <code>ghuntley</code> Ralph-style article from 14 July 2025, which is the thing Matt is pushing back against.</p>
+
+  <div class="summary">
+    <h3>What the eight lessons built</h3>
+    <p>You now have a complete workflow:</p>
+    <ul>
+      <li>A mindset (strategic programming, procedures vs abilities).</li>
+      <li>A workflow shape (queues not loops).</li>
+      <li>A codebase contract (DX and AX, top-of-file context).</li>
+      <li>Three procedures (grill-me, write-a-prd, create-issues) that produce a queue of well-scoped, decision-shaped, atomic issues.</li>
+      <li>An operational pattern (AFK agents in sandboxes, review agents in CI) that consumes the queue.</li>
+    </ul>
+    <p>What's missing? Nothing critical &mdash; but the next ten lessons could go deeper on any of these. The two most likely follow-ups: <em>how to fix a slow review loop</em> (the failure-mode callout above), and <em>how to teach this workflow to a team</em> (the social side, which the talks don't cover). Ask your teacher if you want either of those as lesson 0009+.</p>
+  </div>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Run the exercise above. The full chain, one sitting. The throughput jump is the payoff &mdash; see it for yourself.</li>
+    <li>Decide whether you want to go deeper on the harness (custom skills for your codebase), the social side (how to roll this out to a team), or the failure modes (what to do when the harness is broken). Each is a different follow-up series.</li>
+    <li>Ask your teacher anything that wasn't clear. AFK is the most concrete part of this workflow &mdash; the part where you see results. It's also the part where small harness mistakes compound fastest. Worth getting right.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0007-create-issues.html">&larr; Lesson 0007: Create Issues</a>
+    <a href="0009-..html">Series end &rarr;</a>
+  </div>
+</body>
+</html>
