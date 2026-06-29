@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: The End of the Centaur</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+      --half: #8e44ad;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: var(--ok);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .quote {
+      font-style: italic;
+      color: var(--ink-soft);
+      border-left: 3px solid var(--rule);
+      padding-left: 1rem;
+      margin: 1rem 0;
+    }
+    .quote-attribution {
+      display: block;
+      margin-top: 0.4rem;
+      font-style: normal;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .shapes {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .shape {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      text-align: center;
+      background: #fff;
+    }
+    .shape-svg {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 0.75rem;
+      display: block;
+    }
+    .shape-name {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .shape-desc {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .shape.human .shape-svg circle { fill: var(--ok); }
+    .shape.centaur .shape-svg circle { fill: var(--accent); }
+    .shape.centaur .shape-svg rect { fill: var(--accent); }
+    .shape.centaur .shape-svg text { fill: white; font-weight: 700; }
+    .shape.augmented .shape-svg circle { fill: var(--half); }
+    .shape.augmented .shape-svg text { fill: white; font-weight: 700; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare-col {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .compare-header {
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--rule);
+    }
+    .compare-col.old .compare-header { background: #fdecea; color: var(--accent); }
+    .compare-col.new .compare-header { background: #e8f5e9; color: #2e7d32; }
+    .compare-body { padding: 1rem; font-size: 0.9rem; }
+    .compare-body ul { list-style: none; padding: 0; margin: 0; }
+    .compare-body li { padding: 0.3rem 0; border-bottom: 1px dashed var(--rule); }
+    .compare-body li:last-child { border-bottom: none; }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .quiz-q {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-opt {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      margin: 0.4rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.92rem;
+    }
+    .quiz-opt.correct {
+      background: #e8f5e9;
+      border-color: var(--ok);
+    }
+    .quiz-opt.wrong {
+      background: #fdecea;
+      border-color: var(--accent);
+    }
+    .quiz-opt.disabled { cursor: default; opacity: 0.7; }
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok { background: #e8f5e9; color: #2e7d32; }
+    .quiz-feedback.bad { background: #fdecea; color: var(--accent); }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .exercise-list { list-style: decimal; }
+    .timestamp {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    .term {
+      background: linear-gradient(transparent 60%, rgba(192,57,43,0.15) 60%);
+      padding: 0 2px;
+      cursor: help;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">clanker-engineer</span></span>
+  <span>Lesson 0004</span>
+  <span>2026-06-29</span>
+</div>
+
+<h1>The End of the Centaur</h1>
+<p class="subtitle">Pair programming changed shape. Don't try to preserve it.</p>
+
+<p>This is the lesson your senior engineer is most likely to resist. Farhan makes the claim early in the talk — around <span class="timestamp">02:00</span> — that the centaur model of working with AI (half-human, half-AI, the AI does the typing) is already over. The shape that replaced it is hard to see from inside, especially if your team has invested in pair programming over the last decade.</p>
+
+<h2>What a centaur is</h2>
+
+<p>The metaphor is from chess. After Deep Blue beat Kasparov in 1997, the strongest players in the world were not the grandmasters. They were not the engines either. They were <em>centaurs</em> — half-human, half-machine pairs. The human set strategy, the engine searched variations, the human selected from the engine's suggestions.</p>
+
+<p>This was the dominant model of human-AI collaboration through 2024. In coding terms:</p>
+
+<div class="quote">
+  The human types a comment or a function signature. The autocomplete fills in the body. The human accepts or rejects, line by line. Cursor/Copilot style.
+  <span class="quote-attribution">— The centaur model, summarized</span>
+</div>
+
+<p>The human is doing the typing-orchestration. The model is doing the typing. Farhan's claim at <span class="timestamp">02:00</span> is that this arrangement is already obsolete.</p>
+
+<h2>Three shapes of collaboration</h2>
+
+<div class="shapes">
+  <div class="shape human">
+    <svg class="shape-svg" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="28"/>
+      <text x="40" y="46" text-anchor="middle" fill="white" font-weight="700" font-size="20">H</text>
+    </svg>
+    <div class="shape-name">Pure human</div>
+    <div class="shape-desc">Pre-2020. Human types, reviews, ships. No AI in loop.</div>
+  </div>
+  <div class="shape centaur">
+    <svg class="shape-svg" viewBox="0 0 80 80">
+      <rect x="6" y="6" width="68" height="68" rx="6"/>
+      <text x="40" y="46" text-anchor="middle" font-size="20">½+½</text>
+    </svg>
+    <div class="shape-name">Centaur</div>
+    <div class="shape-desc">2022–2024. Human directs, AI suggests, human types the keystrokes.</div>
+  </div>
+  <div class="shape augmented">
+    <svg class="shape-svg" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="28"/>
+      <text x="40" y="46" text-anchor="middle" font-size="14">H+AI</text>
+    </svg>
+    <div class="shape-name">Augmented</div>
+    <div class="shape-desc">2025+. Human frames the problem, AI writes the code, human validates and owns.</div>
+  </div>
+</div>
+
+<p>The centaur is the awkward middle stage. The human still has to translate intent into keystrokes — but the keystrokes are now the slow part. The whole arrangement is built around the assumption that typing is the bottleneck. When typing stops being the bottleneck, the centaur dissolves.</p>
+
+<div class="callout warning">
+  <p><strong>The trap:</strong> centaur habits persist because the tooling still rewards them. Autocomplete UIs are everywhere. The mental model of "I type, the machine fills in" is sticky. But the velocity of the work has moved past it. Teams that don't notice will feel slower without being able to name why.</p>
+</div>
+
+<h2>What replaces the centaur</h2>
+
+<p>Farhan describes what he calls <span class="term" title="His term for the new shape: human frames the problem at a higher level, AI executes at scale, human validates">"reflexiveness"</span> — humans writing prompts, scripts, and tests; AI executing at scale; humans validating the outputs. The shape that emerges is not a centaur. It is something like a project manager + a giant coding team:</p>
+
+<ul>
+  <li>The human writes the <em>spec</em> (one document, not one keystroke at a time)</li>
+  <li>The AI builds it (potentially many files, many lines, in one shot)</li>
+  <li>The human validates (tests, customer, production)</li>
+</ul>
+
+<p>Farhan makes the analogy explicit at <span class="timestamp">22:24</span>: it's like having a thousand interns. You don't type alongside them. You don't review their autocomplete one suggestion at a time. You give them the assignment, you look at the output, you course-correct.</p>
+
+<h2>Why this is uncomfortable for pair programmers</h2>
+
+<p>Pair programming has a strong claim on engineers' identity. The lore is: "two minds, one keyboard, fewer defects." That lore was developed when the keyboard was the bottleneck and two sets of eyes caught things one would miss.</p>
+
+<p>Both premises are eroding:</p>
+
+<div class="compare">
+  <div class="compare-col old">
+    <div class="compare-header">Old pair-programming premise</div>
+    <div class="compare-body">
+      <ul>
+        <li>Keystrokes are the bottleneck</li>
+        <li>Two reviewers catch more bugs</li>
+        <li>Knowledge transfer happens at the keyboard</li>
+        <li>"Driver and navigator" roles make sense</li>
+      </ul>
+    </div>
+  </div>
+  <div class="compare-col new">
+    <div class="compare-header">New premise under AI</div>
+    <div class="compare-body">
+      <ul>
+        <li>Spec and validation are the bottleneck</li>
+        <li>One reviewer + an LLM review catches more</li>
+        <li>Knowledge transfer happens in spec review</li>
+        <li>"Driver and navigator" stops describing a useful division of labor</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<p>This is not a polemic against pairing. It is an observation: the form of pairing that worked in 2015 was tuned for a different bottleneck. That bottleneck moved (lesson 0001). Pairing has not caught up.</p>
+
+<h2>What new pairings look like</h2>
+
+<p>If you want to keep the benefits of pair work — shared mental model, mutual accountability, less solo heroics — the shape changes. Three modes that actually work post-centaur:</p>
+
+<ol>
+  <li><strong>Spec pairing.</strong> Two humans write the spec together. One types, one questions. The spec is the artifact. The AI builds from the spec. Validation is solo or small-group.</li>
+  <li><strong>Validation pairing.</strong> One human authors, AI builds, two humans review the output together. Strong for code paths where the cost of a bug is high (auth, payments, data integrity).</li>
+  <li><strong>Rubber-duck + AI.</strong> Solo author uses AI as the rubber duck. Out-loud reasoning to a model surfaces gaps. Not "pairing" in the traditional sense but it produces a similar artifact (a written explanation of intent) that another human can read.</li>
+</ol>
+
+<div class="callout success">
+  <p><strong>The reframe for your senior engineer:</strong> we're not abandoning collaboration, we're relocating it. The collaborative artifact moved from "the keyboard" to "the spec." A 30-minute spec session between two humans is worth more than four hours of pair-coding where one is the typist and the other is the navigator.</p>
+</div>
+
+<h2>What this means for the team</h2>
+
+<p>Three concrete moves you can make this month:</p>
+
+<ol class="exercise-list">
+  <li><strong>Stop forcing driver/navigator.</strong> If your team norms say "every change must be pair-coded," replace it with "every change must have a spec or design doc reviewed by at least one other human before implementation." That is the new pair.</li>
+  <li><strong>Make spec review the senior lever.</strong> When a senior engineer complains that juniors aren't learning, point them at the spec — that's where the teaching happens now. The keyboard is no longer the site of formation.</li>
+  <li><strong>Instrument for the new shape.</strong> Track time-to-spec, not lines-of-code. The new metric of a healthy team is how well they frame problems, not how fast they implement.</li>
+</ol>
+
+<h2>Connection to lessons 0002 and 0003</h2>
+
+<p>The centaur frame has implications for the other lessons in this series:</p>
+
+<ul>
+  <li><strong>From 0002 (learning as collateral):</strong> in the centaur model, the human learns at the keyboard — typing things is how they internalize. In the augmented model, the human learns at the <em>spec</em> — articulating the problem is how they internalize. The learning site has moved. If your team is still doing centaur work and complaining they aren't learning the codebase, that's why.</li>
+  <li><strong>From 0003 (responsibility can't be delegated):</strong> in the centaur model, "I wrote this code" was a coherent claim. In the augmented model, the human didn't write the code — they wrote the spec. So the responsibility principle needs updating: the human owns the <em>outcome</em> (which includes the spec, the validation, and the ship decision), not the lines.</li>
+</ul>
+
+<h2>Quiz</h2>
+
+<div class="quiz" id="q1">
+  <div class="quiz-q">1. The centaur metaphor comes from:</div>
+  <label class="quiz-opt" data-correct="false">Greek mythology applied to AI ethics</label>
+  <label class="quiz-opt" data-correct="true">Post-Deep Blue human + engine chess pairs that beat either alone</label>
+  <label class="quiz-opt" data-correct="false">A 2023 paper on human-AI collaboration in code generation</label>
+  <label class="quiz-opt" data-correct="false">A workplace-safety standard for AI-assisted labor</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="quiz-q">2. Why does Farhan say the centaur model is "over" as a dominant shape?</div>
+  <label class="quiz-opt" data-correct="false">AI vendors stopped supporting autocomplete interfaces</label>
+  <label class="quiz-opt" data-correct="false">Engineers refused to use AI tools that suggested code line-by-line</label>
+  <label class="quiz-opt" data-correct="true">The bottleneck moved past typing; human-as-orchestrator-of-keystrokes is no longer the rate-limiting step</label>
+  <label class="quiz-opt" data-correct="false">Centaur is a deprecated term in modern ML literature</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="quiz-q">3. Per the lesson, the new "augmented" shape most resembles:</div>
+  <label class="quiz-opt" data-correct="false">Two engineers sharing one keyboard (traditional pair programming)</label>
+  <label class="quiz-opt" data-correct="false">A senior engineer dictating code to a junior (mentorship model)</label>
+  <label class="quiz-opt" data-correct="true">A project manager directing a team of interns, then reviewing their output</label>
+  <label class="quiz-opt" data-correct="false">A single engineer writing code with no AI assistance (pure-human model)</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="quiz-q">4. A senior engineer on your team says "we're losing pair-programming culture to AI." What's the most accurate response per this lesson?</div>
+  <label class="quiz-opt" data-correct="false">Agree, and roll back AI tool rollout to preserve the culture</label>
+  <label class="quiz-opt" data-correct="false">Disagree — pair programming is unchanged in any AI environment</label>
+  <label class="quiz-opt" data-correct="true">Acknowledge the loss, then reframe: the collaborative artifact moved from the keyboard to the spec</label>
+  <label class="quiz-opt" data-correct="false">Schedule more pair-programming sessions to compensate</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<h2>Exercise: Relocate one pairing session</h2>
+
+<ol class="exercise-list">
+  <li>Pick a piece of work your team has planned for the next two weeks. (A feature, a refactor, a bug investigation — anything with non-trivial design choices.)</li>
+  <li>Instead of pairing on the implementation, pair on the <em>spec</em>. Two engineers, 30–60 minutes, working out: what's the user-facing behavior, what are the edge cases, what does the API look like, what's out of scope.</li>
+  <li>Hand the spec to one engineer (or AI) to implement. Don't pair on the typing.</li>
+  <li>At the end, debrief: was the spec pairing more or less valuable than implementation pairing would have been? What did you catch in the spec that you'd have missed in the keyboard session?</li>
+  <li>Write down the answer in your team wiki. This is the kind of evidence that justifies changing norms.</li>
+</ol>
+
+<div class="callout success">
+  <p><strong>What you should walk away with:</strong> a one-sentence reframe ("the collaborative artifact moved from the keyboard to the spec") that you can use when senior engineers push back on the new shape, and one concrete experiment (relocate a pairing session) you can run this sprint.</p>
+</div>
+
+<h2>Ask follow-up questions</h2>
+
+<ul>
+  <li>"How do I handle the senior engineer who thinks spec review is 'not real work'?"</li>
+  <li>"What if my team is small enough that there's no one to pair with on the spec?"</li>
+  <li>"How does the 'rubber-duck + AI' mode scale when the human can't articulate the problem yet?"</li>
+  <li>"Show me how this looks different in a team that ships mobile apps vs one that ships internal tooling."</li>
+</ul>
+
+<h2>Recommended viewing</h2>
+
+<p>The centaur claim comes early — <span class="timestamp">02:00</span>. Farhan revisits the shape-shift at <span class="timestamp">22:24</span> with the "thousand interns" framing. Both are short, both are load-bearing.</p>
+
+<p>Primary source: <a href="https://www.youtube.com/watch?v=ByOF8qByGHU">What Is Your Job Now, Farhan Thawar | Compile 26</a></p>
+
+<div class="lesson-nav">
+  <a href="0003-responsibility-cant-be-delegated.html">← Lesson 0003: Responsibility Can't Be Delegated</a>
+  <a href="0005-hiring-1000-interns.html">Lesson 0005: Hiring 1,000 Interns →</a>
+</div>
+
+<script>
+document.querySelectorAll('.quiz').forEach(function(quiz) {
+  const opts = quiz.querySelectorAll('.quiz-opt');
+  const fb = quiz.querySelector('.quiz-feedback');
+  opts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      if (opt.classList.contains('disabled')) return;
+      const correct = opt.dataset.correct === 'true';
+      opts.forEach(function(o) {
+        o.classList.add('disabled');
+        if (o.dataset.correct === 'true') o.classList.add('correct');
+      });
+      if (!correct) opt.classList.add('wrong');
+      fb.classList.add('show');
+      fb.classList.add(correct ? 'ok' : 'bad');
+      fb.textContent = correct
+        ? 'Right.'
+        : 'Not quite. Re-read the relevant section above — the point is about where the bottleneck moved.';
+    });
+  });
+});
+</script>
+
+</body>
+</html>

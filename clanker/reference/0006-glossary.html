@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006: Glossary (Reference)</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .ref {
+      background: var(--code-bg);
+      color: var(--ink-soft);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .term-block {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+    }
+    .term-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .term-pron {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+    }
+    .term-def {
+      margin-bottom: 0.75rem;
+    }
+    .term-attrs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 1rem;
+      font-size: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--rule);
+    }
+    .term-attr-label {
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .term-attr-value {
+      color: var(--ink);
+    }
+    .term-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .term-link:hover { text-decoration: underline; }
+    .term-section {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.7rem;
+      color: white;
+      background: var(--ink);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    .index-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 2rem;
+      font-size: 0.9rem;
+    }
+    .index-list li {
+      padding: 0.4rem 0;
+      border-bottom: 1px dashed var(--rule);
+    }
+    .index-list a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .index-list a:hover { text-decoration: underline; }
+    .index-letter {
+      color: var(--ink-soft);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+    .index-term {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .index-section {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">clanker-engineer</span></span>
+  <span><span class="ref">Reference</span></span>
+  <span>Lesson 0006</span>
+  <span>2026-06-29</span>
+</div>
+
+<h1>Glossary</h1>
+<p class="subtitle">Farhan's vocabulary, with operational definitions.</p>
+
+<p>This is a reference document, not a lesson. Use it the way you'd use any glossary: look up a term when it shows up in a conversation, when onboarding a new hire, or when writing a doc that needs to use a shared word the same way the rest of the team does.</p>
+
+<p>Terms are organized into four sections matching the structure of the talk:</p>
+
+<ul>
+  <li><a href="#frame">Frame</a> — the meta-claim about what the work is now</li>
+  <li><a href="#vocabulary">Vocabulary</a> — the terms Farhan uses to describe the new shape</li>
+  <li><a href="#levers">Levers</a> — the policies and structures for managing the transition</li>
+  <li><a href="#strategies">Strategies</a> — the hiring and growth moves</li>
+</ul>
+
+<p>Each term has: a one-line definition, the section it belongs to, the lesson it appears in, and a "use when" note that tells you when to reach for it.</p>
+
+<h2>Index</h2>
+
+<ul class="index-list">
+  <li><span class="index-letter">A</span> <span class="index-term">Augmented engineer</span> <a class="index-section" href="#augmented-engineer">→</a></li>
+  <li><span class="index-letter">B</span> <span class="index-term">Bottleneck, the</span> <a class="index-section" href="#bottleneck">→</a></li>
+  <li><span class="index-letter">C</span> <span class="index-term">Centaur</span> <a class="index-section" href="#centaur">→</a></li>
+  <li><span class="index-letter">C</span> <span class="index-term">Clanker engineer</span> <a class="index-section" href="#clanker">→</a></li>
+  <li><span class="index-letter">C</span> <span class="index-term">Collateral learning</span> <a class="index-section" href="#collateral">→</a></li>
+  <li><span class="index-letter">C</span> <span class="index-term">Council of LLMs</span> <a class="index-section" href="#council">→</a></li>
+  <li><span class="index-letter">L</span> <span class="index-term">Leverage</span> <a class="index-section" href="#leverage">→</a></li>
+  <li><span class="index-letter">P</span> <span class="index-term">Pure human</span> <a class="index-section" href="#pure-human">→</a></li>
+  <li><span class="index-letter">R</span> <span class="index-term">Reflexiveness</span> <a class="index-section" href="#reflexiveness">→</a></li>
+  <li><span class="index-letter">R</span> <span class="index-term">Responsibility, ownership of</span> <a class="index-section" href="#responsibility">→</a></li>
+  <li><span class="index-letter">S</span> <span class="index-term">Spec authoring</span> <a class="index-section" href="#spec">→</a></li>
+  <li><span class="index-letter">T</span> <span class="index-term">Three-mode interview model</span> <a class="index-section" href="#three-mode">→</a></li>
+  <li><span class="index-letter">T</span> <span class="index-term">Thousand interns (analogy)</span> <a class="index-section" href="#thousand-interns">→</a></li>
+</ul>
+
+<h2 id="frame">Frame</h2>
+
+<div class="term-block" id="bottleneck">
+  <div class="term-section">FRAME</div>
+  <div class="term-name">The Bottleneck</div>
+  <div class="term-pron">bot-uhl-neck</div>
+  <div class="term-def">The claim that the rate-limiting step in software development moved, in 2024–2025, from <em>executing</em> (typing, recalling syntax, writing functions) to <em>framing</em> (deciding what to build, validating that it was built right, owning the outcome). The bottleneck is what determines what an engineer's job <em>is</em>. When the bottleneck moves, the job moves.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Explaining why any specific change in the job is happening. "X used to be the bottleneck; now it's not."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="0001-the-bottleneck-moved.html">Lesson 0001</a></div>
+    </div>
+  </div>
+</div>
+
+<h2 id="vocabulary">Vocabulary</h2>
+
+<div class="term-block" id="clanker">
+  <div class="term-section">VOCABULARY</div>
+  <div class="term-name">Clanker engineer</div>
+  <div class="term-pron">klang-ker</div>
+  <div class="term-def">A shorthand for "the engineer who knows how to direct AI work, frame problems, and own outcomes." The name comes from the <em>Star Wars</em> droids — unfeeling working-class machines that get the job done. In this curriculum's usage, "clanker engineer" is not derogatory; it is descriptive. The job <em>is</em> closer to managing capable but unthinking labor than to traditional craft.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Naming the role when writing JDs, leveling guides, or team-charter docs. Useful in opposition to "craft engineer" (the old ideal).</div>
+    </div>
+    <div>
+      <div class="term-attr-label">Tone</div>
+      <div class="term-attr-value">Descriptive, not pejorative. Adjust if your team is not onboard.</div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="centaur">
+  <div class="term-section">VOCABULARY</div>
+  <div class="term-name">Centaur</div>
+  <div class="term-pron">sen-tor</div>
+  <div class="term-def">A half-human, half-AI collaboration shape. The human does the typing-orchestration, the AI does the typing. Borrowed from post-Deep-Blue human + engine chess pairs (1997–2017) that beat either human or engine alone. In coding terms: the dominant 2022–2024 model, where the human was the driver and the LLM was the autocomplete. The shape is now obsolete because typing is no longer the bottleneck.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Naming what the team is moving away from. "We used to work in centaur mode."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="0004-the-end-of-the-centaur.html">Lesson 0004</a>, <a class="term-link" href="#augmented-engineer">Augmented engineer</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="augmented-engineer">
+  <div class="term-section">VOCABULARY</div>
+  <div class="term-name">Augmented engineer</div>
+  <div class="term-pron">awg-men-ted</div>
+  <div class="term-def">The new shape of the role. The human frames problems at a high level (spec, intent, validation criteria), the AI executes at scale, the human owns the outcome. Distinct from "centaur" because the human is no longer at the keyboard orchestrating keystrokes. Distinct from "pure human" because the AI is doing most of the typing.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Naming what the team is moving toward. "We're trying to be augmented engineers."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">Synonyms</div>
+      <div class="term-attr-value">"Clanker engineer" (this curriculum's preferred term), "AI-native engineer"</div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="pure-human">
+  <div class="term-section">VOCABULARY</div>
+  <div class="term-name">Pure human</div>
+  <div class="term-pron">pyoor hyoo-muhn</div>
+  <div class="term-def">The pre-2020 mode. No AI in the loop. Human writes, reviews, ships. Useful as a foil for the augmented model, but the term is not nostalgic — almost no real engineering work operates in pure-human mode today.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Contrasting the three collaboration shapes: pure-human, centaur, augmented.</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="0004-the-end-of-the-centaur.html">Lesson 0004</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="reflexiveness">
+  <div class="term-section">VOCABULARY</div>
+  <div class="term-name">Reflexiveness</div>
+  <div class="term-pron">ri-flek-siv-nes</div>
+  <div class="term-def">Farhan's term for the meta-skill of writing prompts, scripts, and tests, and validating AI outputs. "Reflexive" here means: the loop of frame → execute → validate is now the worker's primary craft, not a side activity. An engineer with high reflexiveness can point AI at a problem, observe the output, course-correct, and converge on a working result.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Naming the skill you are hiring or training for. "We're looking for reflexiveness, not just execution speed."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">Related</div>
+      <div class="term-attr-value"><a class="term-link" href="#leverage">Leverage</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="leverage">
+  <div class="term-section">VOCABULARY</div>
+  <div class="term-name">Leverage</div>
+  <div class="term-pron">lev-er-ij</div>
+  <div class="term-def">A person with high leverage is one whose decisions and direction get multiplied by AI processes. A senior engineer with strong leverage might direct ten parallel AI tasks to a working system. A mid-level engineer with low leverage is bottlenecked by their own typing. The interview signal for leverage is whether the candidate can scale their judgment beyond their own execution speed.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Describing what you are hiring for at the senior level. "We need a principal with leverage."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="#reflexiveness">Reflexiveness</a>, <a class="term-link" href="0005-hiring-1000-interns.html">Lesson 0005</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="collateral">
+  <div class="term-section">VOCABULARY</div>
+  <div class="term-name">Collateral learning</div>
+  <div class="term-pron">kuh-lat-er-ul lur-ning</div>
+  <div class="term-def">The learning that used to happen <em>as a side effect</em> of doing the work — picking up the codebase by reading, fixing, and shipping it. The curriculum's claim is that the centaur model left junior engineers with rich collateral learning; the augmented model leaves them with thin collateral unless deliberate training is added. The name borrows from "collateral damage" — unintended side effects — and is not moralizing; it is a description of a pattern that needs to be replaced with intention.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Naming the gap when a junior appears to be shipping but not internalizing. "Their collateral learning is thin."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="0002-learning-as-collateral.html">Lesson 0002</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="council">
+  <div class="term-section">VOCABULARY</div>
+  <div class="term-name">Council of LLMs</div>
+  <div class="term-pron">koun-sil ov el-el-emz</div>
+  <div class="term-def">A pattern of running multiple AI processes in parallel and synthesizing their outputs. Example: a spec is given to three different LLMs, each produces an implementation, the human reads all three and selects / merges / improves. Farhan describes this as a way to surface options and reduce single-model bias. The cost is time and attention; the benefit is higher quality and faster learning by comparison.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Describing a deliberate strategy for high-stakes work, not a default. "Let's council this — three models, then I'll pick."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">Risk</div>
+      <div class="term-attr-value">Reviewer fatigue. Reserve for work where the cost of being wrong is high.</div>
+    </div>
+  </div>
+</div>
+
+<h2 id="levers">Levers</h2>
+
+<div class="term-block" id="responsibility">
+  <div class="term-section">LEVER</div>
+  <div class="term-name">Ownership of responsibility</div>
+  <div class="term-pron">oh-ner-ship</div>
+  <div class="term-def">A principle for accountability under AI work: responsibility for an outcome rests with the human whose name is on the ship decision, regardless of who or what produced the artifacts. The human cannot delegate understanding of the work to the AI that produced it. This is a policy lever — it sets the line that the team operates on, and is the single most important thing to be explicit about.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Postmortems, ship decisions, promotions, and any conversation where someone says "the AI wrote that."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="0003-responsibility-cant-be-delegated.html">Lesson 0003</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="spec">
+  <div class="term-section">LEVER</div>
+  <div class="term-name">Spec authoring</div>
+  <div class="term-pron">spek aw-ther-ing</div>
+  <div class="term-def">The new site of human craft. A spec is a written artifact that frames a problem — user-facing behavior, edge cases, API shape, scope boundaries. The author commits to the spec; the implementation is delegated. The skill is in the framing: precise enough that AI can build it, opinionated enough that the result is on-bounds, and explicit about what is out of scope.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Naming the artifact that replaces the keyboard as the collaborative site. "Pair on the spec."</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="0004-the-end-of-the-centaur.html">Lesson 0004</a>, <a class="term-link" href="#three-mode">Three-mode interview model</a></div>
+    </div>
+  </div>
+</div>
+
+<h2 id="strategies">Strategies</h2>
+
+<div class="term-block" id="thousand-interns">
+  <div class="term-section">STRATEGY</div>
+  <div class="term-name">Thousand interns (analogy)</div>
+  <div class="term-pron">thou-zend in-terns</div>
+  <div class="term-def">Farhan's analogy for the new working relationship with AI. "It's like having a thousand interns" describes the <em>characteristics</em> of the work: cheap to spawn, needs a clear assignment, output requires review, course-correct cheaply. It is not a slur on interns, and it is not a comment on AI capability. It is a description of the management discipline the work now requires.</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Naming the operating model. Useful for senior engineers who resist being called "managers" — the role has shifted to one with management discipline, even if the title hasn't changed.</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="0005-hiring-1000-interns.html">Lesson 0005</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="term-block" id="three-mode">
+  <div class="term-section">STRATEGY</div>
+  <div class="term-name">Three-mode interview model</div>
+  <div class="term-pron">three-mohd</div>
+  <div class="term-def">A framework for interview design that maps roles to the mode of working they'll actually do. Mode 1: open book with AI (velocity signal). Mode 2: spec authoring with AI as builder (framing signal). Mode 3: learning loops with AI as tutor (trajectory signal). The model is not "use all three on every candidate" — it is "use the mode that matches the role."</div>
+  <div class="term-attrs">
+    <div>
+      <div class="term-attr-label">Use when</div>
+      <div class="term-attr-value">Designing or auditing interview loops. Especially useful when your current loop is mostly "whiteboard without AI" — that is tuned for the pre-bottleneck-shift era.</div>
+    </div>
+    <div>
+      <div class="term-attr-label">See also</div>
+      <div class="term-attr-value"><a class="term-link" href="0005-hiring-1000-interns.html">Lesson 0005</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="callout">
+  <p><strong>How to use this document:</strong> send the link to a new hire on day one. They can read it in 15 minutes and have a working vocabulary for the rest of the curriculum. When you write internal docs (postmortems, RFCs, design reviews), use these terms. The point of a shared vocabulary is that it makes the conversations shorter.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0005-hiring-1000-interns.html">← Lesson 0005: Hiring 1,000 Interns</a>
+  <a href="index.html">Curriculum Index →</a>
+</div>
+
+</body>
+</html>

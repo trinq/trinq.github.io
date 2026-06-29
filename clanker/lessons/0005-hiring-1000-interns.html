@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005: Hiring 1,000 Interns</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+      --mode1: #2980b9;
+      --mode2: #8e44ad;
+      --mode3: #16a085;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: var(--ok);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .quote {
+      font-style: italic;
+      color: var(--ink-soft);
+      border-left: 3px solid var(--rule);
+      padding-left: 1rem;
+      margin: 1rem 0;
+    }
+    .quote-attribution {
+      display: block;
+      margin-top: 0.4rem;
+      font-style: normal;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .modes {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .mode {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .mode-header {
+      padding: 1rem 1.25rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .mode-1 .mode-header { background: var(--mode1); }
+    .mode-2 .mode-header { background: var(--mode2); }
+    .mode-3 .mode-header { background: var(--mode3); }
+    .mode-num {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .mode-name {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .mode-body {
+      padding: 1rem 1.25rem;
+    }
+    .mode-desc {
+      margin-bottom: 0.75rem;
+    }
+    .mode-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .mode-meta-label {
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .mode-meta-value {
+      color: var(--ink);
+    }
+    .ratio-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .ratio-table th, .ratio-table td {
+      border: 1px solid var(--rule);
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+    }
+    .ratio-table th {
+      background: var(--code-bg);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .ratio-table .arrow {
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .ratio-table .highlight {
+      background: #fff3e0;
+    }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .quiz-q {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-opt {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      margin: 0.4rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.92rem;
+    }
+    .quiz-opt.correct {
+      background: #e8f5e9;
+      border-color: var(--ok);
+    }
+    .quiz-opt.wrong {
+      background: #fdecea;
+      border-color: var(--accent);
+    }
+    .quiz-opt.disabled { cursor: default; opacity: 0.7; }
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok { background: #e8f5e9; color: #2e7d32; }
+    .quiz-feedback.bad { background: #fdecea; color: var(--accent); }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .exercise-list { list-style: decimal; }
+    .timestamp {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    .principle {
+      background: #fff;
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    .principle-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .principle-attr {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">clanker-engineer</span></span>
+  <span>Lesson 0005</span>
+  <span>2026-06-29</span>
+</div>
+
+<h1>Hiring 1,000 Interns</h1>
+<p class="subtitle">The three-mode interview model and the inverted seniority mix.</p>
+
+<p>Of all the claims in the talk, this is the one most likely to land wrong in your team's head. "It's like having a thousand interns" sounds like a downgrade. It isn't. It's a description of a new operating model — and it has direct consequences for who you hire and how you interview them.</p>
+
+<p>Farhan makes this point at <span class="timestamp">22:24</span>: when AI builds the code, you become the manager of a giant team of interns. The first instinct is to react — "I'm not a manager, I'm an engineer." The lesson is to let the analogy do its work before reacting.</p>
+
+<h2>The inversion Farhan describes</h2>
+
+<p>The traditional engineering seniority mix:</p>
+
+<ul>
+  <li>Few senior engineers (set direction, mentor, ship the hard stuff)</li>
+  <li>Many mid-level engineers (the bulk of execution)</li>
+  <li>Few junior engineers (learning the craft)</li>
+</ul>
+
+<p>This shape made sense when the bottleneck was execution. You needed plenty of mid-levels to translate direction into working code.</p>
+
+<p>Farhan's claim: under AI, the inverted shape works better:</p>
+
+<ul>
+  <li>More senior engineers (set direction, write specs, validate output)</li>
+  <li>Fewer mid-level engineers (the bulk of execution has moved to AI)</li>
+  <li>More junior engineers (cheaper to produce what was previously mid-level work, with AI filling in the gaps)</li>
+</ul>
+
+<div class="callout warning">
+  <p><strong>Caveat:</strong> Farhan is describing a direction of travel, not a destination. Your current mix probably shouldn't become 50% senior / 20% mid / 30% junior overnight. The lesson is that the mix should be <em>moving</em>, and that the trajectory matters more than the snapshot.</p>
+</div>
+
+<h2>Why this isn't a downgrade</h2>
+
+<p>Calling the new model "a thousand interns" is deliberately provocative. It is not a slur on interns. It is describing the <em>characteristics</em> of the work:</p>
+
+<ul>
+  <li><strong>Cheap to spawn.</strong> Interns (and AI processes) are cheap to start, cheap to discard, cheap to scale.</li>
+  <li><strong>Need a clear assignment.</strong> Vague instructions produce garbage. Specificity is the cost of admission.</li>
+  <li><strong>Output requires review.</strong> The manager's job is not to second-guess every keystroke; it is to assess the output.</li>
+  <li><strong>Course-correct cheaply.</strong> When output is wrong, you throw it away and re-spawn rather than debug-in-place.</li>
+</ul>
+
+<p>None of these are about intelligence. They are about the shape of the working relationship. A great human intern is a fast learner who produces output your team has to validate. That is exactly the relationship you have with the LLM.</p>
+
+<div class="quote">
+  The vibe is not that the AI is dumb. The vibe is that the AI is unlimited, fast, and doesn't get bored — and that requires a different management discipline than the traditional craft discipline.
+  <span class="quote-attribution">— Reframe</span>
+</div>
+
+<h2>The three-mode interview model</h2>
+
+<p>Farhan describes Shopify interviewing in three modes, roughly:</p>
+
+<div class="modes">
+
+  <div class="mode mode-1">
+    <div class="mode-header">
+      <span class="mode-num">MODE 1</span>
+      <span class="mode-name">Open book, with AI</span>
+    </div>
+    <div class="mode-body">
+      <div class="mode-desc">
+        Candidate is allowed to use any resource: Google, Stack Overflow, AI assistants, their own tools. You're measuring how they <em>actually work</em>, not how they perform under artificial deprivation.
+      </div>
+      <div class="mode-meta">
+        <div>
+          <div class="mode-meta-label">Signal for</div>
+          <div class="mode-meta-value">Real-world engineering velocity</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Weakness</div>
+          <div class="mode-meta-value">Doesn't test memorization or focus</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Good fit</div>
+          <div class="mode-meta-value">Senior ICs, staff, principals</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Farhan's term</div>
+          <div class="mode-meta-value">"Leverage" — what can this person multiply?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mode mode-2">
+    <div class="mode-header">
+      <span class="mode-num">MODE 2</span>
+      <span class="mode-name">Spec authoring, with AI as builder</span>
+    </div>
+    <div class="mode-body">
+      <div class="mode-desc">
+        Candidate writes a spec (1–2 pages) for a non-trivial feature. An LLM (the same one used at Shopify) implements it. The candidate's job is to validate, push back, course-correct. You're measuring how they think about problem framing and quality bar.
+      </div>
+      <div class="mode-meta">
+        <div>
+          <div class="mode-meta-label">Signal for</div>
+          <div class="mode-meta-value">Senior ICs, tech leads, eng managers</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Weakness</div>
+          <div class="mode-meta-value">Specs are a learned skill; new grads may not have it yet</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Good fit</div>
+          <div class="mode-meta-value">Anyone being hired to direct AI work</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Farhan's term</div>
+          <div class="mode-meta-value">"Reflexiveness" — meta-skill of managing AI processes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mode mode-3">
+    <div class="mode-header">
+      <span class="mode-num">MODE 3</span>
+      <span class="mode-name">Learning loops, with AI as tutor</span>
+    </div>
+    <div class="mode-body">
+      <div class="mode-desc">
+        Candidate is given a problem they cannot solve directly with AI. They are asked to <em>learn alongside</em> AI — using it to teach themselves, not just to produce output. You're measuring curiosity, meta-learning, and the ability to incorporate AI into a personal development loop.
+      </div>
+      <div class="mode-meta">
+        <div>
+          <div class="mode-meta-label">Signal for</div>
+          <div class="mode-meta-value">Juniors, career-switchers, growth potential</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Weakness</div>
+          <div class="mode-meta-value">Doesn't test whether they ship today</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Good fit</div>
+          <div class="mode-meta-value">Hiring for trajectory, not current output</div>
+        </div>
+        <div>
+          <div class="mode-meta-label">Farhan's term</div>
+          <div class="mode-meta-value">"Learning speed" — what compound-rate grows their skill</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p>The model is not "use all three on every candidate." It is "the interview should reflect what the role will <em>actually do</em>, and what people will actually do in 2026 includes AI."</p>
+
+<h2>Mapping modes to levels</h2>
+
+<p>Farhan does not give a canonical mapping. The working heuristic:</p>
+
+<table class="ratio-table">
+  <thead>
+    <tr>
+      <th>Role level</th>
+      <th>Primary mode</th>
+      <th>Secondary mode</th>
+      <th>Why</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="highlight">
+      <td>Senior / Staff / Principal IC</td>
+      <td>Mode 1 (open book with AI)</td>
+      <td>Mode 2 (spec authoring)</td>
+      <td>Direction-setters need both velocity and framing</td>
+    </tr>
+    <tr>
+      <td>Tech Lead / EM</td>
+      <td>Mode 2 (spec authoring)</td>
+      <td>Mode 1 (open book)</td>
+      <td>The job is directing AI work; spec authoring is the test</td>
+    </tr>
+    <tr>
+      <td>Mid-level IC</td>
+      <td>Mode 1 (open book with AI)</td>
+      <td>Mode 3 (learning loops)</td>
+      <td>Shipping is the work; growth still matters</td>
+    </tr>
+    <tr class="highlight">
+      <td>Junior / New grad</td>
+      <td>Mode 3 (learning loops)</td>
+      <td>Mode 1 (open book)</td>
+      <td>Trajectory dominates current output</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The reframing matters because the *interview shape* is what telegraphs to candidates what you value. If your interview is still 45 minutes of whiteboard coding, you are saying: "what we value is what you can recall unassisted in a room with no tools." That is now a narrow slice of the work.</p>
+
+<h2>The seniority mix that follows</h2>
+
+<p>If you take the interview model seriously, the hiring strategy that emerges is different:</p>
+
+<ul>
+  <li><strong>Hire more juniors than the market says is wise.</strong> AI fills in the execution gap. The growth-trajectory signal (Mode 3) is the variable that determines long-term ROI.</li>
+  <li><strong>Hire fewer mid-levels.</strong> Mid-level execution is the layer AI substitutes for. Not eliminating the level — but not chasing it.</li>
+  <li><strong>Compete aggressively for senior staff / principal talent.</strong> Spec authoring and direction are scarce. Direction is what AI can't substitute for yet.</li>
+</ul>
+
+<div class="principle">
+  <div class="principle-text">Hire for direction at the top,<br>for trajectory at the bottom,<br>and let AI handle the middle.</div>
+  <div class="principle-attr">A paraphrase of Farhan's mix recommendation</div>
+</div>
+
+<div class="callout success">
+  <p><strong>Why this is good news for juniors:</strong> the worst time in decades to be a junior was 2023, when AI was good enough to write code but not good enough to be trusted. The output of a junior is now competitive with what was previously a mid-level, because the spec is the same and AI fills in the implementation. The junior who learns fastest is the best hire.</p>
+</div>
+
+<h2>How to actually pilot this in your team</h2>
+
+<p>You don't redo your interview loop overnight. Two concrete moves:</p>
+
+<ol class="exercise-list">
+  <li><strong>Add Mode 1 (open book with AI) to one interview slot.</strong> Pick an existing take-home or system design round and explicitly state: "use any tool you want, including AI assistants." See how candidates behave. Many will be uncomfortable at first — that's the data.</li>
+  <li><strong>Track mode outcomes for 2 quarters.</strong> Map which mode each new hire used during their loop. After they're onboarded 6 months, see if mode predicts performance. This is the evidence you'll need before scaling the experiment.</li>
+</ol>
+
+<h2>Connection to lessons 0002 and 0004</h2>
+
+<ul>
+  <li><strong>From 0002 (learning as collateral):</strong> juniors learn fastest, and AI lets them produce at mid-level velocity. The combination is "junior learns, AI ships" — a hiring model that compounds in a way the previous model didn't.</li>
+  <li><strong>From 0004 (end of the centaur):</strong> the centaur's heyday was mid-level work — translating direction into keystrokes. That layer is what AI substituted. The job is now direction at top, execution handled by AI, validation by humans. The mix follows.</li>
+</ul>
+
+<h2>Risks and what Farhan doesn't say</h2>
+
+<p>The hiring advice is internally consistent but carries risks he doesn't address:</p>
+
+<ul>
+  <li><strong>Mid-levels are the future senior pool.</strong> If you underhire at the mid-level, you starve the senior pipeline. A pure trajectory bet can compound wrong if "fast learner" turns out to mean "fast context-switcher."</li>
+  <li><strong>Spec authoring can be learned.</strong> Don't read Mode 3 as "we're stuck, only seniors can spec." Mid-levels and even strong juniors can learn this. The interview gate you set sends a signal about what your team believes.</li>
+  <li><strong>Open-book interviews can mask understanding.</strong> Mode 1 is real-world friendly but can hide whether the candidate understands what they shipped. Plan a Mode 2 follow-up for senior hires.</li>
+  <li><strong>AI fluency ≠ engineering quality.</strong> "Great at prompting" is a skill, but it isn't a substitute for engineering judgment. The mix still needs people who can read the output.</li>
+</ul>
+
+<h2>Quiz</h2>
+
+<div class="quiz" id="q1">
+  <div class="quiz-q">1. Farhan's "thousand interns" analogy describes:</div>
+  <label class="quiz-opt" data-correct="false">AI as currently less capable than human engineers</label>
+  <label class="quiz-opt" data-correct="true">The character of the working relationship: cheap to spawn, needs clear specs, output requires review</label>
+  <label class="quiz-opt" data-correct="false">A plan to replace Shopify's engineering team with interns</label>
+  <label class="quiz-opt" data-correct="false">A specific hiring program called "thousand interns"</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="quiz-q">2. Per the three-mode model, Mode 2 (spec authoring) primarily measures:</div>
+  <label class="quiz-opt" data-correct="false">Code memorization and recall</label>
+  <label class="quiz-opt" data-correct="false">Ability to perform under artificial constraints</label>
+  <label class="quiz-opt" data-correct="true">Problem framing and quality bar when directing AI work</label>
+  <label class="quiz-opt" data-correct="false">Pure typing speed and autocomplete throughput</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="quiz-q">3. Why does the seniority-mix recommendation say "hire more juniors than the market says is wise"?</div>
+  <label class="quiz-opt" data-correct="false">Juniors are cheaper and easier to manage</label>
+  <label class="quiz-opt" data-correct="true">AI fills the execution gap, so junior trajectory becomes a higher-ROI signal than mid-level current output</label>
+  <label class="quiz-opt" data-correct="false">Juniors don't need to learn AI tools</label>
+  <label class="quiz-opt" data-correct="false">Senior engineers are unreliable with AI</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="quiz-q">4. Which interview-mode assignment is most consistent with the lesson's mapping?</div>
+  <label class="quiz-opt" data-correct="false">Junior: Mode 1 (open book with AI)</label>
+  <label class="quiz-opt" data-correct="false">Principal: Mode 3 (learning loops)</label>
+  <label class="quiz-opt" data-correct="true">Tech Lead: Mode 2 (spec authoring)</label>
+  <label class="quiz-opt" data-correct="false">All roles: all three modes equally</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q5">
+  <div class="quiz-q">5. Which risk does Farhan NOT directly address but this lesson flags?</div>
+  <label class="quiz-opt" data-correct="false">AI tools are expensive</label>
+  <label class="quiz-opt" data-correct="true">Underhiring mid-levels can starve the future senior pipeline</label>
+  <label class="quiz-opt" data-correct="false">Spec authoring requires years of training</label>
+  <label class="quiz-opt" data-correct="false">Mode 1 interviews use AI tools that may have bugs</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<h2>Exercise: Audit one interview loop</h2>
+
+<ol class="exercise-list">
+  <li>Pull your most recent interview loop (the one a successful candidate went through, or a recent fail).</li>
+  <li>Score each round against the three modes: does this round measure Mode 1, Mode 2, Mode 3, or "something else"?</li>
+  <li>If the answer is "something else" for every round, your loop is tuned for the pre-AI era. Note where you'd insert Mode 1 or 2.</li>
+  <li>Pick one round to redesign this quarter. Pick the one that, if redesigned, would change your signal the most. Don't redesign everything at once.</li>
+  <li>Run the redesigned round for 3 candidates before declaring success or failure. Single-rounds are noisy.</li>
+</ol>
+
+<div class="callout success">
+  <p><strong>What you should walk away with:</strong> a one-line reframe ("hire for direction at the top, for trajectory at the bottom, let AI handle the middle") and one concrete change to your interview loop. The change should be observable in candidates within the quarter.</p>
+</div>
+
+<h2>Ask follow-up questions</h2>
+
+<ul>
+  <li>"How do I sell Mode 1 (open book) to a hiring manager who's worried about cheating?"</li>
+  <li>"What does Mode 2 look like for a junior who has never written a spec?"</li>
+  <li>"How does this interview model interact with diversity goals — does open-book favor certain backgrounds?"</li>
+  <li>"Show me how to run an internal version of Mode 3 for senior engineers who need to ramp on a new codebase."</li>
+</ul>
+
+<h2>Recommended viewing</h2>
+
+<p>The "thousand interns" framing lands at <span class="timestamp">22:24</span>. The interview model is implied through the talk — the implicit frame is "we're hiring people to direct AI work, not to do AI work." Most explicit re-statement of the trust-but-validate loop comes through the spec and validation discussion across the talk.</p>
+
+<p>Primary source: <a href="https://www.youtube.com/watch?v=ByOF8qByGHU">What Is Your Job Now, Farhan Thawar | Compile 26</a></p>
+
+<div class="lesson-nav">
+  <a href="0004-the-end-of-the-centaur.html">← Lesson 0004: The End of the Centaur</a>
+  <a href="0006-glossary.html">Lesson 0006: Glossary (Reference) →</a>
+</div>
+
+<script>
+document.querySelectorAll('.quiz').forEach(function(quiz) {
+  const opts = quiz.querySelectorAll('.quiz-opt');
+  const fb = quiz.querySelector('.quiz-feedback');
+  opts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      if (opt.classList.contains('disabled')) return;
+      const correct = opt.dataset.correct === 'true';
+      opts.forEach(function(o) {
+        o.classList.add('disabled');
+        if (o.dataset.correct === 'true') o.classList.add('correct');
+      });
+      if (!correct) opt.classList.add('wrong');
+      fb.classList.add('show');
+      fb.classList.add(correct ? 'ok' : 'bad');
+      fb.textContent = correct
+        ? 'Right.'
+        : 'Not quite. Re-read the relevant section above — the analogy is about the character of the working relationship, not the capability.';
+    });
+  });
+});
+</script>
+
+</body>
+</html>

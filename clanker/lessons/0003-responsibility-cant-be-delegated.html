@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: Responsibility Can't Be Delegated</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: var(--ok);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .quote {
+      font-style: italic;
+      color: var(--ink-soft);
+      border-left: 3px solid var(--rule);
+      padding-left: 1rem;
+      margin: 1rem 0;
+    }
+    .quote-attribution {
+      display: block;
+      margin-top: 0.4rem;
+      font-style: normal;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .principle {
+      background: #fff;
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    .principle-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .principle-attr {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .pr-template {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+    .pr-header {
+      background: #f5f3ef;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .pr-title {
+      padding: 1rem 1.25rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--rule);
+    }
+    .pr-section { padding: 1rem 1.25rem; border-bottom: 1px solid var(--rule); }
+    .pr-section:last-child { border-bottom: none; }
+    .pr-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin-bottom: 0.4rem;
+      font-weight: 700;
+    }
+    .pr-section ul { margin: 0; padding-left: 1.25rem; }
+    .pr-tag-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .pr-tag {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.78rem;
+    }
+    .pr-tag.required {
+      background: #fdecea;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .pr-tag.optional {
+      background: #e8f5e9;
+      border-color: var(--ok);
+      color: #2e7d32;
+    }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .quiz-q {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-opt {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      margin: 0.4rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.92rem;
+    }
+    .quiz-opt.correct {
+      background: #e8f5e9;
+      border-color: var(--ok);
+    }
+    .quiz-opt.wrong {
+      background: #fdecea;
+      border-color: var(--accent);
+    }
+    .quiz-opt.disabled { cursor: default; opacity: 0.7; }
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok { background: #e8f5e9; color: #2e7d32; }
+    .quiz-feedback.bad { background: #fdecea; color: var(--accent); }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .exercise-list { list-style: decimal; }
+    .timestamp {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">clanker-engineer</span></span>
+  <span>Lesson 0003</span>
+  <span>2026-06-29</span>
+</div>
+
+<h1>Responsibility Can't Be Delegated</h1>
+<p class="subtitle">The one policy lever you actually control as a lead.</p>
+
+<p>This is the most concrete lesson in the series. Of everything Farhan says, this is the part that translates directly into something you can write down on Monday and ship on Tuesday: a code review policy. No vendor evaluation. No tool rollout. Just a rule about whose name goes where.</p>
+
+<h2>The principle</h2>
+
+<p>Farhan is brief at <span class="timestamp">20:46</span>: "We do not let AI take responsibility at Shopify. Responsibility can be shared, but it cannot be given away. Your name on the PR."</p>
+
+<div class="principle">
+  <div class="principle-text">Responsibility can be shared,<br>but it cannot be given away.</div>
+  <div class="principle-attr">Farhan Thawar, paraphrased at 20:46</div>
+</div>
+
+<p>This is not a slogan. It is a precise position with a precise consequence: when something goes wrong in production — an outage, a security incident, a customer-visible regression — there is a person who answers for it. That person is the one whose name is on the PR. The LLM is not a person. It cannot answer. So it cannot own the outcome.</p>
+
+<h2>Why this is the lever you actually control</h2>
+
+<p>Most of the shifts in the talk are <em>descriptive</em> — they describe where the SDLC time goes now, what bottlenecks look like, why learning is the collateral. Useful framing. Not directly actionable.</p>
+
+<p>Responsibility is <em>prescriptive</em>. You can write it down. You can enforce it in your team's PR template. You can audit it in retros. It is the single sentence Farhan gives you that can become a policy without buying a new tool.</p>
+
+<div class="callout">
+  <p><strong>The leadership gap:</strong> most AI rollouts stall because the lead asks "should we adopt Cursor?" or "which model?". Both are tools questions. The harder question — and the one your team is waiting for you to answer — is "who owns what the AI ships?" This is that answer.</p>
+</div>
+
+<h2>The shared-but-not-given distinction</h2>
+
+<p>Farhan's wording matters: <em>shared, not given away</em>. The principle permits:</p>
+
+<ul>
+  <li>Tagging the LLM in the PR description (e.g., <code>Co-authored-by: cursor[bot]</code>) — transparency about how the code was made</li>
+  <li>Using AI for review, with a human reviewer still required to merge</li>
+  <li>Pair-programming with AI as the second pair — the human is still the pilot</li>
+  <li>Distributing review load across multiple humans — each owns their approval</li>
+</ul>
+
+<p>The principle forbids:</p>
+
+<ul>
+  <li>Pushing AI-authored code to production without a human signer</li>
+  <li>Claiming AI made the change when something breaks ("the bot did it")</li>
+  <li>Treating the LLM as a co-owner of the outcome</li>
+  <li>Letting AI-only PRs merge on weekends when no human is around to sign</li>
+</ul>
+
+<h2>What the policy looks like in practice</h2>
+
+<p>Here is a draft PR template you can adapt. The required fields are the ones that enforce the principle; the optional fields are transparency improvements.</p>
+
+<div class="pr-template">
+  <div class="pr-header">/.github/pull_request_template.md</div>
+  <div class="pr-title">
+    [Short summary of change]
+  </div>
+  <div class="pr-section">
+    <div class="pr-label">Author & Responsibility</div>
+    <div class="pr-tag-row">
+      <span class="pr-tag required">Required: human signer</span>
+      <span class="pr-tag optional">Optional: AI tool used (cursor / claude-code / copilot / other)</span>
+    </div>
+    <p style="margin-top: 0.5rem; font-size: 0.88rem;">By opening this PR, I confirm that I have reviewed every line of the diff, understand its behavior in production, and accept responsibility for the outcome. AI assistance is permitted and will be tagged in the description, but ownership of this change is mine.</p>
+  </div>
+  <div class="pr-section">
+    <div class="pr-label">AI assistance (optional, encouraged)</div>
+    <ul>
+      <li>Tool(s) used: ____________</li>
+      <li>What AI did: ____________ (e.g., initial draft, refactor, test scaffolding, review)</li>
+      <li>What I did: ____________ (e.g., problem framing, validation, architecture choice)</li>
+    </ul>
+  </div>
+  <div class="pr-section">
+    <div class="pr-label">Reviewers</div>
+    <ul>
+      <li>Human reviewer(s): required for merge</li>
+      <li>AI review: encouraged (Council of LLMs, Cursor review, etc.) but does not replace human signoff</li>
+    </ul>
+  </div>
+</div>
+
+<p>Notice what is <em>not</em> in the template: a section for "AI approval." There is no such thing. AI can review. A human must sign.</p>
+
+<h2>The "LGTM" trap and how this policy closes it</h2>
+
+<p>In lesson 0001 we saw that humans were not actually reviewing code well — the default "LGTM" was rubber-stamping. In lesson 0002 we saw that code review wasn't really producing learning either. The responsibility principle closes that loop in one move:</p>
+
+<p>If you must put your name on every PR, "LGTM" becomes a heavier word. You cannot casually approve code you have not read, because you now own it. The policy forces the human to actually read, because the human is now actually accountable.</p>
+
+<div class="callout success">
+  <p><strong>The compounding effect:</strong> when humans are accountable, they read more carefully. When they read more carefully, they catch more. When they catch more, AI-generated bugs surface earlier. The policy doesn't make the AI better — it makes the human's attention load-bearing again.</p>
+</div>
+
+<h2>Edge cases</h2>
+
+<p>Some situations deserve explicit handling before you publish the policy:</p>
+
+<ul>
+  <li><strong>Auto-generated dependency bumps.</strong> Dependabot-style PRs have no human signer by default. Add a rule: every auto-PR must be co-signed by an owner of the affected module before merge.</li>
+  <li><strong>Hotfixes during an incident.</strong> The pressure to skip review is highest here. The rule: hotfixes still need a human signer, even if the human is the on-call. Sign on-call, not zero signers.</li>
+  <li><strong>Generated migrations.</strong> AI migrations can be large and look correct. The rule: any migration touching >N rows or schema needs an explicit "I have read this migration" line in the PR. Farhan does not specify N; pick one your team is comfortable with and write it down.</li>
+  <li><strong>AI-only commits in a shared repo.</strong> Some teams want AI to open drafts with no human author. The rule: drafts are fine. Merge requires human signer.</li>
+</ul>
+
+<h2>What you should not write into the policy</h2>
+
+<p>Avoid these — they sound responsible but erode the principle:</p>
+
+<ul>
+  <li>"AI must be cited in every commit" — useful for transparency, but the policy lever is <em>who owns the PR</em>, not who wrote the lines. Conflating them leads to theater.</li>
+  <li>"Every PR must be reviewed by AI before a human" — encourages rubber-stamping in the other direction. Review load is the human's choice.</li>
+  <li>"If AI confidence is below X%, require human review" — there is no well-defined AI confidence score that maps to a code property. False precision.</li>
+</ul>
+
+<h2>Quiz</h2>
+
+<div class="quiz" id="q1">
+  <div class="quiz-q">1. Per Farhan, "responsibility can be shared, but cannot be given away" most directly means:</div>
+  <label class="quiz-opt" data-correct="false">Multiple humans must sign every PR to share the burden</label>
+  <label class="quiz-opt" data-correct="true">A human owns the PR; AI can contribute but cannot be the accountable party</label>
+  <label class="quiz-opt" data-correct="false">Engineers must personally write every line of code they ship</label>
+  <label class="quiz-opt" data-correct="false">AI should not be mentioned in commit messages</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="quiz-q">2. Your team wants to let AI open PRs overnight that auto-merge if no human pushes back in 4 hours. What's wrong with this per the responsibility principle?</div>
+  <label class="quiz-opt" data-correct="false">It violates license terms with the AI vendor</label>
+  <label class="quiz-opt" data-correct="false">Auto-merge is always slower than manual review</label>
+  <label class="quiz-opt" data-correct="true">There is no human signer; responsibility has been given to a timer</label>
+  <label class="quiz-opt" data-correct="false">The 4-hour window is too short for global teams</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="quiz-q">3. Why does naming a human on the PR make code review more rigorous, per the bottleneck framing?</div>
+  <label class="quiz-opt" data-correct="false">It triggers an additional automated linter</label>
+  <label class="quiz-opt" data-correct="false">It increases the time spent on review mechanically</label>
+  <label class="quiz-opt" data-correct="true">It makes the reviewer's attention load-bearing again — casual LGTM becomes a heavier signature</label>
+  <label class="quiz-opt" data-correct="false">It reduces the number of PRs the team has to review</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="quiz-q">4. Which of these is consistent with the responsibility principle?</div>
+  <label class="quiz-opt" data-correct="false">AI signs the PR on behalf of the on-call engineer</label>
+  <label class="quiz-opt" data-correct="true">Human opens the PR, tags the AI tool used, signs as owner</label>
+  <label class="quiz-opt" data-correct="false">Merge bot rejects any PR that mentions AI in the description</label>
+  <label class="quiz-opt" data-correct="false">Every PR must be reviewed by at least three human reviewers</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<h2>Exercise: Write your team's policy</h2>
+
+<ol class="exercise-list">
+  <li>Open your team's PR template (or create one if it doesn't exist).</li>
+  <li>Add the "Author & Responsibility" section from the draft above. Adjust the wording so it sounds like your team, not like Farhan.</li>
+  <li>Decide the answer to the four edge cases above. Write each answer down in your team wiki — don't leave them implicit.</li>
+  <li>Pick a date to flip the template on. Two weeks is usually right: long enough to socialize, short enough to not slip.</li>
+  <li>At the rollout date, walk through one example PR with the team and demonstrate how the new fields get filled in. Don't just enable the template and hope.</li>
+</ol>
+
+<div class="callout success">
+  <p><strong>What you should walk away with:</strong> a one-sentence policy ("the human whose name is on the PR owns the outcome") and a draft PR template that enforces it. Two documents. Monday morning. That's the lever.</p>
+</div>
+
+<h2>Ask follow-up questions</h2>
+
+<ul>
+  <li>"How do I get buy-in for this from a senior engineer who thinks it's bureaucratic?"</li>
+  <li>"What if my team is too small for a real PR template — is there a lighter version?"</li>
+  <li>"How does this interact with the Council of LLMs idea from Farhan — does AI review count?"</li>
+  <li>"Show me how this would look different in a regulated industry (finance, health) vs a startup."</li>
+</ul>
+
+<h2>Recommended viewing</h2>
+
+<p>Short segment: <span class="timestamp">20:46</span> through <span class="timestamp">22:00</span>. Farhan says the words "responsibility can't be given away" almost in passing — the principle is so central to him he doesn't elaborate.</p>
+
+<p>Primary source: <a href="https://www.youtube.com/watch?v=ByOF8qByGHU">What Is Your Job Now, Farhan Thawar | Compile 26</a></p>
+
+<div class="lesson-nav">
+  <a href="0002-learning-as-collateral.html">← Lesson 0002: Learning as the Collateral</a>
+  <a href="0004-the-end-of-the-centaur.html">Lesson 0004: The End of the Centaur →</a>
+</div>
+
+<script>
+document.querySelectorAll('.quiz').forEach(function(quiz) {
+  const opts = quiz.querySelectorAll('.quiz-opt');
+  const fb = quiz.querySelector('.quiz-feedback');
+  opts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      if (opt.classList.contains('disabled')) return;
+      const correct = opt.dataset.correct === 'true';
+      opts.forEach(function(o) {
+        o.classList.add('disabled');
+        if (o.dataset.correct === 'true') o.classList.add('correct');
+      });
+      if (!correct) opt.classList.add('wrong');
+      fb.classList.add('show');
+      fb.classList.add(correct ? 'ok' : 'bad');
+      fb.textContent = correct
+        ? 'Right.'
+        : 'Not quite. Re-read the relevant section above — the principle is precise about shared vs delegated.';
+    });
+  });
+});
+</script>
+
+</body>
+</html>

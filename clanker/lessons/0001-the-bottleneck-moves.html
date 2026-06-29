@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: The Bottleneck Always Moves</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: var(--ok);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .quote {
+      font-style: italic;
+      color: var(--ink-soft);
+      border-left: 3px solid var(--rule);
+      padding-left: 1rem;
+      margin: 1rem 0;
+    }
+    .sdlc {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+    }
+    .sdlc-cell {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .sdlc-cell.big {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .sdlc-cell.big-now {
+      background: #2c3e50;
+      color: white;
+      border-color: #2c3e50;
+    }
+    .sdlc-cell .label { font-weight: 700; }
+    .sdlc-cell .size {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      opacity: 0.85;
+      margin-top: 0.25rem;
+    }
+    .sdlc-legend {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .sdlc-legend span { display: flex; align-items: center; gap: 0.3rem; }
+    .sdlc-legend .swatch {
+      width: 0.9rem;
+      height: 0.9rem;
+      border-radius: 2px;
+      display: inline-block;
+    }
+    .sdlc-legend .red { background: var(--accent); }
+    .sdlc-legend .dark { background: #2c3e50; }
+    .sdlc-legend .light { background: #fff; border: 1px solid var(--rule); }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .quiz-q {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-opt {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      margin: 0.4rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.92rem;
+    }
+    .quiz-opt.correct {
+      background: #e8f5e9;
+      border-color: var(--ok);
+    }
+    .quiz-opt.wrong {
+      background: #fdecea;
+      border-color: var(--accent);
+    }
+    .quiz-opt.disabled { cursor: default; opacity: 0.7; }
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok { background: #e8f5e9; color: #2e7d32; }
+    .quiz-feedback.bad { background: #fdecea; color: var(--accent); }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .exercise-list { list-style: decimal; }
+    .timestamp {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">clanker-engineer</span></span>
+  <span>Lesson 0001</span>
+  <span>2026-06-29</span>
+</div>
+
+<h1>The Bottleneck Always Moves</h1>
+<p class="subtitle">The single idea that explains every other shift in Farhan Thawar's talk.</p>
+
+<p>If you watch the whole 26 minutes of Farhan's talk, you will hear about coding, reviewing, hiring, infrastructure, prototypes, and interns. Underneath all of it is one idea borrowed from Eliyahu Goldratt's <em>The Goal</em>: <strong>the bottleneck always moves</strong>.</p>
+
+<p>This is the first lesson because if you can explain this idea in your own words, you can explain the rest of the talk in your own words. It is the seed.</p>
+
+<h2>The SDLC, before</h2>
+
+<p>For most of software history, the time-consuming part of building software was the coding. The SDLC looked roughly like this:</p>
+
+<div class="sdlc-legend">
+  <span><span class="swatch red"></span> where the bulk of time went</span>
+  <span><span class="swatch light"></span> other stages</span>
+</div>
+<div class="sdlc">
+  <div class="sdlc-cell"><div class="label">Plan</div><div class="size">small</div></div>
+  <div class="sdlc-cell big"><div class="label">Code</div><div class="size">bulk</div></div>
+  <div class="sdlc-cell"><div class="label">Test</div><div class="size">small</div></div>
+  <div class="sdlc-cell"><div class="label">Review</div><div class="size">small</div></div>
+  <div class="sdlc-cell"><div class="label">Ship</div><div class="size">small</div></div>
+</div>
+
+<p>Farhan calls this out at <span class="timestamp">00:55</span>: the "big blue box" was always the coding step.</p>
+
+<h2>The SDLC, now</h2>
+
+<p>When AI writes most of the code, the box that used to be huge shrinks. Time has to go somewhere — and it goes to the stages around the coding:</p>
+
+<div class="sdlc-legend">
+  <span><span class="swatch dark"></span> where the bulk of time goes now</span>
+</div>
+<div class="sdlc">
+  <div class="sdlc-cell big-now"><div class="label">Plan</div><div class="size">bigger</div></div>
+  <div class="sdlc-cell"><div class="label">Code</div><div class="size">smaller</div></div>
+  <div class="sdlc-cell big-now"><div class="label">Validate</div><div class="size">bigger</div></div>
+  <div class="sdlc-cell big-now"><div class="label">Review</div><div class="size">bigger</div></div>
+  <div class="sdlc-cell"><div class="label">Ship</div><div class="size">same</div></div>
+</div>
+
+<p>The coding didn't disappear. It moved — into a different shape (parallel agents, sequential critique loops) — and it stopped being the bottleneck.</p>
+
+<h2>What is a bottleneck, exactly?</h2>
+
+<p>Farhan borrows from Goldratt's <em>The Goal</em>. In a factory, the bottleneck is the single stage that determines how much product can come out. You can speed up every other stage and the factory doesn't get faster. Only the bottleneck determines throughput.</p>
+
+<p>The punchline of the book: every time you fix the bottleneck, <em>a new bottleneck appears somewhere else</em>. The constraint doesn't disappear; it relocates.</p>
+
+<div class="callout">
+  <p><strong>Farhan's claim:</strong> the AI step of writing the code is moving the bottleneck to other parts of the SDLC. As you fix those, new bottlenecks appear. That's fine — that's the job. Find the bottleneck, move it, find the next one.</p>
+</div>
+
+<h2>Why this is the seed idea</h2>
+
+<p>Once you accept that the bottleneck always moves, the rest of the talk becomes a list of which bottlenecks are showing up now:</p>
+
+<ul>
+  <li><strong>Code review is now the bottleneck</strong> <span class="timestamp">20:46</span> — more code is being generated than humans can review. Shopify's answer: a Council of LLMs.</li>
+  <li><strong>Planning is now the bottleneck</strong> — when you can build in a day, the question "what should we build?" dominates the calendar.</li>
+  <li><strong>Hiring calibration is now a bottleneck</strong> <span class="timestamp">19:39</span> — what does it mean to evaluate an engineer when the AI is doing the typing? Three modes: no-AI, AI-optional, AI-mandatory.</li>
+  <li><strong>Responsibility is a permanent bottleneck</strong> — your name on the PR. The LLM tags along but the human owns it.</li>
+</ul>
+
+<p>Each of these becomes legible as "the bottleneck moved here next."</p>
+
+<h2>The lesson for leading a team</h2>
+
+<p>When a team is resisting the shift — saying "AI writes sloppy code" or "we can't trust what it generates" — they are usually pointing at <em>the old</em> bottleneck. The code. That bottleneck is shrinking whether they engage with it or not.</p>
+
+<p>The leadership question is not "should we use AI?" — that bottleneck is being outsourced by the clanker regardless. The question is: <strong>which new bottleneck is now strangling us, and who owns unblocking it?</strong></p>
+
+<div class="quote">
+  "If the AI is better at writing code, should you write code anymore? It's an open question. But the bottleneck moves. That's the job." — Farhan Thawar
+</div>
+
+<h2>Quiz</h2>
+
+<p>Pick the answer that most accurately reflects what Farhan means by "the bottleneck always moves."</p>
+
+<div class="quiz" id="q1">
+  <div class="quiz-q">1. When AI writes the code, the bottleneck:</div>
+  <label class="quiz-opt" data-correct="false">disappears, because coding is no longer the hard part</label>
+  <label class="quiz-opt" data-correct="true">relocates to a different stage of the SDLC</label>
+  <label class="quiz-opt" data-correct="false">stays on code review forever, because humans are slow</label>
+  <label class="quiz-opt" data-correct="false">only matters in factories, not in software teams</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="quiz-q">2. Shopify's "Council of LLMs" is best understood as:</div>
+  <label class="quiz-opt" data-correct="false">replacing all human reviewers with a single AI</label>
+  <label class="quiz-opt" data-correct="false">a way to make humans review code faster</label>
+  <label class="quiz-opt" data-correct="true">addressing the bottleneck that moved to code review once AI generation scaled up</label>
+  <label class="quiz-opt" data-correct="false">a way to choose between Claude and GPT models for writing code</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="quiz-q">3. If your team is still arguing about "AI code quality" as the main concern, what does the bottleneck frame predict?</div>
+  <label class="quiz-opt" data-correct="true">The code-quality issue is real but shrinking; new bottlenecks (planning, review, responsibility) are already forming around it</label>
+  <label class="quiz-opt" data-correct="false">They are correctly identifying the permanent bottleneck</label>
+  <label class="quiz-opt" data-correct="false">They should stop using AI entirely until code quality improves</label>
+  <label class="quiz-opt" data-correct="false">It means the team has not yet adopted AI at all</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<h2>Exercise: Map your team's current bottlenecks</h2>
+
+<ol class="exercise-list">
+  <li>List the five stages of your team's SDLC: Plan, Code, Test, Review, Ship.</li>
+  <li>For each stage, write one sentence: "Where is time actually going right now?" Not where it <em>should</em> go — where it does.</li>
+  <li>Mark the stage that, if you doubled its capacity tomorrow, would change your shipping rate the most. That's your current bottleneck.</li>
+  <li>Ask: did this stage become the bottleneck <em>after</em> the team started using AI, or was it always the bottleneck? If the former, you have evidence the bottleneck has moved.</li>
+  <li>Bring the map to your next 1:1 with a senior engineer. Ask: "Which of these is the new bottleneck you'd pick if you had to fix one?" Compare their answer to yours.</li>
+</ol>
+
+<div class="callout success">
+  <p><strong>What you should walk away with:</strong> a one-line answer to the question "why is my job different now?" — because the bottleneck moved. Everything else in the talk is a downstream consequence.</p>
+</div>
+
+<h2>Ask follow-up questions</h2>
+
+<p>This lesson is short by design. If anything is unclear — or if you want to push back on the framing — ask the agent. Useful follow-ups:</p>
+
+<ul>
+  <li>"Show me a real example of a bottleneck moving in our team's workflow."</li>
+  <li>"What's the opposite case — when has the bottleneck <em>not</em> moved after AI was introduced?"</li>
+  <li>"How do I explain this to an engineer who thinks AI hype is overstated?"</li>
+</ul>
+
+<h2>Recommended viewing</h2>
+
+<p>Watch the bottleneck chapter of Farhan's talk: <span class="timestamp">04:33</span> through <span class="timestamp">07:58</span>. Then the "what changed, what stayed" closing chapter at <span class="timestamp">25:22</span> — it's the synthesis.</p>
+
+<p>Primary source: <a href="https://www.youtube.com/watch?v=ByOF8qByGHU">What Is Your Job Now, Farhan Thawar | Compile 26</a></p>
+
+<div class="lesson-nav">
+  <span class="nav-label">First lesson</span>
+  <a href="0002-learning-as-collateral.html">Lesson 0002: Learning as Collateral →</a>
+</div>
+
+<script>
+document.querySelectorAll('.quiz').forEach(function(quiz) {
+  const opts = quiz.querySelectorAll('.quiz-opt');
+  const fb = quiz.querySelector('.quiz-feedback');
+  opts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      if (opt.classList.contains('disabled')) return;
+      const correct = opt.dataset.correct === 'true';
+      opts.forEach(function(o) {
+        o.classList.add('disabled');
+        if (o.dataset.correct === 'true') o.classList.add('correct');
+      });
+      if (!correct) opt.classList.add('wrong');
+      fb.classList.add('show');
+      fb.classList.add(correct ? 'ok' : 'bad');
+      fb.textContent = correct
+        ? 'Right. The bottleneck relocates; it does not vanish.'
+        : 'Not quite. Re-read the SDLC before/after section — the bottleneck relocates to a different stage, not the same one forever.';
+    });
+  });
+});
+</script>
+
+</body>
+</html>

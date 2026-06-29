@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: Learning as the Collateral</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: var(--ok);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .quote {
+      font-style: italic;
+      color: var(--ink-soft);
+      border-left: 3px solid var(--rule);
+      padding-left: 1rem;
+      margin: 1rem 0;
+    }
+    .quote-attribution {
+      display: block;
+      margin-top: 0.4rem;
+      font-style: normal;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .timeline {
+      position: relative;
+      margin: 2rem 0 2rem 1.5rem;
+      padding-left: 1.5rem;
+      border-left: 2px solid var(--rule);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.85rem;
+      top: 0.4rem;
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+    .timeline-marker {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+    .timeline-text { font-size: 0.92rem; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare-col {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .compare-header {
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--rule);
+    }
+    .compare-col.old .compare-header { background: #fdecea; color: var(--accent); }
+    .compare-col.new .compare-header { background: #e8f5e9; color: #2e7d32; }
+    .compare-body { padding: 1rem; font-size: 0.9rem; }
+    .compare-body ul { list-style: none; padding: 0; margin: 0; }
+    .compare-body li { padding: 0.3rem 0; border-bottom: 1px dashed var(--rule); }
+    .compare-body li:last-child { border-bottom: none; }
+    .compare-body li code { font-size: 0.78rem; }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .quiz-q {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-opt {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      margin: 0.4rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.92rem;
+    }
+    .quiz-opt.correct {
+      background: #e8f5e9;
+      border-color: var(--ok);
+    }
+    .quiz-opt.wrong {
+      background: #fdecea;
+      border-color: var(--accent);
+    }
+    .quiz-opt.disabled { cursor: default; opacity: 0.7; }
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok { background: #e8f5e9; color: #2e7d32; }
+    .quiz-feedback.bad { background: #fdecea; color: var(--accent); }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .exercise-list { list-style: decimal; }
+    .timestamp {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">clanker-engineer</span></span>
+  <span>Lesson 0002</span>
+  <span>2026-06-29</span>
+</div>
+
+<h1>Learning as the Collateral</h1>
+<p class="subtitle">The Tobi review that taught Shopify what was actually worth keeping.</p>
+
+<p>The Tobi story is the most concrete moment in the whole talk. It is also the one you should be ready to retell when a teammate asks "why are we throwing away code that works?" Farhan tells it at <span class="timestamp">03:13</span>.</p>
+
+<h2>The story</h2>
+
+<p>Pre-LLMs. Shopify has a team of about 50 engineers. They spend 18 months building a feature for merchants. They are about to launch. Tobi — the founder and CEO — walks through the architecture with them. Approves it.</p>
+
+<p>As the team is walking out the door, Tobi stops them:</p>
+
+<div class="callout">
+  <p>"If you could start over, how would you build it?"</p>
+</div>
+
+<p>Someone walks to the whiteboard. They describe a completely different architecture. Simpler. Tobi says: <em>"Why don't you build that? Just delete what you did and start over."</em></p>
+
+<p>What he was trying to show: <strong>the learning was the collateral, not the code.</strong></p>
+
+<h2>What "collateral" means here</h2>
+
+<p>Collateral is what you get to keep when you give everything else back. In a loan, collateral is the house. In an 18-month engineering project, Farhan argues, the collateral is not the codebase — it is the team's <em>understanding</em>.</p>
+
+<p>Shopify did not actually delete the code (that is too hard). They invented a process: the team was <em>allowed to look</em> at the old code, but not cut and paste from it. They rebuilt the system in 3 months. The result was a simpler, more elegant solution — because the second build was informed by everything the first build had taught them.</p>
+
+<h2>Why this lands now</h2>
+
+<p>Farhan returns to the same idea at the end of the talk, at <span class="timestamp">25:22</span>. He reframes it as a weekly cadence:</p>
+
+<div class="quote">
+  "You know how some people talk about shipping every week? We talk about learning every week. What is it that you learned this week? What is unintuitive? What is a secret that you believe that others don't because you looked at the data, you've tried and prototyped something, you put something in front of a customer?"
+  <span class="quote-attribution">— Farhan Thawar</span>
+</div>
+
+<p>The pattern: ship-or-learn collapses into just-learn, because shipping got cheap.</p>
+
+<h2>The before / after frame</h2>
+
+<div class="compare">
+  <div class="compare-col old">
+    <div class="compare-header">Before — code is the artifact</div>
+    <div class="compare-body">
+      <ul>
+        <li>Code in <code>main</code> is the deliverable</li>
+        <li>Rewrites are failure, sunk cost</li>
+        <li>Engineers protect their PRs</li>
+        <li>Throwaway code is "waste"</li>
+        <li>Success = lines shipped</li>
+      </ul>
+    </div>
+  </div>
+  <div class="compare-col new">
+    <div class="compare-header">After — learning is the artifact</div>
+    <div class="compare-body">
+      <ul>
+        <li>The team's mental model is the deliverable</li>
+        <li>Rewrites are expected, sign of learning</li>
+        <li>Engineers protect their <em>insights</em></li>
+        <li>Prototype code is fine — it's disposable</li>
+        <li>Success = what the team now understands</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<p>Farhan makes the AI connection explicit at <span class="timestamp">25:22</span>: when AI is writing the code, "you can use these tools to build whatever you want as quickly as you want." Which means code is no longer the scarce resource. Understanding is.</p>
+
+<h2>The walk-out-the-door question</h2>
+
+<p>The Tobi story contains a small detail that matters: the question came <em>after</em> approval, as the team was leaving. That is on purpose. The question is not "is this build correct?" — that's been answered. The question is: <strong>"now that you know what you know, would you do it differently?"</strong></p>
+
+<p>That second question is what produces learning. It only works if the team is honest. It only matters if the team is willing to throw away the approved work.</p>
+
+<div class="callout warning">
+  <p><strong>The trap:</strong> most teams never ask this question because they cannot afford to throw away 18 months of work. The pre-LLM reality made the question theoretical. AI makes it cheap enough to be a real practice — and that is the shift Farhan is pointing at.</p>
+</div>
+
+<h2>How this maps to your team</h2>
+
+<p>You will not run the exact Tobi experiment with your team. But the principle has a direct application. Three concrete moves you can make this month:</p>
+
+<ol class="exercise-list">
+  <li><strong>Build prototypes and throw them away on purpose.</strong> Frame prototypes as learning vehicles, not commit candidates. If a prototype accidentally becomes the real implementation, you've skipped the most useful step.</li>
+  <li><strong>Reward rewrites when they are informed.</strong> The 3-month rebuild at Shopify worked because the team had the 18-month learning to draw on. Rewrites that happen <em>after</em> deep work are not waste — they are evidence that the team learned.</li>
+  <li><strong>Run the walk-out-the-door question in reviews.</strong> After a design doc is approved, before implementation starts, ask: "Knowing what we know now, would we write this doc the same way?" Treat the answer as a learning artifact, not a critique of the original.</li>
+</ol>
+
+<h2>The "LGTM is the four scariest letters" connection</h2>
+
+<p>Farhan makes a related claim at <span class="timestamp">20:46</span>: humans were not actually reviewing code well before AI entered the picture. The default PR approval is "LGTM" and the code may still be broken.</p>
+
+<p>Why does this matter for the learning-as-collateral frame? Because if humans were not extracting learning from code review, then code review was not generating the collateral either. It was just a ritual.</p>
+
+<p>The Council of LLMs at Shopify — multiple AI judges looking for different things — is partly a recognition that the human review process was not the source of learning people thought it was. The learning has to come from somewhere else: planning, prototyping in front of customers, the walk-out-the-door question.</p>
+
+<h2>Quiz</h2>
+
+<div class="quiz" id="q1">
+  <div class="quiz-q">1. In the Tobi story, what did Shopify actually do with the original 18 months of code?</div>
+  <label class="quiz-opt" data-correct="false">Deleted it from the repo on Tobi's orders</label>
+  <label class="quiz-opt" data-correct="true">Kept it accessible but banned cut-and-paste; rebuilt in 3 months</label>
+  <label class="quiz-opt" data-correct="false">Archived it and started a parallel team from scratch</label>
+  <label class="quiz-opt" data-correct="false">Shipped both versions and A/B tested them with merchants</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="quiz-q">2. "Learning as the collateral" most directly implies that:</div>
+  <label class="quiz-opt" data-correct="false">Engineers should focus on certifications and courses</label>
+  <label class="quiz-opt" data-correct="true">When you throw the code away, what you keep is the team's understanding</label>
+  <label class="quiz-opt" data-correct="false">Learning only counts if it happens in formal training programs</label>
+  <label class="quiz-opt" data-correct="false">Code is more valuable than insights, so protect it carefully</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="quiz-q">3. The "walk-out-the-door" question is useful because:</div>
+  <label class="quiz-opt" data-correct="false">It catches approval mistakes before they ship</label>
+  <label class="quiz-opt" data-correct="false">It is a standard practice in most engineering reviews</label>
+  <label class="quiz-opt" data-correct="true">It surfaces the gap between what the team knew at the start and what they know now</label>
+  <label class="quiz-opt" data-correct="false">It makes the CEO feel included in technical decisions</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q4">
+  <div class="quiz-q">4. A team adopting AI tools is told to "throw away prototype code." What is the underlying reason per Farhan?</div>
+  <label class="quiz-opt" data-correct="false">Prototype code is lower quality than production code by definition</label>
+  <label class="quiz-opt" data-correct="false">AI generates insecure code that should not be deployed</label>
+  <label class="quiz-opt" data-correct="true">Prototypes are learning vehicles; keeping them as production skips the real implementation step</label>
+  <label class="quiz-opt" data-correct="false">It is a regulatory requirement at Shopify</label>
+  <div class="quiz-feedback"></div>
+</div>
+
+<h2>Exercise: Run the walk-out-the-door question</h2>
+
+<ol class="exercise-list">
+  <li>Pick one design doc your team has approved in the last 30 days. (If you don't have design docs, pick a sprint goal or a PRD.)</li>
+  <li>Schedule a 30-minute slot with the people who worked on it. Frame it explicitly: "this is not a critique, this is a learning exercise."</li>
+  <li>Open with: "Knowing what we now know, would we write this the same way? What would change?"</li>
+  <li>Write down what surfaces. Do not commit to any action. The output is the artifact.</li>
+  <li>At your next team retro, share one observation from the exercise. Ask the team: what does this tell us about our learning?</li>
+</ol>
+
+<div class="callout success">
+  <p><strong>What you should walk away with:</strong> a one-line answer to "what should we keep when we throw away code?" — the team's mental model. And a small practice (the walk-out-the-door question) you can introduce this month without asking for permission.</p>
+</div>
+
+<h2>Ask follow-up questions</h2>
+
+<ul>
+  <li>"How do I run the walk-out-the-door question without it feeling like a gotcha?"</li>
+  <li>"What if the answer is 'no, we'd build it the same way' — is that failure?"</li>
+  <li>"How does this connect to my team's existing retro format?"</li>
+  <li>"Show me how this would land differently in a team that has just shipped something vs a team that has been blocked for months."</li>
+</ul>
+
+<h2>Recommended viewing</h2>
+
+<p>The Tobi story: <span class="timestamp">03:13</span> through <span class="timestamp">04:33</span>. The "learning every week" framing at <span class="timestamp">25:22</span> is the synthesis.</p>
+
+<p>Primary source: <a href="https://www.youtube.com/watch?v=ByOF8qByGHU">What Is Your Job Now, Farhan Thawar | Compile 26</a></p>
+
+<div class="lesson-nav">
+  <a href="0001-the-bottleneck-moves.html">← Lesson 0001: The Bottleneck Always Moves</a>
+  <a href="0003-responsibility-cant-be-delegated.html">Lesson 0003: Responsibility Can't Be Delegated →</a>
+</div>
+
+<script>
+document.querySelectorAll('.quiz').forEach(function(quiz) {
+  const opts = quiz.querySelectorAll('.quiz-opt');
+  const fb = quiz.querySelector('.quiz-feedback');
+  opts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      if (opt.classList.contains('disabled')) return;
+      const correct = opt.dataset.correct === 'true';
+      opts.forEach(function(o) {
+        o.classList.add('disabled');
+        if (o.dataset.correct === 'true') o.classList.add('correct');
+      });
+      if (!correct) opt.classList.add('wrong');
+      fb.classList.add('show');
+      fb.classList.add(correct ? 'ok' : 'bad');
+      fb.textContent = correct
+        ? 'Right.'
+        : 'Not quite. Re-read the relevant section above — the lesson is in the nuance.';
+    });
+  });
+});
+</script>
+
+</body>
+</html>
