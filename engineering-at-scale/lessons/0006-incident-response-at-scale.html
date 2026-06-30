@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006: Incident Response at Scale — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .callout.danger {
+      background: #fdecea;
+      border-left-color: #c0392b;
+      font-weight: 700;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      margin: 1.5rem 0;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: var(--accent);
+    }
+    .timeline-event {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+    .timeline-event::before {
+      content: "";
+      position: absolute;
+      left: -1.6rem;
+      top: 0.55rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+    .timeline-time {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .timeline-title {
+      font-weight: 700;
+      margin: 0.2rem 0;
+    }
+    .timeline-desc {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+    }
+    .severity {
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 0.4rem;
+    }
+    .sev-1 { background: #c0392b; color: white; }
+    .sev-2 { background: #e67e22; color: white; }
+    .sev-3 { background: #f1c40f; color: #333; }
+    .sev-4 { background: #95a5a6; color: white; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0006</span>
+  <span>2026-06-30</span>
+  <span>~13 min</span>
+</div>
+
+<h1>Incident Response at Scale</h1>
+<p class="subtitle">When the landmine slips through, what you do in the first 30 minutes matters more than what you do in the next 30 days.</p>
+
+<p>This is lesson 6 of <a href="../MISSION.md">engineering-at-scale</a>. Lessons 0001–0005 gave you a workflow that prevents most regressions. This lesson is for the ones that slip through. The landmine you didn't catch. The AI-generated test that didn't exercise the failure mode. The exclusion list you forgot to update. The post-deploy regression in your lesson 0004 scorecard.</p>
+
+<p>Your takeaway: <strong>recovery discipline is the difference between a one-time incident and a recurring one.</strong> Spotify runs firefighting as a real rotation because incidents are normal, not exceptional. At your scale, the lesson isn't that you need a rotation — it's that you need a *postmortem* so the fire doesn't repeat.</p>
+
+<h2>The Spotify Firefighting Rotation</h2>
+
+<p>From the podcast (~37:00):</p>
+
+<div class="quote">
+  "We have people in a firefighting rotation. These are usually senior people, principal level, who actively try to suppress the badness when it happens. And they have to stop working on their own product development to do that."
+  <span class="quote-source">— Niklas Gustavsson, ~37:00</span>
+</div>
+
+<p>Spotify's insight: firefighting is not an exception to the workflow — it *is* the workflow. Incidents happen. The question isn't "how do we prevent all incidents" (impossible at scale) but "how do we respond to incidents without dropping everything else."</p>
+
+<p>The firefighting rotation solves that: senior engineers are scheduled, not summoned. When the alarm fires, the on-call engineer responds. Their team is short-handed for the week, but the incident is owned.</p>
+
+<h2>The Small-Scale Translation</h2>
+
+<p>You work alone or on a tiny team. You don't need a rotation. But you need the *discipline* the rotation provides. The discipline is:</p>
+
+<ol>
+  <li><strong>The incident is owned.</strong> Not "we'll all look at it after standup." One person. One clock.</li>
+  <li><strong>Recovery is mechanical.</strong> Rollback first. Root-cause second. Prevention third. In that order. Not "investigate then decide."</li>
+  <li><strong>The postmortem is non-negotiable.</strong> Every incident gets a written postmortem. Same template. Same day (within 48h of resolution). Even if it's "we fixed it and don't know why."</li>
+</ol>
+
+<p>The rotation at Spotify is the structural enforcement of these three things. At your scale, the structural enforcement is: you have a checklist, you use it, you don't skip the postmortem.</p>
+
+<h2>The First 30 Minutes</h2>
+
+<p>When you discover a regression in production, you have ~30 minutes before panic sets in and the response gets worse. Use the time mechanically.</p>
+
+<div class="timeline">
+  <div class="timeline-event">
+    <div class="timeline-time">T+0 — Detect</div>
+    <div class="timeline-title">Acknowledge the incident</div>
+    <div class="timeline-desc">Scorecard spike. User report. Alert fires. Whatever. Write down: what was the signal, when did you notice it, what's your best guess at user impact?</div>
+  </div>
+  <div class="timeline-event">
+    <div class="timeline-time">T+2 — Stop the bleeding</div>
+    <div class="timeline-title">Roll back, don't fix forward</div>
+    <div class="timeline-desc">If the offending change is recent (last 7 days), revert it. Don't investigate. Don't "see if a quick fix works." Roll back. Reverting a known-good commit is the fastest path to recovery.</div>
+  </div>
+  <div class="timeline-event">
+    <div class="timeline-time">T+10 — Communicate</div>
+    <div class="timeline-title">Tell the affected users</div>
+    <div class="timeline-desc">If users are affected, say so. In the channel where they'll see it. Brief: what broke, what you did, when it'll be fixed. Even solo: file a status note so future-you has a record.</div>
+  </div>
+  <div class="timeline-event">
+    <div class="timeline-time">T+15 — Capture</div>
+    <div class="timeline-title">Open an incident doc</div>
+    <div class="timeline-desc">Title, time, severity, who's on it (you, even if it's you), the rollback commit. Don't write the postmortem yet. Just open the doc.</div>
+  </div>
+  <div class="timeline-event">
+    <div class="timeline-time">T+30 — Pause</div>
+    <div class="timeline-title">Decide: investigate now or schedule it</div>
+    <div class="timeline-desc">If the rollback is in, the bleeding has stopped. You can pause the investigation and return to it fresh tomorrow. Don't do root-cause analysis on adrenaline.</div>
+  </div>
+</div>
+
+<div class="callout warning">
+  <strong>The trap:</strong> the most common incident mistake is "I'll just look at this real quick" instead of rolling back. Looking at the code, deciding it should work, pushing a fix — when the rollback was a 30-second revert. Always roll back first. The investigation can wait. The bleeding can't.
+</div>
+
+<h2>Severity Tiers</h2>
+
+<p>Not every regression is a Sev-1. Most are minor. Calibrate your response to severity.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Severity</th>
+      <th>Definition</th>
+      <th>Response</th>
+      <th>Postmortem?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="severity sev-1">SEV-1</span></td>
+      <td>Production down or data loss for &gt; 5% of users</td>
+      <td>Roll back in &lt; 5 min. Communicate within 15. Same-day postmortem.</td>
+      <td>Yes — full</td>
+    </tr>
+    <tr>
+      <td><span class="severity sev-2">SEV-2</span></td>
+      <td>Major feature broken, error rate &gt; 1%, or SLO breached</td>
+      <td>Roll back or hotfix in &lt; 30 min. Communicate within 1h. 48h postmortem.</td>
+      <td>Yes — full</td>
+    </tr>
+    <tr>
+      <td><span class="severity sev-3">SEV-3</span></td>
+      <td>Minor bug, workaround exists, error rate &lt; 1%</td>
+      <td>Fix in next deploy cycle. Document in scorecard. 1-week postmortem (lightweight).</td>
+      <td>Lightweight (one-paragraph)</td>
+    </tr>
+    <tr>
+      <td><span class="severity sev-4">SEV-4</span></td>
+      <td>Cosmetic, internal-only, no user impact</td>
+      <td>Backlog. Mention in scorecard. No formal postmortem.</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The severity determines how thorough the postmortem is. The postmortem discipline applies at every level — only the depth changes.</p>
+
+<h2>The Postmortem Template</h2>
+
+<p>Same template for every incident. Same fields. Same day (within 48h of resolution). The template forces the right reflection.</p>
+
+<pre><code># Incident Postmortem — 2026-06-30: notification-deduplicator dropped messages
+
+## Summary (1-2 sentences)
+At 14:23 UTC on 2026-06-30, we noticed that 8% of push notifications
+were dropped due to a regression in the notification-deduplicator
+refactor shipped in PR #165. We rolled back at 14:31 UTC (8 minutes
+after detection). No permanent user impact.
+
+## Timeline
+- 14:23 UTC — detected via scorecard spike (regressions count)
+- 14:24 UTC — confirmed scope: only notifications, only since PR #165
+- 14:25 UTC — rolled back to commit 8f3a2b1
+- 14:31 UTC — notification rate back to baseline
+- 14:45 UTC — opened this doc
+- 16:00 UTC — root cause identified
+
+## Severity
+SEV-2 (major feature broken, 8% error rate, SLO breached)
+
+## Root cause
+PR #165 changed the sort key in the deduplicator from
+`received_at DESC` to `received_at ASC`. The cache eviction logic
+assumed the most recent message would be at index 0. After the
+flip, the oldest message was at index 0, causing recent messages
+to be evicted on collision.
+
+The dedup caller's audit (lesson 0002) had flagged
+getRecentPosts() as having a tiebreaker dependency on sort order.
+The exclusion list was correct. But the generator (lesson 0003)
+applied the change anyway because the prompt said
+"change sort to ASC" without honoring the landmine note.
+
+## Why didn't we catch this?
+
+### Audit (lesson 0002)
+- getRecentPosts() was audited ✓
+- Landmine was documented in exclusion list ✓
+- BUT: the exclusion list didn't extend to the *generator prompt*
+- The generator was free to break the landmine because the landmine
+  wasn't enforced at the prompt layer
+
+### Generator review (lesson 0003)
+- Generator prompt was reviewed by 1 person (me) ✓
+- BUT: I missed that "change sort to ASC" invalidated the landmine
+- The exclusion list was reviewed as part of the prompt — but the
+  landmine note was in the *audit doc*, not the *prompt itself*
+
+### Auto-merge (lesson 0005)
+- Generator had 2 successful runs, not 3 → should have been Tier 2
+- BUT: the trust registry had stale data (showed 3 runs from a
+  different generator)
+- Trust registry was shared across generators without per-generator
+  tracking
+
+### Measurement (lesson 0004)
+- Caught the regression in the scorecard within 4 hours ✓
+- BUT: regression was live for 4 hours before the scorecard spike
+  (could've been caught faster with a notification-specific alert)
+
+## What we're changing
+
+1. **Move landmines from audit doc into generator prompts.**
+   Every generator prompt includes the relevant landmines inline.
+   The audit doc is reference; the prompt is the contract.
+
+2. **Per-generator trust registry.**
+   Replace the shared trust-registry.md with one entry per
+   generator. No cross-pollination.
+
+3. **Notification-specific alert.**
+   Add a regression detector that compares pre/post-deploy
+   notification rate. If &gt; 5% drop, page me immediately.
+   Currently relying on weekly scorecard which is too slow for
+   critical paths.
+
+4. **Bump Tier 2 review for any generator touching sort order
+   or cache eviction.** Sort order is load-bearing; default to
+   full review.
+
+## Action items
+- [ ] Update generator prompt template to include inline landmines (me, 2026-07-01)
+- [ ] Split trust registry per-generator (me, 2026-07-02)
+- [ ] Add notification-rate regression alert (me, 2026-07-05)
+- [ ] Update lesson 0002 to mention "landmines in prompt, not audit doc" (me, 2026-07-06)
+</code></pre>
+
+<p>That postmortem took 45 minutes to write. The fixes are worth a week of prevented incidents. The template forced me to find the *systemic* cause, not just the proximate one.</p>
+
+<h2>The Three-Lens Postmortem</h2>
+
+<p>The postmortem has three lenses. Apply all three to every incident, not just the one that explains the proximate cause.</p>
+
+<h3>Lens 1: The proximate cause</h3>
+<p>"What changed?" Usually easy. "PR #165 flipped the sort." Done.</p>
+
+<h3>Lens 2: The detection cause</h3>
+<p>"Why didn't we catch this before it shipped?" This is the lesson 0002 audit, lesson 0003 generator review, and lesson 0005 tier question. If the answer is "we did catch it but ignored it," that's a discipline problem. If the answer is "we didn't have a way to catch it," that's a tooling gap.</p>
+
+<h3>Lens 3: The recovery cause</h3>
+<p>"How long did it take to notice and roll back? Could that be faster?" This is the lesson 0004 measurement question. Scorecard detection vs alert detection. Rollback time vs fix-forward time.</p>
+
+<p>Most postmortems stop at lens 1. The lesson-completion comes from lenses 2 and 3. The postmortem template above has all three.</p>
+
+<h2>The Exercise: Write Your First Postmortem (40 min)</h2>
+
+<p>Pick the most recent Sev-2 or Sev-3 incident you've had. If you haven't had one yet, write a hypothetical one based on a near-miss from your last refactor. Don't skip this — the discipline starts before you need it.</p>
+
+<h3>Step 1 — Pick the incident (~5 min)</h3>
+<p>If real: your last regression. If hypothetical: pick the moment in your last refactor where you realized you might have introduced a bug but didn't ship it. Treat that as the incident and write the postmortem for the version where you did ship it.</p>
+
+<h3>Step 2 — Open the doc (~5 min)</h3>
+<p>Create `postmortems/YYYY-MM-DD-short-title.md`. Use the template above. Don't write the postmortem yet — just open the doc and fill in the timeline.</p>
+
+<h3>Step 3 — Fill in the timeline (~10 min)</h3>
+<p>Get the timeline right. Even if some events are missing, write down what you know. The timeline forces you to see the response time, not just the recovery.</p>
+
+<h3>Step 4 — Identify the root cause via the three lenses (~15 min)</h3>
+<p>For each lens, write a few sentences. Lens 2 is the most important — it tells you which workflow lesson failed. If lens 2 says "lesson 0005 didn't catch it," your auto-merge thresholds are too loose. If lens 2 says "lesson 0003 didn't catch it," your generator review missed something.</p>
+
+<h3>Step 5 — Define 2-4 action items (~5 min)</h3>
+<p>Each action item must be concrete (who, what, when). "Be more careful" is not an action item. "Update generator prompt template to include inline landmines by 2026-07-01" is.</p>
+
+<h3>Step 6 — Add the postmortem to your scorecard</h3>
+<p>Update the lesson 0004 scorecard template with a fifth section:</p>
+
+<pre><code>## Postmortems this week
+- 1 (notification-deduplicator, SEV-2, see postmortems/2026-06-30-notif-dedup.md)
+</code></pre>
+
+<p>The scorecard tracks the count. If the count goes up, either you have a lot of incidents (problem) or your postmortem discipline got better (good). If the count is zero, you're either incident-free (good) or not writing postmortems (bad). Look at the trend.</p>
+
+<h2>Why This Lesson Matters Even If You Don't Have Incidents</h2>
+
+<p>The most common reason postmortem discipline fails is "we don't have incidents, so we don't need the template." The discipline isn't for the incidents you have — it's for the incidents you *will have* in 6 months when you've forgotten the recovery pattern.</p>
+
+<p>Writing the first postmortem when nothing is on fire means you're ready when something is. The template is muscle memory. You don't want to write the template from scratch during a Sev-1.</p>
+
+<div class="callout warning">
+  <strong>The trap:</strong> treating postmortems as punishment. They're not blame documents. They're systemic improvement documents. The questions are "what in our workflow let this happen?" and "what change prevents the next one?" — not "who screwed up?" If your postmortems read like blame, you'll stop writing them. The postmortem template above has no "person responsible" field. It's deliberately absent.
+</div>
+
+<h2>What You Should NOT Do</h2>
+
+<ul>
+  <li><strong>Don't skip the rollback to investigate.</strong> Investigation takes minutes-to-hours. Rollback takes seconds. Always roll back. Investigate after.</li>
+  <li><strong>Don't write the postmortem solo.</strong> Even solo: read it back to yourself the next day, fresh. The point isn't agreement, it's perspective.</li>
+  <li><strong>Don't include blame.</strong> The postmortem template has no "who screwed up" field. If your postmortem has names next to mistakes, rewrite it.</li>
+  <li><strong>Don't skip the action items.</strong> An action item without a date and owner is a wish. "Update generator template" is a wish. "Update generator template by 2026-07-01, owner: me" is an action item.</li>
+  <li><strong>Don't let action items pile up.</strong> If your postmortem action items are still "pending" from 3 months ago, your incident response is broken — you didn't prevent the next one. Close the loop or accept the recurrence.</li>
+  <li><strong>Don't have a 1-hour root-cause debate.</strong> If you can't find the root cause in 30 minutes, write "root cause unclear" and move to action items. Often the action items reveal the root cause once shipped.</li>
+</ul>
+
+<h2>What Comes Next</h2>
+
+<p>Lesson 0007 will be on <strong>code ownership at scale</strong> — who owns what when the team grows, what CODEOWNERS does well, what it doesn't, and why "everybody owns everything" is the worst answer. The Spotify model: components have owners, owners have on-call, on-call has runbooks.</p>
+
+<p>At your scale, ownership is implicit. The lesson is about making it explicit <em>before</em> you grow, so you don't grow into chaos. CODEOWNERS + a single-page runbook per critical module.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>Share your first postmortem — I'll help find the systemic cause</li>
+    <li>Don't have a recent incident? I can give you a hypothetical scenario to write against</li>
+    <li>Want a lighter postmortem template for SEV-3 only? I have a one-paragraph variant</li>
+    <li>Action items piling up? I can help triage what's still worth doing</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0005-when-to-auto-merge.html">← Lesson 0005: When to Auto-Merge</a>
+  <a href="0007-code-ownership-at-scale.html">Lesson 0007: Code Ownership at Scale →</a>
+</div>
+
+</body>
+</html>

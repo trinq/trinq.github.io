@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: Measure the Aggregate — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #1db954;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+    .scorecard {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+    .scorecard-header {
+      background: var(--code-bg);
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .scorecard-body { padding: 0; }
+    .scorecard-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .scorecard-row:last-child { border-bottom: none; }
+    .scorecard-cell {
+      padding: 0.6rem 1rem;
+      border-right: 1px solid var(--rule);
+    }
+    .scorecard-cell:last-child { border-right: none; }
+    .scorecard-cell.header {
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+    }
+    .scorecard-cell .metric { font-family: "SF Mono", Menlo, monospace; font-size: 1.1rem; font-weight: 700; }
+    .scorecard-cell .sub { font-size: 0.75rem; color: var(--ink-soft); display: block; margin-top: 0.2rem; }
+    .good { color: #1db954; }
+    .bad { color: #c0392b; }
+    .warn { color: #e67e22; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0004</span>
+  <span>2026-06-30</span>
+  <span>~10 min</span>
+</div>
+
+<h1>Measure the Aggregate</h1>
+<p class="subtitle">The metrics that survive scale are the metrics worth using now.</p>
+
+<p>This is lesson 4 of <a href="../MISSION.md">engineering-at-scale</a>. Lessons 0001–0003 gave you a workflow: prototype to validate shape, audit to find landmines, generator-review to ship changes. This lesson gives you the <em>measurement</em> layer — how to know if the workflow is actually working, without optimizing for the wrong thing.</p>
+
+<p>Your takeaway: <strong>measure what moves when the system improves, not what moves when people try to look good.</strong> At Spotify, that means aggregate deploy frequency, not individual lines of code. At your scale, it means the same.</p>
+
+<h2>The Spotify Policy</h2>
+
+<p>From the podcast (~22:00):</p>
+
+<div class="quote">
+  "We don't measure individuals. We never have. We measure teams, we measure aggregates. But individuals? Never."
+  <span class="quote-source">— Niklas Gustavsson, ~22:00</span>
+</div>
+
+<p>The reason is not philosophical — it's functional. At scale, any individual metric becomes gameable. If you measure lines of code, you get verbose code. If you measure PRs merged, you get small PRs that split one logical change into ten. If you measure test coverage, you get tests that exercise the happy path. Every individual metric has an adversarial response.</p>
+
+<p>The aggregate doesn't lie like that. If the team's deploy frequency went up 3x after adopting a new workflow, the workflow worked — regardless of whether any individual developer looks more or less productive. The aggregate is robust to gaming.</p>
+
+<h2>The Small-Scale Translation</h2>
+
+<p>You work alone or on a tiny team. You might think this doesn't apply to you. You're wrong.</p>
+
+<p>The moment you start using AI agents, you'll feel the pull to measure the agent: "how many lines did the agent write this week?" That number is meaningless. Here's why:</p>
+
+<ul>
+  <li>The agent wrote 500 lines in one PR. 490 were landmines it introduced. The other 10 fixed a real bug. Net: -480 lines.</li>
+  <li>The agent wrote 50 lines in another PR. All 50 were correct. Net: +50 lines.</li>
+  <li>Total: 550 lines. You look like you're shipping fast. You're actually accumulating debt.</li>
+</ul>
+
+<p>Lines written is a bad metric because it measures activity, not outcome. At scale, Spotify learned to measure outcomes: did the change make it to production? Did it stay there? Did it break anything?</p>
+
+<h2>The Three Metrics That Actually Matter</h2>
+
+<p>For a small-scale developer using AI agents, here are the three metrics worth tracking. Track them weekly. Don't track anything else.</p>
+
+<div class="scorecard">
+  <div class="scorecard-header">Aggregate scorecard (track weekly)</div>
+  <div class="scorecard-body">
+    <div class="scorecard-row">
+      <div class="scorecard-cell header">Metric</div>
+      <div class="scorecard-cell header">What it measures</div>
+      <div class="scorecard-cell header">What good looks like</div>
+    </div>
+    <div class="scorecard-row">
+      <div class="scorecard-cell">
+        <span class="metric">Landmines caught</span>
+        <span class="sub">per week, per lesson 0002 audit</span>
+      </div>
+      <div class="scorecard-cell">How many load-bearing behaviors you identified before an agent touched them</div>
+      <div class="scorecard-cell good">Trending up over time</div>
+    </div>
+    <div class="scorecard-row">
+      <div class="scorecard-cell">
+        <span class="metric">Generator merges</span>
+        <span class="sub">% of refactors shipped via generator-review (lesson 0003)</span>
+      </div>
+      <div class="scorecard-cell">Whether you're actually using the generator-review workflow</div>
+      <div class="scorecard-cell good">> 50% within 4 weeks</div>
+    </div>
+    <div class="scorecard-row">
+      <div class="scorecard-cell">
+        <span class="metric">Post-deploy regressions</span>
+        <span class="sub">bugs filed within 7 days of any merge</span>
+      </div>
+      <div class="scorecard-cell">Whether the landmines you didn't catch made it to production</div>
+      <div class="scorecard-cell bad">Trending toward zero</div>
+    </div>
+  </div>
+</div>
+
+<p>Everything else — lines written by agent, PRs merged, files changed, time-to-review — is noise. If landmines caught goes up and post-deploy regressions goes down, the workflow is working. If generator merges goes up and post-deploy regressions stays flat, the workflow is working. The metrics converge on the right answer.</p>
+
+<h2>The Exercise: Set Up Your Weekly Scorecard (15 min)</h2>
+
+<p>Create a single file. No dashboards. No spreadsheets. One markdown file you update every Friday.</p>
+
+<pre><code># Fleet Scorecard — Week of 2026-06-30
+
+## This week's summary
+- Landmines caught: 2 (function: getRecentPosts tiebreaker, notification-deduplicator sort)
+- Generator merges: 3 of 5 refactors (60%)
+- Post-deploy regressions: 0
+
+## Trends (4-week rolling)
+- Landmines caught: 2 → 1 → 3 → 2 (avg 2.0)
+- Generator merges %: — → 20% → 40% → 60% (improving)
+- Post-deploy regressions: 0 → 0 → 1 → 0 (watch the one)
+
+## Notes
+- Week 3's regression was the getRecentPosts tiebreaker change.
+  Root cause: exclusion list didn't include deduplicator caller.
+  Fix: added caller-path audit to lesson 0002 exclusion-list step.
+- Week 4 improvement: landmines caught up because I started doing
+  the audit BEFORE running the generator, not after.
+
+## Next week goals
+- [ ] Get generator merges to 80%
+- [ ] Catch the auth module landmine (identified, not yet documented)
+- [ ] Write the auth module exclusion entry</code></pre>
+
+<p>That's the entire tracking system. Update it weekly. Look at it monthly to see if the trends are moving the right direction.</p>
+
+<h3>Step 1 — Create the file</h3>
+<p>Name it <code>fleet-scorecard.md</code> in your project root. Start with this week's baseline.</p>
+
+<h3>Step 2 — Fill in landmines caught</h3>
+<p>Go back to lesson 0002. Did you audit any functions this week? How many landmines did you find? Write the number. If zero, write zero and note why you didn't audit.</p>
+
+<h3>Step 3 — Fill in generator merges</h3>
+<p>How many refactors did you ship? How many used generator-review (lesson 0003)? Calculate the percentage. If none used generator-review, note why.</p>
+
+<h3>Step 4 — Fill in regressions</h3>
+<p>Did anything break this week? Write the count. For any regression, write a brief root cause. The root cause feeds the "Notes" section and informs next week's lesson 0002 audit priorities.</p>
+
+<h3>Step 5 — Set next week's goals</h3>
+<p>One or two concrete goals, not a list of ten. If you missed a goal this week, carry it forward. Don't punish yourself; just track.</p>
+
+<h2>Why This Is the Hardest Lesson</h2>
+
+<p>Lessons 0001–0003 gave you techniques. This lesson asks you to stop optimizing for the thing that feels productive and start optimizing for the thing that actually is.</p>
+
+<p>The pull to measure "agent lines written" will be constant. It feels like progress. It isn't. The scorecard is designed to make the right thing easy and the wrong thing visible: when lines written goes up but regressions also goes up, you'll see the correlation. When landmines caught goes up and regressions goes down, you'll see that too.</p>
+
+<p>The aggregate scorecard is a forcing function. It makes you do the lesson 0002 audit every week, because you need the number for the scorecard. It makes you use generator-review, because you need the percentage. It makes you track regressions, because the number tells you if the other two are working.</p>
+
+<div class="callout warning">
+  <strong>The trap:</strong> weekly scorecard feels like busywork until it isn't. The first four weeks feel pointless. By week 8, you'll have a trend line that tells you whether your AI-assisted workflow is actually working or just feeling like it is. That's the value. The first eight weeks are the investment.
+</div>
+
+<h2>What You Should NOT Do</h2>
+
+<ul>
+  <li><strong>Don't track agent lines written.</strong> It will make you feel good when the agent is producing lots of code and feeling bad when it isn't, regardless of whether the code is correct. It measures activity, not outcome.</li>
+  <li><strong>Don't track individual PRs merged.</strong> Small PRs inflate this number without reflecting real velocity. A 1-line PR and a 100-line PR can both be "one merge."</li>
+  <li><strong>Don't make the scorecard complex.</strong> If it takes more than 5 minutes to update, you're tracking too much. One file, three metrics, a few notes.</li>
+  <li><strong>Don't skip weeks.</strong> Two missing weeks break the trend line. Even if you do nothing else that week, update the scorecard. Zero for everything is still data.</li>
+  <li><strong>Don't optimize to the metric.</strong> If you catch 20 landmines in one week by auditing frantically, that number is meaningless. The goal is a stable weekly average, not a spike.</li>
+</ul>
+
+<h2>What Comes Next</h2>
+
+<p>Lesson 0005 will be on <strong>code review at scale</strong> — when to auto-merge, when to require human review, and how to set that threshold in a way that doesn't create bottlenecks. The Spotify policy is: deterministic shifts get auto-merged, AI-authored changes get human review. At your scale, the distinction is simpler but the threshold-setting still matters.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>Share your first scorecard — I'll help you calibrate the goals</li>
+    <li>Have a regression you can't root-cause? Tell me the bug and I'll help trace it</li>
+    <li>Want to extend the scorecard to track per-module landmine density? I can show you the grep</li>
+    <li>Stuck on "generator merges" — is your team not using the workflow? I can help with adoption</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0003-review-the-script-not-the-pr.html">← Lesson 0003: Review the Script, Not the PR</a>
+  <a href="0005-when-to-auto-merge.html">Lesson 0005: When to Auto-Merge →</a>
+</div>
+
+</body>
+</html>

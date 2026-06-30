@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0008: Dependency Management — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .callout.good {
+      background: #e8f5e9;
+      border-left-color: var(--accent);
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .tier {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 0.4rem;
+    }
+    .tier-1 { background: #27ae60; color: white; }
+    .tier-2 { background: #2980b9; color: white; }
+    .tier-3 { background: #e67e22; color: white; }
+    .tier-4 { background: #c0392b; color: white; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0008</span>
+  <span>2026-06-30</span>
+  <span>~12 min</span>
+</div>
+
+<h1>Dependency Management</h1>
+<p class="subtitle">Every dep is a security surface, a maintenance burden, and a learning curve. The threshold for adding one is higher than most teams realize.</p>
+
+<p>This is lesson 8 of <a href="../MISSION.md">engineering-at-scale</a>. Lessons 0001–0007 gave you a workflow for building, reviewing, measuring, and owning code. This lesson is about the code you don't write — the code you pull in from outside. Every dependency is a trust decision. This lesson is about making that decision consciously.</p>
+
+<p>Your takeaway: <strong>the cost of a dependency is paid over years, not at install time.</strong> The install is free. The CVE at 2am on a weekend is not. The abandoned package two years from now is not. The decision to add a dep should weight those costs.</p>
+
+<h2>The Spotify Policy</h2>
+
+<p>From the podcast (~29:00):</p>
+
+<div class="quote">
+  "We have a fairly conservative dependency policy. We don't want to take in dependencies lightly, because once you're taking in a dependency, that team is effectively in your codebase. And if they do something bad, that's your problem."
+  <span class="quote-source">— Niklas Gustavsson, ~29:00</span>
+</div>
+
+<p>The key insight: a dependency is not a library — it's a team. The moment you add a dep, that team's decisions are your decisions. Their security posture is your security posture. Their maintenance velocity is your maintenance velocity. Their deprecation is your migration. <strong>Install is free. Ownership is not.</strong></p>
+
+<h2>The Three Costs of Every Dependency</h2>
+
+<h3>Cost 1: Security surface</h3>
+<p>Every dependency is an attack vector. The 2021 Log4Shell vulnerability affected millions of Java deployments. The 2022 node-ipc protestware corrupted user files. The 2023 xz-utils backdoor was caught before widespread deployment — this time. The average Node.js project has 80+ transitive dependencies. Each one is a potential CVE.</p>
+
+<p>Security cost is not "will this package get a CVE" — it's "when this package gets a CVE, what is my response time?" The answer depends on how fast you can update, how well-tested your upgrade path is, and whether the package has a maintained replacement.</p>
+
+<h3>Cost 2: Maintenance burden</h3>
+<p>Dependencies need updating. Major version upgrades. API changes. Deprecation removals. Breaking changes in transitive deps. Each update is a potential regression. The more deps you have, the more time you spend updating instead of building.</p>
+
+<p>The average JS project spends 15-20% of its engineering time on dependency maintenance. Most of it is invisible — it doesn't show up in sprint planning, it doesn't produce features, it just keeps the lights on.</p>
+
+<h3>Cost 3: Lock-in and learning curve</h3>
+<p>Every dependency has an API. The API is a contract. When the dep changes its API, you change your code. When the dep is abandoned, you own its API forever or migrate it. When the dep does something unexpected, you need to understand its internals to debug it.</p>
+
+<p>Learning curve cost is paid by every engineer who touches the code. A dep with 5,000 users has StackOverflow answers and blog posts. A dep with 5 users has nothing. The niche dep that saves you two weeks of work might cost you two weeks of debugging when it breaks.</p>
+
+<h2>The Four-Tier Dependency Policy</h2>
+
+<p>Tier every dep before adding it. The tier determines the review depth, the monitoring requirements, and the upgrade cadence.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tier</th>
+      <th>Description</th>
+      <th>Examples</th>
+      <th>Review depth</th>
+      <th>Upgrade cadence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="tier tier-1">Tier 1</span></td>
+      <td>Language runtime or foundational tooling</td>
+      <td>Node.js, Python stdlib, webpack, npm</td>
+      <td>Security watchlist only</td>
+      <td>LTS schedule</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-2">Tier 2</span></td>
+      <td>Well-maintained, widely-used, narrow-purpose library</td>
+      <td>lodash, date-fns, zod, axios</td>
+      <td>Security audit + maintainer check</td>
+      <td>Monthly</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-3">Tier 3</span></td>
+      <td>Newer, less-widely-used, or broader-purpose library</td>
+      <td>Specific utility libraries, UI component libs, new tooling</td>
+      <td>Full: maintainer history, GitHub activity, CVE history, transitive deps</td>
+      <td>Bi-weekly</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-4">Tier 4</span></td>
+      <td>Single-author, unmaintained, or beta library</td>
+      <td>npm packages with no commits in 6mo, experimental tools</td>
+      <td>Not allowed without explicit exception from owner</td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout warning">
+  <strong>The tier question:</strong> if the answer to "who maintains this?" is "I don't know" or "one person who might stop tomorrow," it's at least Tier 3. If the last commit was more than 6 months ago, it's Tier 4 unless you have a written migration plan.
+</div>
+
+<h2>The Decision Framework: Should I Add This Dep?</h2>
+
+<p>Before running <code>npm install</code>, answer these five questions. If you can't answer all five, the dep doesn't belong in your project.</p>
+
+<h3>Question 1: Is this solving a real problem or a hypothetical one?</h3>
+<p>Don't add a dep to solve a problem you don't have yet. The most common dep mistake: "this library looks useful, let's add it" → the problem it solves never comes → the dep accumulates security updates → the dep gets a CVE → you spend 4 hours migrating off it.</p>
+
+<p>Only add deps for problems you have right now. "I'll need this later" is not a valid reason.</p>
+
+<h3>Question 2: What is the maintenance track record?</h3>
+<p>Look at: last commit date, release frequency, open issue count, response time on issues, security vulnerability history, maintainer diversity (single vs team).</p>
+
+<p>Red flags: no commits in 3+ months, open critical issues without response in 2+ weeks, history of unaddressed CVEs, maintainer has abandoned other popular packages.</p>
+
+<h3>Question 3: What does the transitive dependency tree look like?</h3>
+<p><code>npm ls --depth=2</code> (Node) or <code>pipdeptree</code> (Python). You're not just adding one dep — you're adding its entire dep tree. A dep that looks clean at the top might have 40 transitive deps, some of which are Tier 4.</p>
+
+<p>If the transitive tree is too deep or too large, find a narrower alternative. A 5kb dep with no transitive deps is better than a 200kb dep with 30 transitive deps.</p>
+
+<h3>Question 4: What is the migration path?</h3>
+<p>If this dep is abandoned tomorrow, what's the cost to remove it? Calculate:</p>
+<ul>
+  <li>How many files import it?</li>
+  <li>How many API calls are used?</li>
+  <li>Is there a maintained alternative with a compatible API?</li>
+  <li>Is the API thin enough to wrap in a local abstraction?</li>
+</ul>
+
+<p>If you can't answer these, add a local wrapper around the dep's interface. The wrapper isolates the API contract. When the dep needs to change, you change one file, not twenty.</p>
+
+<h3>Question 5: Does this belong in the language ecosystem or the platform?</h3>
+<p>Some problems are solved better by the language or platform than by a library. Before adding a dep, check:</p>
+<ul>
+  <li>Node: does this exist in the built-in modules (<code>fs</code>, <code>path</code>, <code>stream</code>, <code>crypto</code>)?</li>
+  <li>Python: does this exist in the stdlib?</li>
+  <li>Browser: does this exist in the Web APIs?</li>
+</ul>
+
+<p>If yes, use the platform. No dep to update. No CVE surface. No migration path to maintain.</p>
+
+<h2>Dependabot and the Automation Layer</h2>
+
+<p>The decision to add a dep is manual. The decision to update it should be automated. Use Dependabot (GitHub) or Renovate (self-hosted) to auto-open PRs for dep updates. Configure the update frequency and merge policy.</p>
+
+<pre><code># .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-request-limit: 10
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Major version updates always get their own PR — too risky to group
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    labels:
+      - "dependencies"
+      - "automated"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-request-limit: 5
+    labels:
+      - "dependencies"
+      - "automated"
+</code></pre>
+
+<p>The grouping policy matters: group minor/patch updates in production, but always split major updates. Major version updates are where breaking changes live. Grouping them masks what changed.</p>
+
+<div class="callout good">
+  <strong>The automation rule:</strong> every dep update that can be automated should be automated. Your time is for major version migrations and Tier 3+ review — the decisions that actually need human judgment. Routine minor updates are a waste of human attention.
+</div>
+
+<h2>The Exercise: Audit Your Deps (40 min)</h2>
+
+<h3>Step 1 — List all deps and their tiers (~10 min)</h3>
+<p>Run <code>npm ls --all 2>/dev/null | head -200</code> or equivalent for your language. Every dep goes into one of four tiers. If you're not sure, the dep is Tier 3.</p>
+
+<pre><code># deps-audit.md — updated 2026-06-30
+
+## Tier 1 — Runtime & Tooling
+| Package | Version | Purpose | Last audit |
+|---|---|---|---|
+| node | 20.x LTS | Runtime | 2026-06-30 |
+| npm | 10.x | Package manager | 2026-06-30 |
+| typescript | 5.x | Type checker | 2026-06-30 |
+
+## Tier 2 — Well-maintained, Widely-used
+| Package | Version | Purpose | Last audit |
+|---|---|---|---|
+| lodash | 4.x | Utility | 2026-06-30 |
+| date-fns | 3.x | Date formatting | 2026-06-30 |
+| zod | 3.x | Schema validation | 2026-06-30 |
+| axios | 1.x | HTTP client | 2026-06-30 |
+
+## Tier 3 — Needs Review
+| Package | Version | Purpose | Last commit | Issue response | Transitive deps |
+|---|---|---|---|---|---|
+| @radix-ui/react-dialog | 1.x | Dialog UI | 2026-06-15 | &lt; 1 week | ~12 |
+| next | 14.x | Framework | 2026-06-20 | &lt; 1 week | ~200 |
+| recharts | 2.x | Charts | 2026-05-10 | ~2 weeks | ~15 |
+
+## Tier 4 — Flagged for Removal or Exception
+| Package | Version | Reason | Action |
+|---|---|---|---|
+| unmaintained-widget | 0.1.x | No commits in 14 months | Remove by 2026-07-15 |
+| experimental-tool | 0.0.x | Experimental, no stability guarantee | Evaluate after 1.0 |
+</code></pre>
+
+<h3>Step 2 — Check transitive dep explosion (~5 min)</h3>
+<p>For each Tier 2 and Tier 3 dep, run the transitive tree check. Flag anything that pulls in more than 20 transitive deps without a good reason. The "good reason" is: the dep is a framework (Next.js, Django) or the dep is unavoidable (React). Everything else should be lean.</p>
+
+<h3>Step 3 — Check for abandoned deps (~5 min)</h3>
+<p>Look at last commit date for every Tier 3 and Tier 4 dep. Anything with no commits in 6+ months goes to Tier 4. File an issue: "should we remove this dep? Last commit: [date]. Migration path: [what would we do]."</p>
+
+<h3>Step 4 — Add a local wrapper for one broad dep (~10 min)</h3>
+<p>Pick a Tier 2 dep that you use in more than 3 files. Write a local wrapper that isolates its interface. This is the migration insurance: when the dep needs to change, you change one file.</p>
+
+<pre><code># src/lib/date-utils.ts
+// Wrapper around date-fns to isolate the interface.
+// If we ever need to switch date libraries, change only this file.
+
+import { format, parseISO, addDays, subDays, differenceInDays } from 'date-fns';
+
+export function formatDate(date: string | Date, pattern: string): string {
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return format(d, pattern);
+}
+
+export function addDaysToDate(date: string | Date, days: number): Date {
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return addDays(d, days);
+}
+
+export function daysBetween(start: string | Date, end: string | Date): number {
+  const s = typeof start === 'string' ? parseISO(start) : start;
+  const e = typeof end === 'string' ? parseISO(end) : end;
+  return differenceInDays(e, s);
+}
+
+// Re-exported for consumers that need direct access
+export { parseISO, subDays } from 'date-fns';
+</code></pre>
+
+<h3>Step 5 — Enable Dependabot (~10 min)</h3>
+<p>Add <code>.github/dependabot.yml</code> to the repo. Set weekly schedule, group minor/patch, split major. Enable the PR limit (10 is a good starting point). Label all PRs with <code>dependencies</code> + <code>automated</code> for easy filtering.</p>
+
+<h2>The Rule: Prefer Narrow Over Broad</h2>
+
+<p>The most consistent pattern in good dependency management is: prefer narrow APIs over broad frameworks. A 5kb dep with one purpose is better than a 200kb framework with fifty purposes you don't need.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Instead of</th>
+      <th>Use</th>
+      <th>Why</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Moment.js (200kb)</td>
+      <td>date-fns (5kb) or Temporal</td>
+      <td>Immutable, tree-shakeable, no mutation surprises</td>
+    </tr>
+    <tr>
+      <td>Lodash (full, 70kb)</td>
+      <td>Native JS methods + lodash-es (tree-shakeable)</td>
+      <td>Modern JS covers most lodash use cases natively</td>
+    </tr>
+    <tr>
+      <td>jQuery</td>
+      <td>Native DOM APIs</td>
+      <td>Native is universally supported, no migration needed</td>
+    </tr>
+    <tr>
+      <td>Class-transformer + class-validator</td>
+      <td>Zod (narrower, typed end-to-end)</td>
+      <td>Single dep, schema + validation in one, inferred types</td>
+    </tr>
+    <tr>
+      <td>axios</td>
+      <td>Native fetch</td>
+      <td>No new dep for a use case browsers handle natively</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout warning">
+  <strong>The trap:</strong> reaching for a dep instead of the language. Lodash's <code>_.groupBy</code> is <code>Object.groupBy</code> in modern JS. <code>_.uniqBy</code> is <code>[...new Map(...)]</code> or <code>Array.from(new Set(...))</code>. Before adding a dep, check if the problem is solved by a method you haven't learned yet.
+</div>
+
+<h2>Why This Lesson Matters for the Prior Lessons</h2>
+
+<p>Dependencies are invisible to the workflow. Lessons 0001–0007 describe how you work with code you write. This lesson is about code you pull in — and it has the same risk surface as the code you write, plus more:</p>
+
+<ul>
+  <li><strong>Lesson 0002 (audit):</strong> a new dep should be audited before it's added. The audit should include the five questions above.</li>
+  <li><strong>Lesson 0003 (generator):</strong> AI-generated code that imports a dep is adding a dependency. The lesson 0003 review should catch dep additions and apply the five-question framework.</li>
+  <li><strong>Lesson 0004 (scorecard):</strong> add a dep health metric: count of outdated deps, count of Tier 3+ deps, count of open critical CVEs.</li>
+  <li><strong>Lesson 0005 (auto-merge):</strong> Dependabot PRs are Tier 1 (auto-merge for minor/patch, auto-reject for major unless reviewed). Add a rule: "Dependabot dep bumps get auto-merged on the weekly schedule unless flagged."</li>
+  <li><strong>Lesson 0006 (incident response):</strong> a dep CVE is a potential SEV-1. Runbook should include "dep CVE response": assess impact, patch version, rollback if needed.</li>
+  <li><strong>Lesson 0007 (ownership):</strong> the dep owner is not you — it's the library maintainer. Document in the runbook: "if notification-deduplicator's dep x has a CVE, who is responsible?" The answer: you, even though you don't maintain x.</li>
+</ul>
+
+<h2>What You Should NOT Do</h2>
+
+<ul>
+  <li><strong>Don't add a dep to solve a problem you don't have yet.</strong> "This looks useful" is not a reason. Wait until the problem exists, then evaluate the dep against the five questions.</li>
+  <li><strong>Don't skip the transitive dep check.</strong> A dep with a clean top-level surface might have a nasty transitive dep tree. Check <code>npm ls --all</code> before adding.</li>
+  <li><strong>Don't use abandoned deps.</strong> If the last commit is more than 6 months ago and the maintainer hasn't posted a deprecation notice, treat it as abandoned. File a migration issue today.</li>
+  <li><strong>Don't wrap broad deps without a migration plan.</strong> The wrapper buys you time, not safety. If the dep is abandoned, the wrapper is a migration liability. Remove the dep or maintain it yourself.</li>
+  <li><strong>Don't ignore Dependabot PRs.</strong> "We can update later" is how you end up with 200 outdated deps and a migration that takes a week. Weekly update cadence is the right pace.</li>
+  <li><strong>Don't add deps without a local owner.</strong> Every dep needs a human who cares about its maintenance. If no one owns the dep, no one will update it, and no one will notice when it has a CVE.</li>
+</ul>
+
+<h2>What Comes Next</h2>
+
+<p>Lesson 0009 will be on <strong>tech debt and pruning</strong> — the code you have but shouldn't, the deps you've accumulated but don't use, and the question "should I delete this or keep it?" Spotify's philosophy: regular pruning is cheaper than a rewrite. Keep the codebase lean, or it becomes a museum.</p>
+
+<p>At your scale, the lesson is about the cost of keeping things: every file you don't delete is a file that needs to be understood, audited, updated, and migrated. The code you wrote two years ago and haven't touched is technical debt even if it works.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>Share your <code>package.json</code> deps — I'll tier each one and flag anything that needs review</li>
+    <li>Have a dep that looks abandoned? I can help you assess the migration cost</li>
+    <li>Want help writing a local wrapper for a broad dep? I can show you the pattern</li>
+    <li>Dependabot config getting noisy? I can help tune the grouping and limits</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0007-code-ownership-at-scale.html">← Lesson 0007: Code Ownership at Scale</a>
+  <a href="0009-tech-debt-and-pruning.html">Lesson 0009: Tech Debt and Pruning →</a>
+</div>
+
+</body>
+</html>

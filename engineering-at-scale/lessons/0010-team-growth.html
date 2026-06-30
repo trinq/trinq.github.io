@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0010: Team Growth — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .final {
+      background: #c0392b;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .callout.good {
+      background: #e8f5e9;
+      border-left-color: var(--accent);
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .recap {
+      background: #fff;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      border: 1px solid var(--rule);
+    }
+    .recap h3 {
+      margin-top: 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-soft);
+    }
+    .recap ul { margin: 0.5rem 0 0 1.25rem; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span><span class="badge final">final</span></span>
+  <span>Lesson 0010</span>
+  <span>2026-06-30</span>
+  <span>~14 min</span>
+</div>
+
+<h1>Team Growth</h1>
+<p class="subtitle">The workflow that worked at one engineer either scales or breaks. The lessons 0001-0009 work solo because the workflow is composable. They keep working as you add people — but only if the structure already exists.</p>
+
+<p>This is lesson 10 — the final lesson — of <a href="../MISSION.md">engineering-at-scale</a>. The first nine lessons described a workflow for the code you write, the code you pull in, the code you own, and the code you prune. This lesson is the capstone: it tests the workflow against organizational complexity. What changes when N > 1? Mostly nothing — if the prior lessons were followed correctly.</p>
+
+<p>Your takeaway: <strong>the process has to exist before you grow. The lesson is not "what changes when you hire" — it's "what proves the workflow is composable."</strong> A composable workflow scales by replication, not by re-architecture.</p>
+
+<h2>The Four Failure Modes at Scale</h2>
+
+<p>These are the failure modes that emerge at team scale. Each one is solved by a prior lesson — but only if the prior lesson was followed correctly before the failure appeared.</p>
+
+<h3>Failure mode 1: Ownership disputes</h3>
+<p>Symptom: two engineers disagree on a design choice. Each has authority over part of the codebase. The PR sits in review for a week. The team blocks.</p>
+
+<p>Solution: <strong>lesson 0007 (CODEOWNERS).</strong> Ownership is explicit. The owner of the affected code makes the call. If two code areas conflict, the owner is the one whose area is the proximate cause — not the one with the loudest opinion. Escalation only when safety or correctness is at stake.</p>
+
+<h3>Failure mode 2: Code review bottleneck</h3>
+<p>Symptom: one engineer is the reviewer for everything. Their queue is 30 PRs deep. Everyone waits. Nothing merges.</p>
+
+<p>Solution: <strong>lesson 0005 (tiered review).</strong> Most PRs are Tier 1 (auto-merge with checks). Some are Tier 2 (one reviewer). Few are Tier 3 (named reviewer with domain expertise). The bottleneck disappears when 80% of PRs never need human review.</p>
+
+<h3>Failure mode 3: Decision paralysis</h3>
+<p>Symptom: a non-trivial change needs three sign-offs. The sign-offs take a week because everyone has different priorities. The team blocks on a "simple" feature.</p>
+
+<p>Solution: <strong>lesson 0007 + 0008 + 0009 together.</strong> Decisions are documented in runbooks. Critical paths (auth, billing, schema) require CODEOWNERS. New deps require owner approval. Everything else has a clear default. The default is "ship it" unless someone flags it. The cost of blocking is higher than the cost of rolling back.</p>
+
+<h3>Failure mode 4: On-call burnout</h3>
+<p>Symptom: one engineer carries the pager. They sleep poorly. They quit. The team's capacity drops by 50%.</p>
+
+<p>Solution: <strong>lesson 0006 (runbooks + tiered severity).</strong> Runbooks make incidents fixable by the on-call engineer, not just the owner. Tiered severity means most incidents don't need a hero. Shared rotation means no single engineer carries the burden.</p>
+
+<p>The pattern: every failure mode has a solution in a prior lesson. The question is whether the solution exists before the failure mode appears.</p>
+
+<h2>The Spotify Model: Small Teams, Clear Owners</h2>
+
+<p>From the podcast (~38:00):</p>
+
+<div class="quote">
+  "We organize around what we call squads. A squad is typically 6 to 12 people, and they have a mission — usually a specific part of the product. They own that part end-to-end, including the on-call rotation. They have autonomy in how they build it, but they're accountable for the outcomes."
+  <span class="quote-source">— from the podcast</span>
+</div>
+
+<p>Squads are small because the workflow is composable. Six engineers can each carry lesson 0007 ownership of a section, lesson 0008 ownership of their deps, lesson 0009 ownership of their pruning. Twelve engineers can too — at 12, you split the squad into two. The workflow replicates by squad.</p>
+
+<p>The thesis of this course: <strong>if the workflow is composable at solo scale, it scales by replication.</strong> Every lesson adds a piece that exists at 1 engineer and still works at 12.</p>
+
+<h2>Lesson-by-Lesson at Scale</h2>
+
+<p>Each prior lesson, and what changes when N > 1:</p>
+
+<h3>Lesson 0001 (prototype) — unchanged</h3>
+<p>Prototyping works the same at any scale. The first draft is yours. The validation still comes from the lesson 0002 audit. Solo engineers prototype alone. Squads prototype by the engineer who will own the implementation. Same workflow.</p>
+
+<p>What changes: you may have a colleague to bounce the prototype off. A 30-minute whiteboarding session replaces the journal. But the workflow is the same.</p>
+
+<h3>Lesson 0002 (audit) — unchanged, easier at scale</h3>
+<p>Auditing is the same regardless of N. The checklist is the same. The pass/fail is the same.</p>
+
+<p>What changes: you have someone to ask "what does this do?" Two-pair-eyes catches what solo eyes miss. The solo workflow had a journal for context; the team workflow has a colleague. The risk is the same (false confidence), the mitigation is stronger.</p>
+
+<h3>Lesson 0003 (generator-review) — unchanged</h3>
+<p>AI-generated code still needs human review. The six checkpoints (intent, plan, contract, sanity, debt, doc) are the same regardless of who's generating — human, AI, or hybrid.</p>
+
+<p>What changes: at scale, you may have a "generator champion" — the engineer who tunes prompts, tracks accuracy, and shares learnings. Solo, the champion is you.</p>
+
+<h3>Lesson 0004 (measure) — unchanged, more important at scale</h3>
+<p>The scorecard is the same. The cadence is the same.</p>
+
+<p>What changes: at scale, the scorecard becomes the team's north star. "What's our p95 latency?" is a question a single engineer can answer at solo scale, and a question a whole team needs to answer at scale. The scorecard becomes the basis for retros.</p>
+
+<h3>Lesson 0005 (auto-merge) — critical at scale</h3>
+<p>Tiered review is what stops the bottleneck. Without it, scale means queue depth grows linearly with N. With it, queue depth stays flat because 80% of PRs never need human review.</p>
+
+<p>What changes at scale: more reviewers, more domain owners, more named reviewers per tier. The pattern is the same. The roster grows.</p>
+
+<h3>Lesson 0006 (incident response) — more important at scale</h3>
+<p>Runbooks become essential at scale. At solo scale, the owner is the on-call by default. At multi-engineer scale, the on-call might not have written the code that broke. Runbooks bridge the gap.</p>
+
+<p>What changes at scale: shared rotation, post-incident reviews, named backup. The PagerDuty config (or equivalent) gets explicit. The incident severity definitions become shared.</p>
+
+<h3>Lesson 0007 (ownership) — the most important at scale</h3>
+<p>CODEOWNERS is the only thing that prevents ownership disputes. At solo scale, ownership is implicit. At scale, it must be explicit.</p>
+
+<p>What changes at scale: a roster of owners. Per-area primary + backup. The CODEOWNERS file becomes the source of truth for "who decides what." Escalation paths are documented.</p>
+
+<h3>Lesson 0008 (deps) — unchanged, easier with discipline</h3>
+<p>The four-tier policy scales by replication. Every squad applies it. The audit cycle can be shared across squads.</p>
+
+<p>What changes at scale: a "deps council" or rotating reviewer for Tier 3+ additions. More eyes on the decision, but the framework is the same.</p>
+
+<h3>Lesson 0009 (pruning) — more important at scale</h3>
+<p>At solo scale, pruning is personal. At scale, pruning becomes the defense against the museum problem.</p>
+
+<p>What changes: quarterly museum audit becomes a team ritual. Each owner reports pruning activity. The team has a culture of deletion, not just addition.</p>
+
+<h2>The Composition Test</h2>
+
+<p>The 10 lessons compose. The test: pick any two lessons, do they conflict? No. Pick any three? No. Pick all ten? No. The workflow is composable.</p>
+
+<div class="callout good">
+  <strong>The composition test result:</strong> the 10 lessons form a coherent workflow. Adding a lesson does not contradict a prior lesson. Removing a lesson does not invalidate the others. The course can be taught as a whole, or as a reference manual — index by task ("I'm adding a dep" → lesson 0008, "I'm writing a runbook" → lesson 0006).
+</div>
+
+<p>That's the property that makes the workflow scale. Composable workflows replicate by copying the structure, not by re-architecting it. Mature engineering organizations are collections of lessons 0001-0010, each composed in slightly different ways per team.</p>
+
+<h2>The N=3 Milestone</h2>
+
+<p>The transition from solo to small team (1 to 3 engineers) is the hardest. After that, the workflow is established and you can replicate. Before N=3, you have an opportunity to set the practices. After N=3, you have a culture you can't easily change.</p>
+
+<p>The things to set before N=3:</p>
+
+<ul class="checklist">
+  <li>CODEOWNERS file (lesson 0007)</li>
+  <li>Tiered review policy (lesson 0005)</li>
+  <li>Runbook format (lesson 0006)</li>
+  <li>Scorecard dashboard (lesson 0004)</li>
+  <li>Dep policy document (lesson 0008)</li>
+  <li>Pruning cadence (lesson 0009)</li>
+  <li>On-call rotation (lesson 0006)</li>
+  <li>Audit checklist (lesson 0002)</li>
+</ul>
+
+<p>Set these at N=2. They cost almost nothing at solo scale because the workflow is yours. At N=5, they're the difference between a team and a stalled queue.</p>
+
+<div class="callout warning">
+  <strong>The trap:</strong> waiting to set the structure until "we have the time." The time never comes. The structure has to exist before scale, not after. Set the CODEOWNERS file at N=2. Set the runbook format at N=2. Set the scorecard at N=2. Each takes a day at solo scale. Each saves a week at multi-engineer scale.
+</div>
+
+<h2>The Exercise: Your First Three Engineers (60 min)</h2>
+
+<p>This exercise simulates the N=1 → N=3 transition. Most of it is documentation work — the structure that has to exist before you grow.</p>
+
+<h3>Step 1 — The CODEOWNERS file (~15 min)</h3>
+<p>Create the CODEOWNERS file. For a solo repo today, you're the owner of everything. Write the file as if you had two teammates — Alice and Bob. Define who owns what. The point is the structure exists.</p>
+
+<pre><code># CODEOWNERS
+# Each line is a file pattern and one or more owners.
+# Owners are @usernames. Order matters: later patterns override earlier ones.
+
+# Default: every file has at least one owner
+*       @you
+
+# Domain-specific ownership
+/src/auth/          @you @alice
+/src/billing/       @you @bob
+/src/api/           @you @alice @bob
+/src/notifications/ @alice
+/src/analytics/     @bob
+/docs/runbooks/     @you @alice @bob
+/tests/             @alice
+
+# Critical paths require additional review
+/src/auth/crypto/   @you
+/migrations/        @you @bob
+/infra/             @you
+</code></pre>
+
+<p>Make the roster explicit even if it's hypothetical. The point is the rule "ownership is documented" exists, not that the names are real.</p>
+
+<h3>Step 2 — The tiered review policy (~15 min)</h3>
+<p>Document the tier system. Define what counts as Tier 1, 2, 3 for your repo. Define who can review each tier. Define what auto-merge is allowed.</p>
+
+<pre><code># REVIEW-POLICY.md
+# Tiered review policy — last updated 2026-06-30
+
+## Tier 1 — Auto-merge
+- Tests pass (CI green)
+- Lint pass
+- Type-check pass
+- No new dependencies
+- Diff &lt; 200 lines
+- Documentation updated
+
+Examples: typo fixes, deletion PRs, dep minor/patch bumps
+
+Reviewers: none (bot only)
+
+## Tier 2 — One reviewer required
+- Any change that modifies behavior
+- Diff &gt; 200 lines but &lt; 1000
+- New tests, no new behavior
+
+Examples: bug fixes, refactoring, performance improvements
+
+Reviewers: any CODEOWNER in the affected area
+
+## Tier 3 — Named reviewer with domain expertise
+- Changes to critical paths (auth, billing, schema)
+- New dependencies (Tier 2+ from lesson 0008)
+- Performance-critical changes
+- Migrations
+
+Examples: auth refactor, billing edge case, new API endpoint
+
+Reviewers: primary CODEOWNER + at least one named reviewer in the area
+
+## Tier 4 — Two reviewers + lead approval
+- Changes to cryptography
+- Changes to payments
+- Schema migrations affecting &gt; 1M rows
+- Public API changes
+
+Examples: auth crypto, refund flow changes, breaking schema migrations
+
+Reviewers: two named reviewers + explicit approval from team lead
+</code></pre>
+
+<h3>Step 3 — The runbook template (~15 min)</h3>
+<p>Create the runbook template. Define the structure: symptom, severity, hypothesis, escalation, recovery. One runbook per high-severity incident class.</p>
+
+<pre><code># RUNBOOK: [Incident Class]
+# Last updated: 2026-06-30  |  Owner: @primary  |  Backup: @backup
+
+## Symptom
+What alerts / dashboards / user reports indicate this incident class.
+
+## Severity
+Default severity. Conditions for escalation.
+
+## Hypothesis
+Top 3 likely causes (most likely → least likely).
+
+## Recovery
+Step-by-step recovery procedure. Numbered. Verb-based.
+
+1. [Action] — verify by [signal]
+2. [Action] — verify by [signal]
+3. [Action] — verify by [signal]
+
+## Escalation
+When to page @primary. When to page @backup. When to escalate to team lead.
+
+## Postmortem template
+- What happened
+- Detection time (alert vs blast radius)
+- Mitigation time
+- Root cause
+- Action items (with owners and due dates)
+</code></pre>
+
+<h3>Step 4 — The scorecard dashboard spec (~15 min)</h3>
+<p>Spec the metrics dashboard. Pick 5-7 metrics that matter for your repo. Define the source. Define the alert thresholds. Define the cadence for review.</p>
+
+<pre><code># SCORECARD.md
+# Last updated: 2026-06-30  |  Reviewer: @primary  |  Cadence: weekly
+
+## User-facing
+| Metric | Target | Source | Alert threshold |
+|---|---|---|---|
+| p95 latency | &lt; 300ms | Datadog / apm | &gt; 500ms for 5min |
+| Error rate | &lt; 0.1% | Sentry | &gt; 1% for 5min |
+| Uptime | &gt; 99.9% | Status page | &lt; 99.5% |
+| Active users | trend up | PostHog | down 10% week-over-week |
+
+## Engineering
+| Metric | Target | Source | Alert threshold |
+|---|---|---|---|
+| Open critical CVEs | 0 | Dependabot | any |
+| Outdated Tier 3 deps | &lt; 5 | npm | &gt; 10 |
+| Tech debt ratio | &lt; 0.1 | CodeQL | &gt; 0.2 |
+| Mean PR age | &lt; 2 days | GitHub | &gt; 5 days |
+| On-call hours/week | &lt; 8 per engineer | PagerDuty | &gt; 12 |
+
+## Process
+| Metric | Target | Cadence |
+|---|---|---|
+| Museum audit cadence | quarterly | every 3 months |
+| Dep review cadence | weekly | every Monday |
+| Scorecard review | weekly | every Monday morning |
+</code></pre>
+
+<h2>The Composable Workflow: A Recap</h2>
+
+<div class="recap">
+<h3>Lesson 0001 — Prototype</h3>
+<ul>
+  <li>Build the smallest thing that proves the hypothesis</li>
+  <li>Don't hide it in a branch — show it early</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0002 — Audit</h3>
+<ul>
+  <li>Audit code before merging, not after shipping</li>
+  <li>The journal captures the audit trail</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0003 — Generator Review</h3>
+<ul>
+  <li>AI generates, humans review</li>
+  <li>Six checkpoints: intent, plan, contract, sanity, debt, doc</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0004 — Measure</h3>
+<ul>
+  <li>Scorecard before metrics dashboard</li>
+  <li>Pick the 5 metrics that matter</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0005 — Auto-Merge</h3>
+<ul>
+  <li>Most PRs should auto-merge</li>
+  <li>Tier the review: 1 (auto), 2 (one), 3 (named), 4 (two + lead)</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0006 — Incident Response</h3>
+<ul>
+  <li>Severity is a decision, not a feeling</li>
+  <li>Runbooks make incidents fixable by anyone on rotation</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0007 — Code Ownership at Scale</h3>
+<ul>
+  <li>CODEOWNERS makes ownership explicit</li>
+  <li>Runbooks make incidents fixable across owners</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0008 — Dependency Management</h3>
+<ul>
+  <li>Every dep is a team — install is free, ownership is not</li>
+  <li>Four tiers, five questions, automation for updates</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0009 — Tech Debt and Pruning</h3>
+<ul>
+  <li>Delete in the same PR that makes code dead</li>
+  <li>Three cadences: weekly, monthly, quarterly</li>
+</ul>
+</div>
+
+<div class="recap">
+<h3>Lesson 0010 — Team Growth (this lesson)</h3>
+<ul>
+  <li>The workflow composes; structure before scale</li>
+  <li>Set CODEOWNERS, runbooks, scorecard, dep policy at N=2</li>
+</ul>
+</div>
+
+<h2>The Course Close</h2>
+
+<p>That's the 10 lessons. The course started with "the smallest thing that proves the hypothesis" and ended with "set the structure before you grow." The arc:</p>
+
+<ol>
+  <li><strong>Build it carefully.</strong> Prototype, audit, generate responsibly (0001-0003).</li>
+  <li><strong>Operate it carefully.</strong> Measure, gate, respond (0004-0006).</li>
+  <li><strong>Own it deliberately.</strong> Code ownership, deps, pruning (0007-0009).</li>
+  <li><strong>Scale it composably.</strong> Team growth (0010).</li>
+</ol>
+
+<p>Each lesson is a habit. The habits compound. A 10-habit engineer is qualitatively different from a 5-habit engineer — not because each habit is large, but because the habits compose. The whole is larger than the sum of the parts.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>About to hire your first teammate? I can help you set the CODEOWNERS + runbook structure</li>
+    <li>Have a question about how two lessons interact? Ask — the composition is deliberate</li>
+    <li>Want a printable checklist for all 10 lessons? I can produce it as a reference doc</li>
+    <li>Have a "what about X" question that this course didn't cover? I can write a reference doc or a follow-up lesson</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0009-tech-debt-and-pruning.html">← Lesson 0009: Tech Debt and Pruning</a>
+  <a href="../MISSION.html">Course Index →</a>
+</div>
+
+</body>
+</html>

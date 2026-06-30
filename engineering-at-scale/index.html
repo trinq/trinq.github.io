@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All Lessons — Engineering at Scale</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <a href="" class="site-logo">Engineering at Scale</a>
+    <div class="site-nav">
+      <a href="/">Home</a>
+      <a href="">Lessons</a>
+      <a href="MISSION.md">Mission</a>
+      <a href="RESOURCES.md">Resources</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<div class="crumbs">
+  <a href="">Home</a> &nbsp;·&nbsp;
+  <a href="MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="RESOURCES.md">Resources</a> &nbsp;·&nbsp; All Lessons
+</div>
+
+<h1>All Lessons</h1>
+
+<p>Ten lessons from Spotify's VP of Engineering on how a hyperscaler thinks about specs, code review, ownership, and dependencies — translated to a small team's scale. Anchored to <a href="https://www.youtube.com/watch?v=3ygrJwcMut4">Beyond Code #12</a> with Niklas Gustavsson.</p>
+
+<p class="section-label">Lessons</p>
+
+<div class="lesson-grid">
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0001</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0001-prototype-dont-prd.html">Prototype, Don't PRD</a>
+  </h2>
+  <p class="card-desc">Replace a static PRD with a working prototype, ship it to a real user for feedback, then write the formal spec.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0002</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0002-hyrums-law-hits-your-agents.html">Hyrum's Law Hits Your Agents</a>
+  </h2>
+  <p class="card-desc">Learn Hyrum's Law and find the parts of your codebase that AI agents will silently corrupt during migrations.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0003</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0003-review-the-script-not-the-pr.html">Review the Script, Not the PR</a>
+  </h2>
+  <p class="card-desc">Stop reviewing changes line-by-line. Review the script that made the changes. Spotify's 85%-auto-merge trick at any scale.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0004</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0004-measure-the-aggregate.html">Measure the Aggregate</a>
+  </h2>
+  <p class="card-desc">Track three metrics weekly: regressions caught, generator runs without regressions, prototype-to-ship ratio.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0005</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0005-when-to-auto-merge.html">When to Auto-Merge</a>
+  </h2>
+  <p class="card-desc">Tier every PR into three levels: auto-merge, light review, or full review. 80% should auto-merge.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0006</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0006-incident-response-at-scale.html">Incident Response at Scale</a>
+  </h2>
+  <p class="card-desc">Rollback in the first 30 minutes. Three-lens postmortem (system, process, human). Severity tiers and runbook discipline.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0007</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0007-code-ownership-at-scale.html">Code Ownership at Scale</a>
+  </h2>
+  <p class="card-desc">Write a CODEOWNERS file with an explicit default. One-page runbook per critical module. Don't retrofit ownership after N=3.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0008</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0008-dependency-management.html">Dependency Management</a>
+  </h2>
+  <p class="card-desc">Four-tier dep policy, five-question decision framework. Prefer narrow APIs. Automate updates with Dependabot.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0009</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0009-tech-debt-and-pruning.html">Tech Debt and Pruning</a>
+  </h2>
+  <p class="card-desc">Four verdicts (keep, hold, prune, rewrite). Three cadences (PR-time, monthly, quarterly). Git has history; delete the code.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0010</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0010-team-growth.html">Team Growth</a>
+  </h2>
+  <p class="card-desc">Workflow composes from N=1 to N=10+. N=3 is the load-bearing milestone. Set structure before you grow.</p>
+</article>
+
+<p class="section-label">Reference</p>
+
+<div class="lesson-grid">
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Reference 0001</span>
+    <span class="card-category-badge">engineering-at-scale</span>
+    <span class="card-time">2026-06-30</span>
+  </div>
+  <h2 class="card-title">
+    <a href="reference/0001-glossary.html">Glossary</a>
+  </h2>
+  <p class="card-desc">Source of truth for terms used across the series: Squad, Service decomposition, Honk, Hyrum's Law, Backstage, Auto-merge, and more.</p>
+</article>
+</div>
+
+</main>
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="">Lessons</a></li>
+        <li><a href="MISSION.md">Mission</a></li>
+        <li><a href="RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Source</h4>
+      <ul>
+        <li><a href="https://www.youtube.com/watch?v=3ygrJwcMut4" target="_blank" rel="noopener">Beyond Code #12</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Engineering at Scale &mdash; a self-paced course.
+  </div>
+</footer>
+</body>
+</html>

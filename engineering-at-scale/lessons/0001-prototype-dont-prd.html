@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: Prototype, Don't PRD — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #1db954;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    .vs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+    .vs-cell {
+      background: #fff;
+      padding: 1.25rem;
+    }
+    .vs-cell h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin-bottom: 0.75rem;
+    }
+    .vs-cell.old h4 { color: #c0392b; }
+    .vs-cell.new h4 { color: var(--accent); }
+    .vs-cell ul { margin: 0; padding-left: 1.25rem; font-size: 0.9rem; }
+    .vs-cell li { margin-bottom: 0.4rem; }
+    .step {
+      display: flex;
+      gap: 1rem;
+      margin: 1.25rem 0;
+      align-items: flex-start;
+    }
+    .step-num {
+      background: var(--accent);
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: "SF Mono", Menlo, monospace;
+      flex-shrink: 0;
+    }
+    .step-body { flex: 1; padding-top: 0.2rem; }
+    .step-body strong { display: block; margin-bottom: 0.25rem; }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .ref-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--accent);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0001</span>
+  <span>2026-06-30</span>
+  <span>~8 min</span>
+</div>
+
+<h1>Prototype, Don't PRD</h1>
+<p class="subtitle">The first lesson from Spotify's VP of Engineering: throwaway prototypes replace static specs.</p>
+
+<p>This is lesson 1 of <a href="../MISSION.md">engineering-at-scale</a>. The series is anchored to <a href="https://www.youtube.com/watch?v=3ygrJwcMut4">Beyond Code #12</a> with Niklas Gustavsson, VP Engineering at Spotify.</p>
+
+<p>Your first tangible win: replace one PRD with a working prototype this week.</p>
+
+<h2>The Insight</h2>
+
+<p>At ~31:00 and again at ~54:00 in the conversation, Niklas describes a shift happening inside Spotify right now:</p>
+
+<div class="quote">
+  "It used to be that we did fairly static designs for something that we were going to build. Now because we can prototype that — and we can even prototype it within our apps — that means that we can touch and feel and use a product with our own data within our app experience compared to looking at a static image. So that's what we're seeing very rapidly — that's the way teams choose to prove out ideas."
+  <span class="quote-source">— Niklas Gustavsson, ~54:00</span>
+</div>
+
+<div class="quote">
+  "A lot of the ways that we work and like the whole process for how we build products is just fundamentally changing as we speak."
+  <span class="quote-source">— Niklas Gustavsson, ~31:00</span>
+</div>
+
+<p>Prototypes are not new. What is new: prototypes are now <em>cheaper to build than specs are to write</em>. AI agents make this possible. When you can ship a clickable prototype in an afternoon, the cost-benefit of writing a 2-page PRD inverts.</p>
+
+<h2>Old vs New</h2>
+
+<div class="vs-grid">
+  <div class="vs-cell old">
+    <h4>Static PRD</h4>
+    <ul>
+      <li>2–8 pages of prose</li>
+      <li>Wireframes attached as PNG</li>
+      <li>Reviews happen asynchronously</li>
+      <li>User feedback deferred to beta</li>
+      <li>Engineering starts from interpretation</li>
+      <li>Changes to scope require doc rewrites</li>
+    </ul>
+  </div>
+  <div class="vs-cell new">
+    <h4>Working Prototype</h4>
+    <ul>
+      <li>Runnable code, throwaway</li>
+      <li>Real interaction, real data</li>
+      <li>Feedback collected in the same session</li>
+      <li>User tests with their own data</li>
+      <li>Engineering starts from a working baseline</li>
+      <li>Changes are just commits</li>
+    </ul>
+  </div>
+</div>
+
+<p>This is not "PRD bad." The PRD still wins for: cross-team coordination, regulatory compliance, irreversible decisions, anything where the cost of being wrong is high. The prototype wins for: feature shape, interaction feel, user delight.</p>
+
+<h2>When to Prototype vs When to PRD</h2>
+
+<p>Use this decision rule. It is the one Spotify is operating under, paraphrased:</p>
+
+<ul>
+  <li><strong>Prototype</strong> when you can answer "is this the right shape?" by clicking through it.</li>
+  <li><strong>PRD</strong> when you need to answer "is this the right thing for the company to bet on for the next 18 months?"</li>
+</ul>
+
+<p>If the question is about <em>shape</em>, skip the spec. If the question is about <em>commitment</em>, write the spec.</p>
+
+<h2>The Exercise: One Prototype This Week</h2>
+
+<p>Pick <strong>one</strong> feature ticket from your current sprint. The criteria:</p>
+
+<ul>
+  <li>It's a new feature, not a bug fix.</li>
+  <li>It involves UI or user-visible behavior (not pure backend).</li>
+  <li>You have the time to build a rough version in one session.</li>
+  <li>You can show it to at least one other human (user, teammate, designer).</li>
+</ul>
+
+<div class="callout warning">
+  <strong>Pick small.</strong> If the prototype would take more than 4 hours to build, you picked the wrong ticket. The whole point is that it's <em>cheaper</em> than the PRD.
+</div>
+
+<h3>The 5 Steps</h3>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <strong>Skip the PRD.</strong>
+    Write 5 bullets instead — what the prototype needs to demonstrate, not what it needs to do. Keep these on a sticky note.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <strong>Build the throwaway.</strong>
+    Use your AI agent (Cursor, Copilot — whatever you already use). Prioritize the happy path. Hard-code data. Skip edge cases. Skip accessibility. Skip tests. The prototype is allowed to be ugly.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <strong>Deploy or screen-share it.</strong>
+    If it has UI, get it in front of at least one real person using their real data. If it's a backend change, demo it. Static screenshots don't count — the point is touch-and-feel.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <strong>Capture reactions.</strong>
+    Write down exactly what the user said, in their words. The 3 most surprising comments are the most valuable. These will become the real PRD — or the kill-switch.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <div class="step-body">
+    <strong>Decide.</strong>
+    Three outcomes:
+    <ul>
+      <li><em>Kill it.</em> The prototype showed the idea was wrong. Good — you saved the PRD.</li>
+      <li><em>Refine it.</em> The shape is right, but small changes. Iterate the prototype 1–2 more times.</li>
+      <li><em>Spec it.</em> The shape is locked. NOW write the PRD for the engineering team to implement properly.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>What You Should NOT Do</h2>
+
+<p>This lesson is <em>not</em> a license to skip all planning. Things you should still do:</p>
+
+<ul>
+  <li>Set a hard time budget (1–4 hours max). If it blows past that, stop and write the spec instead.</li>
+  <li>Label the prototype as throwaway. Do not let it become the implementation by default. "It works, ship it" is not the goal.</li>
+  <li>Capture what surprised you. The point is to learn something you couldn't have written into a PRD.</li>
+</ul>
+
+<div class="callout">
+  <strong>The trap:</strong> the prototype becomes the implementation because writing more code is easier than reverting. Force yourself to delete the prototype repo / branch before you start the real one. Yes, really.
+</div>
+
+<h2>What Spotify Doesn't Tell You</h2>
+
+<p>Niklas glosses over a non-trivial point: Spotify has internal prototyping tools that live inside their apps. You probably don't. So you'll be using whichever framework you already use, and that's fine. The point is the workflow, not the tooling.</p>
+
+<p>What you do need that Spotify has and you don't: a teammate willing to look at rough work. If you don't have one, find a user, a designer, or a Discord community where you'll be embarrassed to ship something ugly. Embarrassment is a forcing function.</p>
+
+<h2>Self-Check Before You Start</h2>
+
+<p>Tick these. If any are missing, fix them before you start the exercise:</p>
+
+<ul class="checklist">
+  <li>I have a feature ticket that's small enough (under 4 hours of work)</li>
+  <li>I have access to my usual AI agent</li>
+  <li>I have at least one human who'll look at the prototype with me</li>
+  <li>I've set a hard time budget</li>
+  <li>I've committed to deleting the prototype after the experiment</li>
+</ul>
+
+<h2>What Comes Next</h2>
+
+<p>If the exercise lands, lesson 0002 will dig into <strong>Hyrum's Law</strong> — the insight from the podcast that explains why AI agents fail at migrations, and why your prototypes will probably break in ways you don't expect.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong> Got questions? Stuck on step 2? Wondering whether your ticket is "small enough"? Ask. The teacher (your agent) can:
+  <ul>
+    <li>Help you judge ticket size for prototype-fitness</li>
+    <li>Show you how to write the 5-bullet version instead of a PRD</li>
+    <li>Recommend a tool stack for throwing away code fast</li>
+    <li>Debug the prototype if it gets weird</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <span class="nav-label">First lesson</span>
+  <a href="../reference/0001-glossary.html">Reference: Glossary →</a>
+</div>
+
+</body>
+</html>

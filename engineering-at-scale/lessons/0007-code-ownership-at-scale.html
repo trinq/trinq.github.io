@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0007: Code Ownership at Scale — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+    .owner-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      margin: 1.5rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 0.85rem;
+    }
+    .owner-row {
+      display: contents;
+    }
+    .owner-cell {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .owner-cell:last-child { border-right: none; }
+    .owner-row:last-child .owner-cell { border-bottom: none; }
+    .owner-cell.header {
+      background: var(--code-bg);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+    }
+    .owner-cell .label {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .bad { background: #fdecea; }
+    .ok { background: #fff3e0; }
+    .good { background: #e8f5e9; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0007</span>
+  <span>2026-06-30</span>
+  <span>~11 min</span>
+</div>
+
+<h1>Code Ownership at Scale</h1>
+<p class="subtitle">Make ownership explicit before you grow. "Everybody owns everything" is the worst answer.</p>
+
+<p>This is lesson 7 of <a href="../MISSION.md">engineering-at-scale</a>. Lessons 0001–0006 gave you a workflow that protects a single repo. This lesson is about what happens when the workflow meets multiple repos, multiple engineers, and a component graph too big for one person to hold.</p>
+
+<p>Your takeaway: <strong>ownership is implicit at one person, explicit at two, and political at three.</strong> Encode it in CODEOWNERS and runbooks before you're at three. Encode it before you grow — not after you collapse.</p>
+
+<h2>The Spotify Ownership Model</h2>
+
+<p>From the podcast (~22:00):</p>
+
+<div class="quote">
+  "We basically have one engineer per squad that's the component owner for that component. And what that means is they're responsible for keeping the lights on — they get paged when things break — but they also have to approve changes to that component."
+  <span class="quote-source">— Niklas Gustavsson, ~22:00</span>
+</div>
+
+<p>Spotify's pattern: every component has exactly one named owner. The owner approves changes (lesson 0005's full-review tier), responds to incidents (lesson 0006's on-call), and maintains the runbook. One name, one pager, one runbook per component.</p>
+
+<p>This is the polar opposite of the "everybody owns everything" model that emerges by accident when nobody makes ownership explicit. That model has no owner, so any change is everyone's problem, so no change gets attention, so the codebase rots.</p>
+
+<h2>The Three Ownership Patterns</h2>
+
+<p>Three patterns exist. They have very different failure modes.</p>
+
+<div class="owner-grid">
+  <div class="owner-row">
+    <div class="owner-cell header">Pattern</div>
+    <div class="owner-cell header">Description</div>
+    <div class="owner-cell header">Failure mode</div>
+  </div>
+  <div class="owner-row">
+    <div class="owner-cell bad">
+      <span class="label">Nobody owns it</span>
+      "Everybody owns it."
+    </div>
+    <div class="owner-cell bad">
+      No assigned owner. Anyone can change anything. Nobody is on call.
+    </div>
+    <div class="owner-cell bad">
+      The code rots. PRs get stuck in review. Incidents have no responders. The team grows to "fix the ownership problem."
+    </div>
+  </div>
+  <div class="owner-row">
+    <div class="owner-cell ok">
+      <span class="label">Committee owns it</span>
+      "The team owns it. Three of us review."
+    </div>
+    <div class="owner-cell ok">
+      Multiple owners. Approval requires N of M. Review by committee.
+    </div>
+    <div class="owner-cell ok">
+      Slow decisions. Diffuse responsibility. "I thought YOU were on call." Decision paralysis at the smallest change.
+    </div>
+  </div>
+  <div class="owner-row">
+    <div class="owner-cell good">
+      <span class="label">One person owns it</span>
+      "X is the component owner for auth."
+    </div>
+    <div class="owner-cell good">
+      Exactly one owner. The owner approves, responds, maintains the runbook. Backup owner named for vacations.
+    </div>
+    <div class="owner-cell good">
+      Bus factor of 1. Single point of failure. Mitigated by runbook + backup owner.
+    </div>
+  </div>
+</div>
+
+<p>Spotify picked the third pattern deliberately. A bus factor of 1 sounds scary, but the alternative is "nobody" or "committee," both of which fail worse. The mitigations are runbook (the code is documented) and backup owner (the pager is shared).</p>
+
+<h2>The Small-Scale Translation</h2>
+
+<p>You work solo. Today, you own everything. That's fine. But you can still apply the pattern:</p>
+
+<ol>
+  <li><strong>CODEOWNERS</strong> — declare yourself the owner of every path. Future-you joins the repo, sees the pattern, knows where to start.</li>
+  <li><strong>Runbook per critical module</strong> — auth, billing, data, anything that breaks the business. One page each.</li>
+  <li><strong>Backup owner as a role</strong> — name a friend, an outside dev, or "future-hire" as the backup. Whoever is on the runbook when you can't be.</li>
+</ol>
+
+<p>When you grow to two engineers, the pattern is already in place. Cut components in half. Assign one to each. Update CODEOWNERS. The pattern is now load-bearing.</p>
+
+<p>When you grow to three, the pattern is already in place. Split out the third component. The pattern still works because it scales by component, not by engineer.</p>
+
+<p>When you grow to ten, you'll be glad the pattern existed at three.</p>
+
+<h2>The CODEOWNERS File</h2>
+
+<p>CODEOWNERS is the operational encoding of ownership. One file, one rule per component. Located at <code>.github/CODEOWNERS</code>, <code>docs/CODEOWNERS</code>, or <code>CODEOWNERS</code> at the repo root.</p>
+
+<h3>Format</h3>
+
+<pre><code># CODEOWNERS — last updated 2026-06-30
+# One owner per component. Backup owners listed with @.
+
+# Default owner for everything not listed below
+* @your-handle
+
+# Critical paths require backup owner review
+/auth/          @your-handle @backup-handle
+/billing/       @your-handle @backup-handle
+/db/migrations/ @your-handle @backup-handle
+/security/      @your-handle @backup-handle
+
+# Component-level ownership
+/src/notifications/  @your-handle
+/src/feed/           @your-handle
+/src/profile/        @your-handle
+/src/api-gateway/    @your-handle
+/web/                @your-handle
+/mobile/             @your-handle
+
+# Generated code — bot owns it, not humans
+/src/generated/      @auto-merge-bot
+/codemod-output/     @auto-merge-bot
+
+# Documentation — anyone can review
+/docs/               @your-handle
+</code></pre>
+
+<h3>The rules</h3>
+
+<ul>
+  <li><strong>Default owner at the top.</strong> <code>* @your-handle</code> first. Then exceptions. The default is what catches paths you forgot to enumerate.</li>
+  <li><strong>One owner per path.</strong> Not two, not three. One. Code review is unblocked by one approval.</li>
+  <li><strong>Backup owner for critical paths only.</strong> Don't enumerate backups for everything. The backup role is for components where a missed alarm hurts. Auth, billing, schema, security.</li>
+  <li><strong>Bot owners for generated code.</strong> The auto-merge bot from lesson 0005 owns <code>/src/generated/</code>. Humans don't review Tier 1 codemod output unless the bot flags it.</li>
+  <li><strong>Last-owner-wins.</strong> GitHub matches the deepest pattern. So <code>*</code> at the top, then specific overrides. The override wins for that path.</li>
+</ul>
+
+<h2>The Runbook</h2>
+
+<p>Code ownership without a runbook is "person on call who doesn't know the system." A runbook is one page per critical module. It tells the on-call (you, today; future-you or a teammate tomorrow) what to do when something breaks.</p>
+
+<pre><code># Runbook — notifications
+
+## Component
+Push notifications: queue, delivery, deduplication.
+
+## Owner
+@your-handle (primary), @backup-handle (backup)
+
+## What this does
+Receives notification requests from upstream services, deduplicates
+them, queues to delivery, retries on failure. Drop targets: 99.5%
+delivery within 60s.
+
+## Common failure modes
+
+### Delivery rate drops
+**Symptom:** scorecard shows &lt; 95% delivery over 1h
+**First check:** `kubectl logs -n notif deploy/delivery | grep ERROR`
+**Likely cause:** upstream queue full
+**Fix:** scale deployment: `kubectl scale deploy/delivery --replicas=10`
+**Rollback:** if scale doesn't help, revert last PR via `git revert HEAD`
+
+### Duplicate notifications
+**Symptom:** users report getting the same notification twice
+**First check:** scorecard dedup-hit-rate metric
+**Likely cause:** dedup cache TTL expired
+**Fix:** increase TTL via config flag `notif.dedup_ttl_seconds`
+**Rollback:** revert TTL change via `git revert HEAD`
+
+### Notification spam (single user)
+**Symptom:** one user reports getting &gt; 50 notifications in 1h
+**First check:** check that user's notification settings page
+**Likely cause:** upstream rate-limiter not honoring user pref
+**Fix:** user-side: throttle that user's notifications
+**No rollback needed** — this is a per-user config issue
+
+## Recent incidents
+- 2026-06-30: dedup sort-key flip (Sev-2, see postmortems/2026-06-30-notif-dedup.md)
+
+## Related docs
+- Architecture: docs/notifications-architecture.md
+- Scorecard: tools/fleet-scorecard.md
+- Trust registry: trust-registry.md (notification-deduplicator entry)
+</code></pre>
+
+<p>One page. Five sections. The "common failure modes" section is the load-bearing part — it tells the on-call what to do in the first 5 minutes without thinking.</p>
+
+<h2>The Exercise: Set Up Ownership (30 min)</h2>
+
+<p>Pick one repo. Do this even though you own everything. The exercise is about establishing the pattern, not about scaling.</p>
+
+<h3>Step 1 — Write CODEOWNERS (~10 min)</h3>
+<p>Start with <code>* @your-handle</code>. Add 3-5 critical paths with backup owners (even if the backup is "future-hire"). Add a bot owner for any <code>/generated/</code> or codemod output directories.</p>
+
+<p>Critical paths to list explicitly:
+- <code>/auth/</code> (or wherever login lives)
+- <code>/billing/</code> (or wherever payments live)
+- <code>/db/migrations/</code> (schema changes)
+- <code>/security/</code> (anything touching secrets)
+- Plus 2-3 of your largest non-critical components</p>
+
+<h3>Step 2 — Write 3 runbooks (~20 min)</h3>
+<p>Pick the three most-likely-to-break components. Use the template above. Five sections each:</p>
+<ul class="checklist">
+  <li>Component (one-line description)</li>
+  <li>Owner (primary + backup)</li>
+  <li>What this does (1-2 sentences)</li>
+  <li>Common failure modes (with symptom → first check → fix → rollback)</li>
+  <li>Recent incidents (link to postmortems)</li>
+</ul>
+
+<p>Each runbook: 5-10 minutes to write. Don't over-engineer. The point is "exists," not "perfect."</p>
+
+<h3>Step 3 — Connect CODEOWNERS to lesson 0005 (~5 min)</h3>
+<p>Branch protection: enable "require review from Code Owners." This makes the lesson 0005 tier question partially automatic:</p>
+<ul>
+  <li>Tier 1 (auto-merge) — bot owner, no human review</li>
+  <li>Tier 2 (skim review) — bot may label, but owner gets ping</li>
+  <li>Tier 3 (full review) — owner must approve</li>
+</ul>
+
+<p>The CODEOWNERS file is the load-bearing artifact. Branch protection reads it. Runbooks reference it. PR templates (lesson 0005) reference it. Postmortems (lesson 0006) reference it. **One file, many consumers.**</p>
+
+<h2>What CODEOWNERS Does Well</h2>
+
+<ul>
+  <li><strong>Auto-requests review</strong> — git platform handles the routing. No "I forgot to tag the right person."</li>
+  <li><strong>Makes ownership visible</strong> — anyone joining the repo sees who owns what before they make a change.</li>
+  <li><strong>Scales with the codebase</strong> — same file at 100 lines and 100,000 lines.</li>
+  <li><strong>Encodes the bus factor</strong> — backup owners document the second-line responder.</li>
+  <li><strong>Plays well with lesson 0005</strong> — Tier 3 PRs auto-route to the right reviewer.</li>
+</ul>
+
+<h2>What CODEOWNERS Does Poorly</h2>
+
+<ul>
+  <li><strong>Doesn't tell you what the owner *does*</strong> — it tells you who reviews. Not who maintains, who docs, who runs tests.</li>
+  <li><strong>Single-file blizzard</strong> — large repos get hundreds of owners. The file becomes unreadable.</li>
+  <li><strong>Ownership ≠ expertise</strong> — the named owner might not know that part of the code anymore. Don't trust ownership without a runbook.</li>
+  <li><strong>Drifts</strong> — owners leave the team, change roles, go on vacation. The file gets stale. Audit it quarterly.</li>
+  <li><strong>Doesn't handle shared code well</strong> — utility libraries, framework code. These need "shared owner" patterns.</li>
+</ul>
+
+<div class="callout warning">
+  <strong>The trap:</strong> treating CODEOWNERS as the full ownership answer. It's the routing layer. The substance is the runbook + the trust (from lessons 0003 and 0005) that the owner knows what they're doing. CODEOWNERS without runbooks is "we know who to page, but they don't know what to do."
+</div>
+
+<h2>Why This Lesson Matters Even If You're Solo</h2>
+
+<p>The most common reason ownership becomes a problem is "we're a small team, we'll add ownership when we grow." That never happens. By the time you grow to 3 engineers, the ownership question is load-bearing and you have no practice answering it. The pattern is harder to retrofit than to install at scale.</p>
+
+<p>Writing CODEOWNERS + 3 runbooks today, while you're solo, means the pattern exists when you grow. The pattern is the answer. The specific owners (just you today) can change.</p>
+
+<h2>What You Should NOT Do</h2>
+
+<ul>
+  <li><strong>Don't have an empty default.</strong> <code>*</code> at the top must have an owner, or undeclared paths become "nobody owns it."</li>
+  <li><strong>Don't list too many owners per path.</strong> Two is the max. Three is a committee. One is best. The point is unblocking reviews, not requiring consensus.</li>
+  <li><strong>Don't skip the runbook.</strong> CODEOWNERS tells you who. Runbooks tell them what. CODEOWNERS without runbooks is "we know who to page, but they don't know what to do."</li>
+  <li><strong>Don't let CODEOWNERS drift.</strong> Owners leave the team. The file gets stale. Review it every quarter. Tag people who left as `@former-eng` for context, not as new owners.</li>
+  <li><strong>Don't have ownership without an escalation path.</strong> Every owner has a backup or the runbook says "if I'm unresponsive in 15 min, page @backup." A pager that doesn't escalate is a black hole.</li>
+  <li><strong>Don't over-document at solo scale.</strong> Three runbooks, not thirty. The point is "the pattern exists," not "every file documented."</li>
+</ul>
+
+<h2>The Connection to Lessons 0005 and 0006</h2>
+
+<p>Lesson 0005's tier system works better with CODEOWNERS. Tier 3 PRs auto-route to the right reviewer. The CODEOWNERS file encodes "who reviews what" so the tier declaration is just metadata.</p>
+
+<p>Lesson 0006's on-call rotation works only with CODEOWNERS + runbook. The pager needs a name (CODEOWNERS) and a thing to do (runbook). Without both, the incident has no responder.</p>
+
+<p>Lessons 0005 and 0006 are operational. Lesson 0007 is structural. They're three views of the same answer: ownership is explicit, routed, and documented before it's needed.</p>
+
+<h2>What Comes Next</h2>
+
+<p>Lesson 0008 will be on <strong>dependency management</strong> — how to handle third-party libraries, supply chain risk, and the question "should I add this dep or write the code myself?" Spotify describes their dependency policy as conservative: prefer maintained libraries, prefer narrow APIs, prefer boring technology.</p>
+
+<p>At your scale, the lesson is about the cost of dependencies: every dep is a security surface, a maintenance burden, a learning curve. The threshold for adding one is higher than most teams realize.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>Share your CODEOWNERS file — I'll review for the "default owner + critical paths" structure</li>
+    <li>Have a runbook problem? I can review for the "first 5 minutes" requirement</li>
+    <li>Solo + thinking of growth? I can show you how to split components in CODEOWNERS as you hire</li>
+    <li>Already have a committee-ownership mess? I can help you collapse it to single-owner + backup</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0006-incident-response-at-scale.html">← Lesson 0006: Incident Response at Scale</a>
+  <a href="0008-dependency-management.html">Lesson 0008: Dependency Management →</a>
+</div>
+
+</body>
+</html>

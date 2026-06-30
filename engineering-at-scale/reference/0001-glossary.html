@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossary — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .term {
+      margin: 1.5rem 0;
+    }
+    .term-name {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .term-def {
+      margin-top: 0.25rem;
+    }
+    .term-source {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      margin-top: 0.4rem;
+      font-style: italic;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    p { margin-bottom: 1rem; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .note {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Glossary</h1>
+<p class="subtitle">Terms from the Beyond Code #12 conversation, defined for quick reference.</p>
+
+<p>This glossary is the source of truth for terminology across all lessons in this series. When you encounter one of these terms in a lesson, link here first.</p>
+
+<h2>People & Roles</h2>
+
+<div class="term">
+  <div class="term-name">Squad</div>
+  <div class="term-def">A small, autonomous cross-functional team at Spotify. Owns a set of components end-to-end — from ideation through on-call. Squads are the unit of autonomy.</div>
+  <div class="term-source">Mentioned ~02:00 and ~17:00 in the podcast. The "Spotify Model" coined the term.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Program Manager</div>
+  <div class="term-def">Coordinates work across multiple squads for a single big "bet" (e.g., a product launch). Does not own the squads' engineering decisions — owns the timing and coherence.</div>
+  <div class="term-source">~21:00 — Niklas describes company bets crossing many squads.</div>
+</div>
+
+<h2>Architecture</h2>
+
+<div class="term">
+  <div class="term-name">Service decomposition</div>
+  <div class="term-def">Breaking a large application into many small services that communicate over the network. Spotify started with "a handful of backend services" and now runs ~3,000. Each service is owned by one squad.</div>
+  <div class="term-source">~03:00 — the founding team picked this up from Unix principles.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Fleet</div>
+  <div class="term-def">The totality of all production services + their config + their repos. At Spotify, ~3,000 services in the fleet. Operations on the fleet (upgrades, migrations) run across the whole set in parallel.</div>
+  <div class="term-source">~25:00.</div>
+</div>
+
+<h2>The AI Era</h2>
+
+<div class="term">
+  <div class="term-name">Honk</div>
+  <div class="term-def">Spotify's internal AI agent. Wraps an LLM + an agent loop + an LLM-as-judge verifier. Runs on top of the fleet-management infrastructure. Can be invoked from Slack or GitHub. On its 6th iteration as of the podcast.</div>
+  <div class="term-source">~29:00. The name is internal; the architecture is the interesting part.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Fleet Shift</div>
+  <div class="term-def">A packaged migration script (Docker container) + a manifest (Kubernetes CRD describing how to run it) + a Backstage UI for monitoring. One shift can open thousands of PRs across the fleet.</div>
+  <div class="term-source">~25:00, ~52:00.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Fleet Management</div>
+  <div class="term-def">The discipline of running fleet shifts at scale. Originally deterministic (code mods). Increasingly LLM-mediated via Honk for anything past a certain complexity threshold.</div>
+  <div class="term-source">~25:00. Spotify blog has deeper posts.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">LLM-as-judge</div>
+  <div class="term-def">Using one LLM to verify the output of another. Honk does this: the first LLM writes the change, a second LLM checks the change matches the original prompt. Catches "weird unintentional changes" the first LLM makes.</div>
+  <div class="term-source">~28:00.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Background agent</div>
+  <div class="term-def">An agent you kick off and walk away from. Returns minutes later with a result (usually a PR). Honk supports this; Claude Code supports this locally; the pattern is the same.</div>
+  <div class="term-source">~33:00 — Niklas describes asking Honk from Slack and getting coffee while it works.</div>
+</div>
+
+<h2>Engineering Principles</h2>
+
+<div class="term">
+  <div class="term-name">Hyrum's Law</div>
+  <div class="term-def">"With a sufficient number of users of an API, it does not matter what you promised in the contract — all observable behaviors of your system will be depended on by somebody." At scale, every quirk of your implementation has a customer. This is why deterministic migrations are hard and why LLMs become necessary.</div>
+  <div class="term-source">~27:00. Originated at Google by Hyrum Wright. <a href="https://www.hyrumslaw.com/">hyrumslaw.com</a>.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Single source of truth</div>
+  <div class="term-def">Source code remains authoritative. Spotify is NOT storing intent (prompts, specs) alongside the code as the canonical reference. They ARE investing in capturing insights and decisions made by agents at runtime.</div>
+  <div class="term-source">~57:00. This is a deliberate choice — not an oversight.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Squad autonomy + company synchronization</div>
+  <div class="term-def">The two forces Spotify balances. Squads own their components. But "company bets" (large features) require cross-squad programs and coordination. Less autonomy now than the original 2015 model implied — and that's a feature, not a bug.</div>
+  <div class="term-source">~17:00, ~62:00.</div>
+</div>
+
+<h2>Tools & Platforms</h2>
+
+<div class="term">
+  <div class="term-name">Backstage</div>
+  <div class="term-def">An internal developer portal. Plugin-based. Started as a service catalog at Spotify; now an open-source CNCF project. Functions as the "single pane of glass" for engineers — service ownership, deployments, on-call, schemas, logs, all in one place.</div>
+  <div class="term-source">~42:00. <a href="https://backstage.io">backstage.io</a>.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Single pane of glass</div>
+  <div class="term-def">One UI for everything related to a service. The opposite of the "12 different shitty tools" pattern Backstage replaced.</div>
+  <div class="term-source">~45:00.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Service catalog</div>
+  <div class="term-def">A registry of every service in the fleet. Required fields: owner, production state, reliability tier. Spotify got 100% coverage by tying capacity provisioning to registration — a clever incentive design.</div>
+  <div class="term-source">~43:00. Called "system set" originally.</div>
+</div>
+
+<h2>Operations</h2>
+
+<div class="term">
+  <div class="term-name">Auto-merge</div>
+  <div class="term-def">Merging a PR without human review. Spotify does this for ~85% of deterministic fleet shifts — because the *script* is reviewed, not each individual PR. For human-authored or AI-authored changes (Honk output), manual review is still required.</div>
+  <div class="term-source">~36:00.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">PR attribution</div>
+  <div class="term-def">Identifying whether a PR was authored by a human, an AI agent, or a fleet shift. Used to compare code-quality metrics across categories. APIs for this are "rapidly improving" per Niklas.</div>
+  <div class="term-source">~01:00:00.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Time to change</div>
+  <div class="term-def">A Spotify productivity metric: time from starting to code on something to it shipping to users. One of several contributing metrics alongside CI time, deployment frequency, and self-reported survey data.</div>
+  <div class="term-source">~01:01:00.</div>
+</div>
+
+<div class="term">
+  <div class="term-name">Aggregate-level measurement</div>
+  <div class="term-def">Spotify measures engineering metrics at the team or company level — NEVER individual engineer level. Explicitly stated philosophy. Avoids Goodhart's law and preserves trust.</div>
+  <div class="term-source">~01:00:30.</div>
+</div>
+
+<div class="note">
+  <strong>How to use this glossary.</strong> Read it once. Then return to it whenever a lesson references a term you don't recognize. As the series grows, this file will be the index — every term below should be linked from at least one lesson.
+</div>
+
+</body>
+</html>

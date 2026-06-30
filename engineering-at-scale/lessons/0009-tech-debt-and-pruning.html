@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0009: Tech Debt and Pruning — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .callout.good {
+      background: #e8f5e9;
+      border-left-color: var(--accent);
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .verdict {
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .verdict-keep { background: #27ae60; color: white; }
+    .verdict-prune { background: #c0392b; color: white; }
+    .verdict-hold { background: #f39c12; color: white; }
+    .verdict-replace { background: #2980b9; color: white; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0009</span>
+  <span>2026-06-30</span>
+  <span>~11 min</span>
+</div>
+
+<h1>Tech Debt and Pruning</h1>
+<p class="subtitle">Every line you keep is a line you have to maintain. Regular pruning is cheaper than a rewrite. Keep the codebase lean, or it becomes a museum.</p>
+
+<p>This is lesson 9 of <a href="../MISSION.md">engineering-at-scale</a>. Lessons 0001–0008 built a workflow for the code you write, the code you pull in, and the code you own. This lesson is about the code you <em>have but shouldn't</em>. Tech debt isn't bad code — it's code whose cost exceeds its value. Pruning is the discipline of making that judgment while you can still see clearly.</p>
+
+<p>Your takeaway: <strong>every line you keep is a line you have to maintain. Every file you don't delete is a file that needs to be understood, audited, updated, and migrated.</strong> The cost is paid over years. The decision to delete is paid once.</p>
+
+<h2>The Spotify Philosophy</h2>
+
+<p>From the podcast (~34:00):</p>
+
+<div class="quote">
+  "I think it's pretty important to keep pruning the codebase. Both the codebase you're building and the dependencies you're using. If you're not pruning, your code becomes a museum. And once it's a museum, you're not allowed to touch anything because you don't know what will break."
+  <span class="quote-source">— Niklas Gustavsson, ~34:00</span>
+</div>
+
+<p>The museum metaphor is precise. A museum preserves things because they have value. A codebase preserves things because no one wants to make the call to remove them. The result is the same — nothing changes — but the motivation is very different. Museums are intentional. Codebases drift into museum status by default.</p>
+
+<h2>The Four Verdict Categories</h2>
+
+<p>Every piece of code — file, function, feature, dep — has exactly one verdict. The verdict determines the action.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Verdict</th>
+      <th>Question</th>
+      <th>Action</th>
+      <th>Cost of keeping</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="verdict ver-keep"><span class="verdict-keep">KEEP</span></span></td>
+      <td>Is this code doing useful work today?</td>
+      <td>Document, monitor, maintain</td>
+      <td>Standard maintenance overhead</td>
+    </tr>
+    <tr>
+      <td><span class="verdict ver-prune"><span class="verdict-prune">PRUNE</span></span></td>
+      <td>Is the cost of keeping this higher than the value of replacing it?</td>
+      <td>Delete. Schedule the cleanup commit.</td>
+      <td>~0 (gone)</td>
+    </tr>
+    <tr>
+      <td><span class="verdict ver-hold"><span class="verdict-hold">HOLD</span></span></td>
+      <td>Is this used by someone but I can't tell who?</td>
+      <td>Investigate. Add telemetry. Re-evaluate in 30 days.</td>
+      <td>Maintenance overhead, plus investigation cost</td>
+    </tr>
+    <tr>
+      <td><span class="verdict ver-replace"><span class="verdict-replace">REPLACE</span></span></td>
+      <td>Is this still useful but the implementation is bad?</td>
+      <td>Schedule a rewrite. Or wrap it. Don't keep the old version.</td>
+      <td>Migration cost + maintenance of the old version</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The categories are mutually exclusive. Every piece of code gets exactly one. The hard part is not the categories — it's being honest about which category something belongs in.</p>
+
+<h2>The Cost of Keeping Code</h2>
+
+<p>Every line you keep is paid for in five ways:</p>
+
+<ol>
+  <li><strong>Read time.</strong> Every future engineer (including future-you) reads this code at some point and decides whether to keep or change it. That's not free.</li>
+  <li><strong>Test time.</strong> Every test suite that covers this code is run on every PR. CI time is not free.</li>
+  <li><strong>Update time.</strong> Every framework upgrade, every dep update, every API change — this code has to be checked, migrated, or rewritten.</li>
+  <li><strong>Documentation time.</strong> If the code is documented, that doc has to be maintained. If it's not documented, future engineers pay the discovery cost.</li>
+  <li><strong>Mental model time.</strong> Every piece of code that exists is part of the codebase's mental model. If a feature has 5 implementations, the mental model has 5 features even if only 1 is used.</li>
+</ol>
+
+<p>The cost is real even if the code "works fine." A working, unused feature still takes up mental space. An undocumented working feature takes up even more.</p>
+
+<h2>The Three Question Test</h2>
+
+<p>Before keeping any non-trivial piece of code, answer these three questions honestly. If you can't answer all three with evidence, the verdict is HOLD or PRUNE.</p>
+
+<h3>Question 1: Who uses this and when was the last use?</h3>
+<p>Don't guess. Check the telemetry. Look at the last log entry, the last user action, the last metric sample. If you don't have telemetry, that's already a sign — code that matters is instrumented.</p>
+
+<p>Red flag: "it's important, I just can't find anyone who actually uses it." That code is PRUNE.</p>
+
+<h3>Question 2: What's the cost if this breaks tomorrow?</h3>
+<p>Calculate the user impact, the recovery time, the on-call burden. Compare that to the value the code provides.</p>
+
+<p>Example: a logging utility that 3 internal tools depend on. Last used: 6 months ago. Cost of keeping: quarterly updates, possible breakage on framework upgrade. Cost of deleting: 3 internal tools need to be updated to use the platform logger. Net: probably worth pruning, even though it "works."</p>
+
+<h3>Question 3: What would I tell a new engineer about this code?</h3>
+<p>If the answer is "I'd tell them it's legacy, don't touch it," that's PRUNE. Code that "shouldn't be touched" is code that's already a museum exhibit. The cost of not deleting is paid on every future change.</p>
+
+<p>If the answer is "I'd tell them how it works and why," that's KEEP. Code that has a story to tell has value.</p>
+
+<h2>The Pruning Ritual</h2>
+
+<p>Pruning is not a one-time event. It's a recurring ritual. The Spotify team prunes continuously. You should too. Three rituals, three cadences:</p>
+
+<h3>Weekly: The "delete what you added" ritual (5 min)</h3>
+<p>Every Friday, before logging off: look at what you merged this week. Is any of it now unused because you changed something else? Delete it in the same commit or the next PR. <strong>Delete the code in the same PR that made it dead.</strong> Not next quarter. Now.</p>
+
+<div class="callout good">
+  <strong>The rule:</strong> the PR that makes code dead also deletes the dead code. Not a separate cleanup PR. Not "we'll get to it." Same PR.
+</div>
+
+<h3>Monthly: The "feature flag sunset" ritual (15 min)</h3>
+<p>For every feature flag that's been at 100% rollout for 30+ days, file a deletion PR. Remove the flag, remove the code paths it gated, remove the tests. Most feature flags are forgotten — they're added for a launch and never removed because no one is responsible for sunset.</p>
+
+<pre><code># Feature flag cleanup — June 2026
+
+## Flags at 100% for &gt; 30 days
+- `flag:new-notification-center` (rolled out 2026-05-12) → DELETE by 2026-07-15
+- `flag:profile-redesign` (rolled out 2026-04-22) → DELETE by 2026-07-15
+- `flag:dark-mode-beta` (rolled out 2026-03-01) → DELETE by 2026-07-15
+
+## Flags at &lt; 100% (still in progress)
+- `flag:search-v2` (currently 50%) → keep, re-evaluate 2026-08-01
+- `flag:onboarding-flow-v3` (currently 80%) → keep, re-evaluate 2026-08-15
+
+## Action items
+- [ ] Delete `new-notification-center` flag + dead code paths (PR #1234)
+- [ ] Delete `profile-redesign` flag + dead code paths (PR #1235)
+- [ ] Delete `dark-mode-beta` flag + dead code paths (PR #1236)
+</code></pre>
+
+<h3>Quarterly: The "museum audit" (1 hour)</h3>
+<p>Every quarter, audit the codebase for museum exhibits. Files that no one wants to touch, features no one can explain, code that's documented as "legacy." Make a verdict on each. The audit produces a list of deletion PRs that get scheduled across the next quarter.</p>
+
+<h2>The "Code is Dead When..." Heuristics</h2>
+
+<p>Specific signals that code is ready to prune:</p>
+
+<ul>
+  <li><strong>Last commit on the file is &gt; 12 months ago</strong> and no recent imports.</li>
+  <li><strong>Zero telemetry hits</strong> in production logs for 6+ months.</li>
+  <li><strong>No tests cover this code</strong> and no engineer can explain what it does.</li>
+  <li><strong>Documentation says "deprecated" or "legacy"</strong> — at that point it's just debt with a label.</li>
+  <li><strong>The feature has a replacement</strong> that's been at 100% rollout for 30+ days.</li>
+  <li><strong>The dep is abandoned</strong> and only this code uses it.</li>
+  <li><strong>The code imports from a directory that's been deleted</strong> — the import will fail at runtime.</li>
+</ul>
+
+<p>If any two of these are true, the verdict is PRUNE. If three or more are true, the verdict is PRUNE urgently — every day you keep it is a day you might be paged for it.</p>
+
+<h2>The Exercise: Run Your First Pruning (45 min)</h2>
+
+<h3>Step 1 — Pick a repo (~1 min)</h3>
+<p>Pick the repo where you spend the most time. The one with the most code, the most history, or the most uncertainty about what it does.</p>
+
+<h3>Step 2 — Find files with no recent activity (~10 min)</h3>
+<pre><code># Find files not modified in 12+ months
+find . -type f \( -name "*.ts" -o -name "*.js" -o -name "*.py" \) \
+  -mtime +365 \
+  -not -path "./node_modules/*" \
+  -not -path "./.git/*" \
+  | head -50
+
+# Find functions never imported (rough heuristic — count import statements)
+for file in $(find . -name "*.ts" -not -path "./node_modules/*"); do
+  basename=$(basename "$file" .ts)
+  count=$(grep -r "from.*$basename" --include="*.ts" . 2>/dev/null | grep -v "$file" | wc -l)
+  if [ "$count" -eq 0 ]; then
+    echo "Potentially unused: $file"
+  fi
+done
+</code></pre>
+
+<h3>Step 3 — Investigate each candidate (~20 min)</h3>
+<p>For each candidate file, answer the three questions:</p>
+<ul class="checklist">
+  <li>Who uses this and when was the last use? (check telemetry, logs)</li>
+  <li>What's the cost if this breaks tomorrow?</li>
+  <li>What would I tell a new engineer about this code?</li>
+</ul>
+
+<p>Make a verdict: KEEP / PRUNE / HOLD / REPLACE. Document the reasoning in a markdown file.</p>
+
+<h3>Step 4 — Delete the PRUNE candidates (~10 min)</h3>
+<p>For each PRUNE verdict, write a deletion PR. Don't combine deletion with feature work. The PR is "delete [thing]" and the diff is mostly negative lines. Review it like any other PR — by what it removed, not what it added.</p>
+
+<pre><code>git checkout -b prune/remove-unused-utils-2026-06
+git rm src/utils/legacy-format.ts
+git rm src/utils/legacy-date-helpers.ts
+git rm src/services/unused-analytics.ts
+git commit -m "prune: remove legacy utils unused since 2024-08
+
+Per museum audit 2026-06-30. All three files had no imports
+since Q3 2024, no telemetry, no documentation explaining
+their purpose. Cost of keeping exceeded value."
+git push origin prune/remove-unused-utils-2026-06
+</code></pre>
+
+<h3>Step 5 — Set up the weekly ritual (~5 min)</h3>
+<p>Add a Friday afternoon recurring task: "prune what you merged this week." Make it visible. 5 minutes. The point is the ritual exists, not the duration.</p>
+
+<h2>The Connection to Prior Lessons</h2>
+
+<p>This lesson connects to everything before it:</p>
+
+<ul>
+  <li><strong>Lesson 0002 (audit):</strong> pruning is a form of audit. The audit question isn't just "is this working" — it's "is this working <em>and worth keeping</em>?"</li>
+  <li><strong>Lesson 0004 (scorecard):</strong> add a "tech debt ratio" metric: lines of dead code vs lines of live code. Track it over time. The trend should be flat or decreasing.</li>
+  <li><strong>Lesson 0005 (auto-merge):</strong> deletion PRs are Tier 1 — auto-merge if deletion-only with no behavior change. The bot can verify: no remaining imports, no remaining references.</li>
+  <li><strong>Lesson 0007 (ownership):</strong> pruning is the owner's job. If you own a component, you own its pruning. The runbook should have a "last pruned" date.</li>
+  <li><strong>Lesson 0008 (deps):</strong> pruning deps is pruning code. Unused deps from the 5-question framework → uninstall. The <code>npm ls</code> audit and the pruning audit are the same audit, viewed differently.</li>
+</ul>
+
+<h2>The "But What If We Need It Again" Trap</h2>
+
+<div class="callout warning">
+  <strong>The most common excuse:</strong> "we might need this code someday." The answer: git has history. <code>git log --all --source --remotes --oneline -- path/to/file.ts</code> shows every commit that touched the file. The code isn't lost when you delete it — it's archived in git history.
+</div>
+
+<p>The cost of keeping "just in case" code is paid every day. The benefit of having it "just in case" is paid maybe once in five years, and even then git can resurrect it in 5 minutes.</p>
+
+<p>The asymmetry kills the "just in case" argument. Pay the deletion cost once. Don't pay the keeping cost every day.</p>
+
+<h2>The "But It's Documented" Trap</h2>
+
+<p>Documentation is not a reason to keep code. Documentation is a reason the code is <em>expensive to remove</em>. The cost of removing a documented feature is "we have to update the docs." The cost of keeping it is "the docs have to be maintained alongside the code." Both are real, but the keeping cost compounds. The removal cost is paid once.</p>
+
+<h2>Why This Lesson Matters Even If You Just Wrote the Code</h2>
+
+<p>The most common reason tech debt accumulates is "I'll clean it up later." That later never comes. By the time the code is 6 months old and 5 engineers have touched it, the cost of deletion is "we don't know what'll break." That's the museum problem.</p>
+
+<p>Pruning works best when the code is fresh. The PR that makes code dead also deletes the dead code. The ritual exists at solo scale because the cost of deletion is lowest at solo scale.</p>
+
+<p>When you grow, the pattern is already there: every PR carries the deletion that goes with it. The codebase doesn't accumulate museums. Engineers learn the rhythm: build, prune, build, prune.</p>
+
+<h2>What You Should NOT Do</h2>
+
+<ul>
+  <li><strong>Don't keep code "just in case."</strong> Git has history. The cost of keeping is paid every day; the benefit is paid maybe once.</li>
+  <li><strong>Don't combine deletion with feature work.</strong> A deletion PR should be a deletion PR. Reviewing deletion + feature is harder than reviewing either alone.</li>
+  <li><strong>Don't prune what you don't understand.</strong> If you can't tell who uses the code, the verdict is HOLD, not PRUNE. Add telemetry, re-evaluate in 30 days.</li>
+  <li><strong>Don't document "deprecated" without a deletion date.</strong> Deprecation is a label, not a destination. Either delete the code or document the migration plan.</li>
+  <li><strong>Don't wait for a "pruning sprint."</strong> Sprints dedicated to pruning are a sign the codebase is already a museum. Pruning is daily, weekly, monthly, quarterly — not a quarterly event.</li>
+  <li><strong>Don't prune without telemetry.</strong> If you can't measure who uses the code, you can't make the call. Add telemetry first, then prune.</li>
+</ul>
+
+<h2>What Comes Next</h2>
+
+<p>Lesson 0010 will be the final lesson: <strong>team growth</strong> — what happens when the workflow meets organizational complexity. The CODEOWNERS from lesson 0007, the runbooks from lesson 0007, the tier system from lesson 0005, the dependency policy from lesson 0008 — all of them tested by the question "how does this scale to 3 engineers? 5? 10?"</p>
+
+<p>At your scale, the lesson is about the failure modes that emerge at scale: ownership disputes, code review bottlenecks, decision paralysis, "the on-call burned out." The Spotify answer is process — explicit ownership, documented runbooks, automated reviews. But the process has to exist before you grow, not after.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>Have a candidate for pruning? Share the file + your 3-question reasoning, I'll review the verdict</li>
+    <li>Stuck between KEEP and HOLD? I can help you write the telemetry to make the call</li>
+    <li>Want to set up the weekly ritual? I can help you design the Friday afternoon checklist</li>
+    <li>Have a museum-style codebase? I can help you triage it into KEEP / PRUNE / HOLD / REPLACE buckets</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0008-dependency-management.html">← Lesson 0008: Dependency Management</a>
+  <a href="0010-team-growth.html">Lesson 0010: Team Growth →</a>
+</div>
+
+</body>
+</html>

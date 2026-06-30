@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005: When to Auto-Merge — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+    .threshold {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      margin: 1.5rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 0.85rem;
+    }
+    .threshold-row {
+      display: contents;
+    }
+    .threshold-cell {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .threshold-cell:last-child { border-right: none; }
+    .threshold-row:last-child .threshold-cell { border-bottom: none; }
+    .threshold-cell.header {
+      background: var(--code-bg);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+    }
+    .threshold-cell .label {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .auto { background: #e8f5e9; }
+    .review { background: #fff3e0; }
+    .manual { background: #fdecea; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0005</span>
+  <span>2026-06-30</span>
+  <span>~12 min</span>
+</div>
+
+<h1>When to Auto-Merge</h1>
+<p class="subtitle">Reserve human review for changes that actually need a human. Auto-merge the rest.</p>
+
+<p>This is lesson 5 of <a href="../MISSION.md">engineering-at-scale</a>. Lessons 0001–0004 gave you a workflow and a way to measure it. This lesson makes the workflow <em>fast</em>: how to spend your human review time on changes that actually need it, and how to trust everything else.</p>
+
+<p>Your takeaway: <strong>human review is your most expensive resource. Spend it where it pays off.</strong> At Spotify, they auto-merge 85% of migrations because the migration script was reviewed once. You can auto-merge most of your PRs the same way — once you've built the trust.</p>
+
+<h2>The Spotify Threshold</h2>
+
+<p>From the podcast (~26:00):</p>
+
+<div class="quote">
+  "We end up at somewhere around 85% of these migrations that are auto-mergeable. So basically we have a tool that looks at the diff and... it can confidently auto-merge it."
+  <span class="quote-source">— Niklas Gustavsson, ~26:00</span>
+</div>
+
+<p>The remaining 15% need a human because they touch load-bearing code, change behavior, or modify things outside the migration's scope. Spotify's threshold-setting is implicit, but the principle is explicit: <em>auto-merge anything where the generator is trusted and the diff is in scope</em>.</p>
+
+<h2>The Three Tiers</h2>
+
+<p>Every PR falls into one of three tiers. The tier determines who reviews it (if anyone).</p>
+
+<div class="threshold">
+  <div class="threshold-row">
+    <div class="threshold-cell header">Tier</div>
+    <div class="threshold-cell header">Examples</div>
+    <div class="threshold-cell header">Reviewer</div>
+  </div>
+  <div class="threshold-row">
+    <div class="threshold-cell auto">
+      <span class="label">Auto-merge</span>
+      Generated deterministically. Confidently safe.
+    </div>
+    <div class="threshold-cell auto">
+      Type-wrapper additions across a known scope. Renames from a trusted codemod. Dependency updates from a known source. Generated code from a checked-in tool.
+    </div>
+    <div class="threshold-cell auto">
+      Nobody — CI checks pass, merge.
+    </div>
+  </div>
+  <div class="threshold-row">
+    <div class="threshold-cell review">
+      <span class="label">Skim review</span>
+      AI-authored, but the generator is reviewed and the scope is explicit.
+    </div>
+    <div class="threshold-cell review">
+      Agent PRs that match the lesson 0003 prompt shape: scoped, exclusion-list honored, example-matched. Generator was reviewed before the run.
+    </div>
+    <div class="threshold-cell review">
+      One human, generator-check (not line-by-line). 2 minutes.
+    </div>
+  </div>
+  <div class="threshold-row">
+    <div class="threshold-cell manual">
+      <span class="label">Full review</span>
+      Behavior-changing, security-sensitive, or out-of-scope.
+    </div>
+    <div class="threshold-cell manual">
+      Auth changes. API contract changes. Schema migrations. New dependencies. Anything touching files in the lesson 0002 exclusion list. Anything the agent produced with no reviewed generator.
+    </div>
+    <div class="threshold-cell manual">
+      One human, real review. 15+ minutes or a second pair of eyes.
+    </div>
+  </div>
+</div>
+
+<h2>How to Set the Threshold</h2>
+
+<p>The threshold is <strong>trust + scope</strong>. Two questions. If both answers are yes, auto-merge.</p>
+
+<h3>Question 1: Is the generator trusted?</h3>
+<p>"Trusted" means: you've reviewed the prompt + the example PR + the exclusion list (lesson 0003), AND you've seen at least 3 successful runs of this generator with correct outputs. Until you've seen 3 runs, the generator is untrusted and all outputs go to skim review at minimum.</p>
+
+<p>This is important. Trust is earned, not assumed. The first run is sketchy. The third run is boring. The tenth run is invisible.</p>
+
+<h3>Question 2: Is the diff in scope?</h3>
+<p>"In scope" means: the file list matches what the prompt asked for, and the exclusion list was respected. Grep for any file in the exclusion list — if the diff touched it, it's out of scope. Grep for any pattern the prompt said to preserve — if it's been modified, it's out of scope.</p>
+
+<p>If both answers are yes, auto-merge. If either is no, the tier drops to the next level down.</p>
+
+<div class="callout">
+  <strong>The threshold-setting rule:</strong> when in doubt, drop the PR down a tier. A PR that gets skim-reviewed when it needed full review causes a regression. A PR that gets full-reviewed when it could've been skim-reviewed wastes 15 minutes of your time. Time is recoverable. Landmines aren't.
+</div>
+
+<h2>The Small-Scale Version: GitHub Branch Protections</h2>
+
+<p>You can encode this tier system directly in your branch protections. Here's how:</p>
+
+<h3>Tier 1 (Auto-merge)</h3>
+<ul>
+  <li>CI must pass (lint, type check, tests)</li>
+  <li>Label <code>auto-merge</code> applied — only a tooling bot can apply this label</li>
+  <li>No required reviewers</li>
+  <li>Branch protection rule: <em>require status checks</em> only, no <em>require pull request reviews</em></li>
+</ul>
+
+<h3>Tier 2 (Skim review)</h3>
+<ul>
+  <li>CI must pass</li>
+  <li>One required reviewer</li>
+  <li>PR template asks: "Did this PR come from a reviewed generator? (yes/no)"</li>
+  <li>If yes: reviewer's job is the lesson 0003 generator-check (sample 3 files, grep exclusions, check stats)</li>
+  <li>If no: reviewer's job is full review</li>
+</ul>
+
+<h3>Tier 3 (Full review)</h3>
+<ul>
+  <li>CI must pass</li>
+  <li>One required reviewer, optionally two for security-sensitive changes</li>
+  <li>PR template asks: "What's the regression plan?" — if blank, block merge</li>
+  <li>Reviewer does a real review</li>
+</ul>
+
+<div class="callout warning">
+  <strong>The trap:</strong> most teams only have one tier. Either everything requires review (which creates a bottleneck) or nothing does (which creates regressions). Two-tier is the minimum. Three-tier is worth the setup time.
+</div>
+
+<h2>The Exercise: Set Up Your Tiers (25 min)</h2>
+
+<p>Pick a single repo. Set up three tiers in branch protections + PR template. This is mostly configuration, not coding.</p>
+
+<h3>Step 1 — Create a PR template (~5 min)</h3>
+
+<p>Add <code>.github/pull_request_template.md</code>:</p>
+
+<pre><code>## Tier
+
+- [ ] Tier 1: Auto-merge (codemod, generated, dependency update)
+- [ ] Tier 2: Skim review (AI-authored, reviewed generator in scope)
+- [ ] Tier 3: Full review (manual, behavior-changing, security-sensitive)
+
+## Generator (if Tier 1 or Tier 2)
+
+- Generator prompt/PR: #___
+- Generator runs to date: ___
+- Files in exclusion list respected: yes / no
+
+## Regression plan (if Tier 3)
+
+How will you know this PR didn't break something?
+- [ ] Test added that exercises the changed behavior
+- [ ] Feature flag with rollback
+- [ ] Monitor metric X for 24h
+- [ ] Other: ___
+</code></pre>
+
+<p>Force the author to declare the tier. The declaration is the gate. If they checked Tier 3 but the change looks like Tier 1, the reviewer downgrades it.</p>
+
+<h3>Step 2 — Configure branch protection (~5 min)</h3>
+
+<p>You can't gate by tier programmatically (GitHub branch protections don't read PR bodies). But you can:</p>
+
+<ul>
+  <li>Require status checks (CI) — applies to all tiers</li>
+  <li>Require 1 reviewer — applies only to Tier 2 and Tier 3</li>
+  <li>Set up CODEOWNERS files for sensitive paths — auto-requests review from the right person for auth/, db/, security/, etc.</li>
+  <li>Use the <code>auto-merge</code> bot token for Tier 1 PRs (only the bot can apply the label, and the bot only applies it to known codemod PRs)</li>
+</ul>
+
+<h3>Step 3 — Set the "trust threshold" (~10 min)</h3>
+
+<p>For each generator you plan to use, write a one-line entry in <code>trust-registry.md</code>:</p>
+
+<pre><code># Generator Trust Registry
+
+## type-wrapper-codemod (prompt v2)
+- First run: 2026-06-15 (PR #142)
+- Successful runs: 4 of 4 (PRs #142, #148, #151, #155)
+- Status: trusted → Tier 1 eligible
+- Last regression: none
+
+## notification-deduplicator refactor
+- First run: 2026-06-22 (PR #160)
+- Successful runs: 1 of 2 (PR #160 had a scope bug)
+- Status: untrusted → Tier 2 maximum until 3 successful runs
+- Last regression: PR #160, root cause: scope text didn't say `src/notif/*` explicitly</code></pre>
+
+<p>The threshold is mechanical: <strong>3 successful runs = trusted</strong>. Less than 3 = untrusted. Update the registry after every generator run.</p>
+
+<h3>Step 4 — Connect to your scorecard (5 min)</h3>
+
+<p>Add a fourth metric to your fleet-scorecard.md:</p>
+
+<pre><code>## This week
+- Landmines caught: 2
+- Generator merges: 3 of 5 refactors (60%)
+- Post-deploy regressions: 0
+- Tier 1 / Tier 2 / Tier 3 split: 1 / 3 / 2
+  (good ratio: Tier 1 should grow over time)</code></pre>
+
+<p>The split tells you whether you're earning the trust. If Tier 3 ratio stays at 80% for a month, you're not generating enough cheap PRs to auto-merge. If Tier 1 jumps to 90%, you've stopped reviewing generators carefully.</p>
+
+<h2>Why the 3-Run Threshold?</h2>
+
+<p>One run is anecdote. Two runs is coincidence. Three runs is pattern. After three successful generator runs with no regressions, you have evidence that the generator is sound.</p>
+
+<p>You can adjust the number based on the change's blast radius. A YAML config rename might only need 1 run to be trusted. A security-sensitive refactor might need 10. The principle is the same: <em>count successful runs in your risk-weighted score, not just calendar weeks</em>.</p>
+
+<h2>What You Should NOT Do</h2>
+
+<ul>
+  <li><strong>Don't make everything Tier 3.</strong> That's the bottleneck. Tier 3 should be the exception, not the default. If 80% of your PRs are full-review, you haven't built enough trust in your generators yet. Go back to lesson 0003.</li>
+  <li><strong>Don't auto-merge on the first run of a generator.</strong> Always skim-review the first 3 runs. After 3 clean runs, the generator earns Tier 1.</li>
+  <li><strong>Don't auto-merge if the exclusion list wasn't checked.</strong> Auto-merge requires evidence that the generator stayed in scope. The PR template's "files in exclusion list respected" question is the gate.</li>
+  <li><strong>Don't trust AI-generated tests.</strong> "I'm sure the test passed" is not a regression plan. The lesson 0003 scope check doesn't apply to test changes the agent also wrote. Tier 2 at minimum for AI-touched tests, Tier 3 if you can't verify the test exercises the failure mode.</li>
+  <li><strong>Don't skip the regression plan on Tier 3.</strong> "How will you know this didn't break something?" must be answered before merge, not after.</li>
+</ul>
+
+<h2>The Connection to Lesson 0004's Anti-Metrics</h2>
+
+<p>Lesson 0004 warned against measuring "AI lines written." Auto-merge Tier 1 PRs are an even sneakier false metric. If you count "PRs auto-merged" as a win without counting regressions, you'll game yourself into shipping landmines at scale. The scorecard's regression counter is what catches this.</p>
+
+<p>A team that auto-merges 50 PRs a week and has 5 regressions is doing worse than a team that manual-reviews 10 PRs and has 0 regressions. The aggregate is the only honest measure.</p>
+
+<h2>What Comes Next</h2>
+
+<p>Lesson 0006 will be on <strong>incident response at scale</strong> — when a landmine slips through, what's the recovery loop? Spotify describes "firefighting" as a real rotation, not an exception. At your scale, the lesson isn't that you need a rotation; it's that you need a *postmortem discipline* so the fire doesn't repeat. Rollback first, root-cause second, prevention third.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>Show me your PR template — I'll tighten the tier questions</li>
+    <li>Share your trust-registry — I'll help you calibrate the 3-run threshold for your generators</li>
+    <li>Want CODEOWNERS template for common sensitive paths (auth, db, schema)? I have one</li>
+    <li>How do you enforce "no human reviewer" on Tier 1 without disabling branch protection? Bot-label pattern + branch rules</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0004-measure-the-aggregate.html">← Lesson 0004: Measure the Aggregate</a>
+  <a href="0006-incident-response-at-scale.html">Lesson 0006: Incident Response at Scale →</a>
+</div>
+
+</body>
+</html>

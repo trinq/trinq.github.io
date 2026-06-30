@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: Hyrum's Law Hits Your Agents — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #1db954;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    .example-block {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .example-header {
+      background: var(--code-bg);
+      padding: 0.6rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .example-body { padding: 1rem 1.25rem; font-size: 0.9rem; }
+    .example-body pre { margin: 0.5rem 0; font-size: 0.8rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    .step {
+      display: flex;
+      gap: 1rem;
+      margin: 1.25rem 0;
+      align-items: flex-start;
+    }
+    .step-num {
+      background: var(--accent);
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: "SF Mono", Menlo, monospace;
+      flex-shrink: 0;
+    }
+    .step-body { flex: 1; padding-top: 0.2rem; }
+    .step-body strong { display: block; margin-bottom: 0.25rem; }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+    .ref-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0002</span>
+  <span>2026-06-30</span>
+  <span>~10 min</span>
+</div>
+
+<h1>Hyrum's Law Hits Your Agents</h1>
+<p class="subtitle">Why AI migration tools fail — and how to find the parts of your codebase they will break.</p>
+
+<p>This is lesson 2 of <a href="../MISSION.md">engineering-at-scale</a>. Lesson 0001 had you skip a PRD for one feature ticket. This lesson teaches you to spot the code your agents will silently corrupt.</p>
+
+<p>Your first lesson takeaway: you have <em>some</em> feature shape that you want to validate quickly with a prototype. Lesson 2 takeaway: before you let an agent touch your existing code, you need to know which behaviors of that code are load-bearing even though you never documented them.</p>
+
+<h2>The Law</h2>
+
+<p>From <a href="https://www.hyrumslaw.com/">hyrumslaw.com</a>, originally observed by Hyrum Wright at Google:</p>
+
+<div class="quote">
+  "With a sufficient number of users of an API, it does not matter what you promised in the contract — all observable behaviors of your system will be depended on by somebody."
+</div>
+
+<p>At Spotify scale, this stops being theoretical. From the podcast (~27:00):</p>
+
+<div class="quote">
+  "Imagine you have this well-defined API, but there are quirks of the implementation of that and every one of those quirks, if you have large enough scale, someone is going to have a dependency on that quirk."
+  <span class="quote-source">— Niklas Gustavsson, ~27:00</span>
+</div>
+
+<p>This is why deterministic migrations hit a glass ceiling. You write a script that rewrites every use of the old API to the new one. The script catches 99% of cases. Then someone files a bug because their code called the old API in a way your script didn't recognize, and now their code is broken — and they never read your docs.</p>
+
+<p>LLMs are the workaround. They pattern-match on the call site in context. They get more cases. But they also hallucinate fixes and miss edge cases. There's no free lunch.</p>
+
+<h2>Why This Matters to You (At Small Scale)</h2>
+
+<p>You don't have 100M users. You don't have a "fleet" of services. So why does this matter?</p>
+
+<p>Because <strong>you are now the customer of your own APIs</strong>. Your agents are. Every codebase you're working in has internal APIs — functions, modules, classes — that you've used in places you don't remember. When an agent rewrites one of those APIs, the rewrite will look correct. The agent will have done its job. But some other module — perhaps one you wrote six months ago and forgot — depended on a quirk that's now gone.</p>
+
+<div class="example-block">
+  <div class="example-header">A common case: sort order</div>
+  <div class="example-body">
+    <p>You wrote <code>getRecentPosts()</code> last year. The function returns posts sorted by created_at. You never documented the tiebreaker — it happens to be insertion order because that's what your SQL query gave you.</p>
+    <pre><code>// Documented: "Returns posts sorted by creation date, newest first"
+SELECT * FROM posts ORDER BY created_at DESC;</code></pre>
+    <p>An agent decides to "optimize" this and adds an explicit id-based tiebreaker for determinism:</p>
+    <pre><code>// Agent's "improvement"
+SELECT * FROM posts ORDER BY created_at DESC, id DESC;</code></pre>
+    <p>Looks better. Is faster. Is more deterministic. But your <code>notification-deduplicator</code> module relied on the old ordering — same timestamp meant "earlier insertion wins." Two users who should have received one notification each now receive two. Bug filed three weeks later.</p>
+  </div>
+</div>
+
+<p>This is Hyrum's Law in miniature. No customer-facing API was violated. The contract was honored. A <em>behavior</em> was changed, and someone downstream depended on it.</p>
+
+<h2>The Pattern at Spotify Scale</h2>
+
+<p>Spotify ran into this so often they had to build <strong>Honk</strong> — an LLM-mediated migration runner that uses one LLM to write the change and another LLM to verify the change matches the prompt. Even with both, edge cases slip through. That's why they keep humans in the loop for AI-authored PRs.</p>
+
+<p>Their lesson for you: <strong>the more an agent writes, the more you need to verify what it changed beyond the diff itself.</strong> "This PR looks correct" is not enough. "This PR preserves every observable behavior" is the bar.</p>
+
+<h2>The Exercise: Audit One Function (15 min)</h2>
+
+<p>Pick one function in a codebase you actively maintain. Criteria:</p>
+
+<ul>
+  <li>It's been in the codebase for at least 3 months.</li>
+  <li>It's called from at least 3 different places.</li>
+  <li>It's small enough to read in one sitting (under 30 lines is ideal).</li>
+  <li>It has at least one "implementation detail" you didn't document.</li>
+</ul>
+
+<div class="callout warning">
+  <strong>Not a public API.</strong> Internal is fine — better, in fact. The point is to find the load-bearing behaviors in code <em>you control</em>, before an agent decides to "improve" them.
+</div>
+
+<h3>Step 1 — List the documented behaviors</h3>
+
+<p>Open the function. What does its docstring (or comments, or README) say it does? Write those down.</p>
+
+<pre><code>// Documented:
+// 1. Returns posts sorted by created_at DESC
+// 2. Limits to N results
+// 3. Skips deleted posts</code></pre>
+
+<h3>Step 2 — List the undocumented behaviors</h3>
+
+<p>Read the implementation. What does it <em>actually</em> do? List everything that's not in the docstring:</p>
+
+<pre><code>// Implementation quirks:
+// - Tiebreaker is implicit (insertion order / row id)
+// - Caches results for 60 seconds
+// - Throws on DB connection failure, returns [] on query timeout
+// - Includes draft posts where author_id = current_user
+// - Excludes private posts where viewer_id != author_id
+//   (yes, even though they're not deleted)</code></pre>
+
+<h3>Step 3 — Classify each quirk</h3>
+
+<p>For each undocumented behavior, fill in this table:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Quirk</th>
+      <th>Caller depends on it?</th>
+      <th>Safe to change?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tiebreaker = insertion order</td>
+      <td>Probably yes (deduplicator)</td>
+      <td>No — silent data corruption</td>
+    </tr>
+    <tr>
+      <td>60s cache</td>
+      <td>Probably yes (perf)</td>
+      <td>No — latency regression</td>
+    </tr>
+    <tr>
+      <td>Returns [] on query timeout</td>
+      <td>Maybe (caller might check)</td>
+      <td>Rename to make explicit first</td>
+    </tr>
+    <tr>
+      <td>Drafts visible to author</td>
+      <td>Yes (UI assumes it)</td>
+      <td>No — feature regression</td>
+    </tr>
+    <tr>
+      <td>Private post exclusion</td>
+      <td>Yes (privacy invariant)</td>
+      <td>Never — security</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Step 4 — Mark the agent-hostile ones</h3>
+
+<p>Anything marked <strong>"No — silent data corruption"</strong> or <strong>"Never"</strong> is a <em>landmine</em>. An agent rewriting this function will almost certainly break it without realizing it. Two options:</p>
+
+<ul>
+  <li><strong>Document the quirk</strong> so the agent has a chance of preserving it. Move it from "implementation detail" to "documented contract."</li>
+  <li><strong>Lock the function</strong> — don't let agents touch it. Add a comment like <code>// AGENT-DO-NOT-MODIFY: tiebreaker behavior is load-bearing, see #1234</code>. This is ugly but works.</li>
+</ul>
+
+<p>For now, do whichever is faster. Document later.</p>
+
+<h2>Self-Check</h2>
+
+<p>You should be able to tick all of these:</p>
+
+<ul class="checklist">
+  <li>I picked one function (or method, or module) for the audit</li>
+  <li>I listed its documented behaviors</li>
+  <li>I listed at least 3 undocumented behaviors</li>
+  <li>I classified each quirk by "caller depends on it" and "safe to change"</li>
+  <li>I identified at least one "landmine" the agent would break</li>
+  <li>I either documented the landmine or marked the function as agent-hostile</li>
+</ul>
+
+<h2>What You Should NOT Do</h2>
+
+<p>Common mistakes:</p>
+
+<ul>
+  <li><strong>Don't audit your whole codebase.</strong> Pick one function. The exercise scales to ten later, but you have to do one first.</li>
+  <li><strong>Don't try to fix the landmines.</strong> The goal is to <em>find</em> them, not to rewrite the function today. Fixing happens in a follow-up.</li>
+  <li><strong>Don't pick a function you wrote last week.</strong> You'll only know the behaviors you intended. Pick something old enough that you've forgotten what you did.</li>
+  <li><strong>Don't pick a function with no callers.</strong> If nothing calls it, Hyrum's Law doesn't apply. Pick something with real dependents.</li>
+</ul>
+
+<h2>Why This Isn't Just Theory</h2>
+
+<p>From the podcast (~28:00):</p>
+
+<div class="quote">
+  "We have our backend is mostly Java and we have many of these code migrations that try to migrate some way of using Java to some other way... and we find so many edge cases to these all the time. It is fascinating how challenging it is to modify code."
+  <span class="quote-source">— Niklas Gustavsson, ~28:00</span>
+</div>
+
+<p>Spotify's fleet shifts do migrations that affect millions of lines of Java. Your agent-driven code changes affect dozens or hundreds of lines. The ratio is different; the principle is identical.</p>
+
+<p>The good news: at your scale, you can audit every important function in a week. Spotify can't audit Java's entire standard library. Use your size as an advantage.</p>
+
+<h2>What Comes Next</h2>
+
+<p>Lesson 0003 will be on <strong>Fleet management at small scale</strong> — the pattern (not the tool) for orchestrating code changes across multiple repos. Even if you have one repo, the pattern has a useful single-repo version: review the <em>script</em> that generated the change, not the change itself. Spotify's 85%-auto-merge trick applies even to a one-person shop.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>Share the function you audited — I can spot landmines you missed</li>
+    <li>Stuck on classifying a quirk? Tell me the function and I'll help</li>
+    <li>Want a prompt to give your agent that makes it less likely to break landmines?</li>
+    <li>Curious how to spot landmines without reading every caller? I can show you grep recipes</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0001-prototype-dont-prd.html">← Lesson 0001: Prototype, Don't PRD</a>
+  <a href="../reference/0001-glossary.html">Reference: Glossary →</a>
+</div>
+
+</body>
+</html>

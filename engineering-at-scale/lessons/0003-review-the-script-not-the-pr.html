@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: Review the Script, Not the PR — Engineering at Scale</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #1db954;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: #c0392b;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+      font-style: italic;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--ink-soft);
+    }
+    .example-block {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .example-header {
+      background: var(--code-bg);
+      padding: 0.6rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .example-body { padding: 1rem 1.25rem; font-size: 0.9rem; }
+    .example-body pre { margin: 0.5rem 0; font-size: 0.8rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      border-bottom: 2px solid var(--rule);
+    }
+    .step {
+      display: flex;
+      gap: 1rem;
+      margin: 1.25rem 0;
+      align-items: flex-start;
+    }
+    .step-num {
+      background: var(--accent);
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: "SF Mono", Menlo, monospace;
+      flex-shrink: 0;
+    }
+    .step-body { flex: 1; padding-top: 0.2rem; }
+    .step-body strong { display: block; margin-bottom: 0.25rem; }
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+      padding: 0;
+    }
+    .checklist li {
+      padding: 0.5rem 0 0.5rem 2rem;
+      position: relative;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    .followup {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .followup strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">engineering-at-scale</span></span>
+  <span>Lesson 0003</span>
+  <span>2026-06-30</span>
+  <span>~12 min</span>
+</div>
+
+<h1>Review the Script, Not the PR</h1>
+<p class="subtitle">The Spotify fleet-management trick that works even when your "fleet" is one repo.</p>
+
+<p>This is lesson 3 of <a href="../MISSION.md">engineering-at-scale</a>. Lesson 0001 had you skip a PRD for a prototype. Lesson 0002 had you audit one function for agent-hostile landmines. This lesson teaches you to stop reviewing changes line-by-line and start reviewing the <em>thing that made the changes</em>.</p>
+
+<p>Your takeaway: <strong>code review is not the bottleneck. Generator review is.</strong> If you trust the script, you can trust the output. If you don't, no amount of reading the diff will save you.</p>
+
+<h2>The Spotify Pattern</h2>
+
+<p>From the podcast (~26:00), Niklas describes how Spotify runs fleet shifts across thousands of services:</p>
+
+<div class="quote">
+  "We try to automate 100% of these migrations. Then we end up at somewhere around 85%, I think, of these migrations that are auto-mergeable. So basically we have a tool that looks at the diff... and it can confidently auto-merge it."
+  <span class="quote-source">— Niklas Gustavsson, ~26:00</span>
+</div>
+
+<p>The remaining 15% need a human. But here's the key: Spotify doesn't review 85% of the diffs line-by-line. They review the <em>migration script</em> once, then trust its output thousands of times.</p>
+
+<p>That's the entire trick. Review the generator, not the artifacts. At Spotify scale, the generator might be a custom transformation tool that touches 2,000 services. At your scale, the generator is your agent's prompt + a single example PR.</p>
+
+<h2>Why Line-by-Line Review Doesn't Scale</h2>
+
+<p>When an agent produces a PR that touches 40 files, you have three options:</p>
+
+<ol>
+  <li><strong>Read all 40 diffs</strong>. Costs an hour. Easy to miss a landmine. Exhausting.</li>
+  <li><strong>Skim the diffs</strong>. Costs 10 minutes. Catches obvious mistakes. Misses subtle ones. This is what most people actually do.</li>
+  <li><strong>Read the prompt that generated the PR</strong>. Costs 5 minutes. Catches everything the prompt would cause. Lets you re-run and re-generate.</li>
+</ol>
+
+<p>Option 3 is what Spotify does. Option 3 is what you should do.</p>
+
+<div class="callout">
+  <strong>The shift in mental model:</strong> stop asking "does this diff look right?" Start asking "does this <em>process</em> produce correct diffs?" If the process is correct, every diff is correct (modulo randomness, which lesson 0002's audit addresses).
+</div>
+
+<h2>The Small-Scale Version</h2>
+
+<p>You don't have a fleet. You have one repo, maybe two. So the Spotify pattern needs translation:</p>
+
+<h3>Original (Spotify scale)</h3>
+<pre><code>// Migration script
+rename_method(oldName: String, newName: String, scope: FilePattern) {
+  for file in find(scope):
+    replace_all(file, oldName, newName)
+}
+
+// One review of the script → 2,000 trusted diffs</code></pre>
+
+<h3>Translation (one-repo scale)</h3>
+<pre><code>// Agent prompt
+"Add a typed error wrapper around every function in src/api/ that
+throws an unhandled exception. Use the example PR #42 as your
+template. Do not modify any function marked AGENT-DO-NOT-MODIFY."
+
+// One review of the prompt + example → 1 trusted PR
+// If the PR is wrong, fix the prompt, re-run, get a correct PR</code></pre>
+
+<p>The shape is identical: review the <em>generator</em>, trust the <em>output</em>, iterate on the generator when the output is wrong.</p>
+
+<h2>The Exercise: Write Your First Generator-Review (20 min)</h2>
+
+<p>You will do one of these two options:</p>
+
+<h3>Option A — Have an agent generate a small batch PR</h3>
+
+<p>Pick a refactor that's small enough to attempt but not trivial. Good candidates:</p>
+<ul>
+  <li>Rename a method across one directory (5–15 files)</li>
+  <li>Add a typed wrapper around a set of similar functions</li>
+  <li>Convert one type of error handling to another (e.g., <code>throw new Error(msg)</code> → typed errors)</li>
+  <li>Update a dependency call pattern across callers (e.g., switch from <code>fetch()</code> to a wrapper)</li>
+</ul>
+
+<p>Write a prompt that includes:</p>
+
+<ol>
+  <li>One example PR (or file) showing the desired <em>style</em> of the change</li>
+  <li>An explicit list of files or patterns to skip (<code>AGENT-DO-NOT-MODIFY</code>, generated files, vendor code)</li>
+  <li>The success criterion: "all files in scope are modified the same way the example shows"</li>
+</ol>
+
+<p>Don't run the prompt yet. <strong>Read the prompt as if you were reviewing it.</strong></p>
+
+<h3>Step 1 — Pretend you're reviewing the prompt</h3>
+
+<p>Ask yourself these questions:</p>
+
+<ul>
+  <li>Is the scope unambiguous? ("all files in src/api/" or "every function matching <code>throw new Error</code>" — pick one.)</li>
+  <li>Is the example PR a real example, or a fantasy? (If you wrote it 5 minutes ago, it's a fantasy.)</li>
+  <li>Are the exclusion rules explicit, or assumed? (Explicit. Always.)</li>
+  <li>If this prompt produced 1,000 diffs, would you trust all 1,000? (If no, what's the first one you'd reject and why?)</li>
+</ul>
+
+<h3>Step 2 — Run the prompt on a small slice first</h3>
+
+<p>Before letting the agent touch the whole scope, narrow the scope to 1–2 files and run it there. Check:</p>
+<ul>
+  <li>Did the agent follow the example's style?</li>
+  <li>Did it touch the excluded files?</li>
+  <li>Did it hallucinate new patterns?</li>
+</ul>
+
+<p>If yes-yes-no, expand to the full scope. If no, fix the prompt and re-run on the slice. Don't re-run on the full scope until the slice works.</p>
+
+<h3>Step 3 — Review the full PR as a generator check</h3>
+
+<p>When the full PR comes back, do <em>not</em> read every diff. Instead:</p>
+
+<ol>
+  <li>Sample 3 random files. Did they match the example's style?</li>
+  <li>Grep for any file the prompt said to exclude. Did the agent touch any of them?</li>
+  <li>Grep for any pattern the prompt said to preserve. Did it preserve them?</li>
+  <li>Look at the diff stats: number of files changed, lines changed. Does it match the expected scope size?</li>
+</ol>
+
+<p>If all four checks pass, the generator worked. Merge.</p>
+
+<p>If any check fails, <strong>do not fix the PR</strong>. Fix the prompt. Re-run. The whole point is that you don't hand-edit the output.</p>
+
+<div class="callout warning">
+  <strong>The trap:</strong> you'll be tempted to "just fix that one file" in the PR. Don't. Every manual fix in the output is a sign the generator is wrong, and you'll have to make that fix again next time. Always fix the prompt.
+</div>
+
+<h3>Option B — Extract a pattern from past manual work</h3>
+
+<p>Skip the agent step. Look at the last 3 refactors you've done by hand. They're probably similar:</p>
+
+<ul>
+  <li>Same rename pattern</li>
+  <li>Same import-update pattern</li>
+  <li>Same wrapper style</li>
+</ul>
+
+<p>Write down the <em>generator</em> that could have produced all three. It doesn't have to be code — it can be a paragraph in a markdown file. The point is to make the pattern explicit so the next refactor can use it (and so an agent can use it on the next-but-one refactor).</p>
+
+<p>This is the "review the script" discipline applied retrospectively: notice you already have a script, you just haven't written it down yet.</p>
+
+<h2>The Spotify-Scale Generators You'll Eventually Want</h2>
+
+<p>You don't need these today. But for context, here's what the pattern looks like when it grows:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Generator type</th>
+      <th>Example</th>
+      <th>Output scale</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Code-mod tool</td>
+      <td>jq, sed, codemod scripts</td>
+      <td>100s–1000s of files</td>
+    </tr>
+    <tr>
+      <td>Agent prompt + example PR</td>
+      <td>"Refactor X like #42, but in src/api/"</td>
+      <td>10s of files</td>
+    </tr>
+    <tr>
+      <td>Migration framework</td>
+      <td>OpenRewrite, ts-morph</td>
+      <td>100s–1000s of files</td>
+    </tr>
+    <tr>
+      <td>Honk-style LLM + judge</td>
+      <td>One LLM writes, one LLM verifies</td>
+      <td>10s–100s of files</td>
+    </tr>
+    <tr>
+      <td>Hand-edit (no generator)</td>
+      <td>You, today, opening 30 files</td>
+      <td>≤10 files before exhaustion</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The "hand-edit" row is what most people default to. It works for ≤10 files. It doesn't scale because humans get tired and skip things.</p>
+
+<h2>Self-Check</h2>
+
+<p>You should be able to tick all of these:</p>
+
+<ul class="checklist">
+  <li>I picked one refactor and wrote the prompt for it (Option A) OR identified the pattern in 3 past refactors (Option B)</li>
+  <li>The prompt has an explicit scope, an explicit exclusion list, and a real example</li>
+  <li>I narrowed the scope to 1–2 files for a first run</li>
+  <li>I reviewed the prompt as if reviewing a PR — and answered the 4 questions honestly</li>
+  <li>I committed to fixing the prompt, not the output, if the run is wrong</li>
+  <li>I merged a generator-produced PR this week (or scheduled one)</li>
+</ul>
+
+<h2>What You Should NOT Do</h2>
+
+<ul>
+  <li><strong>Don't hand-edit the agent's output.</strong> Every hand-edit is a sign the prompt is wrong. Fix the prompt.</li>
+  <li><strong>Don't run the full scope first.</strong> Always run a slice. The slice catches prompt bugs cheaply.</li>
+  <li><strong>Don't write a fake example PR.</strong> A real example from your own history is 10× more useful than one you invented.</li>
+  <li><strong>Don't pick a refactor that requires design judgment.</strong> The generator pattern is for mechanical changes. Renames, type wrappers, import updates. Not "redesign the module."</li>
+  <li><strong>Don't skip the exclusion list.</strong> Always tell the agent what <em>not</em> to touch. The lesson 0002 audit tells you what to put in that list.</li>
+</ul>
+
+<h2>Why This Connects to Lesson 0002</h2>
+
+<p>Lesson 0002 had you find landmines — behaviors the agent will silently break. Lesson 0003's exclusion list is where those landmines go:</p>
+
+<pre><code>// In your prompt to the agent
+"DO NOT MODIFY:
+  - src/api/legacy/getRecentPosts.ts  (tiebreaker is load-bearing, see #1234)
+  - src/api/auth/*  (security-sensitive, manual review required)
+  - src/generated/*  (regenerated by toolchain)"</code></pre>
+
+<p>The audit feeds the generator review. The two lessons compose into a single workflow:</p>
+
+<ol>
+  <li>Audit: find landmines (lesson 0002)</li>
+  <li>Encode: put landmines in the exclusion list</li>
+  <li>Generate: run the prompt on a slice</li>
+  <li>Verify: check that the generator respected the exclusions (this lesson)</li>
+  <li>Expand: run on full scope, merge</li>
+</ol>
+
+<p>That's the small-scale fleet-management loop. It's what Spotify does at 2,000 services. You do it at 1.</p>
+
+<h2>What Comes Next</h2>
+
+<p>Lesson 0004 will be on <strong>aggregate-level measurement</strong>. The podcast (~22:00) describes Spotify's approach: don't measure individual productivity, measure the <em>aggregate</em>. The same principle applies to AI code — you should be measuring how many landmines your audits catch per week, not how many lines the agent wrote. The metrics that survive scale are the metrics worth using now.</p>
+
+<div class="followup">
+<strong>Ask your teacher.</strong>
+  <ul>
+    <li>Share your generator prompt — I'll help you tighten the scope and exclusion list</li>
+    <li>Hit a case where the prompt looked right but the output was wrong? Show me the diff</li>
+    <li>Want a template for "agent-do-not-modify" comments that integrates with your CI?</li>
+    <li>Curious how to turn Option B (past-pattern extraction) into a reusable prompt library?</li>
+  </ul>
+</div>
+
+<div class="lesson-nav">
+  <a href="0002-hyrums-law-hits-your-agents.html">← Lesson 0002: Hyrum's Law</a>
+  <a href="0004-measure-the-aggregate.html">Lesson 0004: Measure the Aggregate →</a>
+</div>
+
+</body>
+</html>
