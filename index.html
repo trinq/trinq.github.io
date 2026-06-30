@@ -10,8 +10,8 @@ title: Home
 Group posts by category: defined order, skip empty categories
 {% endcomment %}
 
-{% assign cat_order = "four-loops,agent-loop-skills,agentic-engineering,loop,reading,ponytail,prompting,clanker,loop-engineering" | split: "," %}
-{% assign name_order = "The 4-Loop Ladder,Agent Loop Skills,Agentic Engineering,Loop Engineer,Reading,Ponytail,Prompting,Clanker Engineer,Loop Engineering" | split: "," %}
+{% assign cat_order = "four-loops,agent-loop-skills,agentic-engineering,loop,reading,ponytail,prompting,clanker,pdpd-luat-an-ninh-mang,loop-engineering" | split: "," %}
+{% assign name_order = "The 4-Loop Ladder,Agent Loop Skills,Agentic Engineering,Loop Engineer,Reading,Ponytail,Prompting,Clanker Engineer,PDPD & An ninh mạng,Loop Engineering" | split: "," %}
 
 {% for cat in cat_order %}
   {% assign cat_posts = site.posts | where: "category", cat %}
