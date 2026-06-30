@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — Framework Mapping</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Loop Engineering</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Reference — Framework Mapping
+</div>
+
+<h1>Framework Mapping</h1>
+
+<p><em>How Andrew Ng's 3 loops, LangChain's 4-Loop Ladder, and Matt Pocock's Agentic Engineering skills fit together. Print this and pin it above your monitor.</em></p>
+
+<h2>The vertical stack</h2>
+
+<div class="callout">
+  <p><strong>Read top to bottom.</strong> Andrew Ng's 3 loops sit at the top (product cadence). LangChain's 4-Loop Ladder lives in the middle (agent infrastructure). Matt Pocock's harness lives at the bottom (dev ergonomics). Each layer composes with the layers below it.</p>
+</div>
+
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th>Layer</th>
+      <th>Framework</th>
+      <th>What it answers</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Product cadence</strong></td>
+      <td>Andrew Ng's 3 loops (this course)</td>
+      <td>What runs at what speed? Who's in the loop? How fast does each cycle close?</td>
+    </tr>
+    <tr>
+      <td><strong>Agent infrastructure</strong></td>
+      <td><a href="../../four-loops/">LangChain's 4-Loop Ladder</a></td>
+      <td>How does the agent run? How is it graded? When does it fire? How does it improve?</td>
+    </tr>
+    <tr>
+      <td><strong>Dev harness</strong></td>
+      <td><a href="../../agentic-engineering/">Matt Pocock's Agentic Engineering</a></td>
+      <td>What goes in <code>CLAUDE.md</code>? Which skills get installed? How do I queue work?</td>
+    </tr>
+    <tr>
+      <td><strong>Agent loop primitives</strong></td>
+      <td><a href="../../loop/">Loop Engineer</a> (Vietnamese) / <a href="../../agent-loop-skills/">Agent Loop Skills</a></td>
+      <td>How do I build a loop from scratch? What's the propose → run → score → keep/revert cycle?</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Andrew's 3 loops ↔ LangChain's 4-Loop Ladder</h2>
+
+<p>LangChain's Ladder describes the agent's infrastructure. Andrew's loops describe the product's cadence. Where they overlap:</p>
+
+<table class="mapping-table">
+  <thead>
+    <tr>
+      <th>Andrew Ng (this course)</th>
+      <th>LangChain (4-Loop Ladder)</th>
+      <th>Relationship</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="mapping-anchor">Loop 1 — Agentic coding</span></td>
+      <td>L1: Agent + L2: Verification + L4: Hill-climbing (partial)</td>
+      <td>The LangChain agent, its rubric, and its self-improvement are all <em>inside</em> one Loop 1 cycle. Every time Loop 1 fires, it runs the full Ladder stack.</td>
+    </tr>
+    <tr>
+      <td><span class="mapping-anchor">Loop 2 — Developer feedback</span></td>
+      <td>L4: Hill-climbing (partial) + L3: Event-driven (partial)</td>
+      <td>The developer's spec edits feed into L4 (which patches the agent). A cron-fired analysis agent can also live in L3.</td>
+    </tr>
+    <tr>
+      <td><span class="mapping-anchor">Loop 3 — External feedback</span></td>
+      <td>L3: Event-driven (mostly)</td>
+      <td>Production data, alpha-tester feedback, A/B tests all fire L3 triggers that update vision → spec → agent.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <p><strong>The non-obvious mapping:</strong> Andrew's Loop 1 maps to LangChain's Loops 1+2+4 (the entire agent stack) because each Loop 1 iteration <em>is</em> an agent run that includes verification and possibly hill-climbing. Andrew's Loop 2 maps to LangChain's Loop 4 (the agent-improving-agent) because the developer's feedback becomes patches.</p>
+</div>
+
+<h2>Andrew's 3 loops ↔ Matt Pocock skills</h2>
+
+<table class="mapping-table">
+  <thead>
+    <tr>
+      <th>Andrew Ng (this course)</th>
+      <th>Matt Pocock skill</th>
+      <th>What the skill does in this loop</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3"><span class="mapping-anchor">Loop 1 — Agentic coding</span></td>
+      <td><code>to-prd</code></td>
+      <td>Produce the spec the agent runs against.</td>
+    </tr>
+    <tr>
+      <td><code>tdd</code></td>
+      <td>Write the failing test, let the agent make it pass. Red-green-refactor for agents.</td>
+    </tr>
+    <tr>
+      <td><code>to-issues</code></td>
+      <td>Turn repeated eval failures into tracked issues that get fed back into the spec.</td>
+    </tr>
+    <tr>
+      <td rowspan="4"><span class="mapping-anchor">Loop 2 — Developer feedback</span></td>
+      <td><code>grill-me</code></td>
+      <td>The vision-clarification procedure. Forces context advantage into a clear decision.</td>
+    </tr>
+    <tr>
+      <td><code>to-prd</code> (re-run)</td>
+      <td>Re-author the PRD after seeing a build. Updates acceptance criteria, drops obsolete ones.</td>
+    </tr>
+    <tr>
+      <td><code>improve-codebase-architecture</code></td>
+      <td>Long-term code health. Refactor before more features land.</td>
+    </tr>
+    <tr>
+      <td><code>triage</code></td>
+      <td>State machine: <code>needs-triage → ready-for-agent → ready-for-human</code>. Where each piece of work belongs.</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><span class="mapping-anchor">Loop 3 — External feedback</span></td>
+      <td>VISION.md (Steinberger pattern)</td>
+      <td>Anchor file. The agent reads it on every Loop 1 run.</td>
+    </tr>
+    <tr>
+      <td>Queue workflow (Matt)</td>
+      <td>External feedback → queue → Loop 2 spec edits → Loop 1 execution.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The clock / engine / transmission analogy</h2>
+
+<p>From Lesson 0001, expanded:</p>
+
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th>Metaphor</th>
+      <th>Framework</th>
+      <th>What you tune here</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>The clock</strong></td>
+      <td>Andrew Ng's 3 loops</td>
+      <td>The cadence of your product. Minutes, hours, weeks. Who runs each tick.</td>
+    </tr>
+    <tr>
+      <td><strong>The engine</strong></td>
+      <td>LangChain 4-Loop Ladder</td>
+      <td>The agent's primitives. Tools, rubric, triggers, hill-climbing.</td>
+    </tr>
+    <tr>
+      <td><strong>The transmission</strong></td>
+      <td>Matt Pocock's harness</td>
+      <td>The dev ergonomics. CLAUDE.md, skills, queue, procedures.</td>
+    </tr>
+    <tr>
+      <td><strong>The fuel</strong></td>
+      <td>The model</td>
+      <td>Claude Code, Cursor, etc. The least interesting dial in 2026.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout success">
+  <p><strong>The mistake solo devs make:</strong> tune the engine (better prompts, better rubrics) without knowing the clock speed (which loop you're bottlenecked on). Result: ship fast in the wrong direction. Andrew's framework forces you to pick the clock speed first, then tune everything else.</p>
+</div>
+
+<h2>When each framework is the right one</h2>
+
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th>If your bottleneck is…</th>
+      <th>Open this course</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>"I don't know which loop is slow."</td>
+      <td><strong>This one.</strong> Andrew Ng's 3 loops.</td>
+    </tr>
+    <tr>
+      <td>"My agent finishes but the output is wrong."</td>
+      <td><a href="../../four-loops/lessons/0003-loop-2-verification.html">4-Loop Ladder — Loop 2: Verification</a></td>
+    </tr>
+    <tr>
+      <td>"My agent only runs when I open the terminal."</td>
+      <td><a href="../../four-loops/lessons/0004-loop-3-event-driven.html">4-Loop Ladder — Loop 3: Event-Driven</a></td>
+    </tr>
+    <tr>
+      <td>"My agent doesn't get better over time."</td>
+      <td><a href="../../four-loops/lessons/0005-loop-4-hill-climbing.html">4-Loop Ladder — Loop 4: Hill-Climbing</a></td>
+    </tr>
+    <tr>
+      <td>"I can't write a good spec."</td>
+      <td><a href="../../agentic-engineering/">Agentic Engineering — to-prd, grill-me</a></td>
+    </tr>
+    <tr>
+      <td>"My CLAUDE.md is bloated."</td>
+      <td><a href="../../agentic-engineering/">Agentic Engineering — setup-matt-pocock-skills</a></td>
+    </tr>
+    <tr>
+      <td>"I want to build a loop from scratch."</td>
+      <td><a href="../../loop/">Loop Engineer</a> / <a href="../../agent-loop-skills/">Agent Loop Skills</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The compounding view</h2>
+
+<p>Loop 4 of the 4-Loop Ladder is hill-climbing. If your agent improves by 1% every day, in a year it's 37.78× better. Where does that improvement come from in Andrew's framework?</p>
+
+<ul>
+  <li><strong>Loop 1 evals accumulate</strong> — every recurring failure becomes a check, the rubric gets tighter.</li>
+  <li><strong>Loop 2 specs tighten</strong> — every piece of context you encode into the spec is context you don't have to paste into chat.</li>
+  <li><strong>Loop 3 vision sharpens</strong> — every cycle of external feedback prunes features that didn't matter and amplifies ones that did.</li>
+</ul>
+
+<p>After 365 days of this, your agent is doing in 5 minutes what it used to take an hour of babysitting to produce. That's not because the model changed. It's because the harness — at all three layers — got tighter.</p>
+
+<div class="callout">
+  <p><strong>Final framing:</strong> Andrew Ng's 3 loops are the <em>calendar</em>. The 4-Loop Ladder is the <em>engine</em>. Matt Pocock's harness is the <em>transmission</em>. The compounding comes from running all three at once, day after day, and watching your agent do more of what you actually wanted.</p>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Related</h4>
+      <ul>
+        <li><a href="../../four-loops/">4-Loop Ladder</a></li>
+        <li><a href="../../agentic-engineering/">Agentic Engineering</a></li>
+        <li><a href="../../loop/">Loop Engineer</a></li>
+        <li><a href="../../agent-loop-skills/">Agent Loop Skills</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Loop Engineering &middot; Built with Cursor</p>
+  </div>
+</footer>
+
+</body>
+</html>

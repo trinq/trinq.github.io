@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — 3-Loop Cheat Sheet</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Loop Engineering</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Reference — 3-Loop Cheat Sheet
+</div>
+
+<h1>3-Loop Cheat Sheet</h1>
+
+<p><em>The three loops in one page. Print on a single sheet. Pin above your monitor.</em></p>
+
+<h2>The three loops, one row each</h2>
+
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Loop 1<br>Agentic coding</th>
+      <th>Loop 2<br>Developer feedback</th>
+      <th>Loop 3<br>External feedback</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Who runs it</strong></td>
+      <td>Agent (autonomously)</td>
+      <td>You (the developer)</td>
+      <td>Other humans (users, testers)</td>
+    </tr>
+    <tr>
+      <td><strong>Cadence</strong></td>
+      <td>Every few minutes</td>
+      <td>Tens of minutes to hours</td>
+      <td>Hours to weeks</td>
+    </tr>
+    <tr>
+      <td><strong>Input</strong></td>
+      <td>Spec + (optional) evals + tools</td>
+      <td>Current build + your context advantage</td>
+      <td>Real usage, customer reactions, metrics</td>
+    </tr>
+    <tr>
+      <td><strong>Output</strong></td>
+      <td>Passing build</td>
+      <td>Updated spec / new feature direction</td>
+      <td>Revised vision</td>
+    </tr>
+    <tr>
+      <td><strong>Feeds into</strong></td>
+      <td>Loop 2 (you examine the build)</td>
+      <td>Loop 1 (updated spec)</td>
+      <td>Loop 2 (revised vision → spec)</td>
+    </tr>
+    <tr>
+      <td><strong>Matt Pocock equivalent</strong></td>
+      <td><code>tdd</code>, <code>to-prd</code></td>
+      <td><code>grill-me</code>, <code>to-prd</code>, <code>improve-codebase-architecture</code></td>
+      <td>VISION.md, queue workflow</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The flow</h2>
+
+<div class="loop-diagram">
+  <span class="loop-node l1">Loop 1<small>agentic<br>coding</small></span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node l2">Loop 2<small>developer<br>feedback</small></span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node l3">Loop 3<small>external<br>feedback</small></span>
+</div>
+
+<p style="text-align: center; color: var(--ink-mute); font-style: italic; font-size: 0.92rem;">
+↑ feeds back to vision → spec → agent (the slowest loop sets the pace)
+</p>
+
+<h2>Symptoms</h2>
+
+<table class="comparison-table">
+  <thead>
+    <tr><th>You're stuck if…</th><th>You're in…</th><th>Fix</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Watching the agent run for 20+ minutes, pasting context when it gets stuck</td>
+      <td>Loop 2 (in disguise)</td>
+      <td>Move the chat-injected context into the spec, an eval, or <code>CLAUDE.md</code></td>
+    </tr>
+    <tr>
+      <td>Spec keeps growing without shipping</td>
+      <td>Loop 2 (drift)</td>
+      <td>Cap each spec at one Loop 1 iteration (~30 min of agent work)</td>
+    </tr>
+    <tr>
+      <td>"Decide what to change" takes days</td>
+      <td>Loop 2 (clarity)</td>
+      <td>Run <code>grill-me</code> until you can state the change in one sentence</td>
+    </tr>
+    <tr>
+      <td>No users, no feedback channel, no weekly ritual</td>
+      <td>Loop 3 (missing)</td>
+      <td>Pick 3 humans, create <code>VISION.md</code>, schedule a weekly 60-min ritual</td>
+    </tr>
+    <tr>
+      <td>Agent finishes, output is wrong, you ship anyway</td>
+      <td>Loop 1 + 3 (broken)</td>
+      <td>Add an eval. Stop shipping without one.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The "context advantage" loop</h2>
+
+<ol style="counter-reset: step-counter;">
+  <li style="margin-bottom: 0.6em;">You give the agent feedback based on context it doesn't have.</li>
+  <li style="margin-bottom: 0.6em;"><strong>Move that context into the system:</strong> a spec line, an eval, a <code>CLAUDE.md</code> entry, a <code>VISION.md</code> update.</li>
+  <li>Next Loop 1 run reads the updated system. Doesn't need the chat.</li>
+</ol>
+
+<div class="callout success">
+  <p><strong>Your job is to shrink your context advantage loop after loop. If the gap doesn't shrink, you're not actually using Andrew's framework.</strong></p>
+</div>
+
+<h2>The minimum viable loops</h2>
+
+<table class="comparison-table">
+  <thead>
+    <tr><th>Loop</th><th>Minimum viable</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Loop 1</strong></td>
+      <td>A spec, a test suite, a Claude Code session.</td>
+    </tr>
+    <tr>
+      <td><strong>Loop 2</strong></td>
+      <td>You, opening the build, deciding what to change, editing the spec. ≤45 min per round.</td>
+    </tr>
+    <tr>
+      <td><strong>Loop 3</strong></td>
+      <td>3 humans, a feedback channel, a weekly 60-min ritual, a <code>VISION.md</code> file.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Andrew's three lines to remember</h2>
+
+<blockquote>
+  <p>"Given a product specification and optionally a set of evals, we can have an AI agent write code, test its work, and keep iterating until the code is bug-free and meets its specification."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— on Loop 1</p>
+</blockquote>
+
+<blockquote>
+  <p>"So long as the human knows something the AI does not, human-in-the-loop is needed to inject that knowledge into the system."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— on Loop 2</p>
+</blockquote>
+
+<blockquote>
+  <p>"This data informs the developer vision, which in turn continues to drive the detailed product spec, which in turn drives the coding agent."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— on Loop 3 → 2 → 1</p>
+</blockquote>
+
+<hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--rule);">
+
+<p style="text-align: center; color: var(--ink-mute); font-size: 0.9rem;">
+<em>Loop Engineering — Andrew Ng's 3 loops for building 0-to-1 products</em><br>
+<a href="../index.html">All lessons</a> &middot; <a href="framework-mapping.html">Framework mapping</a> &middot; <a href="glossary.html">Glossary</a> &middot; <a href="../RESOURCES.md">Resources</a>
+</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Loop Engineering &middot; Built with Cursor</p>
+  </div>
+</footer>
+
+</body>
+</html>

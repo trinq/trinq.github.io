@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0003 — Loop 2: The Developer Feedback Loop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Loop Engineering</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0003
+</div>
+
+<h1>Lesson 0003<br>Loop 2: The Developer Feedback Loop</h1>
+
+<p><em>You are no longer the QA. You are the spec writer, the vision holder, and the editor. The hard part is not catching bugs anymore — it's translating what you know into a form the agent can act on.</em></p>
+
+<h2>From QA to spec writer</h2>
+
+<blockquote>
+  <p>"Last year, a lot of developers (including me) were acting as the QA (quality assurance) function for our coding agents, manually finding bugs and then asking the agent to fix them. But with coding agents much more able to test their own code, the amount of time we need to spend on this function has decreased significantly."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>This is the single biggest shift Andrew describes. In 2024 you spent your Loop 2 time hunting bugs. In 2026 you spend it deciding <em>what to build next</em>. The agent has eaten the QA role; you have been promoted.</p>
+
+<div class="callout">
+  <p><strong>The promotion ladder:</strong></p>
+  <p>2024 — you were a bug-finder (QA). Agent wrote sloppy code, you patched.</p>
+  <p>2025 — you were a code reviewer. Agent shipped better drafts, you polished.</p>
+  <p>2026 — you are a spec writer. Agent runs against the spec, you rewrite the spec.</p>
+</div>
+
+<h2>What this loop actually does</h2>
+
+<p>Three concrete activities make up Loop 2:</p>
+
+<div class="step-box">
+  <p><span class="step-num">1</span><strong class="step-title">Examine the current build</strong></p>
+  <p class="step-desc">Open the app. Click through the feature the agent just shipped. Look at the UI. Run the flow. Time-box this — 10 to 30 minutes max.</p>
+</div>
+
+<div class="step-box">
+  <p><span class="step-num">2</span><strong class="step-title">Decide what to change</strong></p>
+  <p class="step-desc">"Visual design is wrong" is not a decision. "The home button should be in the bottom-right with a 16pt label" is. Decisions need to be specific enough to encode in a spec.</p>
+</div>
+
+<div class="step-box">
+  <p><span class="step-num">3</span><strong class="step-title">Re-author the spec, hand it back</strong></p>
+  <p class="step-desc">Edit the PRD. Add new acceptance criteria. Remove obsolete ones. Hand the updated spec back to Loop 1.</p>
+</div>
+
+<p>Andrew's typing app example makes this concrete: <em>"I changed my mind a few times about the visual design, what cat costumes she can unlock as she learns (she loves cats), and the user flow for a grown-up to log in and steer the child's learning experience."</em> Three rounds of "look at app → decide → re-spec → re-run." Each round was tens of minutes.</p>
+
+<h2>The cadence is tens of minutes to hours</h2>
+
+<p>Andrew is explicit:</p>
+
+<blockquote>
+  <p>"The developer-feedback loop operates over time intervals between tens of minutes and hours — that's how frequently a developer might review a product and give feedback."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>Why not faster? Because your context advantage needs time to crystallise. You can't see that "the parent login flow is confusing" until you've actually tried it. Why not slower? Because the agent's output goes stale — by tomorrow, the spec has drifted from the build.</p>
+
+<h2>Why this loop can't be fully automated</h2>
+
+<p>Andrew rejects "taste" and offers "context advantage" as the better framing:</p>
+
+<blockquote>
+  <p>"For pretty much all the products I'm involved in, I see humans as having a significant context advantage over current AI systems — we know a lot more than the AI system about the users and the context the product has to operate in — and thus humans play a critical role."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>The framing matters because it gives you a path to fix the gap:</p>
+
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th>Framing</th>
+      <th>What it implies</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>"Taste"</td>
+      <td>Some things just feel right. You can't teach it. The AI either has it or doesn't.</td>
+    </tr>
+    <tr>
+      <td><strong>"Context advantage"</strong></td>
+      <td>The human knows things the AI doesn't. <em>Encode that knowledge into the spec, the eval, or the harness — and the gap shrinks.</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout success">
+  <p><strong>The action loop for "context advantage":</strong> Every time you give the agent feedback that comes from context the AI didn't have, <em>also update the spec</em> so the AI has that context next time. Your job is to make your context advantage smaller, loop after loop, by encoding it.</p>
+</div>
+
+<h2>Mapping to Matt Pocock skills</h2>
+
+<p>Loop 2 is where most of Matt Pocock's high-leverage skills live:</p>
+
+<table class="mapping-table">
+  <thead>
+    <tr>
+      <th>Andrew Ng's Loop 2 activity</th>
+      <th>Matt Pocock skill</th>
+      <th>What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Decide what to build next (vision)</td>
+      <td><code>grill-me</code></td>
+      <td>The agent plays senior PM and interrogates you on the design before any code is written. Forces you to clarify what you actually want.</td>
+    </tr>
+    <tr>
+      <td>Translate vision into a spec</td>
+      <td><code>to-prd</code></td>
+      <td>Turn a vague feature idea into a behaviourally-scoped PRD with acceptance criteria.</td>
+    </tr>
+    <tr>
+      <td>Re-author the spec after seeing a build</td>
+      <td><code>to-issues</code></td>
+      <td>Break the updated PRD into ordered, agent-runnable issues.</td>
+    </tr>
+    <tr>
+      <td>Long-term codebase health</td>
+      <td><code>improve-codebase-architecture</code></td>
+      <td>When the code is working but the structure is rotting, this skill has the agent refactor before more features land.</td>
+    </tr>
+    <tr>
+      <td>QA-style verification (legacy role)</td>
+      <td><code>tdd</code></td>
+      <td>You may still use this for tricky bugs, but it's mostly inside Loop 1 now.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <p><strong>The key insight:</strong> Matt's <code>grill-me</code> skill exists <em>because Loop 2 is hard</em>. It is a procedure for forcing yourself to extract your context advantage into a form the agent can use. Andrew's "context advantage" framing is the why; Matt's <code>grill-me</code> is the how.</p>
+</div>
+
+<p>For Matt's full harness setup, see <a href="../../agentic-engineering/">Agentic Engineering</a> course — specifically the <code>grill-me</code> and <code>to-prd</code> lessons.</p>
+
+<h2>When the loop is broken</h2>
+
+<p>Three failure modes for Loop 2:</p>
+
+<div class="loop-card">
+  <span class="loop-card-num l2">A</span>
+  <div class="loop-card-body">
+    <p class="loop-card-title">The "decide what to change" step takes days</p>
+    <p class="loop-card-desc">You're not bottlenecked on the agent — you're bottlenecked on your own clarity. Fix: run <code>grill-me</code> until you can state the change in one sentence.</p>
+  </div>
+</div>
+
+<div class="loop-card">
+  <span class="loop-card-num l2">B</span>
+  <div class="loop-card-body">
+    <p class="loop-card-title">The spec keeps growing without shipping</p>
+    <p class="loop-card-desc">You keep adding features to the spec without re-running Loop 1. The spec and the build drift apart. Fix: cap each spec at one Loop 1 iteration (~30 minutes of agent work).</p>
+  </div>
+</div>
+
+<div class="loop-card">
+  <span class="loop-card-num l2">C</span>
+  <div class="loop-card-body">
+    <p class="loop-card-title">You keep pasting context into chat, not the spec</p>
+    <p class="loop-card-desc">The next Loop 1 run will be just as confused as this one. Fix: every chat-injected context should become a spec line, an eval, or a CLAUDE.md entry.</p>
+  </div>
+</div>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Andrew says the human role in Loop 2 cannot be fully automated because…</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">Humans have better taste than AI</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Andrew explicitly rejects the word 'taste' as too vague."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">Humans have a context advantage the AI lacks</label>
+        <span class="quiz-feedback" data-correct-text="Correct. 'Context advantage' is Andrew's preferred framing because it gives a path to shrinking the gap." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">The cadence is too fast for humans to keep up</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="The cadence (tens of minutes to hours) is too SLOW for a fully automated loop, not too fast."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">Coding agents can't read specs</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's not the issue. Coding agents read specs fine — Loop 1 runs on them for an hour at a time."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Which Matt Pocock skill most directly implements the "decide what to build next" step in Loop 2?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a"><code>tdd</code></label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="TDD is mostly inside Loop 1 — writing tests for the agent to satisfy."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="true">
+        <label for="q2-b"><code>grill-me</code></label>
+        <span class="quiz-feedback" data-correct-text="Correct. grill-me is the procedure for forcing yourself to extract context advantage into a clear vision." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c"><code>improve-codebase-architecture</code></label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's for long-term code health — useful in Loop 2 but not the decision step itself."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d"><code>to-prd</code></label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="to-prd is downstream — translating an already-clear decision into a PRD. grill-me is upstream."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>You're in Loop 2 and you keep pasting context into the chat with the agent instead of updating the spec. What's the right move?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">Keep doing it — chat is faster than editing the spec</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's the failure mode. Every chat-injected context must move to the spec, or the next Loop 1 run will be just as confused."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="true">
+        <label for="q3-b">Convert each chat-injected context into a spec line, an eval, or a CLAUDE.md entry</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Your job is to shrink your context advantage by encoding it into the system." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="false">
+        <label for="q3-c">Stop giving the agent feedback and let it iterate on its own</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That abandons Loop 2 entirely — the spec will drift and the build will go off-mission."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
+        <label for="q3-d">Switch to a bigger model and hope it catches the context</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Model size doesn't fix a missing context. The context has to live somewhere — either in the spec or in the chat."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2>Action Items</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Run <code>grill-me</code> on one feature decision<span class="loop-tag l2">20 min</span></strong>
+    <span>Pick one feature you're stuck on. Use Matt Pocock's <code>grill-me</code> skill. Stop when you can state the decision in one sentence.</span>
+  </li>
+  <li>
+    <strong>Re-author one spec after a recent build<span class="loop-tag l2">30 min</span></strong>
+    <span>Pick a recent Loop 1 build. What context did you paste into chat? Move each piece of context into the spec, an eval, or <code>CLAUDE.md</code>.</span>
+  </li>
+  <li>
+    <strong>Time-box one Loop 2 round<span class="loop-tag l2">45 min total</span></strong>
+    <span>Examine current build (≤15 min), decide change (≤15 min), update spec (≤15 min). If you can't finish in 45 min, the feature is too big — split it.</span>
+  </li>
+  <li>
+    <strong>Cross-link to Agentic Engineering<span class="loop-tag l2">5 min</span></strong>
+    <span>Open <a href="../../agentic-engineering/">Agentic Engineering</a> course. Re-read the grill-me and to-prd lessons — they are the same ideas, framed differently.</span>
+  </li>
+</ol>
+
+<footer class="lesson-foot">
+  Lesson 0003 of the <em>Loop Engineering</em> course. Next: <a href="0004-loop-3-external-feedback.html">Lesson 0004 — Loop 3: The External Feedback Loop</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0002-loop-1-agentic-coding.html">&larr; Lesson 0002</a>
+  <a href="0004-loop-3-external-feedback.html">Lesson 0004 &rarr;</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Related</h4>
+      <ul>
+        <li><a href="../../four-loops/">4-Loop Ladder</a></li>
+        <li><a href="../../agentic-engineering/">Agentic Engineering</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Loop Engineering &middot; Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

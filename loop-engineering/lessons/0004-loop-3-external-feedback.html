@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0004 — Loop 3: The External Feedback Loop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Loop Engineering</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0004
+</div>
+
+<h1>Lesson 0004<br>Loop 3: The External Feedback Loop</h1>
+
+<p><em>The only loop where humans talk to other humans. Slow, ugly, and the only one that can tell you whether you're building the right thing.</em></p>
+
+<h2>What this loop is</h2>
+
+<blockquote>
+  <p>"This includes a wide range of tactics like asking a few friends for feedback, launching to alpha testers, or putting the code into production with A/B testing. These tactics are usually slow, rarely taking less than hours and sometimes taking days or even weeks."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>Loop 3 is the only loop that involves <em>other humans with context you don't have</em>. Friends, alpha testers, paying customers, strangers on Twitter. They use your software in ways you didn't anticipate, with needs you didn't encode into the spec.</p>
+
+<div class="callout">
+  <p><strong>The honesty test:</strong> if you removed all external users from your product, would you still know what to build next? If yes, you don't have a Loop 3 problem — you have a Loop 2 problem (you're not using your context advantage). If no, you've discovered why Loop 3 exists.</p>
+</div>
+
+<h2>The cadence is hours to weeks</h2>
+
+<p>Andrew gives the cadence as <em>"rarely taking less than hours and sometimes taking days or even weeks."</em> Why so slow?</p>
+
+<ul>
+  <li><strong>Real users need real context</strong> — they have to discover your product, try it, form an opinion, and articulate it. That takes days, not minutes.</li>
+  <li><strong>Sample size</strong> — a single friend's reaction is anecdote. Five friends is signal. Fifty users is data. Each tier takes longer.</li>
+  <li><strong>Production loops are slower still</strong> — A/B tests need statistical power, which means traffic, which means time.</li>
+</ul>
+
+<div class="callout warning">
+  <p><strong>Don't fake it.</strong> "Loop 3 in 5 minutes" — sending the agent to scrape Twitter and cluster complaints — is a Loop 2 activity wearing a Loop 3 costume. Real Loop 3 involves real humans you cannot fully simulate.</p>
+</div>
+
+<h2>How Loop 3 feeds back into the others</h2>
+
+<p>Andrew is explicit about the feedback chain:</p>
+
+<blockquote>
+  <p>"This data informs the developer vision, which in turn continues to drive the detailed product spec, which in turn drives the coding agent."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>The flow is one-directional:</p>
+
+<div class="loop-diagram">
+  <span class="loop-node l3">Loop 3<small>external<br>feedback</small></span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node l2">Loop 2<small>vision &rarr;<br>spec</small></span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node l1">Loop 1<small>agent<br>codes</small></span>
+</div>
+
+<p>External feedback updates your <strong>vision</strong>. The vision becomes an updated <strong>spec</strong>. The spec drives the <strong>agent</strong>. The whole 3-loop system is one big loop that runs at the speed of its slowest part — Loop 3.</p>
+
+<div class="callout success">
+  <p><strong>The leverage insight:</strong> improving Loop 3's feedback quality — not its speed — is where the real gains are. A weekly call with five users who can articulate what they want beats a daily survey of fifty users who can't.</p>
+</div>
+
+<h2>The "partial PM" role</h2>
+
+<p>Andrew closes the Loop 3 section with this:</p>
+
+<blockquote>
+  <p>"With coding agents speeding up software development, more engineers are starting to play a partial product management role. For many engineers who are growing into this role, the hardest part is shaping the product vision and striking a balance between building (bridging the gap between vision and spec) and getting user feedback to evolve the vision."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>Three implications for solo devs:</p>
+
+<div class="step-box">
+  <p><span class="step-num">1</span><strong class="step-title">Your role expands, it doesn't shrink</strong></p>
+  <p class="step-desc">The agent handles typing. You handle vision + spec + external feedback. The total cognitive load doesn't decrease — it shifts toward higher-leverage work.</p>
+</div>
+
+<div class="step-box">
+  <p><span class="step-num">2</span><strong class="step-title">"Building" and "listening" are both required</strong></p>
+  <p class="step-desc">Andrew: <em>"It is important to do both!"</em> Most solo devs under-invest in Loop 3 because listening is harder than shipping. The discipline is to schedule both.</p>
+</div>
+
+<div class="step-box">
+  <p><span class="step-num">3</span><strong class="step-title">The hardest part is the vision</strong></p>
+  <p class="step-desc">Engineers moving into PM roles get stuck on shaping the product vision, not on writing the spec. <code>grill-me</code> is your friend here.</p>
+</div>
+
+<h2>How AI can — and can't — help Loop 3</h2>
+
+<p>Andrew is balanced here:</p>
+
+<blockquote>
+  <p>"AI-native teams are increasingly using AI to help shape product direction, for example, automating the gathering and analysis of usage data, summarizing written and verbal customer feedback, or carrying out competitive analysis."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>But also:</p>
+
+<blockquote>
+  <p>"For pretty much all the products I'm involved in, I see humans as having a significant context advantage over current AI systems… thus humans play a critical role."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th>Loop 3 activity</th>
+      <th>Can AI help?</th>
+      <th>Where humans still own it</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Gather usage data</td>
+      <td>Yes — log everything, summarise with an agent.</td>
+      <td>Decide what to log in the first place.</td>
+    </tr>
+    <tr>
+      <td>Summarise written feedback</td>
+      <td>Yes — cluster complaints, extract themes.</td>
+      <td>Read the rare, articulate complaint yourself.</td>
+    </tr>
+    <tr>
+      <td>Summarise verbal feedback (call transcripts)</td>
+      <td>Yes — transcribe, summarise, extract action items.</td>
+      <td>Be on the call. You cannot delegate presence.</td>
+    </tr>
+    <tr>
+      <td>Competitive analysis</td>
+      <td>Yes — scrape competitor sites, summarise positioning.</td>
+      <td>Decide which competitors matter.</td>
+    </tr>
+    <tr>
+      <td>Decide what to build next</td>
+      <td>No — that's vision.</td>
+      <td>Always human.</td>
+    </tr>
+    <tr>
+      <td>Decide who to talk to</td>
+      <td>No — that's context advantage.</td>
+      <td>Always human.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Setting up Loop 3 cheaply</h2>
+
+<p>You don't need fifty users to start Loop 3. Andrew's typing app started with his daughter. A minimal Loop 3 has three components:</p>
+
+<div class="step-box">
+  <p><span class="step-num">1</span><strong class="step-title">A feedback channel</strong></p>
+  <p class="step-desc">A shared doc, a Slack channel, a form, a Twitter DM list, a Signal group with 3 friends. Doesn't matter which.</p>
+</div>
+
+<div class="step-box">
+  <p><span class="step-num">2</span><strong class="step-title">A weekly ritual</strong></p>
+  <p class="step-desc">Block 60 minutes on your calendar. Read the feedback. Write down 1-3 things to change in the spec. That's the whole loop.</p>
+</div>
+
+<div class="step-box">
+  <p><span class="step-num">3</span><strong class="step-title">A vision-update trigger</strong></p>
+  <p class="step-desc">After the weekly ritual, edit your <code>VISION.md</code> (the file Steinberger uses as the agent's anchor — see <a href="../../agentic-engineering/">Agentic Engineering</a>). The next Loop 1 run reads the updated vision and produces accordingly.</p>
+</div>
+
+<div class="callout">
+  <p><strong>The trap:</strong> collecting feedback but never acting on it. A doc full of complaints that nobody reads is just a graveyard. The weekly ritual is non-negotiable.</p>
+</div>
+
+<h2>Mapping to Matt Pocock skills</h2>
+
+<p>Loop 3 is where Matt's framework thins out. Most of his skills serve Loop 1 and Loop 2. But two patterns apply:</p>
+
+<table class="mapping-table">
+  <thead>
+    <tr>
+      <th>Andrew Ng's Loop 3 activity</th>
+      <th>Matt Pocock / Steinberger pattern</th>
+      <th>What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Anchor the vision</td>
+      <td><code>VISION.md</code> (Steinberger)</td>
+      <td>A single file at the project root that states what the product is, who it's for, and what it's not. The agent reads this on every Loop 1 run.</td>
+    </tr>
+    <tr>
+      <td>Collect feedback</td>
+      <td>Queue workflow (Matt)</td>
+      <td>Every piece of feedback becomes a queued task. Loop 2 picks from the queue. Loop 1 executes.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>According to Andrew, where does external feedback data flow first?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">Directly into the coding agent (Loop 1)</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="No — Andrew says it 'informs the developer vision' first, then spec, then agent. Skipping the vision step loses context."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">Into the developer vision (Loop 2)</label>
+        <span class="quiz-feedback" data-correct-text="Correct. 'This data informs the developer vision, which in turn continues to drive the detailed product spec, which in turn drives the coding agent.'" data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">Into a database that the agent queries</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's not Andrew's framing. He keeps the human (you) in the middle of the Loop 3 → Loop 2 → Loop 1 chain."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">Directly into the spec (PRD)</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Closer, but the vision comes first. The spec is downstream of the vision."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Which of these is NOT something Andrew says AI-native teams do with AI in Loop 3?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">Automating the gathering and analysis of usage data</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Andrew explicitly lists this."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="false">
+        <label for="q2-b">Summarising written customer feedback</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Andrew explicitly lists this."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="true">
+        <label for="q2-c">Deciding which competitors matter</label>
+        <span class="quiz-feedback" data-correct-text="Correct. AI can scrape and summarise competitors, but deciding which ones matter is a human context-advantage decision." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">Carrying out competitive analysis</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Andrew explicitly lists this."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What's the minimum viable Loop 3 for a solo dev with no users yet?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">A/B test infrastructure in production</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="You don't have users yet — A/B testing requires traffic."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="false">
+        <label for="q3-b">A 50-person user research panel</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Way too much. Andrew's typing app started with his daughter."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="true">
+        <label for="q3-c">A feedback channel, a weekly 60-minute ritual, and a VISION.md file</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Three components, no infrastructure, fits a solo dev with zero users." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
+        <label for="q3-d">A customer success team</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's a Phase 3 problem. You're solo with zero users."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2>Action Items</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Pick 3 humans for your first Loop 3<span class="loop-tag l3">15 min</span></strong>
+    <span>Friends, colleagues, domain experts. People who will use the thing or know people who will. Reach out today.</span>
+  </li>
+  <li>
+    <strong>Create a <code>VISION.md</code><span class="loop-tag l3">30 min</span></strong>
+    <span>Anchor file at the project root: what the product is, who it's for, what it's not. The next Loop 1 run reads it. (See <a href="../../agentic-engineering/">Agentic Engineering</a> for the VISION.md pattern.)</span>
+  </li>
+  <li>
+    <strong>Schedule the weekly 60-minute Loop 3 ritual<span class="loop-tag l3">2 min</span></strong>
+    <span>Block it on your calendar. Recurring. Non-negotiable. Without this, feedback collects but nothing happens.</span>
+  </li>
+  <li>
+    <strong>Run <code>grill-me</code> on your vision<span class="loop-tag l2">20 min</span></strong>
+    <span>After one cycle of external feedback, use Matt's <code>grill-me</code> skill to test whether your vision has actually updated. If you can't state the change in one sentence, your Loop 3 isn't working.</span>
+  </li>
+</ol>
+
+<footer class="lesson-foot">
+  Lesson 0004 of the <em>Loop Engineering</em> course. End of the 3-loop sequence.
+  See <a href="../reference/framework-mapping.html">Framework Mapping</a> for how Andrew's 3 loops connect to your other courses.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0003-loop-2-developer-feedback.html">&larr; Lesson 0003</a>
+  <a href="../index.html">All Lessons</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Related</h4>
+      <ul>
+        <li><a href="../../four-loops/">4-Loop Ladder</a></li>
+        <li><a href="../../agentic-engineering/">Agentic Engineering</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Loop Engineering &middot; Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

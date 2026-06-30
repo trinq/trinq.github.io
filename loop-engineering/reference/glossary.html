@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — Glossary</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Loop Engineering</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Reference — Glossary
+</div>
+
+<h1>Glossary</h1>
+
+<p><em>All terms from Andrew Ng's letter, plus adjacent vocabulary from Boris Cherny, Peter Steinberger, and Addy Osmani. One-stop lookup.</em></p>
+
+<h2>The three loops</h2>
+
+<dl class="glossary">
+  <dt>Loop 1 — Agentic coding loop</dt>
+  <dd>The coding agent writes code, tests it, iterates against a spec (and optional evals) until the build passes. Cadence: <strong>every few minutes</strong>. Andrew's example: his daughter's typing app, where the agent worked autonomously for about an hour, checking the browser multiple times. <strong>Source:</strong> <a href="https://www.deeplearning.ai/the-batch/three-key-loops-for-building-great-software">Andrew Ng, The Batch Issue 359</a>.</dd>
+
+  <dt>Loop 2 — Developer feedback loop</dt>
+  <dd>The developer examines the current build and steers the coding agent by updating the spec, vision, or feature set. Cadence: <strong>tens of minutes to hours</strong>. The hard part is translating context advantage into a form the agent can use. <strong>Source:</strong> Andrew Ng, The Batch Issue 359.</dd>
+
+  <dt>Loop 3 — External feedback loop</dt>
+  <dd>Friends, alpha testers, A/B tests, production users — anyone with context the developer lacks. Cadence: <strong>hours to weeks</strong>. Feeds back into Loop 2 (vision) → Loop 1 (spec → agent). The only loop that cannot be fully automated. <strong>Source:</strong> Andrew Ng, The Batch Issue 359.</dd>
+</dl>
+
+<h2>Andrew's vocabulary</h2>
+
+<dl class="glossary">
+  <dt>Spec (product specification)</dt>
+  <dd>The behavioural, testable description of what the software should do. The input to Loop 1. Andrew: <em>"it is still a lot of work to translate that vision into a specification for a coding agent to implement."</em></dd>
+
+  <dt>Evals</dt>
+  <dd>A dataset the agent can be scored against. Andrew: <em>"a dataset against which to measure performance."</em> Add evals <em>after</em> the system repeatedly runs into the same problem — not preemptively.</dd>
+
+  <dt>Context advantage</dt>
+  <dd>Andrew's preferred term over "taste" for what humans contribute. The gap between what the human knows and what the AI knows. Andrew: <em>"since that gives us a clearer path to helping AI systems get better."</em></dd>
+
+  <dt>AI-native teams</dt>
+  <dd>Teams that use AI to shape product direction — gathering usage data, summarising customer feedback, competitive analysis. Term from Andrew's letter, Jun 2026.</dd>
+
+  <dt>Partial PM role</dt>
+  <dd>Engineers growing into product management because coding agents handle the typing. Andrew: <em>"the hardest part is shaping the product vision."</em></dd>
+</dl>
+
+<h2>The phrase "loop engineering"</h2>
+
+<dl class="glossary">
+  <dt>Loop engineering</dt>
+  <dd>The practice of designing systems that prompt, verify, retry, and stop AI agents — instead of manually prompting them turn by turn. The phrase went viral in June 2026 after two tweets and one essay: Peter Steinberger's <em>"designing loops that prompt your agents"</em>, Boris Cherny's <em>"my job is to write loops"</em>, and Addy Osmani's <a href="https://addyosmani.com/blog/loop-engineering/"><em>Loop Engineering</em></a> essay.</dd>
+
+  <dt>Loop (Addy Osmani's definition)</dt>
+  <dd><em>"A recursive goal where you define a purpose and the AI iterates until complete."</em> Five building blocks: harness, loop contract, state layer, checker, and human checkpoint. <strong>Source:</strong> <a href="https://addyo.substack.com/p/loop-engineering">Addy Osmani, Elevate</a>.</dd>
+
+  <dt>Boris Cherny quote</dt>
+  <dd><em>"I don't prompt Claude anymore. I have loops that are running. They're the ones that are prompting Claude and figuring out what to do. My job is to write loops."</em> From <a href="https://www.youtube.com/watch?v=SlGRN8jh2RI">AI Ascent 2026</a> with Sequoia's Lauren Reeder. Cherny is head of Claude Code at Anthropic.</dd>
+
+  <dt>Peter Steinberger quote</dt>
+  <dd><em>"You shouldn't be prompting coding agents anymore. You should be designing loops that prompt your agents."</em> From <a href="https://x.com/steipete/status/2063697162748260627">@steipete on X</a>, posted monthly as a reminder. Steinberger is the creator of <a href="https://openclaw.io">OpenClaw</a>.</dd>
+
+  <dt>OpenClaw</dt>
+  <dd>Peter Steinberger's framework. Referenced by Andrew Ng in the same sentence as Claude Code, positioning it as a parallel tool in the loop-engineering landscape.</dd>
+</dl>
+
+<h2>Implementation primitives</h2>
+
+<dl class="glossary">
+  <dt><code>/loop</code> (Claude Code)</dt>
+  <dd>A Claude Code built-in command that runs a prompt on a schedule while the session is open. <em>"All it is is you have Claude use cron to schedule a job for some point in the future, and it's a repeat job."</em> — Boris Cherny, AI Ascent 2026. See <a href="https://code.claude.com/docs/en/scheduled-tasks">official docs</a>.</dd>
+
+  <dt><code>loop.md</code></dt>
+  <dd>A file that replaces the built-in <code>/loop</code> prompt with your own default instructions. Single default prompt, not a list of separate tasks. See <a href="https://code.claude.com/docs/en/scheduled-tasks">Claude Code scheduled-tasks docs</a>.</dd>
+
+  <dt>VISION.md</dt>
+  <dd>Steinberger's anchor file at the project root. Outlines what the product is, who it's for, what it's not. The agent reads it on every Loop 1 run. From <a href="https://explainx.ai/blog/loop-engineering-coding-agents-claude-code-guide-2026">explainx.ai coverage of Steinberger</a>.</dd>
+
+  <dt>Loop contract</dt>
+  <dd>Addy Osmani's term for the observable contract that defines "done" and "failure" for a loop. Includes iteration caps, dollar budgets, and exit conditions. <strong>Source:</strong> <a href="https://www.verdent.ai/guides/tutorial/build-coding-agent-loop">Verdent Guides — How to Build a Coding Agent Loop That Stops Safely</a>.</dd>
+
+  <dt>Independent verifier (or "checker")</dt>
+  <dd>The thing that says "yes, the agent's output is acceptable" — separate from the agent itself. Often a test suite, a type checker, a browser screenshot diff, or an LLM-as-judge. Andrew echoes this: <em>"coding agents much more able to test their own code"</em>.</dd>
+</dl>
+
+<h2>Why "context advantage" beats "taste"</h2>
+
+<table class="comparison-table">
+  <thead>
+    <tr><th>Framing</th><th>Implication</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>"Taste"</td>
+      <td>Some things just feel right. You can't teach it. The AI either has it or doesn't.</td>
+    </tr>
+    <tr>
+      <td><strong>"Context advantage"</strong></td>
+      <td>The human knows things the AI doesn't. <em>Encode that knowledge into the spec, the eval, or the harness — and the gap shrinks.</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p style="margin-top: 2rem;"><a href="framework-mapping.html">→ Framework Mapping</a> for how Andrew's 3 loops connect to the 4-Loop Ladder and Matt Pocock skills.</p>
+<p><a href="three-loops-cheatsheet.html">→ 3-Loop Cheat Sheet</a> for the three loops on one printable page.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Loop Engineering &middot; Built with Cursor</p>
+  </div>
+</footer>
+
+</body>
+</html>

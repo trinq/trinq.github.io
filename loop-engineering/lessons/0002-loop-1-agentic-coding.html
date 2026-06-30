@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0002 — Loop 1: The Agentic Coding Loop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Loop Engineering</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0002
+</div>
+
+<h1>Lesson 0002<br>Loop 1: The Agentic Coding Loop</h1>
+
+<p><em>Given a spec and optional evals, the agent writes, tests, iterates. Your job is to keep this loop running for as long as possible without you.</em></p>
+
+<h2>What the loop does</h2>
+
+<blockquote>
+  <p>"Given a product specification and optionally a set of evals (that is, a dataset against which to measure performance), we can have an AI agent write code, test its work, and keep iterating until the code is bug-free and meets its specification."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>Three things go in:</p>
+
+<ol>
+  <li>A <strong>product specification</strong> — what the software should do.</li>
+  <li>An optional set of <strong>evals</strong> — a dataset the agent can score itself against.</li>
+  <li>Tools the agent can call — file system, browser, tests, shell.</li>
+</ol>
+
+<p>One thing comes out: a build that meets the spec. Andrew notes his daughter’s typing app had the agent working autonomously for about an hour, checking its own work via a browser multiple times before reporting back.</p>
+
+<h2>The cadence is minutes, not hours</h2>
+
+<div class="callout">
+  <p><strong>"The engineering loop executes quickly. Every few minutes, the coding agent might build and test a new version of the software."</strong></p>
+  <p style="margin-bottom: 0;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</div>
+
+<p>This is the single most important fact about Loop 1: it is <em>fast</em>. If you find yourself babysitting a single agent run for 20 minutes, you are out of Loop 1 and into Loop 2.</p>
+
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th>Symptom</th>
+      <th>What loop you're actually in</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Agent runs, fails a test, fixes it, retries, passes — within ~5 minutes.</td>
+      <td><span class="loop-tag l1">Loop 1</span> — running as designed.</td>
+    </tr>
+    <tr>
+      <td>You sit watching the agent, occasionally pasting in extra context when it gets stuck.</td>
+      <td><span class="loop-tag l2">Loop 2</span> — you've become the spec.</td>
+    </tr>
+    <tr>
+      <td>Agent finishes, you spend 30 minutes deciding whether the result is what you wanted.</td>
+      <td><span class="loop-tag l2">Loop 2</span> — this is the developer feedback loop.</td>
+    </tr>
+    <tr>
+      <td>Agent finishes, you ship to a friend, wait a day for their reaction.</td>
+      <td><span class="loop-tag l3">Loop 3</span> — the external feedback loop.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>What makes a good spec</h2>
+
+<p>Andrew is explicit that the hardest part of Loop 1 is upstream:</p>
+
+<blockquote>
+  <p>"When a developer has a clear vision for what to build, it is still a lot of work to translate that vision into a specification for a coding agent to implement."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>Three properties of a spec that lets Loop 1 run unattended:</p>
+
+<div class="step-box">
+  <p><span class="step-num">1</span><strong class="step-title">Behavioural, not architectural</strong></p>
+  <p class="step-desc">Specify what the user does, not how the code is organised. "The parent enters a PIN, then sees the child's progress" beats "We need a <code>ParentAuthController</code> with a <code>PIN</code> field."</p>
+</div>
+
+<div class="step-box">
+  <p><span class="step-num">2</span><strong class="step-title">Testable</strong></p>
+  <p class="step-desc">Every requirement must be something you can write a check for. "Looks beautiful" is not a requirement; "the home screen fits within one viewport on a 6.1" phone" is.</p>
+</div>
+
+<div class="step-box">
+  <p><span class="step-num">3</span><strong class="step-title">Scoped to one loop iteration</strong></p>
+  <p class="step-desc">If the spec takes more than ~30 minutes of agent work to complete, it's two specs. Split it. Loop 1 should produce a running, testable build, not a half-feature.</p>
+</div>
+
+<h2>When to add evals</h2>
+
+<blockquote>
+  <p>"If you find that the system repeatedly runs into certain problems, building a set of evals for the agent becomes useful."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>This is a sharp, non-obvious line. <strong>Don't write evals preemptively.</strong> Wait until you see a failure mode repeat three or more times across Loop 1 runs, then encode that failure as an eval.</p>
+
+<div class="callout warning">
+  <p><strong>The trap:</strong> writing evals for things that already work. You will spend two days authoring evals for a feature that has never failed, and zero time on the feature that fails every third run. <em>Evals encode failures, not aspirations.</em></p>
+</div>
+
+<p>A minimal eval has three parts:</p>
+
+<ul>
+  <li><strong>Input</strong> — a concrete prompt / scenario (e.g., a JSON file, a screenshot, a CLI invocation).</li>
+  <li><strong>Expected behaviour</strong> — what the agent should produce (a passing test, a structured output, a UI state).</li>
+  <li><strong>Verifier</strong> — code that checks the output. Either deterministic (a test, a JSON schema check, a curl) or fuzzy (an LLM-as-judge for tone or UX).</li>
+</ul>
+
+<h2>Mapping to Matt Pocock skills</h2>
+
+<p>Loop 1 is where the agent infrastructure lives. Most of your Matt Pocock setup runs <em>inside</em> this loop:</p>
+
+<table class="mapping-table">
+  <thead>
+    <tr>
+      <th>Andrew Ng's Loop 1</th>
+      <th>Matt Pocock skill</th>
+      <th>What it does in this loop</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Spec authoring</td>
+      <td><code>to-prd</code></td>
+      <td>Turn a vague feature idea into a behaviourally-scoped PRD the agent can run against.</td>
+    </tr>
+    <tr>
+      <td>Agent verification</td>
+      <td><code>tdd</code></td>
+      <td>Write the failing test first, let the agent make it pass, then refactor. Classic red-green-refactor — for agents.</td>
+    </tr>
+    <tr>
+      <td>Evals</td>
+      <td><code>to-issues</code> (re-purposed)</td>
+      <td>When the agent fails the same eval three times, the failure becomes a tracked issue that gets fed back into the spec.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout success">
+  <p><strong>The insight:</strong> Andrew's "spec + optional evals" is exactly what <code>to-prd</code> + <code>tdd</code> produces. Matt's framework already implements Loop 1's inputs; you just hadn't framed it that way.</p>
+</div>
+
+<p>For the agent infrastructure itself, see <a href="../../four-loops/lessons/0002-loop-1-agent.html">4-Loop Ladder — Loop 1: The Agent Loop</a> in the sibling course.</p>
+
+<h2>The "active area of invention"</h2>
+
+<p>Andrew closes the agentic-coding section with this:</p>
+
+<blockquote>
+  <p>"I hear frequently from developers who are finding new ways to engineer more effective engineering loops. This is an active area of invention!"</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>This is a tell. The frameworks that will matter most for Loop 1 in 2026–2027 don't exist yet. Boris Cherny's <a href="https://www.youtube.com/watch?v=SlGRN8jh2RI">dozens of <code>/loop</code> jobs</a> — babysitting PRs, auto-rebasing CI, clustering Twitter feedback — are all <em>Loop 1 automation</em>. The on-ramp is one slash command. The hard part is everything you do before you type it.</p>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Andrew says you should add evals when…</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">…before you start any new feature, to lock down the spec</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's premature. Andrew says wait until the system repeatedly runs into a problem."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">…when the system repeatedly runs into the same problem across runs</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Andrew: 'If you find that the system repeatedly runs into certain problems, building a set of evals for the agent becomes useful.'" data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">…once a quarter, as part of regular maintenance</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Andrew doesn't prescribe a schedule. He ties evals to observed failure patterns."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">…only when shipping to external users (Loop 3)</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Evals live in Loop 1 (agent infrastructure), not Loop 3 (user feedback)."</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>You're watching Claude Code for 20 minutes, occasionally pasting extra context when it gets stuck. What loop are you actually in?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">Loop 1 — agentic coding</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Loop 1 runs every few minutes without intervention. 20 minutes of babysitting is Loop 2."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="true">
+        <label for="q2-b">Loop 2 — developer feedback, and you've become the spec</label>
+        <span class="quiz-feedback" data-correct-text="Correct. The pasted context is your context advantage — it should have been in the spec, not in the chat." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c">Loop 3 — external feedback</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Loop 3 involves real users, not you. If only you are involved, it's Loop 2 at most."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">None — this is normal agent usage</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="It's normal, but the framing Andrew gives says it's actually Loop 2 — the spec is incomplete."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Which property is NOT one of the three properties of a Loop 1 spec given in this lesson?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">Behavioural, not architectural</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That IS one of the three."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="false">
+        <label for="q3-b">Testable</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That IS one of the three."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="false">
+        <label for="q3-c">Scoped to one loop iteration</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That IS one of the three."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="true">
+        <label for="q3-d">Includes an exhaustive list of edge cases</label>
+        <span class="quiz-feedback" data-correct-text="Correct. The lesson does NOT include this — and explicitly warns against preemptive eval/spec work." data-wrong-text=""></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2>Action Items</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Pick one feature for a current project<span class="loop-tag l1">10 min</span></strong>
+    <span>Write a behavioural spec: what does the user do, what does the system do, how do you verify it. Aim for ≤30 minutes of agent work.</span>
+  </li>
+  <li>
+    <strong>Run Loop 1 once<span class="loop-tag l1">30 min</span></strong>
+    <span>Hand the spec to Claude Code with permission to run tests, edit files, and use the browser. Time how long it runs without you.</span>
+  </li>
+  <li>
+    <strong>Track one failure mode<span class="loop-tag l1">ongoing</span></strong>
+    <span>Keep a list. When the same failure shows up three times across runs, turn it into an eval — not before.</span>
+  </li>
+  <li>
+    <strong>Skim the 4-Loop Ladder's Loop 1 lesson<span class="loop-tag l2">5 min</span></strong>
+    <span>See <a href="../../four-loops/lessons/0002-loop-1-agent.html">4-Loop Ladder — Loop 1: The Agent Loop</a> for the agent infrastructure layer below Andrew's product loop.</span>
+  </li>
+</ol>
+
+<footer class="lesson-foot">
+  Lesson 0002 of the <em>Loop Engineering</em> course. Next: <a href="0003-loop-2-developer-feedback.html">Lesson 0003 — Loop 2: The Developer Feedback Loop</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="0001-the-three-loops.html">&larr; Lesson 0001</a>
+  <a href="0003-loop-2-developer-feedback.html">Lesson 0003 &rarr;</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Related</h4>
+      <ul>
+        <li><a href="../../four-loops/">4-Loop Ladder</a></li>
+        <li><a href="../../agentic-engineering/">Agentic Engineering</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Loop Engineering &middot; Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>

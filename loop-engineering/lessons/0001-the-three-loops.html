@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 0001 — The Three Loops</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="../index.html" class="site-logo">Loop Engineering</a>
+    <nav class="site-nav">
+      <a href="../index.html">Lessons</a>
+      <a href="../MISSION.md">Mission</a>
+      <a href="../RESOURCES.md">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="crumbs">
+  <a href="../index.html">Lessons</a> &nbsp;·&nbsp;
+  <a href="../MISSION.md">Mission</a> &nbsp;·&nbsp;
+  <a href="../RESOURCES.md">Resources</a> &nbsp;·&nbsp; Lesson 0001
+</div>
+
+<h1>Lesson 0001<br>The Three Loops</h1>
+
+<p><em>The product loop, not the agent loop, is the unit of work in 0-to-1.</em></p>
+
+<h2>The pitch in one line</h2>
+
+<div class="callout">
+  <p>There is one loop that types the code, one loop that decides what the code is, and one loop that decides whether the code is worth shipping. They run at very different speeds, and confusing them is the most common mistake solo devs make with agents.</p>
+</div>
+
+<p>Andrew Ng published a short letter in <a href="https://www.deeplearning.ai/the-batch/three-key-loops-for-building-great-software">The Batch, Issue 359 (Jun 26, 2026)</a> — <em>Loop Engineering: Three Key Loops for Building Great Software</em>. It credits two viral quotes — from <a href="https://www.youtube.com/watch?v=SlGRN8jh2RI">Boris Cherny</a> (head of Claude Code) and <a href="https://x.com/steipete/status/2063697162748260627">Peter Steinberger</a> (creator of OpenClaw) — but Andrew's contribution is a cleaner one: <strong>three loops, three time-scales, three different actors</strong>.</p>
+
+<blockquote>
+  <p>"These loops guide not just how I build software, but also how I decide what software to build."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<h2>The three loops at a glance</h2>
+
+<div class="loop-diagram">
+  <span class="loop-node l1">Loop 1<small>agentic<br>coding</small></span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node l2">Loop 2<small>developer<br>feedback</small></span>
+  <span class="loop-arrow">→</span>
+  <span class="loop-node l3">Loop 3<small>external<br>feedback</small></span>
+</div>
+
+<table class="comparison-table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Loop 1 — Agentic coding</th>
+      <th>Loop 2 — Developer feedback</th>
+      <th>Loop 3 — External feedback</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>What runs</strong></td>
+      <td>Agent writes code, tests it, iterates against a spec.</td>
+      <td>You examine the product, steer the agent.</td>
+      <td>Alpha testers, A/B tests, real users.</td>
+    </tr>
+    <tr>
+      <td><strong>Cadence</strong></td>
+      <td>Every few <em>minutes</em>.</td>
+      <td>Tens of minutes to <em>hours</em>.</td>
+      <td><em>Hours</em> to weeks.</td>
+    </tr>
+    <tr>
+      <td><strong>Input</strong></td>
+      <td>Spec + (optional) evals.</td>
+      <td>Current build + your taste / context.</td>
+      <td>User behaviour, customer feedback, metrics.</td>
+    </tr>
+    <tr>
+      <td><strong>Output</strong></td>
+      <td>A passing build of the software.</td>
+      <td>An updated spec, a new feature direction.</td>
+      <td>A revised developer vision.</td>
+    </tr>
+    <tr>
+      <td><strong>Andrew's example</strong></td>
+      <td>The typing app: agent worked ~1 hour, checked the browser multiple times.</td>
+      <td>Changing visual design, cat costumes, parent login flow.</td>
+      <td>Friends try the typing app, share what works.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Why this sits above your other frameworks</h2>
+
+<p>You already have two adjacent courses in this workspace:</p>
+
+<ul>
+  <li><strong><a href="../../four-loops/">4-Loop Ladder (LangChain)</a></strong> — Agent &rarr; Verification &rarr; Event-driven &rarr; Hill-climbing. Focus: <em>agent infrastructure</em>.</li>
+  <li><strong><a href="../../agentic-engineering/">Agentic Engineering (Matt Pocock)</a></strong> — Procedure skills, queue workflow, AFK agents. Focus: <em>dev harness</em>.</li>
+</ul>
+
+<p>Andrew's three loops are <strong>above</strong> both. They describe the product cadence, not the agent infrastructure. Loop 1 <em>contains</em> the 4-Loop Ladder — every time the agentic loop fires, the LangChain primitives (agent, rubric, trigger, hill-climb) are running <em>inside</em> it. Matt Pocock's decisions (which skills to install, what goes in <code>CLAUDE.md</code>, how to queue work) determine how fast Loop 1 runs.</p>
+
+<div class="callout success">
+  <p><strong>The relationship:</strong> Andrew's framework is the <em>clock</em>. The 4-Loop Ladder is the <em>engine</em>. Matt Pocock's harness is the <em>transmission</em>. If you tune the engine and transmission without knowing the clock speed, you'll ship fast in the wrong direction.</p>
+</div>
+
+<h2>The "context advantage" framing</h2>
+
+<p>Andrew rejects the word <em>"taste"</em> for the human contribution. He prefers <strong>"context advantage"</strong> — the gap between what the human knows and what the AI knows. The framing matters because it gives a path to fix the gap, not just admire it.</p>
+
+<blockquote>
+  <p>"So long as the human knows something the AI does not, human-in-the-loop is needed to inject that knowledge into the system."</p>
+  <p style="font-style: normal; font-size: 0.85rem;">— Andrew Ng, <em>The Batch</em> Issue 359</p>
+</blockquote>
+
+<p>That single sentence is the course's thesis. Loop 1 can run autonomously because the spec encodes what the AI knows. Loop 2 cannot be fully automated because the spec doesn't encode your context advantage yet. Loop 3 cannot be automated at all because the users know things nobody in the room knows.</p>
+
+<h2>Where you probably are right now</h2>
+
+<div class="callout">
+  <p><strong>Loop 1:</strong> You use Claude Code or Cursor. It runs, returns code, you paste it somewhere.</p>
+  <p><strong>Loop 2:</strong> You spend time deciding what to build next. You re-write the spec more often than you re-paste code.</p>
+  <p><strong>Loop 3:</strong> You haven't shipped to anyone yet. You're still arguing with yourself about feature priority.</p>
+</div>
+
+<p>The first step is not "make Loop 1 faster." It's "figure out where in the 3-loop cadence you're actually bottlenecked." Most solo devs over-invest in Loop 1 and under-invest in Loop 2 + 3.</p>
+
+<h2>What this course teaches</h2>
+
+<p>The next three lessons each cover one loop in depth, with a mapping onto Matt Pocock skills you already use. By the end, you'll know:</p>
+
+<ul>
+  <li>How to write a spec that Loop 1 can run against for an hour without you.</li>
+  <li>When to add evals, when not to bother.</li>
+  <li>Which Matt Pocock skill corresponds to which part of Loop 2.</li>
+  <li>How to set up Loop 3 cheaply, even with 0 users.</li>
+</ul>
+
+<h2>Check Your Understanding</h2>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>What time-scale does Andrew Ng assign to the developer feedback loop?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q1" id="q1-a" data-correct="false">
+        <label for="q1-a">Every few minutes, like the agentic loop</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's the agentic coding loop. The developer loop is slower because it requires a human's context advantage to inject."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-b" data-correct="true">
+        <label for="q1-b">Tens of minutes to hours</label>
+        <span class="quiz-feedback" data-correct-text="Correct. Andrew explicitly says 'between tens of minutes and hours'." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-c" data-correct="false">
+        <label for="q1-c">Days to weeks, like external feedback</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's the external feedback loop. The developer loop is faster because you can review your own product quickly."></span>
+      </li>
+      <li>
+        <input type="radio" name="q1" id="q1-d" data-correct="false">
+        <label for="q1-d">Continuously, with no fixed cadence</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Andrew gives a specific cadence band — 'tens of minutes to hours.' Not continuous."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>Why does Andrew prefer "context advantage" over "taste" as the label for human contribution?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q2" id="q2-a" data-correct="false">
+        <label for="q2-a">Because "taste" is overused in design circles</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's not his reasoning. He gives a functional reason."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-b" data-correct="true">
+        <label for="q2-b">Because "context advantage" gives a clearer path to helping AI systems improve</label>
+        <span class="quiz-feedback" data-correct-text="Correct. He says explicitly: 'since that gives us a clearer path to helping AI systems get better.'" data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-c" data-correct="false">
+        <label for="q2-c">Because "taste" implies something the human can't articulate</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="That's a plausible framing, but not Andrew's stated reason."></span>
+      </li>
+      <li>
+        <input type="radio" name="q2" id="q2-d" data-correct="false">
+        <label for="q2-d">Because "context advantage" is easier to measure</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="He doesn't claim it's easier to measure. The point is it's actionable."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-question">
+    <p>How does Andrew's framework relate to LangChain's 4-Loop Ladder?</p>
+    <ul class="quiz-options">
+      <li>
+        <input type="radio" name="q3" id="q3-a" data-correct="false">
+        <label for="q3-a">They are two names for the same framework</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Different authors, different focus. Andrew focuses on product cadence; LangChain focuses on agent infrastructure."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-b" data-correct="true">
+        <label for="q3-b">Andrew's framework sits above the 4-Loop Ladder — Loop 1 contains the LangChain primitives</label>
+        <span class="quiz-feedback" data-correct-text="Correct. The 4-Loop Ladder describes agent infrastructure; Andrew's 3 loops describe the product cadence that runs on top." data-wrong-text=""></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-c" data-correct="false">
+        <label for="q3-c">The 4-Loop Ladder is a subset of Andrew's Loop 1</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Close, but the Ladder's primitives (event-driven, hill-climbing) can also apply to Loop 2 and 3 in theory."></span>
+      </li>
+      <li>
+        <input type="radio" name="q3" id="q3-d" data-correct="false">
+        <label for="q3-d">They are unrelated — Andrew's letter doesn't mention LangChain</label>
+        <span class="quiz-feedback" data-correct-text="" data-wrong-text="Correct that Andrew doesn't mention LangChain, but the two are deeply related conceptually. This lesson maps them."></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2>Action Items</h2>
+
+<ol class="task-list">
+  <li>
+    <strong>Read the source letter end-to-end<span class="loop-tag l1">3 min</span></strong>
+    <span>It's short. Andrew's voice is clearer than my paraphrase. <a href="https://www.deeplearning.ai/the-batch/three-key-loops-for-building-great-software">Open in browser &rarr;</a></span>
+  </li>
+  <li>
+    <strong>Identify which loop you're bottlenecked on<span class="loop-tag l2">5 min</span></strong>
+    <span>For your current project, are you waiting on the agent (Loop 1), stuck on what to build (Loop 2), or unable to get real users (Loop 3)?</span>
+  </li>
+  <li>
+    <strong>Skim the related frameworks<span class="loop-tag l3">5 min</span></strong>
+    <span>If you haven't yet, open <a href="../../four-loops/">4-Loop Ladder</a> and <a href="../../agentic-engineering/">Agentic Engineering</a> MISSIONs. They give the layers below this one.</span>
+  </li>
+</ol>
+
+<footer class="lesson-foot">
+  Lesson 0001 of the <em>Loop Engineering</em> course. Next: <a href="0002-loop-1-agentic-coding.html">Lesson 0002 — Loop 1: The Agentic Coding Loop</a>.
+  See <a href="../RESOURCES.md">Resources</a> for primary sources.
+</footer>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="../index.html">All Lessons</a>
+  <a href="0002-loop-1-agentic-coding.html">Lesson 0002 &rarr;</a>
+</nav>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="../index.html">Lessons</a></li>
+        <li><a href="../MISSION.md">Mission</a></li>
+        <li><a href="../RESOURCES.md">Resources</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Related</h4>
+      <ul>
+        <li><a href="../../four-loops/">4-Loop Ladder</a></li>
+        <li><a href="../../agentic-engineering/">Agentic Engineering</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    <p>Loop Engineering &middot; Built with Cursor</p>
+  </div>
+</footer>
+
+<script src="../assets/quiz.js"></script>
+
+</body>
+</html>
