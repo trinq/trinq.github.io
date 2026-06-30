@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0009: Đào tạo nội bộ Deep Dive — Biến nhân sự thành "lá chắn sống" PDPD</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --green: #2c5e2e;
+      --green-bg: #e8f5e9;
+      --blue: #1a3a5c;
+      --blue-bg: #e8f0f7;
+      --purple: #5b2c6f;
+      --purple-bg: #f3e5f5;
+      --orange: #c45a00;
+      --orange-bg: #fff3e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2rem; }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-green { background: var(--green); }
+    .meta .badge-purple { background: var(--purple); }
+    .meta .badge-blue { background: var(--blue); }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.75rem 0 0.6rem;
+    }
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin: 1.25rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .green-box {
+      background: var(--green-bg);
+      border-left: 4px solid var(--green);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .green-box strong { color: var(--green); }
+    .blue-box {
+      background: var(--blue-bg);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .blue-box strong { color: var(--blue); }
+    .purple-box {
+      background: var(--purple-bg);
+      border-left: 4px solid var(--purple);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .purple-box strong { color: var(--purple); }
+    .orange-box {
+      background: var(--orange-bg);
+      border-left: 4px solid var(--orange);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .orange-box strong { color: var(--orange); }
+    .warning {
+      background: #fff9e6;
+      border: 1px solid #e6c800;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .warning strong { color: #b8860b; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .checklist {
+      list-style: none;
+      margin: 0 0 1rem;
+    }
+    .checklist li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .checklist li::before {
+      content: "\2610";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 1rem;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .doc-block {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .doc-header {
+      background: var(--blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .doc-header.purple { background: var(--purple); }
+    .doc-header.green { background: var(--green); }
+    .doc-header.orange { background: var(--orange); }
+    .doc-header.red { background: var(--accent); }
+    .doc-header h3 { margin: 0; color: white; font-size: 0.95rem; }
+    .doc-header .tag {
+      background: rgba(255,255,255,0.2);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.78rem;
+    }
+    .doc-body { padding: 1.25rem; }
+    .toc {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .toc ol { margin: 0; padding-left: 1.5rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc li a { color: var(--accent); text-decoration: none; }
+    .toc li a:hover { text-decoration: underline; }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .flow-box {
+      background: #f9f7f4;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 0.75rem 0;
+    }
+    .flow-num {
+      background: var(--blue);
+      color: white;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .flow-text strong { display: block; }
+    .red-box {
+      background: #ffe8e8;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .red-box strong { color: var(--accent); }
+    .persona-card {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1rem 0;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+    .persona-avatar {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .persona-avatar.green { background: var(--green); }
+    .persona-avatar.purple { background: var(--purple); }
+    .persona-avatar.orange { background: var(--orange); }
+    .persona-content strong { display: block; margin-bottom: 0.25rem; }
+    .persona-content p { margin: 0; font-size: 0.92rem; color: var(--ink-soft); }
+    kbd {
+      background: #f0ebe3;
+      border: 1px solid var(--rule);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.82em;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+    .script-box {
+      background: #faf8f5;
+      border: 1px solid var(--rule);
+      border-left: 4px solid var(--purple);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.92rem;
+    }
+    .script-box h5 {
+      font-weight: 700;
+      color: var(--purple);
+      margin: 0 0 0.5rem 0;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+    }
+    .phishing-example {
+      background: #fff;
+      border: 2px dashed var(--accent);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .phishing-example .from { color: var(--accent); font-weight: 700; }
+    .phishing-example .field { color: var(--ink-soft); }
+    .phishing-example .body { margin-top: 0.5rem; color: var(--ink); }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+    }
+    .compare-table th {
+      background: var(--ink);
+      color: white;
+      padding: 0.6rem 0.5rem;
+    }
+    .compare-table td {
+      padding: 0.5rem;
+      border: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    .compare-table .old { background: #fff9f9; }
+    .compare-table .new { background: #f0fff0; }
+    .compare-table .changed { background: #fffbe6; }
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .role-card {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+    }
+    .role-card h4 {
+      color: var(--blue);
+      margin: 0 0 0.5rem 0;
+      font-size: 0.95rem;
+    }
+    .role-card .freq {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.75rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .role-card ul { margin: 0; padding-left: 1.25rem; font-size: 0.88rem; }
+    .role-card li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0009<br>Đào tạo nội bộ Deep Dive — Biến nhân sự thành "lá chắn sống" PDPD</h1>
+
+<div class="subtitle">Hệ thống tốt nhất vẫn vô dụng nếu nhân viên nhấn vào link phishing hoặc paste CCCD khách hàng lên group chat. Bài này dạy bạn cách thiết kế chương trình đào tạo khiến mỗi nhân viên trở thành tuyến phòng thủ đầu tiên.</div>
+
+<div class="meta">
+  <span class="badge badge-purple">Deep Dive</span>
+  <span class="badge badge-blue">Thực hành</span>
+  <span class="pill">Đọc ~40 phút</span>
+  <span class="pill">Có template + script + checklist</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="toc">
+  <strong>Mục lục</strong>
+  <ol>
+    <li><a href="#phan-1">Phần 1: Vì sao "đào tạo 1 lần rồi thôi" là cách nhanh nhất để vi phạm</a></li>
+    <li><a href="#phan-2">Phần 2: Ba nhóm nhân sự — ba chương trình khác nhau</a></li>
+    <li><a href="#phan-3">Phần 3: Chương trình đào tạo cho nhóm xử lý DLCN — Frontline</a></li>
+    <li><a href="#phan-4">Phần 4: Chương trình đào tạo cho nhóm IT/Security</a></li>
+    <li><a href="#phan-5">Phần 5: Chương trình đào tạo cho Ban lãnh đạo</a></li>
+    <li><a href="#phan-6">Phần 6: Chống phishing &amp; social engineering — kỹ năng sống còn</a></li>
+    <li><a href="#phan-7">Phần 7: Onboarding nhân sự mới — quy trình 7 ngày</a></li>
+    <li><a href="#phan-8">Phần 8: Đánh giá hiệu quả đào tạo — 4 KPI cần đo</a></li>
+    <li><a href="#phan-9">Phần 9: Biên bản đào tạo &amp; bằng chứng tuân thủ</a></li>
+    <li><a href="#phan-10">Phần 10: Output giao cho khách + timeline triển khai</a></li>
+  </ol>
+</div>
+
+<div class="highlight">
+  <strong>Bạn đang ở đâu?</strong> Bài này mở rộng từ <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-6--đào-tạo-nội-bộ">Bước 6 trong Lesson 0003</a>. Đọc <a href="0003-6-buoc-pdpd-thuc-hanh.html">0003</a>, <a href="0004-data-mapping-deep-dive.html">0004</a>, <a href="0005-ho-so-tu-an-thu-deep-dive.html">0005</a>, <a href="0006-bo-nhiem-dpo-deep-dive.html">0006</a>, <a href="0007-dpia-ctia-deep-dive.html">0007</a>, <a href="0008-dpa-deep-dive.html">0008</a> trước.
+</div>
+
+<h2 id="phan-1">Phần 1 — Vì sao "đào tạo 1 lần rồi thôi" là cách nhanh nhất để vi phạm</h2>
+
+<h3>1.1. Sự thật phũ phàng</h3>
+
+<div class="red-box">
+  <strong>85% sự cố bảo mật có yếu tố con người.</strong> Theo nhiều nghiên cứu quốc tế (Verizon DBIR 2024, IBM Cost of a Data Breach 2024), phần lớn vi phạm dữ liệu bắt đầu từ một cú nhấp chuột sai, một email bị spoof, hoặc một nhân viên không biết mình đang làm gì.
+</div>
+
+<p>Trong bối cảnh PDPD Việt Nam, hậu quả của một sai lầm cá nhân có thể là:</p>
+
+<ul>
+  <li>CTCK bị phạt đến <strong>5% doanh thu hoặc 5 tỷ VNĐ</strong> theo Điều 74 NĐ 356.</li>
+  <li>DPO chịu trách nhiệm liên đới nếu không giám sát được nhân sự.</li>
+  <li>Mất giấy phép, mất khách hàng, mất uy tín — phục hồi mất 2-3 năm.</li>
+</ul>
+
+<h3>1.2. CTCK đào tạo PDPD kiểu "cho xong"</h3>
+
+<p>Tôi đã hỏi nhiều CTCK và thấy một pattern lặp đi lặp lại:</p>
+
+<div class="warning">
+  <strong>Pattern "đào tạo cho xong":</strong>
+  <br>Tháng 1/2026: tổ chức 1 buổi đào tạo PDPD 2 tiếng, 80% nhân viên ký tên xác nhận "đã tham dự". Không có bài kiểm tra. Không có đánh giá. Không có đào tạo lại. Hết.
+  <br><br>Kết quả: Tháng 6/2026, nhân viên mới vào 6 tháng, chưa bao giờ nghe về PDPD, vẫn paste CCCD khách hàng vào group Zalo nội bộ để "hỏi nhanh".
+</div>
+
+<p>Vấn đề không phải là CTCK không muốn đào tạo. Vấn đề là họ <strong>không biết đào tạo cái gì, cho ai, bao lâu, đo lường thế nào</strong>.</p>
+
+<h3>1.3. Yêu cầu pháp lý — không chỉ là "nên làm"</h3>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Yêu cầu</th><th>Căn cứ pháp lý</th><th>Mức phạt nếu vi phạm</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Đào tạo nhân sự về bảo vệ DLCN</td>
+      <td>Điều 13.1 NĐ 356 (năng lực DPO), Điều 13.2 (tiêu chuẩn đào tạo)</td>
+      <td>Phạt hành chính, đình chỉ hoạt động</td>
+    </tr>
+    <tr>
+      <td>Bằng chứng đào tạo</td>
+      <td>Điều 6, 7 NĐ 356 — minh bạch, trách nhiệm giải trình</td>
+      <td>Không có bằng chứng = không có compliance</td>
+    </tr>
+    <tr>
+      <td>Đào tạo định kỳ</td>
+      <td>Điều 13, Điều 17 NĐ 356 — năng lực được duy trì</td>
+      <td>Đào tạo 1 lần = chưa đủ</td>
+    </tr>
+    <tr>
+      <td>Đào tạo chống lừa đảo</td>
+      <td>Luật ANM 2025 Điều 17 — bảo vệ hệ thống</td>
+      <td>Sự cố do lỗi nhân sự = trách nhiệm tổ chức</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="blue-box">
+  <strong>Nguyên tắc vàng:</strong> Đào tạo PDPD không phải "nice-to-have". Đó là <strong>yêu cầu pháp lý bắt buộc</strong>, và cơ quan kiểm tra (Bộ Công an, Bộ TT&amp;TT) có quyền yêu cầu xem biên bản đào tạo trong bất kỳ cuộc thanh tra nào.
+</div>
+
+<h2 id="phan-2">Phần 2 — Ba nhóm nhân sự — ba chương trình khác nhau</h2>
+
+<p>Lỗi phổ biến nhất là <strong>đào tạo tất cả mọi người giống nhau</strong>. Compliance Officer không cần học cách phân biệt phishing email, IT admin không cần học cách trả lời yêu cầu của chủ thể dữ liệu. Đào tạo đúng đối tượng = hiệu quả gấp 3 lần.</p>
+
+<div class="role-grid">
+  <div class="role-card">
+    <h4>Ban lãnh đạo</h4>
+    <span class="freq">1 lần/năm</span>
+    <ul>
+      <li>Nghĩa vụ pháp lý</li>
+      <li>Rủi ro phạt &amp; trách nhiệm hình sự</li>
+      <li>Quyết định đầu tư compliance</li>
+      <li>Phê duyệt chính sách</li>
+    </ul>
+  </div>
+  <div class="role-card">
+    <h4>Frontline (xử lý DLCN)</h4>
+    <span class="freq">2 lần/năm + ad-hoc</span>
+    <ul>
+      <li>Phân biệt DLCN cơ bản vs nhạy cảm</li>
+      <li>Cách lấy consent hợp lệ</li>
+      <li>Phản hồi yêu cầu CTDL 10/15/30 ngày</li>
+      <li>Nhận diện phishing, social engineering</li>
+    </ul>
+  </div>
+  <div class="role-card">
+    <h4>IT / Security</h4>
+    <span class="freq">2 lần/năm + drills</span>
+    <ul>
+      <li>Bảo mật hệ thống, mã hóa, log</li>
+      <li>Phát hiện xâm nhập, ứng cứu sự cố</li>
+      <li>Audit trail consent, RBAC</li>
+      <li>Quy trình 24h/3h BCA theo Luật ANM</li>
+    </ul>
+  </div>
+</div>
+
+<h3>2.1. Lý do phải chia nhóm</h3>
+
+<p>Một chương trình đào tạo chung cho cả công ty thường <strong>không hiệu quả</strong> vì:</p>
+
+<ul>
+  <li>Ban lãnh đạo nghe xong 30 phút lập trình, quên ngay sau 1 tuần.</li>
+  <li>IT admin nghe xong phần "quyền của chủ thể dữ liệu" thấy không liên quan → không tập trung.</li>
+  <li>Nhân viên Frontline bị nhồi kiến thức kỹ thuật mà không biết áp dụng thực tế.</li>
+</ul>
+
+<div class="green-box">
+  <strong>Quy tắc 80/20:</strong> 80% giá trị đào tạo đến từ việc <em>nhân viên áp dụng được ngay trong công việc hôm nay</em>. Chương trình đào tạo phải trả lời câu hỏi: <em>"Nhân viên A sẽ làm gì khác đi từ ngày mai?"</em>
+</div>
+
+<h2 id="phan-3">Phần 3 — Chương trình đào tạo cho nhóm xử lý DLCN — Frontline</h2>
+
+<p>Đây là nhóm <strong>rộng nhất và quan trọng nhất</strong>: tư vấn viên, chăm sóc khách hàng, giao dịch viên, nhân viên tín dụng, marketing, sales. Họ tiếp xúc DLCN hàng ngày, và họ chính là người dễ mắc lỗi nhất.</p>
+
+<h3>3.1. Mục tiêu đào tạo Frontline</h3>
+
+<ul>
+  <li>Phân biệt được DLCN cơ bản vs nhạy cảm trong 5 giây.</li>
+  <li>Biết cách lấy consent hợp lệ (không dùng default, không gây hiểu lầm).</li>
+  <li>Biết phản hồi yêu cầu CTDL trong đúng thời hạn (10/15/30 ngày).</li>
+  <li>Nhận diện email phishing, cuộc gọi social engineering.</li>
+  <li>Biết khi nào cần chuyển tiếp cho DPO.</li>
+</ul>
+
+<h3>3.2. Nội dung khóa học Frontline — 8 module</h3>
+
+<table>
+  <thead>
+    <tr><th>Module</th><th>Thời lượng</th><th>Nội dung chính</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Tổng quan PDPD</strong></td>
+      <td>30 phút</td>
+      <td>Tại sao có luật, ai chịu trách nhiệm, mức phạt</td>
+    </tr>
+    <tr>
+      <td><strong>2. Phân loại DLCN</strong></td>
+      <td>45 phút</td>
+      <td>Cơ bản vs nhạy cảm, ví dụ thực tế trong nghiệp vụ CTCK</td>
+    </tr>
+    <tr>
+      <td><strong>3. Consent hợp lệ</strong></td>
+      <td>45 phút</td>
+      <td>Cách lấy consent đúng, 3 kiểu bị cấm, audit trail</td>
+    </tr>
+    <tr>
+      <td><strong>4. Quyền của chủ thể dữ liệu</strong></td>
+      <td>60 phút</td>
+      <td>10 yêu cầu CTDL có thể nhận, SOP 10/15/30 ngày</td>
+    </tr>
+    <tr>
+      <td><strong>5. Bảo mật trong công việc</strong></td>
+      <td>45 phút</td>
+      <td>Không share màn hình chứa DLCN, không in ra rồi bỏ thùng rác thường, không paste vào chat</td>
+    </tr>
+    <tr>
+      <td><strong>6. Nhận diện phishing</strong></td>
+      <td>60 phút</td>
+      <td>Email lừa đảo, link giả, tập tin đính kèm độc hại</td>
+    </tr>
+    <tr>
+      <td><strong>7. Social engineering</strong></td>
+      <td>30 phút</td>
+      <td>Cuộc gọi giả danh, đồng nghiệp giả mạo yêu cầu khẩn cấp</td>
+    </tr>
+    <tr>
+      <td><strong>8. Khi nào chuyển DPO</strong></td>
+      <td>15 phút</td>
+      <td>SOP leo thang, đường dây nóng, biểu mẫu báo cáo</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Tổng thời lượng:</strong> ~5 giờ, chia làm 2 buổi (2.5h/buổi).</p>
+
+<h3>3.3. Persona — nhân viên chăm sóc khách hàng</h3>
+
+<div class="persona-card">
+  <div class="persona-avatar">M</div>
+  <div class="persona-content">
+    <strong>Chị Mai — Chuyên viên CSKH, 2 năm kinh nghiệm</strong>
+    <p>Mỗi ngày nhận 30-50 cuộc gọi từ khách hàng. Xử lý yêu cầu tra cứu tài khoản, thay đổi thông tin, gửi lại sao kê. Cần biết: khi nào được cung cấp thông tin, khi nào phải xác minh danh tính, khi nào phải chuyển DPO.</p>
+  </div>
+</div>
+
+<div class="script-box">
+  <h5>Ví dụ tình huống — Dành cho Chị Mai</h5>
+  <p><strong>Khách hàng gọi đến:</strong> "Tôi là anh Tuấn, số tài khoản 123456. Cho tôi xin sao kê 6 tháng gần nhất."</p>
+  <p><strong>Cách làm sai (trước đào tạo):</strong> Mai xác nhận tên + SĐT → gửi sao kê qua email khách hàng cung cấp trong cuộc gọi. Vi phạm: xác minh danh tính không đủ mạnh; gửi DLCN nhạy cảm (giao dịch) qua email không được verify.</p>
+  <p><strong>Cách làm đúng (sau đào tạo):</strong> Mai xác minh theo SOP: (1) Hỏi 3 thông tin định danh (họ tên, CCCD, ngày sinh). (2) So sánh với hồ sơ đã lưu. (3) Gửi sao kê qua email đã đăng ký trong hệ thống (không dùng email mới). (4) Ghi log cuộc gọi và lý do cung cấp.</p>
+</div>
+
+<h3>3.4. Bài kiểm tra sau đào tạo Frontline</h3>
+
+<div class="doc-block">
+  <div class="doc-header green">
+    <span class="tag">Quiz</span>
+    <h3>Đề mẫu — Module 4: Quyền chủ thể dữ liệu</h3>
+  </div>
+  <div class="doc-body">
+
+    <p><strong>Câu 1.</strong> Khách hàng yêu cầu "xóa toàn bộ dữ liệu của tôi" vào ngày 1/7. CTCK phải phản hồi trong bao lâu?</p>
+    <p style="font-size:0.9rem;color:var(--ink-soft);">→ Đáp án: <strong>30 ngày</strong> (Điều 5 NĐ 356 — xóa dữ liệu là trường hợp phức tạp, tối đa 30 ngày).</p>
+
+    <p><strong>Câu 2.</strong> Khách hàng yêu cầu "cập nhật lại số điện thoại". Thời hạn phản hồi?</p>
+    <p style="font-size:0.9rem;color:var(--ink-soft);">→ Đáp án: <strong>10 ngày</strong> (Điều 5 NĐ 356 — cập nhật, tối đa 10 ngày).</p>
+
+    <p><strong>Câu 3.</strong> Trường hợp khách hàng yêu cầu xóa nhưng CTCK đang có nghĩa vụ pháp luật lưu trữ (vd: chống rửa tiền — lưu 5 năm), CTCK có được từ chối không?</p>
+    <p style="font-size:0.9rem;color:var(--ink-soft);">→ Đáp án: <strong>Có</strong>, nhưng phải giải thích lý do bằng văn bản và áp dụng biện pháp hạn chế xử lý thay vì xóa hoàn toàn.</p>
+
+  </div>
+</div>
+
+<h2 id="phan-4">Phần 4 — Chương trình đào tạo cho nhóm IT/Security</h2>
+
+<p>IT/Security là nhóm <strong>kỹ thuật nhất</strong>. Đào tạo cho nhóm này phải đi sâu vào implementation, công cụ, quy trình ứng cứu. Không phải lý thuyết "consent là gì", mà là "làm sao log consent audit trail để pass thanh tra".</p>
+
+<h3>4.1. Nội dung khóa học IT/Security — 6 module</h3>
+
+<table>
+  <thead>
+    <tr><th>Module</th><th>Thời lượng</th><th>Nội dung chính</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Threat landscape</strong></td>
+      <td>60 phút</td>
+      <td>APT, ransomware, supply chain attack, insider threat</td>
+    </tr>
+    <tr>
+      <td><strong>2. Bảo mật hệ thống</strong></td>
+      <td>90 phút</td>
+      <td>Mã hóa TLS/AES, RBAC, MFA, network segmentation, zero trust</td>
+    </tr>
+    <tr>
+      <td><strong>3. Audit trail consent</strong></td>
+      <td>60 phút</td>
+      <td>Thiết kế log, lưu trữ, truy xuất khi thanh tra</td>
+    </tr>
+    <tr>
+      <td><strong>4. Phát hiện &amp; ứng cứu</strong></td>
+      <td>90 phút</td>
+      <td>SIEM, IRP (Incident Response Plan), forensic cơ bản</td>
+    </tr>
+    <tr>
+      <td><strong>5. BCP/DR cho PDPD</strong></td>
+      <td>60 phút</td>
+      <td>Backup, restore, RPO/RTO, fail-over khi có sự cố</td>
+    </tr>
+    <tr>
+      <td><strong>6. Tuân thủ Luật ANM 2025</strong></td>
+      <td>60 phút</td>
+      <td>Quy trình 24h/3h/24h/6h, đầu mối BCA, 15% budget</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Tổng thời lượng:</strong> ~7 giờ, chia làm 3 buổi.</p>
+
+<h3>4.2. Bài tập thực hành cho IT — Tabletop Exercise</h3>
+
+<div class="doc-block">
+  <div class="doc-header red">
+    <span class="tag">Drill</span>
+    <h3>Tình huống diễn tập: Ransomware tối thứ 6</h3>
+  </div>
+  <div class="doc-body">
+
+    <p><strong>Bối cảnh:</strong> 18:47 thứ Sáu, hệ thống CRM bị mã hóa bởi ransomware. Toàn bộ DLCN khách hàng (khoảng 50.000 records) bị truy cập bởi nhóm tấn công trước khi mã hóa. Nhóm tấn công yêu cầu 200.000 USD tiền chuộc trong 48h.</p>
+
+    <p><strong>Câu hỏi cho nhóm IT (trả lời trong 30 phút):</strong></p>
+    <ol style="font-size:0.9rem;">
+      <li>Có kích hoạt IRP chưa? Ai là Incident Commander?</li>
+      <li>Thông báo DPO trong bao lâu? (theo DPA nhà cung cấp)</li>
+      <li>Báo cáo BCA trong bao lâu? (Điều 12 NĐ 356 — 72h; Điều 25 Luật ANM 2025 — 24h/3h)</li>
+      <li>Thông báo khách hàng trong bao lâu?</li>
+      <li>Có trả tiền chuộc không? Ai quyết định?</li>
+      <li>Cách ly hệ thống: bước nào trước, bước nào sau?</li>
+      <li>Backup có khả dụng không? RPO/RTO đạt bao nhiêu?</li>
+      <li>Công bố công khai (disclosure) cho cơ quan quản lý thị trường?</li>
+    </ol>
+
+  </div>
+</div>
+
+<div class="purple-box">
+  <strong>Mục đích của diễn tập:</strong> Tabletop exercise không phải để trả lời đúng hết. Mục đích là để <strong>phát hiện khoảng trống trong quy trình trước khi sự cố thật xảy ra</strong>. 90% CTCK tôi hỏi đều không có IRP rõ ràng, hoặc có nhưng chưa ai đọc.
+</div>
+
+<h3>4.3. Đào tạo định kỳ cho IT — không phải 1 lần</h3>
+
+<p>Threat landscape thay đổi hàng tuần. Một khóa đào tạo 7 giờ đủ để có nền tảng, nhưng <strong>phải duy trì</strong> bằng:</p>
+
+<ul>
+  <li><strong>Monthly CTF (Capture The Flag)</strong>: thử thách bảo mật 4 giờ/tháng, thi đua giữa các team.</li>
+  <li><strong>Quarterly red team / blue team drill</strong>: 1 lần/quý, mô phỏng tấn công và phòng thủ.</li>
+  <li><strong>Weekly security briefing</strong>: 30 phút/tuần, cập nhật threat intel, bài học từ sự cố ngành.</li>
+  <li><strong>Annual certification renewal</strong>: OSCP, CEH, CISSP — gia hạn mỗi 2-3 năm.</li>
+</ul>
+
+<h2 id="phan-5">Phần 5 — Chương trình đào tạo cho Ban lãnh đạo</h2>
+
+<p>Lãnh đạo thường không thích đào tạo dài. Đào tạo cho lãnh đạo phải <strong>ngắn, sắc, có con số</strong>. Mục tiêu: họ ra được quyết định đầu tư compliance.</p>
+
+<h3>5.1. Định dạng: "1 giờ với CEO"</h3>
+
+<div class="doc-block">
+  <div class="doc-header purple">
+    <span class="tag">Format</span>
+    <h3>Đào tạo lãnh đạo — 60 phút</h3>
+  </div>
+  <div class="doc-body">
+
+    <p><strong>Phần 1 — Bối cảnh pháp lý (15 phút)</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>NĐ 356 + Luật ANM 2025 — điều khoản nào ảnh hưởng trực tiếp đến CTCK</li>
+      <li>Mức phạt: 5% doanh thu hoặc 5 tỷ VNĐ</li>
+      <li>Trách nhiệm hình sự cá nhân (Điều 75 NĐ 356)</li>
+    </ul>
+
+    <p><strong>Phần 2 — Case study (15 phút)</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>1-2 case CTCK trong khu vực đã bị phạt vì vi phạm PDPD</li>
+      <li>Thiệt hại: phạt + chi phí khắc phục + mất khách hàng</li>
+    </ul>
+
+    <p><strong>Phần 3 — Compliance ROI (15 phút)</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>Chi phí compliance ước tính: 2-5% ngân sách IT</li>
+      <li>Chi phí sự cố: trung bình 4.5 triệu USD/vụ (IBM 2024)</li>
+      <li>ROI compliance = (chi phí sự cố tránh được - chi phí compliance) / chi phí compliance</li>
+    </ul>
+
+    <p><strong>Phần 4 — Decision needed (15 phút)</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>Phê duyệt ngân sách compliance năm nay</li>
+      <li>Phê duyệt chính sách PDPD</li>
+      <li>Quyết định bổ nhiệm DPO</li>
+      <li>Phê duyệt kế hoạch đào tạo</li>
+    </ul>
+
+  </div>
+</div>
+
+<h3>5.2. Sai lầm thường gặp khi đào tạo lãnh đạo</h3>
+
+<div class="warning">
+  <strong>3 sai lầm:</strong>
+  <br>1. <strong>Cho lãnh đạo đọc slide dài 30 trang</strong> — họ sẽ ký mà không đọc.
+  <br>2. <strong>Đào tạo bằng ngôn ngữ kỹ thuật</strong> — lãnh đạo không quan tâm AES-256, họ quan tâm "tốn bao nhiêu tiền".
+  <br>3. <strong>Không yêu cầu quyết định</strong> — kết thúc đào tạo mà không có action item = lãnh đạo quên ngay.
+</div>
+
+<div class="green-box">
+  <strong>Mẹo:</strong> Chuẩn bị trước 1 slide <em>"3 quyết định cần lãnh đạo ký trong buổi họp tuần này"</em>. Đưa vào agenda họp HĐQT/GĐ. Có chữ ký = có compliance.
+</div>
+
+<h2 id="phan-6">Phần 6 — Chống phishing &amp; social engineering — kỹ năng sống còn</h2>
+
+<p>Phishing là vector tấn công #1 trong ngành tài chính. CTCK có khối lượng giao dịch lớn, có nhiều nhân viên có quyền truy cập DLCN — là mục tiêu hấp dẫn.</p>
+
+<h3>6.1. Email phishing — ví dụ thực tế cho CTCK VN</h3>
+
+<div class="phishing-example">
+  <div class="from">From: support@chung-khoan-hcm.com.vn <span style="color:var(--accent);">[⚠️ tên miền giả - thiếu dấu, lừa nhân viên]</span></div>
+  <div class="field">Subject: [KHẨN CẤP] Tài khoản của quý khách bị khóa — Xác minh trong 24h</div>
+  <div class="body">
+    Kính gửi Anh/Chị,<br><br>
+    Hệ thống phát hiện hoạt động bất thường trên tài khoản giao dịch của quý khách. Để tránh bị khóa tài khoản, vui lòng <strong>click vào link dưới đây</strong> trong vòng 24 giờ để xác minh danh tính:<br><br>
+    http://chung-khoan-hcm.verify-id.com/login <span style="color:var(--accent);">[⚠️ URL không phải domain CTCK]</span><br><br>
+    Trân trọng,<br>
+    Phòng Hỗ trợ Khách hàng<br>
+    Công ty Chứng khoán HCM
+  </div>
+</div>
+
+<h3>6.2. 5 dấu hiệu nhận biết email phishing</h3>
+
+<table>
+  <thead>
+    <tr><th>Dấu hiệu</th><th>Ví dụ</th><th>Tại sao lừa được</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Tên miền lạ/gần giống</strong></td>
+      <td>support@chung-khoan-hcm.com.vn (giả)</td>
+      <td>Mắt thường khó phân biệt khi đọc nhanh</td>
+    </tr>
+    <tr>
+      <td><strong>2. URL lạ</strong></td>
+      <td>verify-id.com/login (không phải CTCK)</td>
+      <td>Hover mới thấy URL thật</td>
+    </tr>
+    <tr>
+      <td><strong>3. Tạo sự cấp bách</strong></td>
+      <td>"Trong vòng 24h", "Khóa tài khoản"</td>
+      <td>Buộc nhân viên hành động vội, không kịp check</td>
+    </tr>
+    <tr>
+      <td><strong>4. Yêu cầu thông tin nhạy cảm</strong></td>
+      <td>"Vui lòng cung cấp mật khẩu/CCCD"</td>
+      <td>CTCK không bao giờ hỏi mật khẩu qua email</td>
+    </tr>
+    <tr>
+      <td><strong>5. Lỗi chính tả / ngữ pháp</strong></td>
+      <td>"kính gửi anh/chị" (viết thường), "trong 24h"</td>
+      <td>Dấu hiệu email từ nhóm tội phạm</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.3. Quy trình phản ứng khi nghi ngờ phishing</h3>
+
+<div class="flow-box">
+  <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">SOP khi nhân viên nhận email khả nghi</div>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>KHÔNG click vào link, KHÔNG mở file đính kèm</strong>
+      Dù tò mò đến đâu. Một cú click có thể mở cửa cho malware.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Báo IT/Security ngay</strong>
+      Forward email (dưới dạng attachment, không phải inline) tới security@company.com hoặc gọi hotline nội bộ.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>IT kiểm tra và phân loại</strong>
+      Xác nhận phishing hay legitimate. Nếu phishing → block sender, cảnh báo toàn công ty.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Nếu lỡ click</strong>
+      Ngắt kết nối mạng ngay, báo IT khẩn, chạy quy trình ứng cứu.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-text">
+      <strong>Ghi nhận vào log đào tạo</strong>
+      Nhân viên phát hiện phishing được ghi nhận là "phát hiện tốt" — khen thưởng tinh thần cảnh giác.
+    </div>
+  </div>
+</div>
+
+<h3>6.4. Social engineering — cuộc gọi giả danh</h3>
+
+<div class="script-box">
+  <h5>Ví dụ tình huống — Social engineering qua điện thoại</h5>
+  <p><strong>Kẻ tấn công gọi đến Chị Mai (CSKH):</strong> "Chào chị, tôi là anh Tuấn từ phòng IT công ty. Anh đang xử lý sự cố khẩn cấp, cần chị cung cấp nhanh thông tin 5 khách hàng VIP để hỗ trợ kỹ thuật. Anh đang bận, không check email được."</p>
+  <p><strong>Mục đích:</strong> Lợi dụng tâm lý "cấp trên yêu cầu khẩn" để nhân viên cung cấp DLCN mà không qua quy trình xác minh.</p>
+  <p><strong>Cách phòng thủ (sau đào tạo):</strong></p>
+  <ul style="font-size:0.9rem;">
+    <li>Chị Mai: "Anh ơi, em xin phép xác nhận lại qua số nội bộ IT trong danh bạ. Theo quy định em không thể cung cấp thông tin khách qua điện thoại mà không verify."</li>
+    <li>Chị Mai cúp máy, gọi lại số IT chính thức để xác nhận.</li>
+    <li>Trong 95% trường hợp, kẻ tấn công cúp máy khi bị gọi lại.</li>
+  </ul>
+</div>
+
+<div class="purple-box">
+  <strong>Nguyên tắc "5 phút không là chuyện nhỏ":</strong> Nếu ai đó yêu cầu cung cấp DLCN gấp trong 5 phút qua điện thoại → <strong>đó là dấu hiệu social engineering</strong>. Quy trình chuẩn mất 15-30 phút để xác minh. Không có ngoại lệ.
+</div>
+
+<h3>6.5. Chương trình phishing simulation</h3>
+
+<p>Đào tạo chống phishing mà không test thực tế thì không hiệu quả. CTCK nên chạy <strong>phishing simulation</strong> 2-4 lần/năm:</p>
+
+<table>
+  <thead>
+    <tr><th>Cấu trúc</th><th>Mô tả</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Công cụ</strong></td>
+      <td>KnowBe4, Cofense, hoặc platform nội bộ</td>
+    </tr>
+    <tr>
+      <td><strong>Tần suất</strong></td>
+      <td>2-4 lần/năm</td>
+    </tr>
+    <tr>
+      <td><strong>Nội dung</strong></td>
+      <td>Email giả danh IT, giả danh BCA, giả danh đối tác</td>
+    </tr>
+    <tr>
+      <td><strong>Đo lường</strong></td>
+      <td>Tỷ lệ click, tỷ lệ báo cáo, thời gian phản hồi</td>
+    </tr>
+    <tr>
+      <td><strong>Xử lý</strong></td>
+      <td>Nhân viên click → đào tạo lại ngay; nhân viên báo cáo đúng → khen thưởng</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="green-box">
+  <strong>KPI mục tiêu sau 6 tháng:</strong> Tỷ lệ click phishing giảm từ 25% xuống &lt;5%. Tỷ lệ báo cáo phishing tăng từ 10% lên &gt;50%. Đây là KPI có thể đo được và đưa vào báo cáo compliance.
+</div>
+
+<h2 id="phan-7">Phần 7 — Onboarding nhân sự mới — quy trình 7 ngày</h2>
+
+<p>Nhân viên mới là <strong>lỗ hổng lớn nhất</strong>: họ chưa biết quy trình, chưa biết SOP, chưa biết phân loại DLCN. Nếu để nhân viên mới "tự học", nguy cơ vi phạm trong 30 ngày đầu rất cao.</p>
+
+<h3>7.1. Quy trình onboarding PDPD — 7 ngày đầu</h3>
+
+<div class="flow-box">
+  <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">Onboarding PDPD — 7 ngày đầu cho nhân viên mới</div>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>Ngày 1: Ký cam kết bảo mật</strong>
+      Nhân viên mới ký NDA + cam kết bảo vệ DLCN trước khi được cấp quyền truy cập hệ thống.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Ngày 1-2: Hoàn thành e-learning PDPD cơ bản</strong>
+      Module 30-45 phút: tổng quan, phân loại DLCN, consent. Phải pass quiz 80% trước khi tiếp tục.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>Ngày 2-3: Đọc tài liệu nội bộ</strong>
+      Privacy Notice, Chính sách BVDLCN, SOP phản hồi CTDL, SOP ứng cứu sự cố.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Ngày 3-4: Shadow mentor</strong>
+      Đi cùng nhân viên senior 1-2 ngày. Quan sát cách xử lý DLCN trong nghiệp vụ thực tế.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-text">
+      <strong>Ngày 5: Làm bài test thực hành</strong>
+      Tình huống giả định: nhận yêu cầu CTDL, xử lý consent, phát hiện phishing. Có mentor chấm.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">6</div>
+    <div class="flow-text">
+      <strong>Ngày 6: Cấp quyền truy cập hệ thống</strong>
+      Cấp quyền theo nguyên tắc tối thiểu (RBAC). Audit log từ ngày đầu tiên.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">7</div>
+    <div class="flow-text">
+      <strong>Ngày 7: Check-in với DPO</strong>
+      30 phút 1-1 với DPO: review lại hiểu biết, hỏi đáp, xác nhận đã sẵn sàng.
+    </div>
+  </div>
+</div>
+
+<h3>7.2. Cam kết bảo mật — điều khoản quan trọng</h3>
+
+<div class="doc-block">
+  <div class="doc-header">
+    <span class="tag">Template</span>
+    <h3>CAM KẾT BẢO VỆ DỮ LIỆU CÁ NHÂN</h3>
+  </div>
+  <div class="doc-body">
+
+    <p style="font-size:0.85rem;color:var(--ink-soft);margin-bottom:1rem;">(Kèm theo Hợp đồng lao động / Hợp đồng cộng tác viên)</p>
+
+    <p>Tôi, [...], CCCD [...], nhân viên của Công ty [...] từ ngày [...], cam kết:</p>
+
+    <ol style="font-size:0.9rem;">
+      <li>Bảo mật mọi DLCN mà tôi tiếp cận trong quá trình làm việc, không tiết lộ cho bất kỳ ai ngoài phạm vi công việc được giao.</li>
+      <li>Không sao chép, ghi chép, chụp ảnh, quay phim DLCN khi không có sự cho phép bằng văn bản của cấp quản lý.</li>
+      <li>Không chia sẻ DLCN qua email cá nhân, mạng xã hội, ứng dụng chat không được phê duyệt.</li>
+      <li>Không lưu trữ DLCN trên thiết bị cá nhân (USB, laptop cá nhân, điện thoại cá nhân).</li>
+      <li>Báo cáo ngay cho DPO khi phát hiện sự cố bảo mật hoặc nghi ngờ lộ DLCN, không chậm quá 24 giờ.</li>
+      <li>Tuân thủ Nghị định 356/2025/NĐ-CP và Luật An ninh mạng 2025.</li>
+      <li>Chấp nhận trách nhiệm pháp lý cá nhân nếu vi phạm cam kết này, bao gồm cả trách nhiệm hình sự theo Điều 75 NĐ 356.</li>
+    </ol>
+
+    <p style="font-size:0.85rem;margin-top:1rem;">Cam kết này có hiệu lực trong suốt thời gian làm việc và <strong>tiếp tục có hiệu lực 5 năm sau khi nghỉ việc</strong>.</p>
+
+    <p style="font-size:0.85rem;margin-top:1rem;"><em>Ngày [...] tháng [...] năm [...]</em><br>
+    <em>Người cam kết (Ký tên) [...]</em><br>
+    <em>Đại diện Công ty (Ký tên) [...]</em></p>
+
+  </div>
+</div>
+
+<div class="red-box">
+  <strong>Lưu ý:</strong> Cam kết 5 năm sau nghỉ việc là điểm thường bị bỏ qua. Nếu không có, nhân viên nghỉ có thể mang DLCN theo và công ty không có căn cứ pháp lý buộc xóa.
+</div>
+
+<h2 id="phan-8">Phần 8 — Đánh giá hiệu quả đào tạo — 4 KPI cần đo</h2>
+
+<p>Đào tạo không đo lường = đào tạo vô nghĩa. CTCK phải đo 4 KPI sau để biết chương trình có thực sự hiệu quả:</p>
+
+<h3>8.1. Bốn KPI cốt lõi</h3>
+
+<table>
+  <thead>
+    <tr><th>KPI</th><th>Cách đo</th><th>Mục tiêu</th><th>Tần suất đo</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Tỷ lệ hoàn thành đào tạo</strong></td>
+      <td>(Nhân viên đã đào tạo / Tổng nhân viên) × 100%</td>
+      <td>&gt;95%</td>
+      <td>Sau mỗi đợt đào tạo</td>
+    </tr>
+    <tr>
+      <td><strong>2. Điểm quiz trung bình</strong></td>
+      <td>Tổng điểm / Số nhân viên làm bài</td>
+      <td>&gt;80%</td>
+      <td>Sau mỗi đợt đào tạo</td>
+    </tr>
+    <tr>
+      <td><strong>3. Tỷ lệ click phishing</strong></td>
+      <td>Phishing simulation</td>
+      <td>&lt;5% (sau 6 tháng)</td>
+      <td>Mỗi simulation</td>
+    </tr>
+    <tr>
+      <td><strong>4. Số sự cố do con người</strong></td>
+      <td>Đếm sự cố: paste DLCN sai chỗ, gửi nhầm email, click phishing, v.v.</td>
+      <td>Giảm 50% mỗi năm</td>
+      <td>Hàng quý</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>8.2. Báo cáo compliance hàng quý</h3>
+
+<div class="doc-block">
+  <div class="doc-header orange">
+    <span class="tag">Report</span>
+    <h3>Báo cáo đào tạo PDPD — Quý [...] năm [...]</h3>
+  </div>
+  <div class="doc-body">
+
+    <p><strong>1. Tổng quan</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>Tổng số nhân viên: [...]</li>
+      <li>Tổng số đã qua đào tạo PDPD: [...] ([...]%)</li>
+      <li>Số đào tạo viên trong kỳ: [...]</li>
+      <li>Tổng chi phí đào tạo: [...] VNĐ</li>
+    </ul>
+
+    <p><strong>2. KPI chi tiết</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>Điểm quiz trung bình: [...]/100</li>
+      <li>Tỷ lệ click phishing simulation: [...]%</li>
+      <li>Số sự cố do con người: [...] (so với quý trước: [...])</li>
+    </ul>
+
+    <p><strong>3. Đào tạo đã thực hiện</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>[...] buổi đào tạo PDPD cho Frontline</li>
+      <li>[...] buổi đào tạo IT/Security</li>
+      <li>[...] buổi đào tạo lãnh đạo</li>
+      <li>[...] lượt onboarding nhân viên mới</li>
+      <li>[...] lượt phishing simulation</li>
+    </ul>
+
+    <p><strong>4. Gap &amp; hành động tiếp theo</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>Nhân viên chưa qua đào tạo: [...] (kế hoạch đào tạo bổ sung)</li>
+      <li>Nhóm có KPI thấp: [...] (kế hoạch đào tạo lại)</li>
+      <li>Module cần cập nhật: [...] (lý do)</li>
+    </ul>
+
+  </div>
+</div>
+
+<h2 id="phan-9">Phần 9 — Biên bản đào tạo &amp; bằng chứng tuân thủ</h2>
+
+<div class="red-box">
+  <strong>Không có biên bản = không có đào tạo.</strong> Khi cơ quan kiểm tra yêu cầu bằng chứng, file PowerPoint không có giá trị. Biên bản có chữ ký mới là bằng chứng hợp lệ.
+</div>
+
+<h3>9.1. Biên bản đào tạo chuẩn</h3>
+
+<div class="doc-block">
+  <div class="doc-header">
+    <span class="tag">Template</span>
+    <h3>BIÊN BẢN ĐÀO TẠO PDPD</h3>
+  </div>
+  <div class="doc-body">
+
+    <p style="font-size:0.85rem;"><strong>Công ty:</strong> [...]<br>
+    <strong>Địa chỉ:</strong> [...]<br>
+    <strong>Ngày đào tạo:</strong> [...]<br>
+    <strong>Địa điểm:</strong> [...] / Online qua [...]</p>
+
+    <p><strong>1. Thông tin khóa đào tạo</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>Tên khóa: [...]</li>
+      <li>Đối tượng: [...] (Frontline / IT / Leadership)</li>
+      <li>Thời lượng: [...] giờ</li>
+      <li>Giảng viên: [...] (Họ tên, chức danh, chứng chỉ)</li>
+      <li>Nội dung chính: [...]</li>
+    </ul>
+
+    <p><strong>2. Danh sách học viên</strong></p>
+    <table style="font-size:0.85rem;">
+      <thead>
+        <tr><th>STT</th><th>Họ tên</th><th>Phòng ban</th><th>Chữ ký</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>[...]</td><td>[...]</td><td></td></tr>
+        <tr><td>2</td><td>[...]</td><td>[...]</td><td></td></tr>
+        <tr><td>3</td><td>[...]</td><td>[...]</td><td></td></tr>
+        <tr><td>...</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>3. Kết quả đánh giá</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li>Số người tham dự: [...]</li>
+      <li>Số người đạt yêu cầu (≥80%): [...]</li>
+      <li>Số người cần đào tạo lại: [...]</li>
+      <li>Điểm trung bình: [...]/100</li>
+    </ul>
+
+    <p><strong>4. Cam kết</strong></p>
+    <p style="font-size:0.9rem;">Tôi xác nhận nội dung đào tạo đã được thực hiện đầy đủ và các học viên đã hiểu rõ nghĩa vụ bảo vệ DLCN.</p>
+
+    <p style="font-size:0.85rem;margin-top:1rem;"><em>Giảng viên (Ký tên): [...]</em><br>
+    <em>Đại diện DPO (Ký tên): [...]</em><br>
+    <em>Ngày [...] tháng [...] năm [...]</em></p>
+
+  </div>
+</div>
+
+<h3>9.2. Lưu trữ biên bản</h3>
+
+<ul>
+  <li>Biên bản lưu trữ <strong>tối thiểu 5 năm</strong> (theo Điều 17 NĐ 356).</li>
+  <li>Lưu cả file scan + bản mềm (PDF có chữ ký số).</li>
+  <li>Nên lưu trên hệ thống quản lý tài liệu (DMS) có backup, không chỉ trên máy local.</li>
+  <li>Truy xuất nhanh khi cơ quan kiểm tra yêu cầu — không có nghĩa tìm trong email cũ.</li>
+</ul>
+
+<h2 id="phan-10">Phần 10 — Output giao cho khách + timeline triển khai</h2>
+
+<h3>10.1. Output cho khách hàng CTCK</h3>
+
+<ul class="checklist">
+  <li><strong>Chương trình đào tạo PDPD</strong> cho 3 nhóm (Frontline, IT, Leadership) — file PPT + script</li>
+  <li><strong>Template biên bản đào tạo</strong> (có chữ ký)</li>
+  <li><strong>Template cam kết bảo mật</strong> cho nhân viên mới</li>
+  <li><strong>Quiz + đáp án</strong> cho từng module</li>
+  <li><strong>Kế hoạch phishing simulation</strong> 2-4 lần/năm</li>
+  <li><strong>Quy trình onboarding</strong> 7 ngày đầu</li>
+  <li><strong>Tabletop exercise script</strong> cho IT/Security (ransomware, lộ DLCN)</li>
+  <li><strong>Báo cáo đào tạo quý</strong> — template + KPI dashboard</li>
+</ul>
+
+<h3>10.2. Timeline triển khai điển hình</h3>
+
+<table>
+  <thead>
+    <tr><th>Giai đoạn</th><th>Thời gian</th><th>Công việc</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Tuần 1-2: Khảo sát</strong></td>
+      <td>10 ngày</td>
+      <td>Đánh giá năng lực hiện tại, xác định gap, lập kế hoạch đào tạo</td>
+    </tr>
+    <tr>
+      <td><strong>Tuần 3-4: Chuẩn bị</strong></td>
+      <td>10 ngày</td>
+      <td>Soạn slide, quiz, biên bản; phê duyệt nội dung với DPO</td>
+    </tr>
+    <tr>
+      <td><strong>Tuần 5-7: Đào tạo đợt 1</strong></td>
+      <td>15 ngày</td>
+      <td>Frontline batch 1, IT, Leadership; chạy simulation phishing đợt 1</td>
+    </tr>
+    <tr>
+      <td><strong>Tuần 8-9: Đánh giá</strong></td>
+      <td>10 ngày</td>
+      <td>Tổng hợp KPI, điều chỉnh chương trình, khen thưởng/kỷ luật</td>
+    </tr>
+    <tr>
+      <td><strong>Tháng 4: Đào tạo đợt 2</strong></td>
+      <td>15 ngày</td>
+      <td>Frontline batch 2 (đợt 2 trong năm), phishing simulation đợt 2</td>
+    </tr>
+    <tr>
+      <td><strong>Tháng 6-7: Đào tạo đợt 3 (nếu cần)</strong></td>
+      <td>10 ngày</td>
+      <td>Đào tạo lại nhóm có KPI thấp, nhân viên mới tích lũy</td>
+    </tr>
+    <tr>
+      <td><strong>Tháng 12: Đánh giá năm</strong></td>
+      <td>5 ngày</td>
+      <td>Tổng kết năm, lập kế hoạch năm sau, điều chỉnh chương trình theo threat landscape mới</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="orange-box">
+  <strong>Thời gian ước tính cho CTCK vừa (50-200 nhân viên):</strong>
+  <br>Setup lần đầu: <strong>1.5-2 tháng</strong>
+  <br>Duy trì hàng năm: <strong>15-20 ngày/năm</strong>
+  <br>Chi phí ước tính: <strong>100-300 triệu VNĐ/năm</strong> (bao gồm cả platform phishing simulation, giảng viên nội bộ/ngoài, thời gian nhân viên tham dự)
+</div>
+
+<h3>10.3. Câu hỏi Pre Sales phát hiện gap đào tạo</h3>
+
+<ol>
+  <li><em>"Công ty đã tổ chức đào tạo PDPD cho nhân sự chưa? Có biên bản ghi nhận không?"</em> → Bằng chứng tuân thủ</li>
+  <li><em>"Khi nhân viên mới vào, có onboarding về bảo vệ DLCN không? Trong bao lâu?"</em> → Quy trình onboarding</li>
+  <li><em>"Nhân sự IT có được training về phát hiện phishing, social engineering không?"</em> → Cybersecurity awareness</li>
+  <li><em>"Đã bao lâu rồi CTCK chưa tổ chức đào tạo PDPD?"</em> → Tần suất đào tạo</li>
+  <li><em>"Có chạy phishing simulation định kỳ không? Kết quả ra sao?"</em> → Đo lường hiệu quả</li>
+  <li><em>"Khi có sự cố lộ DLCN, nhân viên có biết quy trình báo cáo trong bao lâu không?"</em> → IRP awareness</li>
+  <li><em>"Ban lãnh đạo có hiểu rõ trách nhiệm pháp lý và mức phạt không?"</em> → Leadership awareness</li>
+  <li><em>"Có hệ thống quản lý biên bản đào tạo tập trung không?"</em> → Lưu trữ bằng chứng</li>
+</ol>
+
+<h2>Câu hỏi trắc nghiệm</h2>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">1. Theo NĐ 356/2025, DPO cần đáp ứng bao nhiêu tiêu chuẩn năng lực?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>1 — chỉ cần ký tên</li>
+    <li>2 — trình độ + kinh nghiệm</li>
+    <li>3 — trình độ + kinh nghiệm + đào tạo có chứng chỉ</li>
+    <li>4 — bao gồm cả cam kết bảo mật</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">2. Đào tạo PDPD cho Frontline nên được tổ chức với tần suất nào?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>1 lần là đủ cho cả đời làm việc</li>
+    <li>1 lần khi vào công ty</li>
+    <li>2 lần/năm + bổ sung khi có sự cố hoặc thay đổi lớn</li>
+    <li>Mỗi tháng</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">3. Email phishing thường có đặc điểm nào sau đây?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Tên miền giống hệt công ty</li>
+    <li>Tạo sự cấp bách + yêu cầu cung cấp thông tin nhạy cảm</li>
+    <li>Có chữ ký số của CEO</li>
+    <li>Được gửi từ hệ thống email nội bộ</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">4. Theo Luật ANM 2025, khi nhận yêu cầu cung cấp thông tin người dùng từ BCA trong trường hợp KHẨN CẤP, doanh nghiệp phải phản hồi trong bao lâu?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>24 giờ</li>
+    <li>72 giờ</li>
+    <li>3 giờ</li>
+    <li>1 tuần</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">5. Biên bản đào tạo PDPD cần được lưu trữ tối thiểu bao lâu?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>1 năm</li>
+    <li>3 năm</li>
+    <li>5 năm (theo Điều 17 NĐ 356)</li>
+    <li>10 năm</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">6. Cam kết bảo mật của nhân viên có hiệu lực trong bao lâu sau khi nghỉ việc?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Không có hiệu lực sau nghỉ việc</li>
+    <li>1 năm</li>
+    <li>2 năm</li>
+    <li>5 năm (theo khuyến nghị trong template)</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">7. KPI quan trọng nhất để đo hiệu quả chương trình chống phishing là gì?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Số email đã gửi</li>
+    <li>Tỷ lệ click + tỷ lệ báo cáo phishing</li>
+    <li>Số lượng IT staff</li>
+    <li>Số tiền đầu tư công cụ</li>
+  </ol>
+</div>
+
+<h2>Câu hỏi suy nghĩ</h2>
+
+<ol>
+  <li>Nếu CTCK khách hàng của bạn chỉ có 1 DPO "chỉ định cho có" (không đủ 3 tiêu chuẩn), bạn sẽ tư vấn như thế nào để vừa tuân thủ, vừa không gây khó khăn cho khách hàng?</li>
+  <li>Một CTCK 100 nhân viên, ngân sách compliance hạn chế. Nếu chỉ có 50 triệu VNĐ để đào tạo PDPD trong năm đầu, bạn sẽ ưu tiên chi vào đâu?</li>
+  <li>Bạn vừa tổ chức phishing simulation, 30% nhân viên click vào link giả. Bạn sẽ đề xuất hành động gì tiếp theo?</li>
+  <li>Trong tabletop exercise về ransomware, nhóm IT mất 2 giờ mới tìm được người chịu trách nhiệm thông báo BCA. Bạn sẽ đề xuất cải tiến gì?</li>
+</ol>
+
+<div class="quote">
+  <strong>Nguyên tắc cuối cùng:</strong> Đào tạo PDPD không phải để "tick the box" cho compliance. Đào tạo để <strong>mỗi nhân viên nhận ra họ là tuyến phòng thủ đầu tiên</strong> — và hành động đúng trong 5 giây khi gặp tình huống thật. Pre Sales bán giải pháp security cho khách hàng: hãy nhớ rằng công nghệ tốt nhất cũng thua một cú click chuột sai.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">← Bài trước</span>
+    <a href="0008-dpa-deep-dive.html">Lesson 0008 — DPA</a> ·
+    <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-6--đào-tạo-nội-bộ">Lesson 0003 — Bước 6</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">— —</span>
+    <a href="../MISSION.html">Mission</a> ·
+    <a href="../GLOSSARY.md">Glossary</a> ·
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+</div>
+
+</body>
+</html>

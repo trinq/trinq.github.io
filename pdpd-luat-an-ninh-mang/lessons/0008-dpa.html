@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0008: DPA Deep Dive — Thỏa thuận xử lý DLCN với nhà cung cấp</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --green: #2c5e2e;
+      --green-bg: #e8f5e9;
+      --blue: #1a3a5c;
+      --blue-bg: #e8f0f7;
+      --purple: #5b2c6f;
+      --purple-bg: #f3e5f5;
+      --orange: #c45a00;
+      --orange-bg: #fff3e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2rem; }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-green { background: var(--green); }
+    .meta .badge-purple { background: var(--purple); }
+    .meta .badge-blue { background: var(--blue); }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.75rem 0 0.6rem;
+    }
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin: 1.25rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .green-box {
+      background: var(--green-bg);
+      border-left: 4px solid var(--green);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .green-box strong { color: var(--green); }
+    .blue-box {
+      background: var(--blue-bg);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .blue-box strong { color: var(--blue); }
+    .purple-box {
+      background: var(--purple-bg);
+      border-left: 4px solid var(--purple);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .purple-box strong { color: var(--purple); }
+    .orange-box {
+      background: var(--orange-bg);
+      border-left: 4px solid var(--orange);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .orange-box strong { color: var(--orange); }
+    .warning {
+      background: #fff9e6;
+      border: 1px solid #e6c800;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .warning strong { color: #b8860b; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .checklist {
+      list-style: none;
+      margin: 0 0 1rem;
+    }
+    .checklist li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .checklist li::before {
+      content: "\2610";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 1rem;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .doc-block {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .doc-header {
+      background: var(--blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .doc-header.purple { background: var(--purple); }
+    .doc-header.green { background: var(--green); }
+    .doc-header.orange { background: var(--orange); }
+    .doc-header h3 { margin: 0; color: white; font-size: 0.95rem; }
+    .doc-header .tag {
+      background: rgba(255,255,255,0.2);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.78rem;
+    }
+    .doc-body { padding: 1.25rem; }
+    .toc {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .toc ol { margin: 0; padding-left: 1.5rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc li a { color: var(--accent); text-decoration: none; }
+    .toc li a:hover { text-decoration: underline; }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .flow-box {
+      background: #f9f7f4;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 0.75rem 0;
+    }
+    .flow-num {
+      background: var(--blue);
+      color: white;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .flow-text strong { display: block; }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+    }
+    .compare-table th {
+      background: var(--ink);
+      color: white;
+      padding: 0.6rem 0.5rem;
+    }
+    .compare-table td {
+      padding: 0.5rem;
+      border: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    .compare-table .old { background: #fff9f9; }
+    .compare-table .new { background: #f0fff0; }
+    .compare-table .changed { background: #fffbe6; }
+    .red-box {
+      background: #ffe8e8;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .red-box strong { color: var(--accent); }
+    kbd {
+      background: #f0ebe3;
+      border: 1px solid var(--rule);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.82em;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+    .contract-clause {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .contract-clause h5 {
+      font-weight: 700;
+      color: var(--blue);
+      margin: 0 0 0.5rem 0;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+    }
+    .contract-clause p { margin: 0; color: var(--ink); }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0008<br>DPA Deep Dive — Thỏa thuận xử lý DLCN với nhà cung cấp</h1>
+
+<div class="subtitle">DLCN của khách hàng nằm ở cloud, đối tác, back-office, SDK. Không có DPA = CTCK chịu trách nhiệm khi đối tác vi phạm.</div>
+
+<div class="meta">
+  <span class="badge badge-purple">Deep Dive</span>
+  <span class="badge badge-blue">Thực hành</span>
+  <span class="pill">Đọc ~35 phút</span>
+  <span class="pill">Có template DPA + checklist audit</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="toc">
+  <strong>Mục lục</strong>
+  <ol>
+    <li><a href="#phan-1">Tổng quan: DPA là gì, tại sao bắt buộc</a></li>
+    <li><a href="#phan-2">Phần 2: Phân loại nhà cung cấp xử lý DLCN</a></li>
+    <li><a href="#phan-3">Phần 3: Quy trình rà soát hợp đồng 5 bước</a></li>
+    <li><a href="#phan-4">Phần 4: 10 điều khoản bắt buộc trong DPA</a></li>
+    <li><a href="#phan-5">Phần 5: Template DPA cho CTCK</a></li>
+    <li><a href="#phan-6">Phần 6: DPA với cloud provider nước ngoài</a></li>
+    <li><a href="#phan-7">Phần 7: Quy trình chấm dứt hợp đồng</a></li>
+    <li><a href="#phan-8">Phần 8: Gap đặc thù CTCK</a></li>
+    <li><a href="#phan-9">Phần 9: Output giao cho khách</a></li>
+  </ol>
+</div>
+
+<div class="highlight">
+  <strong>Bạn đang ở đâu?</strong> Bài này mở rộng từ <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-5--rà-soát-hợp-đồng-với-nhà-cung-cấp">Bước 5 trong Lesson 0003</a>. Đọc <a href="0003-6-buoc-pdpd-thuc-hanh.html">0003</a>, <a href="0004-data-mapping-deep-dive.html">0004</a>, <a href="0005-ho-so-tu-an-thu-deep-dive.html">0005</a>, <a href="0006-bo-nhiem-dpo-deep-dive.html">0006</a>, <a href="0007-dpia-ctia-deep-dive.html">0007</a> trước.
+</div>
+
+<h2 id="phan-1">Phần 1 — Tổng quan: DPA là gì, tại sao bắt buộc</h2>
+
+<h3>1.1. Định nghĩa</h3>
+
+<p><strong>DPA</strong> (Data Processing Agreement) — Thỏa thuận xử lý dữ liệu cá nhân — là <strong>hợp đồng phụ lục</strong> giữa CTCK (Bên kiểm soát) và nhà cung cấp (Bên xử lý), quy định cách thức nhà cung cấp được phép xử lý DLCN của khách hàng CTCK.</p>
+
+<p>DPA <strong>không thay thế</strong> hợp đồng dịch vụ chính (MSA, SLA, SOW) — nó bổ sung các điều khoản cụ thể về bảo vệ DLCN theo NĐ 356.</p>
+
+<h3>1.2. Tại sao DPA quan trọng — nguyên tắc trách nhiệm</h3>
+
+<div class="red-box">
+  <strong>Nguyên tắc cốt lõi:</strong> Theo Điều 5 và Điều 26 NĐ 356, <strong>CTCK vẫn chịu trách nhiệm cuối cùng</strong> về DLCN khách hàng, kể cả khi DLCN đó đang được nhà cung cấp xử lý. Nếu nhà cung cấp lộ dữ liệu → CTCK là bên bị xử phạt chính.
+</div>
+
+<p>Ví dụ thực tế:</p>
+
+<ul>
+  <li>CTCK dùng AWS Singapore lưu trữ DLCN → AWS bị tấn công, lộ 1 triệu CCCD → <strong>CTCK bị xử phạt</strong>, không phải AWS.</li>
+  <li>CTCK thuê call center ở Philippines xử lý hỗ trợ khách hàng → call center nhân viên bán dữ liệu → <strong>CTCK bị xử phạt</strong>.</li>
+  <li>CTCK dùng app có SDK Adjust/AppsFlyer → SDK gửi device ID + IP về nước ngoài → <strong>CTCK vi phạm Điều 5 (minh bạch)</strong> và Điều 32 (CTIA).</li>
+</ul>
+
+<h3>1.3. So sánh NĐ 13/2023 vs NĐ 356</h3>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Nội dung</th><th>NĐ 13/2023</th><th>NĐ 356/2025</th><th>Thay đổi</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DPA với nhà cung cấp</td>
+      <td class="old">Khuyến khích</td>
+      <td class="new"><strong>Bắt buộc</strong> khi thuê bên thứ ba xử lý DLCN</td>
+      <td class="changed">⚠️ THAY ĐỔI LỚN</td>
+    </tr>
+    <tr>
+      <td>Điều khoản chấm dứt</td>
+      <td class="old">Không quy định cụ thể</td>
+      <td class="new"><strong>Phải quy định</strong> cách xử lý DLCN khi hợp đồng kết thúc (xóa, trả lại, chứng minh xóa)</td>
+      <td class="changed">⚠️ MỚI</td>
+    </tr>
+    <tr>
+      <td>Quyền giám sát nhà cung cấp</td>
+      <td class="old">Không quy định</td>
+      <td class="new"><strong>Bên kiểm soát có quyền kiểm tra</strong> tuân thủ của bên xử lý</td>
+      <td class="changed">⚠️ MỚI</td>
+    </tr>
+    <tr>
+      <td>Thông báo sự cố</td>
+      <td class="old">Không quy định</td>
+      <td class="new">Nhà cung cấp phải <strong>thông báo trong 48-72h</strong> khi có sự cố</td>
+      <td class="changed">⚠️ MỚI</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>1.4. CTCK cần DPA với ai?</h3>
+
+<p>Mọi bên thứ ba có quyền <strong>truy cập, lưu trữ, xử lý</strong> DLCN của khách hàng CTCK — bao gồm cả nhà cung cấp trong nước và nước ngoài. Bảng phân loại chi tiết ở Phần 2.</p>
+
+<h2 id="phan-2">Phần 2 — Phân loại nhà cung cấp xử lý DLCN</h2>
+
+<table>
+  <thead>
+    <tr><th>Loại nhà cung cấp</th><th>Ví dụ tại CTCK</th><th>Truy cập DLCN?</th><th>Yêu cầu DPA</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Cloud provider (IaaS)</strong></td>
+      <td>AWS, GCP, Azure, VNG Cloud, Viettel IDC, CMC Cloud</td>
+      <td>✅ Toàn bộ DLCN lưu trên cloud</td>
+      <td>✅ Bắt buộc</td>
+    </tr>
+    <tr>
+      <td><strong>SaaS CRM/Marketing</strong></td>
+      <td>Salesforce, HubSpot, Mailchimp, SendGrid</td>
+      <td>✅ DLCN khách hàng được xử lý trên SaaS</td>
+      <td>✅ Bắt buộc</td>
+    </tr>
+    <tr>
+      <td><strong>SaaS support/Helpdesk</strong></td>
+      <td>Zendesk, Freshdesk, Intercom</td>
+      <td>✅ DLCN khách hàng khi gửi ticket</td>
+      <td>✅ Bắt buộc</td>
+    </tr>
+    <tr>
+      <td><strong>SaaS monitoring/analytics</strong></td>
+      <td>Google Analytics, Mixpanel, Amplitude</td>
+      <td>⚠️ Device ID, IP, hành vi</td>
+      <td>✅ Bắt buộc</td>
+    </tr>
+    <tr>
+      <td><strong>SaaS communication</strong></td>
+      <td>Twilio, MessageBird, Firebase Cloud Messaging</td>
+      <td>⚠️ SĐT, device token, nội dung tin nhắn</td>
+      <td>✅ Bắt buộc</td>
+    </tr>
+    <tr>
+      <td><strong>Mobile SDK</strong></td>
+      <td>Firebase SDK, Adjust, AppsFlyer, Facebook SDK</td>
+      <td>⚠️ Device ID, IP, advertising ID</td>
+      <td>✅ Bắt buộc (thông qua End User License + Privacy)</td>
+    </tr>
+    <tr>
+      <td><strong>Outsourcing/Back-office</strong></td>
+      <td>Call center Philippines, IT outsource Ấn Độ</td>
+      <td>✅ Truy cập DLCN VN từ nước ngoài</td>
+      <td>✅ Bắt buộc + CTIA</td>
+    </tr>
+    <tr>
+      <td><strong>Data analytics/AI</strong></td>
+      <td>Đối tác AI/ML scoring, data warehouse</td>
+      <td>✅ DLCN dùng để phân tích</td>
+      <td>✅ Bắt buộc</td>
+    </tr>
+    <tr>
+      <td><strong>In-app SDK nước ngoài</strong></td>
+      <td>Google Maps, reCAPTCHA, social login</td>
+      <td>⚠️ Tùy mức thu thập</td>
+      <td>✅ Bắt buộc nếu có thu thập</td>
+    </tr>
+    <tr>
+      <td><strong>Dịch vụ IT (không truy cập DLCN)</strong></td>
+      <td>Printer vendor, office cleaning, building security</td>
+      <td>❌ Không</td>
+      <td>❌ Không bắt buộc</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="warning">
+  <strong>Pre Sales lưu ý:</strong> Nhiều CTCK không nhận ra rằng Google Analytics, Firebase, Facebook SDK cũng là "nhà cung cấp xử lý DLCN" vì chúng thu thập device ID, IP, hành vi. Tất cả đều cần có trong bản kê khai nhà cung cấp và có DPA.
+</div>
+
+<h2 id="phan-3">Phần 3 — Quy trình rà soát hợp đồng 5 bước</h2>
+
+<div class="flow-box">
+  <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">Quy trình rà soát hợp đồng nhà cung cấp</div>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>Lập bản kê khai nhà cung cấp</strong>
+      Liệt kê tất cả nhà cung cấp có truy cập DLCN (cả trong nước + nước ngoài). Bao gồm cả SaaS, SDK, cloud. Mục đích: có cái nhìn toàn cảnh.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Phân loại theo mức rủi ro</strong>
+      Phân loại: cao (cloud core, vendor xử lý nhạy cảm) / trung bình (SaaS CRM, support) / thấp (analytics, SDK phụ). Mức cao cần DPA chi tiết + audit.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>Rà soát hợp đồng hiện tại</strong>
+      Với mỗi nhà cung cấp, kiểm tra hợp đồng hiện tại có điều khoản DLCN không. Nếu không → lên kế hoạch ký DPA bổ sung.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Đàm phán và ký DPA bổ sung</strong>
+      Với nhà cung cấp chưa có DPA → gửi yêu cầu, đàm phán điều khoản, ký phụ lục DPA. Nhà cung cấp lớn (AWS, Google) thường có DPA mẫu sẵn.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-text">
+      <strong>Review định kỳ &amp; quản lý thay đổi</strong>
+      Hàng năm review lại: nhà cung cấp có thay đổi điều khoản không, có nhà cung cấp mới không, có sự cố gì không.
+    </div>
+  </div>
+</div>
+
+<h2 id="phan-4">Phần 4 — 10 điều khoản bắt buộc trong DPA</h2>
+
+<p>Một DPA đầy đủ cho CTCK phải có <strong>ít nhất 10 điều khoản cốt lõi</strong>:</p>
+
+<h3>Điều khoản 1: Phạm vi và mục đích xử lý</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Bên xử lý chỉ được xử lý DLCN vì mục đích thực hiện dịch vụ được mô tả tại Phụ lục A — không được xử lý vì bất kỳ mục đích nào khác. Mọi xử lý ngoài mục đích đã thỏa thuận đều là vi phạm hợp đồng."</em></p>
+</div>
+
+<p>Điều khoản này quan trọng vì: ngăn nhà cung cấp dùng DLCN của CTCK cho mục đích riêng (như training AI, chia sẻ cho bên thứ ba, bán cho data broker).</p>
+
+<h3>Điều khoản 2: Phạm vi DLCN được phép xử lý</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Bên xử lý chỉ được xử lý các loại DLCN được liệt kê tại Phụ lục B (ví dụ: họ tên, email, SĐT, số tài khoản). Mọi DLCN ngoài danh sách đều không được thu thập, lưu trữ, xử lý."</em></p>
+</div>
+
+<h3>Điều khoản 3: Bảo mật kỹ thuật và tổ chức</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Bên xử lý phải áp dụng các biện pháp bảo mật kỹ thuật và tổ chức phù hợp, bao gồm nhưng không giới hạn: mã hóa dữ liệu khi truyền tải (TLS 1.2+) và lưu trữ (AES-256), kiểm soát truy cập theo nguyên tắc tối thiểu (RBAC), ghi log truy cập, backup mã hóa định kỳ, penetration test hàng năm."</em></p>
+</div>
+
+<h3>Điều khoản 4: Nghĩa vụ bảo mật của nhân viên nhà cung cấp</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Nhân viên của Bên xử lý có quyền truy cập DLCN phải ký cam kết bảo mật bằng văn bản, được đào tạo về bảo vệ DLCN theo Nghị định 356, và chỉ truy cập DLCN trong phạm vi công việc được giao."</em></p>
+</div>
+
+<h3>Điều khoản 5: Không chuyển DLCN cho bên thứ ba</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Bên xử lý không được chuyển DLCN cho bên thứ ba nào, trừ khi được Bên kiểm soát đồng ý bằng văn bản trước. Mọi sub-processor phải ký cam kết bảo mật tương đương."</em></p>
+</div>
+
+<div class="warning">
+  <strong>Gap thường gặp:</strong> Nhiều SaaS (Google Analytics, Firebase, Mixpanel) dùng sub-processor mà CTCK không biết. Khi đàm phán DPA, phải yêu cầu nhà cung cấp <strong>liệt kê sub-processor</strong> và cam kết thông báo trước khi thay đổi.
+</div>
+
+<h3>Điều khoản 6: Xử lý khi hợp đồng kết thúc</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Khi hợp đồng kết thúc vì bất kỳ lý do gì, Bên xử lý phải trong vòng 30 ngày: (i) trả lại toàn bộ DLCN cho Bên kiểm soát dưới định dạng có thể đọc được, hoặc (ii) xóa vĩnh viễn toàn bộ DLCN khỏi mọi hệ thống, và (iii) cung cấp giấy chứng nhận xóa có xác nhận của đại diện có thẩm quyền."</em></p>
+</div>
+
+<h3>Điều khoản 7: Quyền giám sát và kiểm tra</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Bên kiểm soát có quyền (i) kiểm tra hệ thống và quy trình xử lý DLCN của Bên xử lý với chi phí do Bên kiểm soát chịu, thông báo trước ít nhất 30 ngày, và (ii) yêu cầu báo cáo độc lập (SOC 2, ISO 27001, hoặc tương đương) ít nhất mỗi năm một lần."</em></p>
+</div>
+
+<h3>Điều khoản 8: Thông báo sự cố</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Bên xử lý phải thông báo cho Bên kiểm soát trong vòng 48 giờ kể từ khi phát hiện sự cố bảo mật ảnh hưởng đến DLCN. Thông báo phải bao gồm: phạm vi DLCN bị ảnh hưởng, nguyên nhân, biện pháp khắc phục đã áp dụng, và cam kết hỗ trợ điều tra."</em></p>
+</div>
+
+<div class="blue-box">
+  <strong>Lưu ý:</strong> Thời hạn 48 giờ trong DPA phải <strong>NGẮN HƠN</strong> thời hạn 72 giờ CTCK phải báo cáo cho cơ quan quản lý theo Điều 12 NĐ 356. Nếu DPA ghi 72 giờ → CTCK không đủ thời gian xử lý.
+</div>
+
+<h3>Điều khoản 9: Trách nhiệm bồi thường</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Bên xử lý chịu trách nhiệm bồi thường cho Bên kiểm soát mọi thiệt hại, chi phí pháp lý, tiền phạt từ cơ quan quản lý phát sinh từ vi phạm DPA của Bên xử lý, bao gồm cả vi phạm của sub-processor."</em></p>
+</div>
+
+<h3>Điều khoản 10: Tuân thủ Nghị định 356</h3>
+
+<div class="contract-clause">
+  <h5>Mẫu điều khoản</h5>
+  <p><em>"Bên xử lý cam kết tuân thủ Nghị định 356/2025/NĐ-CP và các văn bản hướng dẫn về bảo vệ dữ liệu cá nhân của Việt Nam. Trong trường hợp có yêu cầu truy cập DLCN từ cơ quan có thẩm quyền của nước nơi Bên xử lý đặt trụ sở, Bên xử lý phải thông báo cho Bên kiểm soát trong vòng 24 giờ trước khi cung cấp dữ liệu (trừ khi bị cấm thông báo theo pháp luật nước ngoài)."</em></p>
+</div>
+
+<div class="purple-box">
+  <strong>Điều khoản 10 rất quan trọng cho CTIA:</strong> Khi nhà cung cấp là công ty nước ngoài (Mỹ, EU, Singapore), họ có thể bị chính phủ nước họ yêu cầu cung cấp dữ liệu. Điều khoản này giúp CTCK biết trước và có thời gian ứng phó.
+</div>
+
+<h2 id="phan-5">Phần 5 — Template DPA cho CTCK</h2>
+
+<div class="doc-block">
+  <div class="doc-header">
+    <span class="tag">Template</span>
+    <h3>PHỤ LỤC THỎA THUẬN XỬ LÝ DỮ LIỆU CÁ NHÂN (DPA)</h3>
+  </div>
+  <div class="doc-body">
+
+    <p style="font-size:0.85rem;color:var(--ink-soft);margin-bottom:1rem;">Phụ lục số [...]] HĐ [...] ngày [...] giữa Công ty [...] và Công ty [...]</p>
+
+    <p><strong>Điều 1. Định nghĩa</strong></p>
+    <ul style="font-size:0.9rem;">
+      <li><strong>"Bên kiểm soát"</strong> — Công ty [...] (CTCK)</li>
+      <li><strong>"Bên xử lý"</strong> — Công ty [...] (Nhà cung cấp)</li>
+      <li><strong>"DLCN"</strong> — Dữ liệu cá nhân theo Nghị định 356/2025/NĐ-CP</li>
+      <li><strong>"Dịch vụ"</strong> — Dịch vụ được mô tả tại Hợp đồng chính</li>
+    </ul>
+
+    <p><strong>Điều 2. Phạm vi xử lý DLCN</strong></p>
+    <ol style="font-size:0.9rem;">
+      <li>Bên xử lý chỉ xử lý DLCN vì mục đích thực hiện Dịch vụ theo Hợp đồng chính.</li>
+      <li>Loại DLCN được xử lý: [liệt kê theo Phụ lục A]</li>
+      <li>Chủ thể DLCN: [khách hàng / nhân viên / đối tác của Bên kiểm soát]</li>
+      <li>Thời hạn xử lý: theo thời hạn Hợp đồng chính</li>
+    </ol>
+
+    <p><strong>Điều 3. Nghĩa vụ của Bên xử lý</strong></p>
+    <ol style="font-size:0.9rem;">
+      <li>Chỉ xử lý DLCN theo chỉ dẫn bằng văn bản của Bên kiểm soát.</li>
+      <li>Áp dụng biện pháp bảo mật kỹ thuật và tổ chức theo Phụ lục C.</li>
+      <li>Đảm bảo nhân viên có liên quan ký cam kết bảo mật và được đào tạo về bảo vệ DLCN.</li>
+      <li>Không chuyển DLCN cho bên thứ ba mà không có văn bản đồng ý trước.</li>
+      <li>Hỗ trợ Bên kiểm soát thực hiện nghĩa vụ theo NĐ 356, bao gồm phản hồi yêu cầu của chủ thể DLCN.</li>
+    </ol>
+
+    <p><strong>Điều 4. Biện pháp bảo mật</strong></p>
+    <p style="font-size:0.9rem;">[Liệt kê cụ thể theo Phụ lục C — tối thiểu: mã hóa TLS 1.2+ khi truyền, AES-256 khi lưu trữ, RBAC, log truy cập, backup mã hóa]</p>
+
+    <p><strong>Điều 5. Thông báo sự cố</strong></p>
+    <ol style="font-size:0.9rem;">
+      <li>Bên xử lý thông báo cho Bên kiểm soát trong vòng <strong>48 giờ</strong> kể từ khi phát hiện sự cố bảo mật ảnh hưởng đến DLCN.</li>
+      <li>Thông báo phải nêu rõ: phạm vi DLCN bị ảnh hưởng, nguyên nhân sơ bộ, biện pháp khắc phục đã áp dụng, thời gian dự kiến khôi phục hoàn toàn.</li>
+      <li>Bên xử lý hỗ trợ Bên kiểm soát điều tra và khắc phục sự cố.</li>
+    </ol>
+
+    <p><strong>Điều 6. Quyền giám sát</strong></p>
+    <ol style="font-size:0.9rem;">
+      <li>Bên kiểm soát có quyền kiểm tra hệ thống và quy trình xử lý DLCN của Bên xử lý với thông báo trước ít nhất 30 ngày.</li>
+      <li>Bên xử lý cung cấp báo cáo độc lập (SOC 2 Type II, ISO 27001, hoặc tương đương) ít nhất mỗi năm một lần.</li>
+    </ol>
+
+    <p><strong>Điều 7. Sub-processor</strong></p>
+    <ol style="font-size:0.9rem;">
+      <li>Bên xử lý không được thuê sub-processor mới mà không thông báo và được Bên kiểm soát đồng ý bằng văn bản trước ít nhất 30 ngày.</li>
+      <li>Mọi sub-processor phải ký cam kết bảo mật tương đương DPA này.</li>
+      <li>Danh sách sub-processor hiện tại tại Phụ lục D.</li>
+    </ol>
+
+    <p><strong>Điều 8. Xử lý khi chấm dứt hợp đồng</strong></p>
+    <ol style="font-size:0.9rem;">
+      <li>Trong vòng 30 ngày kể từ ngày chấm dứt Hợp đồng chính, Bên xử lý phải:</li>
+      <li>(a) Trả lại toàn bộ DLCN cho Bên kiểm soát dưới định dạng có thể đọc được (CSV, JSON, hoặc định dạng thỏa thuận), HOẶC</li>
+      <li>(b) Xóa vĩnh viễn toàn bộ DLCN khỏi mọi hệ thống, bao gồm backup.</li>
+      <li>(c) Cung cấp giấy chứng nhận xóa/trả lại có chữ ký của đại diện có thẩm quyền.</li>
+    </ol>
+
+    <p><strong>Điều 9. Yêu cầu từ cơ quan nhà nước nước ngoài</strong></p>
+    <p style="font-size:0.9rem;">Nếu Bên xử lý nhận yêu cầu truy cập DLCN từ cơ quan có thẩm quyền nước ngoài, Bên xử lý phải thông báo cho Bên kiểm soát trong vòng 24 giờ (trừ khi bị cấm thông báo theo pháp luật nước ngoài) và cung cấp thông tin về yêu cầu.</p>
+
+    <p><strong>Điều 10. Trách nhiệm bồi thường</strong></p>
+    <p style="font-size:0.9rem;">Bên xử lý bồi thường cho Bên kiểm soát mọi thiệt hại trực tiếp, chi phí pháp lý, tiền phạt từ cơ quan quản lý phát sinh từ vi phạm DPA này, bao gồm vi phạm của sub-processor.</p>
+
+    <p><strong>Điều 11. Tuân thủ pháp luật</strong></p>
+    <p style="font-size:0.9rem;">DPA này được điều chỉnh bởi Nghị định 356/2025/NĐ-CP và pháp luật Việt Nam. Trong trường hợp có xung đột giữa Hợp đồng chính và DPA, điều khoản DPA được ưu tiên áp dụng.</p>
+
+    <hr style="border:none;border-top:1px solid var(--rule);margin:1.5rem 0;">
+
+    <p style="font-size:0.85rem;"><strong>Phụ lục A — Danh sách DLCN được xử lý</strong></p>
+    <ul style="font-size:0.85rem;margin-top:0.5rem;">
+      <li>[Họ tên, ngày sinh, số CCCD, email, SĐT, số tài khoản CK, ...]</li>
+    </ul>
+
+    <p style="font-size:0.85rem;margin-top:1rem;"><strong>Phụ lục B — Mục đích xử lý</strong></p>
+    <ul style="font-size:0.85rem;margin-top:0.5rem;">
+      <li>[Lưu trữ trên cloud, gửi email marketing, hỗ trợ khách hàng, ...]</li>
+    </ul>
+
+    <p style="font-size:0.85rem;margin-top:1rem;"><strong>Phụ lục C — Biện pháp bảo mật</strong></p>
+    <ul style="font-size:0.85rem;margin-top:0.5rem;">
+      <li>[Mã hóa TLS 1.2+, AES-256, RBAC, 2FA, audit log, backup mã hóa, pen-test hàng năm, ...]</li>
+    </ul>
+
+    <p style="font-size:0.85rem;margin-top:1rem;"><strong>Phụ lục D — Danh sách sub-processor</strong></p>
+    <ul style="font-size:0.85rem;margin-top:0.5rem;">
+      <li>[Tên sub-processor, quốc gia, mục đích sử dụng]</li>
+    </ul>
+
+  </div>
+</div>
+
+<h2 id="phan-6">Phần 6 — DPA với cloud provider nước ngoài</h2>
+
+<h3>6.1. Đặc thù với AWS, GCP, Azure</h3>
+
+<p>Các cloud provider lớn (AWS, Google Cloud, Microsoft Azure) đều có <strong>DPA mẫu</strong> cho khách hàng. Vấn đề là CTCK phải <strong>chủ động ký</strong> — DPA không tự động áp dụng khi mua dịch vụ.</p>
+
+<table>
+  <thead>
+    <tr><th>Cloud provider</th><th>DPA có sẵn?</th><th>Cách ký</th><th>Đặc thù PDPD VN</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>AWS</strong></td>
+      <td>Có — AWS DPA</td>
+      <td>Ký online qua AWS Console hoặc gửi văn bản cho AWS Legal</td>
+      <td>DPA mặc định dùng GDPR — cần bổ sung điều khoản về NĐ 356 và cơ quan VN</td>
+    </tr>
+    <tr>
+      <td><strong>Google Cloud</strong></td>
+      <td>Có — Google Cloud DPA</td>
+      <td>Tự động áp dụng khi dùng GCP Service Terms</td>
+      <td>Tương tự AWS — cần review thêm</td>
+    </tr>
+    <tr>
+      <td><strong>Microsoft Azure</strong></td>
+      <td>Có — Microsoft DPA</td>
+      <td>Tự động áp dụng theo Product Terms</td>
+      <td>Microsoft có DPA tốt, có thể chấp nhận được</td>
+    </tr>
+    <tr>
+      <td><strong>VNG Cloud, Viettel IDC, CMC Cloud</strong></td>
+      <td>Không có sẵn</td>
+      <td>Phải tự soạn và yêu cầu ký</td>
+      <td>Dễ đàm phán hơn vì là nhà cung cấp VN</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.2. Điều cần lưu ý với cloud provider nước ngoài</h3>
+
+<div class="purple-box">
+  <strong>Vấn đề CLOUD Act (Mỹ):</strong> Cloud provider Mỹ (AWS, Google, Microsoft) có thể bị chính phủ Mỹ yêu cầu cung cấp dữ liệu lưu tại Singapore. Đây là rủi ro cần thừa nhận trong CTIA.
+</div>
+
+<p>CTCK cần xem xét 3 điểm:</p>
+
+<ol>
+  <li><strong>DPA có điều khoản thông báo khi CQNN nước ngoài yêu cầu?</strong> — nếu không có, bổ sung.</li>
+  <li><strong>Data region</strong> — chọn region Singapore/Hong Kong gần VN, tránh Mỹ/EU nếu không cần.</li>
+  <li><strong>Mã hóa BYOK (Bring Your Own Key)</strong> — dùng key mã hóa của CTCK, cloud provider không đọc được. Tăng cường bảo mật.</li>
+</ol>
+
+<h2 id="phan-7">Phần 7 — Quy trình chấm dứt hợp đồng</h2>
+
+<p>Khi hợp đồng với nhà cung cấp kết thúc, CTCK cần xử lý DLCN theo 4 bước:</p>
+
+<div class="flow-box">
+  <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">Quy trình chấm dứt hợp đồng với nhà cung cấp</div>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>Thông báo trước 60 ngày</strong>
+      CTCK thông báo cho nhà cung cấp về việc chấm dứt. Bắt đầu quy trình di chuyển/xóa dữ liệu.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Di chuyển hoặc sao lưu dữ liệu</strong>
+      Nếu chuyển sang nhà cung cấp mới: thực hiện data migration, verify đầy đủ. Nếu không: yêu cầu nhà cung cấp trả lại DLCN dưới dạng file.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>Yêu cầu xóa vĩnh viễn</strong>
+      Nhà cung cấp xóa DLCN khỏi tất cả hệ thống production, backup, log, snapshot. Thời hạn: 30 ngày theo DPA.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Nhận giấy chứng nhận xóa</strong>
+      Nhà cung cấp cấp giấy chứng nhận xóa có chữ ký đại diện có thẩm quyền. Lưu vào hồ sơ tuân thủ.
+    </div>
+  </div>
+</div>
+
+<div class="warning">
+  <strong>Gap nghiêm trọng:</strong> CTCK thường không có quy trình chấm dứt rõ ràng. Khi đổi cloud provider hoặc SaaS, dữ liệu cũ vẫn còn trên hệ thống cũ — vi phạm Điều 11 NĐ 356 (nghĩa vụ xóa khi hết mục đích). Giấy chứng nhận xóa là bằng chứng quan trọng.
+</div>
+
+<h2 id="phan-8">Phần 8 — Gap đặc thù CTCK</h2>
+
+<table>
+  <thead>
+    <tr><th>Gap</th><th>Hậu quả pháp lý</th><th>Cách phát hiện</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cloud provider (AWS, GCP, Azure) chưa ký DPA bổ sung</td>
+      <td>Vi phạm Điều 26 — không có DPA với bên xử lý</td>
+      <td>Hỏi: "Hợp đồng AWS có DPA kèm theo không?"</td>
+    </tr>
+    <tr>
+      <td>SaaS CRM/Support dùng nhiều năm nhưng không có DPA</td>
+      <td>Vi phạm Điều 26</td>
+      <td>Rà soát hợp đồng Salesforce, HubSpot, Zendesk</td>
+    </tr>
+    <tr>
+      <td>App có SDK nước ngoài (Firebase, Adjust) nhưng không có điều khoản bảo mật</td>
+      <td>Vi phạm Điều 5 (minh bạch) + Điều 32 (CTIA)</td>
+      <td>Kiểm tra danh sách SDK trong app</td>
+    </tr>
+    <tr>
+      <td>Call center nước ngoài không có DPA</td>
+      <td>Vi phạm Điều 26 + Điều 32</td>
+      <td>Hỏi: "Bộ phận hỗ trợ ở đâu, ai truy cập DLCN?"</td>
+    </tr>
+    <tr>
+      <td>DPA không có điều khoản 48h thông báo sự cố</td>
+      <td>Khi xảy ra sự cố, không đủ thời gian báo cáo 72h cho BCA</td>
+      <td>Đọc kỹ điều khoản thông báo sự cố</td>
+    </tr>
+    <tr>
+      <td>DPA không có điều khoản xóa dữ liệu khi kết thúc</td>
+      <td>Không có căn cứ pháp lý để yêu cầu xóa</td>
+      <td>Đọc điều khoản chấm dứt</td>
+    </tr>
+    <tr>
+      <td>CTCK không lưu giấy chứng nhận xóa khi chấm dứt</td>
+      <td>Không có bằng chứng tuân thủ Điều 11</td>
+      <td>Kiểm tra hồ sơ tuân thủ</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Câu hỏi Pre Sales phát hiện gap DPA</h3>
+
+<ol>
+  <li><em>"Liệt kê tất cả nhà cung cấp có truy cập DLCN khách hàng?"</em> → Lập bản kê khai</li>
+  <li><em>"Với cloud AWS/GCP/Azure, công ty đã ký DPA bổ sung chưa?"</em> → DPA cloud</li>
+  <li><em>"SaaS nào đang xử lý DLCN (CRM, support, marketing)?"</em> → DPA SaaS</li>
+  <li><em>"DPA có điều khoản thông báo sự cố trong 48h không?"</em> → Thời hạn thông báo</li>
+  <li><em>"Khi hợp đồng kết thúc, dữ liệu được xử lý thế nào? Có giấy chứng nhận xóa không?"</em> → Quy trình chấm dứt</li>
+  <li><em>"App giao dịch có dùng SDK nước ngoài không? Có điều khoản bảo mật SDK không?"</em> → SDK</li>
+  <li><em>"Bộ phận back-office hoặc call center ở nước ngoài có DPA không?"</em> → Outsourcing</li>
+</ol>
+
+<h2 id="phan-9">Phần 9 — Output giao cho khách</h2>
+
+<ul class="checklist">
+  <li><strong>Bản kê khai nhà cung cấp</strong> — danh sách đầy đủ + phân loại rủi ro</li>
+  <li><strong>DPA đã ký</strong> với từng nhà cung cấp (đặc biệt cloud, SaaS chính)</li>
+  <li><strong>Báo cáo gap</strong> — nhà cung cấp nào chưa có DPA, kế hoạch ký bổ sung</li>
+  <li><strong>Quy trình chấm dứt hợp đồng</strong> — checklist di chuyển/xóa dữ liệu</li>
+  <li><strong>Hồ sơ giấy chứng nhận xóa</strong> khi chấm dứt hợp đồng cũ (nếu có)</li>
+</ul>
+
+<div class="orange-box">
+  <strong>Thời gian ước tính:</strong>
+  <br>Lập bản kê khai: <strong>1-2 ngày</strong>
+  <br>Rà soát &amp; soạn DPA bổ sung: <strong>5-10 ngày</strong> cho 5-10 nhà cung cấp lớn
+  <br>Đàm phán &amp; ký DPA: <strong>10-30 ngày</strong> (phụ thuộc nhà cung cấp)
+  <br>Review định kỳ: <strong>2-3 ngày/năm</strong>
+</div>
+
+<div class="quote">
+  <strong>Nguyên tắc:</strong> Không có DPA = chấp nhận rủi ro. CTCK chịu trách nhiệm cuối cùng dù nhà cung cấp lộ dữ liệu. Pre Sales nên giúp CTCK hiểu: DPA là <strong>bảo hiểm</strong> chứ không phải thủ tục hành chính.
+</div>
+
+<h2>Câu hỏi trắc nghiệm</h2>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">1. DPA là viết tắt của?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Data Privacy Agreement</li>
+    <li>Data Processing Agreement</li>
+    <li>Data Protection Authority</li>
+    <li>Digital Privacy Act</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">2. Khi nhà cung cấp (AWS Singapore) bị lộ DLCN, ai chịu trách nhiệm pháp lý chính?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>AWS — vì họ lưu trữ dữ liệu</li>
+    <li>CTCK — vì là bên kiểm soát</li>
+    <li>Khách hàng — vì là chủ thể DLCN</li>
+    <li>Không ai — vì đây là sự cố bất khả kháng</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">3. DPA phải có điều khoản thông báo sự cố trong bao lâu để CTCK kịp báo cáo 72h cho BCA?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>24 giờ</li>
+    <li>48 giờ</li>
+    <li>72 giờ</li>
+    <li>7 ngày</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">4. Google Analytics (analytics SDK) có phải là "nhà cung cấp xử lý DLCN" không?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Không — chỉ thu thập dữ liệu thống kê</li>
+    <li>Có — thu thập device ID, IP, hành vi → là DLCN</li>
+    <li>Tùy — tùy theo gói dịch vụ</li>
+    <li>Không — vì Google tự xử lý</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">5. Khi hợp đồng với nhà cung cấp kết thúc, điều khoản nào trong DPA là bắt buộc?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Không cần làm gì — hợp đồng hết là xong</li>
+    <li>Xóa hoặc trả lại DLCN + cung cấp giấy chứng nhận xóa</li>
+    <li>Chỉ xóa nếu khách hàng yêu cầu</li>
+    <li>Lưu trữ DLCN thêm 1 năm để backup</li>
+  </ol>
+</div>
+
+<h2>Câu hỏi suy nghĩ</h2>
+
+<ol>
+  <li>Khi CTCK hỏi "Chúng tôi dùng AWS từ 5 năm rồi nhưng chưa ký DPA bổ sung, có cần ký lại không?", bạn sẽ trả lời thế nào?</li>
+  <li>Nếu nhà cung cấp cloud từ chối bổ sung điều khoản thông báo 48h (chỉ chấp nhận 72h), CTCK nên làm gì?</li>
+  <li>Một CTCK dùng 12 SaaS + 2 cloud + 3 SDK nước ngoài. Nếu phải ký DPA với tất cả trong 30 ngày, chiến lược nào ưu tiên?</li>
+</ol>
+
+<div class="quote">
+  Nếu có gì chưa rõ, hỏi. Bài tiếp theo trong series: <a href="0009-dao-tao-noi-bo-deep-dive.html">Lesson 0009: Đào tạo nội bộ Deep Dive</a> — biến nhân sự thành "lá chắn sống" PDPD.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">← Bài trước</span>
+    <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003</a> ·
+    <a href="0006-bo-nhiem-dpo-deep-dive.html">Lesson 0006</a> ·
+    <a href="0007-dpia-ctia-deep-dive.html">Lesson 0007</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">Bài tiếp</span>
+    <a href="0009-dao-tao-noi-bo-deep-dive.html">Lesson 0009 — Đào tạo nội bộ →</a>
+  </div>
+</div>
+
+</body>
+</html>

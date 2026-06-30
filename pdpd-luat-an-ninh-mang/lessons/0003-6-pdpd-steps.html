@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: 6 bước tuân thủ PDPD — từ lý thuyết đến hành động</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --green: #2c5e2e;
+      --green-bg: #e8f5e9;
+      --blue: #1a3a5c;
+      --blue-bg: #e8f0f7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2rem; }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.6rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.25rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .green-box {
+      background: var(--green-bg);
+      border-left: 4px solid var(--green);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .green-box strong { color: var(--green); }
+    .blue-box {
+      background: var(--blue-bg);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .blue-box strong { color: var(--blue); }
+    .step-card {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .step-header {
+      background: var(--blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .step-num {
+      background: rgba(255,255,255,0.2);
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .step-header h3 {
+      margin: 0;
+      color: white;
+      font-size: 0.95rem;
+    }
+    .step-body { padding: 1.25rem; }
+    .step-body h4 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin: 1rem 0 0.4rem;
+    }
+    .step-body h4:first-child { margin-top: 0; }
+    .checklist {
+      list-style: none;
+      margin: 0 0 1rem;
+    }
+    .checklist li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .checklist li::before {
+      content: "\2610";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 1rem;
+    }
+    .warning {
+      background: #fff9e6;
+      border: 1px solid #e6c800;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .warning strong { color: #b8860b; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.95rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0003<br>6 bước tuân thủ PDPD — từ lý thuyết đến hành động</h1>
+
+<div class="subtitle">Hướng dẫn thực thi Nghị định 356/2025/NĐ-CP từ góc độ doanh nghiệp.</div>
+
+<div class="meta">
+  <span class="badge">Thực hành</span>
+  <span class="pill">Đọc ~25 phút</span>
+  <span class="pill">Có checklist</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="highlight">
+  <strong>Bạn đang ở đâu?</strong> Nếu chưa đọc <a href="0001-tong-quan-hai-luat.html">Lesson 0001</a>, hãy đọc trước để hiểu Nghị định 356 và Luật ANM 2025. Bài học này hướng dẫn <em>làm gì</em> — không phải <em>tại sao</em>.
+</div>
+
+<p>Bài học này biến nghĩa vụ pháp lý thành <strong>6 bước hành động cụ thể</strong>. Mỗi bước có: mục tiêu, checklist chuẩn bị, câu hỏi Pre Sales cần hỏi khách hàng, và cảnh báo gap thường gặp. Đây là bản đồ triển khai thực tế — không phải lý thuyết suông.</p>
+
+<h2>Bước 1 — Data Mapping: Rà soát bản đồ dữ liệu</h2>
+
+<p>Trước khi làm bất cứ điều gì, bạn phải <strong>biết mình đang giữ gì, giữ ở đâu, giữ để làm gì, và giữ bao lâu</strong>. Data Mapping là bước nền tảng — không có nó, mọi chính sách đều là đoán mò.</p>
+
+<h3>Mục tiêu</h3>
+<ul>
+  <li>Liệt kê tất cả nguồn DLCN đang thu thập (khách hàng, nhân sự, đối tác)</li>
+  <li>Xác định mục đích xử lý của từng nguồn</li>
+  <li>Vẽ sơ đồ luồng dữ liệu — ai xử lý, lưu ở đâu, chia sẻ cho ai</li>
+  <li>Phân loại: DLCN cơ bản vs nhạy cảm (Điều 3, 4 NĐ 356)</li>
+</ul>
+
+<h3>Căn pháp lý cốt lõi</h3>
+<ul>
+  <li><strong>Điều 6, 7 NĐ 356</strong> — Xác định mục đích xử lý → phải biết đang xử lý gì.</li>
+  <li><strong>Điều 11</strong> — Nghĩa vụ bảo mật: phải phân loại DLCN trước.</li>
+  <li><strong>Điều 31</strong> — DPIA bắt buộc khi xử lý DLCN nhạy cảm → phải biết nhạy cảm nằm ở đâu.</li>
+  <li><strong>Điều 32</strong> — CTIA khi chuyển DLCN ra nước ngoài → phải biết dữ liệu đi qua biên giới nào.</li>
+</ul>
+
+<div class="highlight">
+  <strong>📖 Đọc chuyên sâu:</strong> Phần này đã được tách thành <a href="0004-data-mapping-deep-dive.html">Lesson 0004: Data Mapping Deep Dive</a> — bao gồm taxonomy 7 lớp dữ liệu CTCK, khung 5W1H chi tiết, cách vẽ Data Flow Diagram, và 20 trường DLCN điển hình. Đọc Lesson 0004 nếu bạn cần hướng dẫn từng bước cụ thể.
+</div>
+
+<h3>Câu hỏi Pre Sales hỏi khách</h3>
+<ul>
+  <li><em>"Anh/chị đang thu thập những loại thông tin khách hàng nào? Có lưu ở CRM, ERP, hay các hệ thống nào khác?"</em></li>
+  <li><em>"Hệ thống reconciliation, AML, hay phần mềm giao dịch có lưu dữ liệu khách hàng không?"</em></li>
+  <li><em>"Dữ liệu có chia sẻ cho bên thứ ba (cloud provider, đối tác, ngân hàng lưu ký) không?"</em></li>
+  <li><em>"Có hệ thống nào xử lý tự động dữ liệu khách hàng không (auto-screening AML, auto-matching giao dịch)?"</em></li>
+</ul>
+
+<div class="warning">
+  <strong>Gap thường gặp:</strong> CTCK thường quên dữ liệu từ hệ thống <strong>reconciliation, AML, ERP, phần mềm giao dịch</strong> — không nằm trong CRM nhưng vẫn là DLCN. Đặc biệt: ghi âm cuộc gọi = DLCN nhạy cảm (sinh trắc học, Điều 4(3)), camera an ninh = DLCN nhạy cảm (Điều 4(3)). Tất cả đều phải được map.
+</div>
+
+<h3>Output giao cho khách</h3>
+<ul class="checklist">
+  <li>Bảng liệt kê đầy đủ trường DLCN (Data Register)</li>
+  <li>Sơ đồ luồng dữ liệu (Data Flow Diagram)</li>
+  <li>Báo cáo Gap Data Mapping</li>
+</ul>
+
+<div class="blue-box">
+  <strong>Thời gian ước tính:</strong> CTCK quy mô vừa (50-200 nhân viên, 5-10 hệ thống): <strong>3-5 ngày làm việc</strong>. Đây là bước nền tảng quyết định chất lượng 5 bước còn lại.
+</div>
+
+<h2>Bước 2 — Cập nhật hồ sơ tuân thủ</h2>
+
+<p>Với bản đồ dữ liệu đã rõ, bước tiếp theo là làm cho <strong>chính sách đi trước hành động</strong>. CTCK bắt buộc phải có 5 tài liệu: Privacy Notice, Chính sách nội bộ, Hợp đồng, SOP phản hồi CTDL, và audit trail consent.</p>
+
+<h3>Mục tiêu</h3>
+<ul>
+  <li>Xây dựng hoặc cập nhật Thông báo Quyền riêng tư (Privacy Notice)</li>
+  <li>Xây dựng Chính sách Bảo vệ DLCN nội bộ</li>
+  <li>Cập nhật hợp đồng, điều khoản sử dụng app/web</li>
+  <li>Xây dựng quy trình phản hồi yêu cầu CTDL (10/15/30 ngày theo Điều 5)</li>
+</ul>
+
+<div class="highlight">
+  <strong>Đọc chuyên sâu:</strong> Phần này đã được tách thành <a href="0005-ho-so-tu-an-thu-deep-dive.html">Lesson 0005: Hồ sơ tuân thủ Deep Dive</a> — bao gồm template Privacy Notice, cấu trúc Chính sách nội bộ, SOP 6 bước, so sánh NĐ 13 vs NĐ 356, và 5 gap đặc thù CTCK.
+</div>
+
+<h3>Câu hỏi Pre Sales hỏi khách</h3>
+<ul>
+  <li><em>"Chính sách bảo mật hiện tại của công ty cập nhật theo NĐ 356 chưa? Đặc biệt phần 'hành vi vi phạm pháp luật'?"</em></li>
+  <li><em>"Khi khách hàng gửi email yêu cầu xóa dữ liệu hoặc cấp bản sao, công ty phản hồi trong bao lâu?"</em></li>
+  <li><em>"Hệ thống có lưu audit trail — tức ghi nhận ai đồng ý, khi nào, bằng cách nào không?"</em></li>
+  <li><em>"App giao dịch có dùng third-party SDK tracking không? Có thông báo trong Điều khoản sử dụng không?"</em></li>
+</ul>
+
+<div class="warning">
+  <strong>Gap thường gặp:</strong> Chính sách cũ copy từ NĐ 13/2023. NĐ 356 mở rộng DLCN nhạy cảm — <strong>hành vi vi phạm pháp luật</strong> (kể cả vi phạm hành chính, giao thông) giờ là nhạy cảm. CTCK nào có hệ thống tag "vi phạm" khách hàng → phải cập nhật ngay. Ngoài ra: <strong>ghi âm cuộc gọi</strong> = DLCN nhạy cảm (sinh trắc học, Điều 4(3)) — Privacy Notice phải thông báo cả bằng lời lẫn trong văn bản.
+</div>
+
+<h3>Output giao cho khách</h3>
+<ul class="checklist">
+  <li>Thông báo Quyền riêng tư (Privacy Notice) phiên bản NĐ 356</li>
+  <li>Chính sách BVDLCN nội bộ</li>
+  <li>SOP phản hồi yêu cầu CTDL</li>
+  <li>Audit trail consent đã tích hợp vào hệ thống</li>
+</ul>
+
+<h2>Bước 3 — Bổ nhiệm DPO</h2>
+
+<p>DPO không phải chỉ là "người ký tên". Điều 13.2 NĐ 356 yêu cầu người này phải <strong>đáp ứng đồng thời cả 3 tiêu chuẩn</strong>. CTCK gần như chắc chắn thuộc diện bắt buộc có DPO — xử lý DLCN nhạy cảm với hàng nghìn khách mỗi ngày.</p>
+
+<h3>Mục tiêu</h3>
+<ul>
+  <li>Xác định nhân sự đáp ứng đủ 3 tiêu chuẩn (Điều 13.2)</li>
+  <li>Nếu chưa có → đăng ký khóa học DPO cho nhân sự phù hợp</li>
+  <li>Ra quyết định bổ nhiệm bằng văn bản</li>
+</ul>
+
+<div class="highlight">
+  <strong>Đọc chuyên sâu:</strong> Phần này đã được tách thành <a href="0006-bo-nhiem-dpo-deep-dive.html">Lesson 0006: Bổ nhiệm DPO Deep Dive</a> — bao gồm ma trận đánh giá ứng viên, template Quyết định bổ nhiệm, 7 gap DPO đặc thù CTCK, và kịch bản phỏng vấn nhanh.
+</div>
+
+<h3>3 tiêu chuẩn DPO theo Điều 13.2</h3>
+
+<table>
+  <thead>
+    <tr><th>Tiêu chuẩn</th><th>Yêu cầu</th><th>Ứng viên tiềm năng</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>(i) Trình độ</strong></td>
+      <td>Cao đẳng trở lên, bất kỳ ngành nào</td>
+      <td>Hầu hết nhân viên CTCK đều có</td>
+    </tr>
+    <tr>
+      <td><strong>(ii) Kinh nghiệm</strong></td>
+      <td>02+ năm trong pháp chế, CNTT, ANM, quản trị rủi ro, kiểm soát tuân thủ, quản lý nhân sự</td>
+      <td>Compliance Officer, Pháp chế, AML Manager</td>
+    </tr>
+    <tr>
+      <td><strong>(iii) Đào tạo</strong></td>
+      <td>Phải có chứng chỉ hoặc bằng cấp về BVDLCN — tự tìm hiểu không đủ</td>
+      <td>⚠️ Thường thiếu nhất — cần đăng ký CIPP/A, CIPM, DPO Certification</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Câu hỏi Pre Sales hỏi khách</h3>
+<ul>
+  <li><em>"Ai là DPO hiện tại? Tốt nghiệp trường gì, ngành gì, năm nào?"</em> → kiểm tra (i)</li>
+  <li><em>"Trước đây 2 năm, anh/chị làm ở lĩnh vực nào? Có bằng chứng không?"</em> → kiểm tra (ii)</li>
+  <li><em>"Anh/chị đã có chứng chỉ BVDLCN chưa? Có chứng chỉ nào từ IAPP không?"</em> → kiểm tra (iii) ⚠️</li>
+</ul>
+
+<div class="warning">
+  <strong>Gap thường gặp:</strong> CTCK thường chỉ định người IT phụ trách "luân phiên" làm DPO — nhưng người đó thiếu kinh nghiệm tuân thủ (ii) và chưa có chứng chỉ (iii). Ứng viên lý tưởng nhất là <strong>Compliance Officer hiện tại</strong> — cần bổ sung chứng chỉ PDPD.
+</div>
+
+<h3>Output giao cho khách</h3>
+<ul class="checklist">
+  <li>Quyết định bổ nhiệm DPO bằng văn bản</li>
+  <li>Kế hoạch đào tạo DPO (CIPP/A hoặc CIPM) nếu tiêu chuẩn (iii) chưa đạt</li>
+  <li>Thông tin DPO công khai trên website CTCK</li>
+</ul>
+
+<h2>Bước 4 — DPIA và CTIA</h2>
+
+<p>Đánh giá tác động giúp doanh nghiệp <strong>phát hiện rủi ro trước khi xảy ra</strong> — không phải sau khi bị kiểm tra. CTCK xử lý hàng nghìn tài khoản tự động + dùng cloud nước ngoài → hầu hết thuộc diện DPIA + CTIA.</p>
+
+<h3>Mục tiêu</h3>
+<ul>
+  <li>Đánh giá DPIA khi xử lý DLCN nhạy cảm, xử lý tự động quy mô lớn</li>
+  <li>Đánh giá CTIA khi chuyển DLCN ra nước ngoài</li>
+</ul>
+
+<div class="highlight">
+  <strong>Đọc chuyên sâu:</strong> Phần này đã được tách thành <a href="0007-dpia-ctia-deep-dive.html">Lesson 0007: DPIA &amp; CTIA Deep Dive</a> — bao gồm quy trình 6 bước DPIA, template báo cáo DPIA + CTIA, 3 căn cứ Điều 32, decision tree CTIA, và 6 câu hỏi Pre Sales phát hiện gap.
+</div>
+
+<h3>Hai loại đánh giá cần nắm</h3>
+
+<table>
+  <thead>
+    <tr><th>Loại</th><th>Căn cứ NĐ 356</th><th>CTCK áp dụng khi nào</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>DPIA</strong></td>
+      <td>Điều 31</td>
+      <td>eKYC, AML, ghi âm, camera, hệ thống giao dịch tự động</td>
+    </tr>
+    <tr>
+      <td><strong>CTIA</strong></td>
+      <td>Điều 32</td>
+      <td>Dùng AWS/GCP/Azure nước ngoài, có back-office nước ngoài, app dùng SDK nước ngoài</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Câu hỏi Pre Sales hỏi khách</h3>
+<ul>
+  <li><em>"Hệ thống giao dịch chứng khoán xử lý tự động bao nhiêu tài khoản?"</em> → DPIA</li>
+  <li><em>"Cloud lưu DLCN ở region nào? Có báo cáo CTIA không?"</em> → CTIA</li>
+  <li><em>"Trước khi triển khai hệ thống mới, DPO có được tham gia đánh giá không?"</em> → DPIA trước triển khai</li>
+  <li><em>"App có dùng SDK nước ngoài không (Firebase, Adjust)?"</em> → CTIA ẩn</li>
+</ul>
+
+<div class="warning">
+  <strong>Gap thường gặp:</strong> CTCK nghĩ DPIA chỉ cần cho hệ thống "lớn lắm" — thực ra eKYC, AML, ghi âm, camera đều thuộc diện. CTCK dùng AWS Singapore mà không có CTIA = vi phạm Điều 32. CTCK dùng SDK nước ngoài mà không thông báo = vi phạm Điều 5.
+</div>
+
+<h3>Output giao cho khách</h3>
+<ul class="checklist">
+  <li>Báo cáo DPIA cho mỗi hệ thống xử lý nhạy cảm</li>
+  <li>Báo cáo CTIA cho mỗi dòng dữ liệu ra nước ngoài</li>
+  <li>Biện pháp giảm thiểu rủi ro + ý kiến DPO đã ghi nhận</li>
+</ul>
+
+<h2>Bước 5 — Rà soát hợp đồng với nhà cung cấp</h2>
+
+<p>DLCN của khách hàng không chỉ nằm trong tay doanh nghiệp — nó còn ở <strong>đối tác, cloud provider, SaaS, SDK</strong>. Nếu nhà cung cấp lộ dữ liệu, <strong>CTCK vẫn chịu trách nhiệm cuối cùng</strong>. Phải có DPA.</p>
+
+<h3>Mục tiêu</h3>
+<ul>
+  <li>Lập bản kê khai tất cả nhà cung cấp xử lý DLCN</li>
+  <li>Ký DPA với từng nhà cung cấp — đặc biệt cloud, SaaS, SDK nước ngoài</li>
+  <li>Có quy trình xóa dữ liệu khi chấm dứt hợp đồng</li>
+</ul>
+
+<div class="highlight">
+  <strong>Đọc chuyên sâu:</strong> Phần này đã được tách thành <a href="0008-dpa-deep-dive.html">Lesson 0008: DPA Deep Dive</a> — bao gồm 10 điều khoản bắt buộc, template DPA 11 điều, 7 gap đặc thù CTCK, và chiến lược đàm phán với cloud provider lớn (AWS, GCP, Azure).
+</div>
+
+<h3>CTCK cần DPA với ai?</h3>
+
+<table>
+  <thead>
+    <tr><th>Loại nhà cung cấp</th><th>Ví dụ</th><th>DPA bắt buộc?</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cloud IaaS</td>
+      <td>AWS, GCP, Azure, VNG Cloud</td>
+      <td>✅ Có</td>
+    </tr>
+    <tr>
+      <td>SaaS CRM/Marketing</td>
+      <td>Salesforce, HubSpot, Mailchimp</td>
+      <td>✅ Có</td>
+    </tr>
+    <tr>
+      <td>SaaS Support</td>
+      <td>Zendesk, Intercom</td>
+      <td>✅ Có</td>
+    </tr>
+    <tr>
+      <td>SDK analytics</td>
+      <td>Google Analytics, Firebase, Adjust</td>
+      <td>✅ Có (qua EULA + Privacy Policy)</td>
+    </tr>
+    <tr>
+      <td>Outsourcing/Back-office</td>
+      <td>Call center Philippines, IT outsource</td>
+      <td>✅ Có + CTIA</td>
+    </tr>
+    <tr>
+      <td>Dịch vụ IT không truy cập DLCN</td>
+      <td>Printer, cleaning, security vật lý</td>
+      <td>❌ Không</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Câu hỏi Pre Sales hỏi khách</h3>
+<ul>
+  <li><em>"Liệt kê tất cả nhà cung cấp có truy cập DLCN khách hàng?"</em> → Lập bản kê khai</li>
+  <li><em>"Cloud AWS/GCP/Azure đã ký DPA bổ sung chưa?"</em> → DPA cloud</li>
+  <li><em>"DPA có điều khoản thông báo sự cố trong 48h không?"</em> → Khớp với Điều 12 NĐ 356</li>
+  <li><em>"Khi hợp đồng kết thúc, dữ liệu được xóa thế nào? Có giấy chứng nhận không?"</em> → Quy trình chấm dứt</li>
+</ul>
+
+<div class="warning">
+  <strong>Gap thường gặp:</strong> Hợp đồng cloud mặc định (AWS, Azure) <strong>không tự động có DPA</strong> — phải ký bổ sung. SaaS CRM/Support dùng nhiều năm nhưng không có DPA là vi phạm Điều 26. SDK nước ngoài trong app thường bị bỏ qua.
+</div>
+
+<h3>Output giao cho khách</h3>
+<ul class="checklist">
+  <li>Bản kê khai nhà cung cấp + phân loại rủi ro</li>
+  <li>DPA đã ký với từng nhà cung cấp (đặc biệt cloud + SaaS chính)</li>
+  <li>Quy trình chấm dứt: xóa dữ liệu + giấy chứng nhận xóa</li>
+</ul>
+
+<h2>Bước 6 — Đào tạo nội bộ</h2>
+
+<p>Hệ thống tốt mà nhân sự không biết cách xử lý → vẫn vi phạm. Đào tạo nội bộ là <strong>bước cuối cùng nhưng không kém phần quan trọng</strong>.</p>
+
+<h3>Mục tiêu</h3>
+<ul>
+  <li>Đào tạo 3 nhóm nhân sự theo mức độ tiếp xúc DLCN</li>
+  <li>Đào tạo chống lừa đảo (phishing), social engineering</li>
+  <li>Ghi nhận biên bản đào tạo làm bằng chứng tuân thủ</li>
+  <li>Đào tạo định kỳ — không phải một lần</li>
+</ul>
+
+<div class="quote">
+  <strong>Đào tạo nội bộ</strong> — bước cuối nhưng không kém phần quan trọng. Đọc chuyên sâu tại <a href="0009-dao-tao-noi-bo-deep-dive.html">Lesson 0009: Đào tạo nội bộ Deep Dive</a> — bao gồm chương trình đào tạo cho 3 nhóm (Frontline/IT/Leadership), template onboarding 7 ngày, kịch bản phishing simulation, tabletop exercise ransomware, và template biên bản đào tạo.
+</div>
+
+<h3>3 nhóm cần đào tạo</h3>
+
+<table>
+  <thead>
+    <tr><th>Nhóm</th><th>Nội dung đào tạo</th><th>Tần suất</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Ban lãnh đạo</strong></td>
+      <td>Nghĩa vụ pháp lý, rủi ro phạt (đến 5% doanh thu hoặc 5 tỷ VNĐ theo Điều 74 NĐ 356), quyết định đầu tư compliance</td>
+      <td>1 lần/năm</td>
+    </tr>
+    <tr>
+      <td><strong>Nhân sự xử lý DLCN</strong></td>
+      <td>Quy trình đúng, cách phản hồi yêu cầu CTDL, phân biệt DLCN cơ bản vs nhạy cảm</td>
+      <td>2 lần/năm</td>
+    </tr>
+    <tr>
+      <td><strong>Nhân sự IT</strong></td>
+      <td>Bảo mật hệ thống, phát hiện xâm nhập, mã hóa, quản lý quyền truy cập</td>
+      <td>2 lần/năm</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Câu hỏi Pre Sales hỏi khách</h3>
+<ul>
+  <li><em>"Công ty đã tổ chức đào tạo PDPD cho nhân sự chưa? Có biên bản ghi nhận không?"</em></li>
+  <li><em>"Khi nhân viên mới vào, có được onboarding về bảo vệ DLCN không?"</em></li>
+  <li><em>"Nhân sự IT có được training về phát hiện phishing, social engineering không?"</em></li>
+</ul>
+
+<div class="warning">
+  <strong>Gap thường gặp:</strong> Đào tạo một lần rồi quên. Luật yêu cầu <strong>đào tạo định kỳ</strong>, nhất là khi có nhân sự mới hoặc hệ thống mới. Không có biên bản = không có bằng chứng tuân thủ.
+</div>
+
+<h3>Output giao cho khách</h3>
+<ul class="checklist">
+  <li>Chương trình đào tạo định kỳ cho 3 nhóm</li>
+  <li>Biên bản đào tạo có chữ ký, ngày tháng</li>
+  <li>Chính sách onboarding cho nhân sự mới về BVDLCN</li>
+</ul>
+
+<h2>Checklist tổng hợp — 6 bước tuân thủ PDPD</h2>
+
+<p>Dùng checklist này khi đi khảo sát khách hàng. Check từng mục, đánh dấu gap để báo cáo:</p>
+
+<div class="green-box">
+  <strong>Bước 1 — Data Mapping</strong>
+  <ul class="checklist">
+    <li>Bản đồ dữ liệu (Data Flow Diagram)</li>
+    <li>Bảng liệt kê trường DLCN đang xử lý</li>
+    <li>Phân loại DLCN cơ bản vs nhạy cảm</li>
+    <li>Đánh giá nhà cung cấp xử lý DLCN</li>
+  </ul>
+</div>
+
+<div class="green-box">
+  <strong>Bước 2 — Hồ sơ tuân thủ</strong>
+  <ul class="checklist">
+    <li>Thông báo Quyền riêng tư (NĐ 356)</li>
+    <li>Chính sách BVDLCN nội bộ</li>
+    <li>SOP phản hồi yêu cầu CTDL (10/15/30 ngày)</li>
+    <li>Hệ thống audit trail consent</li>
+  </ul>
+</div>
+
+<div class="green-box">
+  <strong>Bước 3 — DPO</strong>
+  <ul class="checklist">
+    <li>Quyết định bổ nhiệm DPO bằng văn bản</li>
+    <li>Kiểm tra đủ 3 tiêu chuẩn (Điều 13.2)</li>
+    <li>Kế hoạch đào tạo DPO (nếu cần)</li>
+    <li>Xác định quyền hạn DPO trong công ty</li>
+  </ul>
+</div>
+
+<div class="green-box">
+  <strong>Bước 4 — DPIA / CTIA</strong>
+  <ul class="checklist">
+    <li>Báo cáo DPIA (nếu xử lý DLCN nhạy cảm)</li>
+    <li>Báo cáo CTIA (nếu chuyển dữ liệu ra nước ngoài)</li>
+    <li>Biện pháp giảm thiểu rủi ro</li>
+    <li>Ý kiến DPO trước triển khai hệ thống mới</li>
+  </ul>
+</div>
+
+<div class="green-box">
+  <strong>Bước 5 — Hợp đồng nhà cung cấp</strong>
+  <ul class="checklist">
+    <li>Danh sách đầy đủ nhà cung cấp xử lý DLCN</li>
+    <li>DPA đã ký với từng nhà cung cấp</li>
+    <li>Điều khoản xóa/khôi phục khi kết thúc hợp đồng</li>
+  </ul>
+</div>
+
+<div class="green-box">
+  <strong>Bước 6 — Đào tạo nội bộ</strong>
+  <ul class="checklist">
+    <li>Chương trình đào tạo cho 3 nhóm</li>
+    <li>Biên bản đào tạo có chữ ký, ngày tháng</li>
+    <li>Onboarding DLCN cho nhân sự mới</li>
+    <li>Training chống phishing, social engineering</li>
+  </ul>
+</div>
+
+<h2>Câu hỏi trắc nghiệm</h2>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">1. Bước nào là bước NỀN TẢNG, phải làm trước tất cả?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Cập nhật hồ sơ tuân thủ</li>
+    <li style="color:var(--green);"><strong>Data Mapping</strong> (Đáp án đúng — phải biết mình đang giữ gì trước khi xây chính sách, bổ nhiệm DPO hay đánh giá tác động. Không có Data Mapping, mọi bước sau đều thiếu cơ sở.)</li>
+    <li>Bổ nhiệm DPO</li>
+    <li>Đào tạo nội bộ</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">2. CTCK nào xử lý dữ liệu giao dịch chứng khoán tự động có bắt buộc thực hiện DPIA không?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Không, chỉ cần khi xử lý trên 10.000 tài khoản</li>
+    <li>Không, DPIA chỉ áp dụng cho ngân hàng</li>
+    <li style="color:var(--green);"><strong>Có</strong> (Đáp án đúng — xử lý tự động quy mô lớn thuộc diện DPIA bắt buộc theo Điều 31 NĐ 356. Không có báo cáo DPIA = vi phạm khi bị kiểm tra.)</li>
+    <li>Có, nhưng chỉ cần đánh giá nội bộ, không cần báo cáo</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">3. Đâu là gap PHỔ BIẾN NHẤT khi bổ nhiệm DPO tại CTCK?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Không có quyết định bổ nhiệm bằng văn bản</li>
+    <li>Không xác định quyền hạn DPO</li>
+    <li>Chỉ định người IT nhưng chưa qua đào tạo chuyên biệt PDPD</li>
+    <li>DPO kiêm nhiệm quá nhiều vị trí</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">4. Theo Điều 74 NĐ 356, mức phạt tối đa khi vi phạm PDPD là bao nhiêu?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>500 triệu VNĐ</li>
+    <li>1 tỷ VNĐ</li>
+    <li style="color:var(--green);"><strong>5% doanh thu hoặc 5 tỷ VNĐ</strong> (Đáp án đúng — mức phạt cao nhất có thể lên đến 5% doanh thu toàn cầp (doanh nghiệp nước ngoài) hoặc 5 tỷ VNĐ (doanh nghiệp trong nước), áp dụng cho hành vi vi phạm nghiêm trọng.)</li>
+    <li>10 tỷ VNĐ</li>
+  </ol>
+</div>
+
+<h2>Câu hỏi suy nghĩ trước lesson tiếp theo</h2>
+
+<ol>
+  <li>Bạn có khách hàng nào đang ở Bước 1 (chưa có Data Mapping)? Bạn sẽ tiếp cận họ như thế nào để thuyết phục bắt đầu từ đầu?</li>
+  <li>Trong 6 bước, bước nào bạn nghĩ khó triển khai nhất với khách hàng? Tại sao?</li>
+  <li>Phạt 5% doanh thu hoặc 5 tỷ VNĐ — bạn sẽ trình bày con số này với ban lãnh đạo khách hàng như thế nào để họ hiểu mức độ nghiêm trọng?</li>
+</ol>
+
+<div class="quote">
+  <strong>Nếu có gì chưa rõ, hỏi.</strong> 6 bước nghe nhiều nhưng thực tế có thể song song. Data Mapping + DPO có thể chạy cùng lúc. Lesson tiếp theo sẽ hướng dẫn cách ưu tiên triển khai theo ngân sách và quy mô khách hàng.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">— —</span>
+    <a href="../MISSION.html">Mission</a> ·
+    <a href="../GLOSSARY.md">Glossary</a> ·
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">Bài tiếp</span>
+    <a href="0004-data-mapping-deep-dive.html">Data Mapping Deep Dive →</a><br>
+    <a href="0005-ho-so-tu-an-thu-deep-dive.html">Hồ sơ tuân thủ Deep Dive →</a><br>
+    <a href="0006-bo-nhiem-dpo-deep-dive.html">Bổ nhiệm DPO Deep Dive →</a><br>
+    <a href="0007-dpia-ctia-deep-dive.html">DPIA &amp; CTIA Deep Dive →</a><br>
+    <a href="0008-dpa-deep-dive.html">DPA Deep Dive →</a><br>
+    <a href="0009-dao-tao-noi-bo-deep-dive.html">Đào tạo nội bộ Deep Dive →</a>
+  </div>
+</div>
+
+</body>
+</html>

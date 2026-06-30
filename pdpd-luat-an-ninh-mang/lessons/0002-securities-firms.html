@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: Doanh nghiệp chứng khoán — chuẩn bị gì cho hai luật mới</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --blue: #1a3a5c;
+      --blue-bg: #e8f0f7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2rem; }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.6rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.25rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .urgent {
+      background: #fdecea;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .urgent strong { color: var(--accent); }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .info {
+      background: var(--blue-bg);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .info strong { color: var(--blue); }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.95rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .checklist {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .checklist-item {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-box {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--rule);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+    .checklist-text { flex: 1; }
+    .checklist-tag {
+      font-size: 0.75rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      white-space: nowrap;
+      align-self: flex-start;
+      margin-top: 0.15rem;
+    }
+    .tag-luat-chung-khoan { background: #e8f0f7; color: var(--blue); }
+    .tag-pdpd { background: var(--accent-soft); color: #7d3400; }
+    .tag-anm { background: #e8f5e9; color: #2c5e2e; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .quiz-q { font-weight: 700; margin-bottom: 0.75rem; }
+    .quiz ol { list-style: upper-alpha; margin: 0 0 0 1.25rem; }
+    .quiz li { margin-bottom: 0.35rem; }
+    .correct { color: #2c5e2e; font-weight: 700; }
+    .wrong { color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0002<br>Doanh nghiệp chứng khoán — chuẩn bị gì cho hai luật mới</h1>
+
+<div class="subtitle">Bài học chuyên ngành: công ty chứng khoán (CTCK) và công ty quản lý quỹ (Cty QLQ) trước hiệu lực Luật ANM 2025.</div>
+
+<div class="meta">
+  <span class="badge">Chuyên ngành</span>
+  <span class="pill">Đọc ~25 phút</span>
+  <span class="pill">Pre Sales Security</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="urgent">
+  <strong>Không phải bài lý thuyết.</strong> Đây là bài học ra checklist cụ thể: CTCK / Cty QLQ đang trong giai đoạn gấp nhất trong năm — deadline 01/07/2026 cộng thêm nghĩa vụ chứng khoán đặc thù. Nếu khách hàng của bạn là CTCK, bạn cần biết 3 lớp nghĩa vụ chồng lên nhau.
+</div>
+
+<p>Doanh nghiệp chứng khoán khác doanh nghiệp thường ở chỗ: <strong>có luật chuyên ngành đặc thù</strong> đặt ra nghĩa vụ lưu trữ, bảo mật, ứng cứu riêng. Khi Luật ANM 2025 + NĐ 356/2025 cộng thêm lên, họ không phải tuân thủ 1 luật mà là <strong>3 lớp luật chồng nhau</strong>. Bài này giúp bạn thấy rõ 3 lớp đó.</p>
+
+<h2>Ba lớp nghĩa vụ pháp lý của CTCK</h2>
+
+<p>Đây là khung tổng quát trước khi đi vào chi tiết từng lớp. CTCK đang chịu 3 lớp cùng lúc:</p>
+
+<div class="info">
+  <strong>Lớp 1 — Luật chuyên ngành chứng khoán</strong><br>
+  Luật Chứng khoán 2019 + Thông tư 134/2017/TT-BTC + công văn UBCKNN. Đặc thù: lưu trữ 10 năm, tách biệt hệ thống, ghi âm cuộc gọi, đánh giá rủi ro hàng năm.<br>
+  <br>
+  <strong>Lớp 2 — Luật Bảo vệ dữ liệu cá nhân (hiệu lực 01/01/2026)</strong><br>
+  Luật số 91/2025/QH15 + Nghị định 356/2025/NĐ-CP. Mở rộng DLCN nhạy cảm, consent có bằng chứng, thời hạn 10–30 ngày, DPO đạt chuẩn.<br>
+  <br>
+  <strong>Lớp 3 — Luật An ninh mạng 2025 (hiệu lực 01/07/2026)</strong><br>
+  116/2025/QH15. Phản hồi 24h/3h, gỡ nội dung 24h/6h, 15% budget ANM, BCA là cơ quan đầu mối.
+</div>
+
+<h2>Lớp 1 — Luật chuyên ngành: Thông tư 134/2017/TT-BTC</h2>
+
+<h3>Nghĩa vụ lưu trữ: tối thiểu 10 năm</h3>
+
+<p>Đây là nghĩa vụ <strong>đặc thù nhất</strong> của CTCK — không có trong bất kỳ luật nào khác ngoài chứng khoán. Theo Thông tư 134/2017/TT-BTC, mọi chứng từ điện tử, phiếu lệnh điện tử, dữ liệu điện tử và <strong>ghi âm cuộc gọi đặt lệnh</strong> (kể cả lệnh hủy) phải được lưu trữ ít nhất <strong>10 năm</strong> ở dạng nguyên bản.</p>
+
+<div class="info">
+  <strong>Điều này ảnh hưởng thế nào đến PDPD?</strong><br>
+  Nguyên tắc của NĐ 356/2025 là DLCN chỉ lưu trữ khi cần thiết, xóa khi hết mục đích. Nhưng Luật chứng khoán yêu cầu <strong>lưu 10 năm</strong> — đây là căn cứ pháp lý hợp pháp (legal basis) để CTCK giữ DLCN lâu hơn bình thường. Không vi phạm PDPD. Phải ghi rõ trong privacy policy: "lưu trữ theo nghĩa vụ pháp lý chuyên ngành."
+</div>
+
+<h3>Tách biệt hệ thống vật lý</h3>
+
+<p>Thông tư 134/2017 quy định: hệ thống giao dịch chứng khoán trực tuyến phải <strong>tách biệt về mặt vật lý</strong> với các hệ thống kinh doanh khác của công ty. Môi trường vận hành phải tách biệt với môi trường kiểm thử và môi trường phát triển (dev/prod separation). Đây là yêu cầu bắt buộc, không phải best practice.</p>
+
+<h3>Đánh giá rủi ro an toàn thông tin hàng năm</h3>
+
+<p>Định kỳ thực hiện đánh giá rủi ro an toàn thông tin mạng của hệ thống giao dịch chứng khoán trực tuyến ít nhất <strong>một năm một lần</strong>. Phần mềm ứng dụng trước khi đưa vào vận hành phải được quét lỗ hổng bảo mật và có biên bản đánh giá.</p>
+
+<h3>UBCKNN yêu cầu rà soát 2024</h3>
+
+<p>Ủy ban Chứng khoán Nhà nước đã ban hành Công văn số 3351/UBCK-CNTT (2024) và 1837/UBCK-CNTT (2024) yêu cầu CTCK/Cty QLQ:</p>
+
+<ul>
+  <li>Xây dựng <strong>phương án ứng cứu khẩn cấp</strong> — đây chính là phần trùng với Điều 41 Luật ANM 2025</li>
+  <li>Đảm bảo hệ thống CNTT + cơ sở dữ liệu dự phòng hoạt động an toàn, liên tục (khoản 10 Điều 89 Luật Chứng khoán 2019)</li>
+  <li>Rà soát quy trình giao dịch trực tuyến, quy trình kiểm soát rủi ro, quy trình sao lưu dự phòng</li>
+  <li>Phát hiện mất an toàn → báo UBCKNN, Sở GDCK, VSDC và cơ quan chức năng ngay</li>
+</ul>
+
+<h2>Lớp 2 — Nghị định 356/2025: DLCN nhạy cảm đặc thù CTCK</h2>
+
+<h3>Tài khoản giao dịch chứng khoán = DLCN nhạy cảm</h3>
+
+<p>Theo Điều 4 NĐ 356/2025, dữ liệu giao dịch ngân hàng / chứng khoán / bảo hiểm là <strong>DLCN nhạy cảm</strong>. Điều này quan trọng cho CTCK:</p>
+
+<ul>
+  <li>Số tài khoản giao dịch chứng khoán, số dư, lịch sử giao dịch → <strong>nhạy cảm</strong></li>
+  <li>CMND/CCCD kết hợp với tài khoản giao dịch → <strong>nhạy cảm</strong></li>
+  <li>Ghi âm cuộc gọi đặt lệnh → có thể xếp vào nhạy cảm (chứa giọng nói = sinh trắc học)</li>
+</ul>
+
+<h3>Hệ quả của việc xếp nhạy cảm</h3>
+
+<p>Khi xử lý DLCN nhạy cảm, CTCK phải tuân thủ thêm:</p>
+
+<ul>
+  <li>Thỏa thuận bằng văn bản với bên xử lý (đối tác cloud, vendor IT...)</li>
+  <li>Biện pháp bảo mật cao hơn mức thường (mã hóa, kiểm soát truy cập nghiêm ngặt)</li>
+  <li>DPO phải đạt 3 tiêu chuẩn năng lực (xem lại Lesson 0001)</li>
+</ul>
+
+<div class="highlight">
+  <strong>Câu hỏi Pre Sales:</strong> Khách hàng CTCK của bạn đang dùng cloud provider nước ngoài (AWS, Google Cloud) cho hệ thống giao dịch? Nếu có, họ có thỏa thuận bằng văn bản về DLCN nhạy cảm chưa? Đây là 1 câu hỏi nhanh để phát hiện gap compliance ngay trong 5 phút đầu cuộc họp.
+</div>
+
+<h2>Lớp 3 — Luật ANM 2025: 4 con số bạn phải thuộc</h2>
+
+<h3>Phản hồi BCA: 24 giờ / 3 giờ</h3>
+
+<p>Khi nhận yêu cầu cung cấp thông tin người dùng từ lực lượng chuyên trách BCA (Bộ Công an):</p>
+
+<ul>
+  <li><strong>Bình thường:</strong> 24 giờ</li>
+  <li><strong>Khẩn cấp</strong> (đe dọa an ninh quốc gia hoặc tính mạng): 3 giờ</li>
+</ul>
+
+<p>Đây là con số dễ bị tranh cãi nhất. Nhiều CTCK nghĩ: "có quy định rồi thì nộp khi nào cần" — nhưng Luật 2025 quy định <strong>thời hạn cụ thể</strong>, không phải "khi nào tiện". Khi tư vấn, hỏi khách hàng: <em>"Quy trình phối hợp với BCA hiện tại của anh/chị là gì? Ai nhận email/điện thoại 24/7?"</em></p>
+
+<h3>Gỡ nội dung vi phạm: 24 giờ / 6 giờ</h3>
+
+<p>CTCK có website, app giao dịch, diễn đàn nhà đầu tư → có thể bị yêu cầu ngăn chặn, xóa bỏ thông tin vi phạm:</p>
+
+<ul>
+  <li><strong>Bình thường:</strong> 24 giờ</li>
+  <li><strong>Khẩn cấp:</strong> 6 giờ</li>
+</ul>
+
+<p>⚠️ Lưu ý: Luật 2025 cho phép yêu cầu gỡ bỏ <strong>cả dịch vụ hoặc ứng dụng</strong>, không chỉ nội dung riêng lẻ.</p>
+
+<h3>15% budget tối thiểu cho an ninh mạng</h3>
+
+<p>Điều 17 Luật ANM 2025: cơ quan, tổ chức phải dành <strong>tối thiểu 15% kinh phí đầu tư</strong> cho an ninh mạng khi xây dựng và vận hành hệ thống thông tin. CTCK thường có hệ thống giao dịch phức tạp — câu hỏi: họ đã tính 15% này vào budget CNTT chưa?</p>
+
+<h3>Lưu trữ tại Việt Nam</h3>
+
+<p>CTCK xử lý DLCN người dùng VN + dữ liệu giao dịch → phải lưu trữ tại VN theo quy định Chính phủ. Kết hợp với yêu cầu lưu trữ 10 năm của Thông tư 134, đây là 2 nghĩa vụ lưu trữ cùng chạy song song.</p>
+
+<h2>Checklist CTCK — 3 lớp tuân thủ</h2>
+
+<div class="checklist">
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Cập nhật Privacy Policy</strong> theo NĐ 356/2025: ghi rõ căn cứ pháp lý lưu trữ DLCN 10 năm theo Thông tư 134, nghĩa vụ pháp lý chuyên ngành ≠ vi phạm PDPD
+    </div>
+    <span class="checklist-tag tag-pdpd">PDPD</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Rà soát DLCN nhạy cảm</strong> trên hệ thống: tài khoản giao dịch, lịch sử giao dịch, ghi âm cuộc gọi → đánh giá xếp loại nhạy cảm theo Điều 4 NĐ 356
+    </div>
+    <span class="checklist-tag tag-pdpd">PDPD</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Kiểm tra DPO</strong>: người hiện tại có đáp ứng đủ 3 tiêu chuẩn (cao đẳng + 2 năm KN + đào tạo DLCN)? Nếu chưa → bổ nhiệm mới
+    </div>
+    <span class="checklist-tag tag-pdpd">PDPD</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Audit thỏa thuận với vendor cloud</strong> (AWS, GCP, Azure...): có thỏa thuận bằng văn bản về DLCN nhạy cảm chưa? Có điều khoản DLCN nhạy cảm riêng chưa?
+    </div>
+    <span class="checklist-tag tag-pdpd">PDPD</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Thiết lập quy trình ứng cứu</strong>: phương án ứng cứu khẩn cấp + người phụ trách 24/7 + kênh liên lạc với BCA (email, điện thoại đã xác nhận)
+    </div>
+    <span class="checklist-tag tag-anm">Luật ANM</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Tính budget ANM</strong>: đã dành tối thiểu 15% kinh phí CNTT cho an ninh mạng chưa? Đây là yêu cầu bắt buộc theo Điều 17, không phải best practice
+    </div>
+    <span class="checklist-tag tag-anm">Luật ANM</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Kiểm tra tá thống</strong>:ch biệt hệ hệ thống giao dịch trực tuyến đã tách biệt về vật lý với hệ thống kinh doanh khác chưa? Dev/Prod separation đã có biên bản đánh giá?
+    </div>
+    <span class="checklist-tag tag-luat-chung-khoan">Luật CK</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Xác nhận lưu trữ 10 năm</strong>: chứng từ điện tử, phiếu lệnh, ghi âm cuộc gọi đặt lệnh → có hệ thống lưu trữ đảm bảo 10 năm nguyên bản không?
+    </div>
+    <span class="checklist-tag tag-luat-chung-khoan">Luật CK</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Đánh giá rủi ro hàng năm</strong>: đã thực hiện đánh giá an toàn thông tin hệ thống giao dịch trong năm nay chưa? Có biên bản chưa?
+    </div>
+    <span class="checklist-tag tag-luat-chung-khoan">Luật CK</span>
+  </div>
+  <div class="checklist-item">
+    <div class="checklist-box"></div>
+    <div class="checklist-text">
+      <strong>Quy trình báo cáo sự cố</strong>: khi phát hiện mất an toàn → báo UBCKNN, Sở GDCK, VSDC theo Công văn 3351 — ai làm gì, trong bao lâu?
+    </div>
+    <span class="checklist-tag tag-luat-chung-khoan">Luật CK</span>
+  </div>
+</div>
+
+<h2>Câu hỏi trắc nghiệm</h2>
+
+<div class="quiz">
+  <div class="quiz-q">1. Theo Thông tư 134/2017/TT-BTC, ghi âm cuộc gọi đặt lệnh của khách hàng CTCK phải được lưu trữ bao lâu?</div>
+  <ol>
+    <li>5 năm</li>
+    <li class="correct">10 năm (đáp án đúng — kể cả lệnh hủy, ở dạng nguyên bản)</li>
+    <li>7 năm (như hồ sơ kế toán)</li>
+    <li class="wrong">Không quy định thời hạn</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <div class="quiz-q">2. CTCK đang dùng AWS để lưu trữ dữ liệu giao dịch chứng khoán của khách hàng VN. Theo NĐ 356/2025, cần gì ngoài hợp đồng thông thường?</div>
+  <ol>
+    <li>Chỉ cần hợp đồng thông thường</li>
+    <li class="correct">Thỏa thuận bằng văn bản riêng về DLCN nhạy cảm + biện pháp bảo mật cao (đáp án đúng — Điều 4 NĐ 356: tài khoản giao dịch chứng khoán là DLCN nhạy cảm)</li>
+    <li>Chỉ cần chuyển dữ liệu sang server tại VN</li>
+    <li class="wrong">Không cần làm gì thêm vì AWS có GDPR compliance</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <div class="quiz-q">3. Luật ANM 2025 quy định thời hạn tối đa để CTCK phản hồi yêu cầu cung cấp thông tin người dùng từ BCA trong trường hợp khẩn cấp là bao lâu?</div>
+  <ol>
+    <li>6 giờ</li>
+    <li>24 giờ</li>
+    <li class="correct">3 giờ (đáp án đúng — khoản 2 Điều 25 Luật ANM 2025)</li>
+    <li class="wrong">72 giờ (đây là thời hạn cũ của NĐ 13, không còn áp dụng)</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <div class="quiz-q">4. CTCK có nghĩa vụ đầu tư tối thiểu bao nhiêu phần trăm kinh phí cho an ninh mạng theo Luật ANM 2025?</div>
+  <ol>
+    <li>5%</li>
+    <li class="correct">15% (đáp án đúng — Điều 17. Đây là tỷ lệ tối thiểu, áp dụng cho toàn bộ budget xây dựng + vận hành hệ thống thông tin)</li>
+    <li>10%</li>
+    <li class="wrong">Không có quy định cụ thể (Luật ANM 2018 không có; Luật 2025 có)</li>
+  </ol>
+</div>
+
+<h2>Tổng kết Lesson 0002</h2>
+
+<p>Sau bài này bạn có thể:</p>
+
+<ul>
+  <li>Vẽ được <strong>sơ đồ 3 lớp nghĩa vụ</strong> cho CTCK: Luật chứng khoán + PDPD + Luật ANM 2025.</li>
+  <li>Biết <strong>10 năm lưu trữ</strong> ghi âm cuộc gọi là căn cứ pháp lý hợp pháp, không vi phạm PDPD.</li>
+  <li>Phát hiện gap nhanh trong 5 phút: vendor cloud có thỏa thuận DLCN nhạy cảm chưa?</li>
+  <li>Dùng checklist 10 điểm để đánh giá nhanh CTCK trước 01/07/2026.</li>
+</ul>
+
+<h2>Câu hỏi suy nghĩ trước Lesson 0004</h2>
+
+<ol>
+  <li>Bạn có khách hàng nào đang ở Bước 1 (chưa có Data Mapping)? Bạn sẽ tiếp cận họ như thế nào để thuyết phục bắt đầu từ đầu?</li>
+  <li>Trong 6 bước, bước nào bạn nghĩ khó triển khai nhất với khách hàng? Tại sao?</li>
+  <li>Phạt 5% doanh thu hoặc 5 tỷ VNĐ — bạn sẽ trình bày con số này với ban lãnh đạo khách hàng như thế nào để họ hiểu mức độ nghiêm trọng?</li>
+</ol>
+
+<div class="quote">
+  <strong>Nếu có gì chưa rõ, hỏi.</strong> Đặc thù CTCK có nhiều chi tiết — ví dụ: Cty QLQ có nghĩa vụ khác gì CTCK? Hoặc: nếu CTCK có chi nhánh nước ngoài, lớp nào thay đổi? Đặt câu hỏi, bài tiếp sẽ được thiết kế quanh điểm bạn thực sự cần.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">← Bài trước</span>
+    <a href="0001-tong-quan-hai-luat.html">Lesson 0001</a> ·
+    <a href="../MISSION.md">Mission</a> ·
+    <a href="../GLOSSARY.md">Glossary</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">Bài tiếp</span>
+    <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003 →</a><br>
+    <a href="0004-data-mapping-deep-dive.html">Deep Dive: Data Mapping →</a>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006: Bổ nhiệm DPO Deep Dive — Tiêu chuẩn, Quyền hạn, và Thực thi</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --green: #2c5e2e;
+      --green-bg: #e8f5e9;
+      --blue: #1a3a5c;
+      --blue-bg: #e8f0f7;
+      --purple: #5b2c6f;
+      --purple-bg: #f3e5f5;
+      --orange: #c45a00;
+      --orange-bg: #fff3e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2rem; }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-green { background: var(--green); }
+    .meta .badge-purple { background: var(--purple); }
+    .meta .badge-blue { background: var(--blue); }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.75rem 0 0.6rem;
+    }
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin: 1.25rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .green-box {
+      background: var(--green-bg);
+      border-left: 4px solid var(--green);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .green-box strong { color: var(--green); }
+    .blue-box {
+      background: var(--blue-bg);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .blue-box strong { color: var(--blue); }
+    .purple-box {
+      background: var(--purple-bg);
+      border-left: 4px solid var(--purple);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .purple-box strong { color: var(--purple); }
+    .orange-box {
+      background: var(--orange-bg);
+      border-left: 4px solid var(--orange);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .orange-box strong { color: var(--orange); }
+    .warning {
+      background: #fff9e6;
+      border: 1px solid #e6c800;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .warning strong { color: #b8860b; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .checklist {
+      list-style: none;
+      margin: 0 0 1rem;
+    }
+    .checklist li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .checklist li::before {
+      content: "\2610";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 1rem;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .doc-block {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .doc-header {
+      background: var(--blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .doc-header h3 { margin: 0; color: white; font-size: 0.95rem; }
+    .doc-header .tag {
+      background: rgba(255,255,255,0.2);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.78rem;
+    }
+    .doc-body { padding: 1.25rem; }
+    .toc {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .toc ol { margin: 0; padding-left: 1.5rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc li a { color: var(--accent); text-decoration: none; }
+    .toc li a:hover { text-decoration: underline; }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .flow-box {
+      background: #f9f7f4;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 0.75rem 0;
+    }
+    .flow-num {
+      background: var(--blue);
+      color: white;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .flow-text strong { display: block; }
+    .criteria-card {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .criteria-card .c-header {
+      background: var(--blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .criteria-card .c-header.purple { background: var(--purple); }
+    .criteria-card .c-header.orange { background: var(--orange); }
+    .criteria-card .c-header.green { background: var(--green); }
+    .criteria-card .c-header h3 { margin: 0; color: white; font-size: 0.95rem; }
+    .criteria-card .c-body { padding: 1.25rem; }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+    }
+    .compare-table th {
+      background: var(--ink);
+      color: white;
+      padding: 0.6rem 0.5rem;
+    }
+    .compare-table td {
+      padding: 0.5rem;
+      border: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    .compare-table .old { background: #fff9f9; }
+    .compare-table .new { background: #f0fff0; }
+    .compare-table .changed { background: #fffbe6; }
+    kbd {
+      background: #f0ebe3;
+      border: 1px solid var(--rule);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.82em;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0006<br>Bổ nhiệm DPO Deep Dive — Tiêu chuẩn, Quyền hạn, và Thực thi</h1>
+
+<div class="subtitle">Tất cả về Người phụ trách BVDLCN: tiêu chuẩn 3 lớp, quyền hạn, và cách CTCK chọn đúng người.</div>
+
+<div class="meta">
+  <span class="badge badge-purple">Deep Dive</span>
+  <span class="badge badge-blue">Thực hành</span>
+  <span class="pill">Đọc ~30 phút</span>
+  <span class="pill">Có checklist + template QĐ bổ nhiệm</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="toc">
+  <strong>Mục lục</strong>
+  <ol>
+    <li><a href="#phan-1">Tổng quan: DPO là gì, tại sao bắt buộc</a></li>
+    <li><a href="#phan-2">Phần 2: Tiêu chuẩn (i) — Trình độ</a></li>
+    <li><a href="#phan-3">Phần 3: Tiêu chuẩn (ii) — Kinh nghiệm</a></li>
+    <li><a href="#phan-4">Phần 4: Tiêu chuẩn (iii) — Đào tạo</a></li>
+    <li><a href="#phan-5">Phần 5: Ứng viên DPO phù hợp cho CTCK</a></li>
+    <li><a href="#phan-6">Phần 6: Quyền hạn và nhiệm vụ của DPO</a></li>
+    <li><a href="#phan-7">Phần 7: Quy trình bổ nhiệm DPO</a></li>
+    <li><a href="#phan-8">Phần 8: Gap DPO đặc thù CTCK</a></li>
+    <li><a href="#phan-9">Phần 9: Output giao cho khách</a></li>
+  </ol>
+</div>
+
+<div class="highlight">
+  <strong>Bạn đang ở đâu?</strong> Bài này mở rộng từ <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-3--bổ-nhiệm-dpo">Bước 3 trong Lesson 0003</a>. Đọc <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003</a>, <a href="0004-data-mapping-deep-dive.html">Lesson 0004</a>, và <a href="0005-ho-so-tu-an-thu-deep-dive.html">Lesson 0005</a> trước.
+</div>
+
+<h2 id="phan-1">Phần 1 — Tổng quan: DPO là gì, tại sao bắt buộc</h2>
+
+<h3>1.1. Định nghĩa</h3>
+
+<p><strong>DPO</strong> (Data Protection Officer) — Người phụ trách Bảo vệ Dữ liệu Cá nhân — là người được CTCK bổ nhiệm để giám sát việc tuân thủ NĐ 356. Khác với "người phụ trách IT" hay "trưởng phòng Compliance" — DPO có vai trò pháp lý riêng, được luật bảo vệ.</p>
+
+<h3>1.2. So sánh NĐ 13/2023 vs NĐ 356</h3>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Nội dung</th><th>NĐ 13/2023</th><th>NĐ 356/2025</th><th>Thay đổi</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DPO</td>
+      <td class="old">Khuyến khích — không bắt buộc</td>
+      <td class="new"><strong>Bắt buộc</strong> với doanh nghiệp xử lý nhạy cảm quy mô lớn hoặc hoạt động thường xuyên</td>
+      <td class="changed">⚠️ THAY ĐỔI LỚN</td>
+    </tr>
+    <tr>
+      <td>Tiêu chuẩn DPO</td>
+      <td class="old">Không quy định cụ thể</td>
+      <td class="new"><strong>Điều 13.2: 3 tiêu chuẩn bắt buộc</strong></td>
+      <td class="changed">⚠️ MỚI</td>
+    </tr>
+    <tr>
+      <td>Nghĩa vụ đăng ký DPO</td>
+      <td class="old">Không quy định</td>
+      <td class="new"><strong>Phải công khai thông tin DPO</strong> trên website + thông báo cho cơ quan quản lý</td>
+      <td class="changed">⚠️ MỚI</td>
+    </tr>
+    <tr>
+      <td>Quyền của DPO</td>
+      <td class="old">Không quy định</td>
+      <td class="new">Độc lập, không bị sa thải vì thực hiện nhiệm vụ</td>
+      <td class="changed">⚠️ MỚI</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>1.3. Ai bắt buộc có DPO?</h3>
+
+<p>Theo Điều 13 NĐ 356, doanh nghiệp bắt buộc có DPO khi:</p>
+
+<ul>
+  <li>Xử lý DLCN nhạy cảm <strong>quy mô lớn</strong> — CTCK xử lý hàng nghìn khách hàng → thuộc diện này.</li>
+  <li>Hoạt động xử lý DLCN là <strong>hoạt động thường xuyên</strong> — CTCK xử lý DLCN mỗi ngày khi nhận khách mới, giao dịch → thuộc diện này.</li>
+  <li>Xử lý DLCN theo yêu cầu của <strong>cơ quan quản lý</strong>.</li>
+</ul>
+
+<div class="blue-box">
+  <strong>Kết luận cho CTCK:</strong> CTCK gần như chắc chắn thuộc diện bắt buộc có DPO — vì xử lý DLCN nhạy cảm (AML, ghi âm, eKYC) với hàng nghìn khách hàng mỗi ngày. Không có DPO = vi phạm Điều 13.
+</div>
+
+<h2 id="phan-2">Phần 2 — Tiêu chuẩn (i): Trình độ</h2>
+
+<div class="criteria-card">
+  <div class="c-header">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Tiêu chuẩn (i)</span>
+    <h3>Trình độ — Cao đẳng trở lên, bất kỳ ngành nào</h3>
+  </div>
+  <div class="c-body">
+    <p>Điều kiện đơn giản nhất trong 3 tiêu chuẩn. CTCK cần chứng minh: người được bổ nhiệm có bằng tốt nghiệp cao đẳng trở lên (không yêu cầu ngành cụ thể).</p>
+
+    <p><strong>CTCK cần chuẩn bị:</strong></p>
+    <ul>
+      <li>Bản sao bằng tốt nghiệp (cao đẳng, đại học, sau đại học)</li>
+      <li>Bảng điểm hoặc phiếu điểm</li>
+      <li>Nếu tốt nghiệp nước ngoài → công chứng và dịch thuật</li>
+    </ul>
+
+    <p><strong>Câu hỏi thường gặp:</strong></p>
+    <ul>
+      <li><em>"Chứng chỉ nghề (chứng chỉ hành nghề CK, CFA, FRM) có được tính không?"</em> → Không. Đây là chứng chỉ, không phải bằng cấp theo quy định giáo dục.</li>
+      <li><em>"Bằng đang học cao học có tính không?"</em> → Không. Phải có bằng tốt nghiệp.</li>
+      <li><em>"Bằng nước ngoài được công nhận không?"</em> → Được nếu đã qua quy trình công nhận của Bộ GD&ĐT.</li>
+    </ul>
+
+    <div class="green-box">
+      <strong>Pre Sales lưu ý:</strong> Đây là tiêu chuẩn dễ nhất. Hầu hết nhân viên CTCK đều có bằng đại học. Gap hiếm khi nằm ở tiêu chuẩn (i).
+    </div>
+  </div>
+</div>
+
+<h2 id="phan-3">Phần 3 — Tiêu chuẩn (ii): Kinh nghiệm</h2>
+
+<div class="criteria-card">
+  <div class="c-header purple">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Tiêu chuẩn (ii)</span>
+    <h3>Kinh nghiệm — 02+ năm trong 1 trong các lĩnh vực</h3>
+  </div>
+  <div class="c-body">
+    <p>Yêu cầu: <strong>02 năm kinh nghiệm</strong> tính từ lúc tốt nghiệp, trong ít nhất 1 trong 6 lĩnh vực sau:</p>
+
+    <table>
+      <thead>
+        <tr><th>Lĩnh vực</th><th>Ứng viên tiềm năng trong CTCK</th><th>Điểm mạnh</th><th>Điểm yếu</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Pháp chế</strong></td>
+          <td>Phó phòng Pháp chế, Luật sư nội bộ</td>
+          <td>Hiểu luật, viết văn bản tốt</td>
+          <td>Có thể thiếu kiến thức kỹ thuật</td>
+        </tr>
+        <tr>
+          <td><strong>2. Công nghệ thông tin</strong></td>
+          <td>Trưởng phòng IT, Quản trị hệ thống</td>
+          <td>Hiểu hệ thống, data flow</td>
+          <td>Thiếu kiến thức luật PDPD</td>
+        </tr>
+        <tr>
+          <td><strong>3. An ninh mạng</strong></td>
+          <td>Security Engineer, SOC analyst</td>
+          <td>Giỏi kỹ thuật bảo mật</td>
+          <td>Thiếu kiến thức luật</td>
+        </tr>
+        <tr>
+          <td><strong>4. Quản trị rủi ro</strong></td>
+          <td>Quản lý rủi ro, risk analyst</td>
+          <td>Hiểu đánh giá rủi ro, DPIA</td>
+          <td>Có thể thiếu kiến thức kỹ thuật</td>
+        </tr>
+        <tr>
+          <td><strong>5. Kiểm soát tuân thủ</strong></td>
+          <td>Compliance Officer, Kiểm soát nội bộ</td>
+          <td>✓ LÝ TƯỞNG — hiểu tuân thủ + AML + pháp luật CK</td>
+          <td>Cần đào tạo PDPD chuyên sâu</td>
+        </tr>
+        <tr>
+          <td><strong>6. Quản lý nhân sự</strong></td>
+          <td>HR Manager, Trưởng phòng Nhân sự</td>
+          <td>Hiểu DLCN nhân sự</td>
+          <td>Thiếu kiến thức luật + kỹ thuật</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warning">
+      <strong>Pre Sales lưu ý:</strong> Ứng viên lý tưởng nhất cho CTCK là <strong>Compliance Officer / Kiểm soát tuân thủ</strong> — vì đã có kinh nghiệm tuân thủ pháp luật CK, AML, và hiểu rủi ro. Đây là người cần bổ sung nhất là tiêu chuẩn (iii) — đào tạo PDPD.
+    </div>
+
+    <h4>Cách tính 02 năm kinh nghiệm</h4>
+    <ul>
+      <li>Tính từ ngày <strong>tốt nghiệp</strong> (không phải ngày vào làm)</li>
+      <li>Tổng cộng 02 năm trong ít nhất 1 trong 6 lĩnh vực (có thể gộp từ nhiều công việc)</li>
+      <li>Kinh nghiệm có thể ở <strong>công ty khác</strong> — không nhất thiết phải ở CTCK hiện tại</li>
+      <li>Cần có <strong>bằng chứng</strong>: hợp đồng lao động cũ, quyết định tuyển dụng, xác nhận công tác</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="phan-4">Phần 4 — Tiêu chuẩn (iii): Đào tạo</h2>
+
+<div class="criteria-card">
+  <div class="c-header orange">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Tiêu chuẩn (iii)</span>
+    <h3>Đào tạo — Phải có chứng chỉ hoặc bằng cấp về BVDLCN</h3>
+  </div>
+  <div class="c-body">
+    <p>Đây là tiêu chuẩn <strong>khó nhất và dễ bị hiểu sai nhất</strong>. Nhiều CTCK nghĩ rằng "đọc Nghị định 356 là đủ" — nhưng Điều 13.2(iii) yêu cầu <strong>phải có chứng chỉ hoặc bằng cấp</strong>. Tự tìm hiểu, tham dự hội thảo miễn phí, hoặc đọc tài liệu trên mạng <strong>không đủ</strong>.</p>
+
+    <h4>Chứng chỉ BVDLCN được công nhận</h4>
+    <table>
+      <thead>
+        <tr><th>Chứng chỉ</th><th>Đơn vị cấp</th><th>Thời hạn</th><th>Ghi chú</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>CIPO</strong><br>(Certified Information Privacy Professional)</td>
+          <td>IAPP (International Association of Privacy Professionals)</td>
+          <td>2 năm, gia hạn</td>
+          <td>Chứng chỉ quốc tế uy tín nhất. Có 3 loại: CIPP/A (châu Á), CIPP/E ( châu Âu), CIPM (quản lý). Phù hợp nhất cho CTCK: CIPP/A + CIPM.</td>
+        </tr>
+        <tr>
+          <td><strong>DPO Certification</strong></td>
+          <td>IAPP</td>
+          <td>3 năm, gia hạn</td>
+          <td>Chứng chỉ chuyên về DPO. Có bài thi riêng.</td>
+        </tr>
+        <tr>
+          <td><strong>CDPO</strong><br>(Certified Data Protection Officer)</td>
+          <td>ICCP hoặc các tổ chức được công nhận</td>
+          <td>Khác nhau theo đơn vị</td>
+          <td>Chứng chỉ về DPO, có thể được công nhận tại VN.</td>
+        </tr>
+        <tr>
+          <td><strong>Chứng chỉ của các trường đại học</strong></td>
+          <td>ĐH RMIT, ĐH Maryland, và một số ĐH quốc tế</td>
+          <td>Vĩnh viễn</td>
+          <td>Chương trình online về Privacy/Data Protection.</td>
+        </tr>
+        <tr>
+          <td><strong>Khóa đào tạo nội bộ được công nhận</strong></td>
+          <td>Cơ quan quản lý hoặc tổ chức được ủy quyền</td>
+          <td>Theo chương trình</td>
+          <td>Tại VN, chưa có cơ quan cụ thể công nhận — nên ưu tiên chứng chỉ quốc tế.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="purple-box">
+      <strong>Chi phí tham khảo:</strong> Chứng chỉ CIPP/A + CIPM của IAPP có phí thi khoảng $1,000-$1,500 USD/khóa. Đây là khoản đầu tư đáng giá — DPO là người phải hướng dẫn toàn bộ CTCK tuân thủ NĐ 356.
+    </div>
+
+    <h4>Chương trình đào tạo tại Việt Nam</h4>
+    <ul>
+      <li><strong>Chương trình ngắn hạn</strong> của một số trung tâm đào tạo về cybersecurity/compliance tại TP.HCM và Hà Nội — cần kiểm tra uy tín trước khi đăng ký.</li>
+      <li><strong>Khóa học online</strong> của IAPP (cung cấp bằng tiếng Anh, có phiên bản châu Á-Thái Bình Dương).</li>
+      <li><strong>Tự học có chứng chỉ</strong>: sau khi tự học, đăng ký thi lấy chứng chỉ quốc tế.</li>
+    </ul>
+
+    <div class="warning">
+      <strong>Gap phổ biến nhất tại CTCK:</strong> Tiêu chuẩn (iii) là nơi CTCK thiếu nhất. Phần lớn Compliance Officer hoặc IT Manager được chỉ định làm DPO nhưng <strong>chưa có chứng chỉ BVDLCN</strong>. Đây là Pre Sales cần đặt câu hỏi rõ ràng nhất.
+    </div>
+  </div>
+</div>
+
+<h2 id="phan-5">Phần 5 — Ứng viên DPO phù hợp cho CTCK</h2>
+
+<h3>5.1. Ma trận đánh giá ứng viên DPO</h3>
+
+<table>
+  <thead>
+    <tr><th>Ứng viên</th><th>(i) Trình độ</th><th>(ii) Kinh nghiệm</th><th>(iii) Đào tạo</th><th>Đánh giá</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Compliance Officer hiện tại</strong></td>
+      <td>✓ Thường có ĐH</td>
+      <td>✓ Tuân thủ 2-5 năm</td>
+      <td>⚠️ Thường chưa có chứng chỉ PDPD</td>
+      <td>⭐ ƯU TIÊN — cần bổ sung (iii)</td>
+    </tr>
+    <tr>
+      <td><strong>Phó phòng Pháp chế</strong></td>
+      <td>✓ Luật sư, ĐH</td>
+      <td>✓ Pháp chế 2-5 năm</td>
+      <td>⚠️ Thường chưa có chứng chỉ PDPD</td>
+      <td>⭐ Tốt — cần bổ sung (iii)</td>
+    </tr>
+    <tr>
+      <td><strong>Trưởng phòng IT</strong></td>
+      <td>✓ ĐH IT</td>
+      <td>✓ IT 5+ năm</td>
+      <td>⚠️ Thường thiếu cả (ii) lẫn (iii)</td>
+      <td>⚠️ Yếu — thiếu kinh nghiệm tuân thủ + chứng chỉ</td>
+    </tr>
+    <tr>
+      <td><strong>HR Manager</strong></td>
+      <td>✓ ĐH</td>
+      <td>✓ HR 2+ năm</td>
+      <td>⚠️ Thường chưa có</td>
+      <td>⚠️ Trung bình — phù hợp cho DLCN nhân sự, yếu cho DLCN khách hàng</td>
+    </tr>
+    <tr>
+      <td><strong>AML Manager</strong></td>
+      <td>✓ ĐH</td>
+      <td>✓ AML 2+ năm</td>
+      <td>⚠️ Thường chưa có</td>
+      <td>⭐ Tốt — hiểu DLCN nhạy cảm, cần bổ sung (iii)</td>
+    </tr>
+    <tr>
+      <td><strong>Người được tuyển mới</strong></td>
+      <td>✓ Tùy người</td>
+      <td>⚠️ Cần kiểm tra</td>
+      <td>⚠️ Cần kiểm tra</td>
+      <td>⚠️ Cần đánh giá kỹ trước khi tuyển</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="green-box">
+  <strong>Kết luận:</strong> Ứng viên tốt nhất cho CTCK là <strong>Compliance Officer hiện tại</strong> — người này đã có kinh nghiệm tuân thủ pháp luật CK, hiểu AML, và quen với việc giám sát tuân thủ. Pre Sales nên khuyến khích CTCK đăng ký khóa học CIPP/A hoặc CIPM cho người này.
+</div>
+
+<h3>5.2. Câu hỏi Pre Sales hỏi CTCK để đánh giá ứng viên DPO</h3>
+
+<p>Khi CTCK nói "Chúng tôi đã có người phụ trách DPO", hỏi lần lượt từng tiêu chuẩn:</p>
+
+<div class="flow-box">
+  <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">Kịch bản phỏng vấn nhanh ứng viên DPO</div>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>Hỏi tiêu chuẩn (i):</strong>
+      <em>"Anh/chị tốt nghiệp trường nào, ngành gì, năm nào?"</em>
+      → Yêu cầu xem bản sao bằng tốt nghiệp.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Hỏi tiêu chuẩn (ii):</strong>
+      <em>"Trước khi vào công ty, anh/chị làm ở lĩnh vực nào? Tổng cộng bao lâu?"</em>
+      → Yêu cầu xác nhận bằng hợp đồng hoặc xác nhận công tác.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>Hỏi tiêu chuẩn (iii):</strong>
+      <em>"Anh/chị đã tham gia khóa học hoặc thi chứng chỉ nào về bảo vệ dữ liệu cá nhân chưa? Có chứng chỉ không?"</em>
+      → Yêu cầu xem chứng chỉ. Nếu không có → báo cáo gap ngay.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Hỏi về quyền hạn:</strong>
+      <em>"Khi phát hiện vi phạm, anh/chị có quyền báo cáo ai? Thời gian dành cho DPO mỗi tuần là bao nhiêu?"</em>
+      → Xác định DPO có thời gian và quyền hạn thực sự không.
+    </div>
+  </div>
+</div>
+
+<h2 id="phan-6">Phần 6 — Quyền hạn và nhiệm vụ của DPO</h2>
+
+<h3>6.1. Quyền hạn của DPO theo NĐ 356</h3>
+
+<ul>
+  <li><strong>Độc lập</strong> — DPO thực hiện nhiệm vụ một cách độc lập. Không được chỉ đạo bởi bộ phận kinh doanh hoặc bất kỳ bộ phận nào muốn che giấu vi phạm.</li>
+  <li><strong>Không bị sa thải hoặc kỷ luật vì thực hiện nhiệm vụ</strong> — Đây là bảo vệ pháp lý rất mạnh. Nếu CTCK sa thải DPO vì DPO phát hiện và báo cáo vi phạm → vi phạm nghiêm trọng.</li>
+  <li><strong>Tiếp cận DLCN và hệ thống</strong> — DPO có quyền truy cập vào mọi DLCN và hệ thống liên quan để thực hiện nhiệm vụ giám sát.</li>
+  <li><strong>Báo cáo trực tiếp cấp cao nhất</strong> — DPO báo cáo cho Ban Giám đốc hoặc HĐQT, không báo cáo qua cấp trung gian.</li>
+  <li><strong>Yêu cầu tạm ngưng xử lý</strong> — Nếu phát hiện xử lý vi phạm nghiêm trọng, DPO có quyền yêu cầu tạm ngưng.</li>
+</ul>
+
+<div class="warning">
+  <strong>Gap CTCK thường gặp:</strong> CTCK bổ nhiệm Compliance Officer làm DPO nhưng <strong>DPO chỉ có 2-3 giờ/tuần</strong> cho công việc DPO — đây là vi phạm vì DPO cần có thời gian đủ để giám sát toàn bộ hoạt động xử lý DLCN.
+</div>
+
+<h3>6.2. Nhiệm vụ của DPO</h3>
+
+<table>
+  <thead>
+    <tr><th>Nhiệm vụ</th><th>Tần suất</th><th>Ghi chú</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Giám sát tuân thủ NĐ 356</strong></td>
+      <td>Liên tục</td>
+      <td>Đánh giá chính sách, quy trình, hệ thống</td>
+    </tr>
+    <tr>
+      <td><strong>Điều phối DPIA</strong></td>
+      <td>Theo yêu cầu</td>
+      <td>Khi triển khai hệ thống xử lý DLCN nhạy cảm mới</td>
+    </tr>
+    <tr>
+      <td><strong>Báo cáo sự cố trong 72 giờ</strong></td>
+      <td>Khi có sự cố</td>
+      <td>Theo Điều 12 NĐ 356</td>
+    </tr>
+    <tr>
+      <td><strong>Đào tạo nhân viên</strong></td>
+      <td>Khi onboarding + hàng năm</td>
+      <td>Ghi nhận vào hồ sơ đào tạo</td>
+    </tr>
+    <tr>
+      <td><strong>Phản hồi yêu cầu CTDL</strong></td>
+      <td>Khi có yêu cầu</td>
+      <td>Giám sát SOP đã xây dựng ở Bước 2</td>
+    </tr>
+    <tr>
+      <td><strong>Review chính sách BVDLCN</strong></td>
+      <td>Hàng năm</td>
+      <td>Cập nhật khi có thay đổi pháp luật</td>
+    </tr>
+    <tr>
+      <td><strong>Đánh giá CTIA</strong></td>
+      <td>Khi có hợp đồng mới với bên nước ngoài</td>
+      <td>Theo Điều 32 NĐ 356</td>
+    </tr>
+    <tr>
+      <td><strong>Báo cáo định kỳ cho cơ quan quản lý</strong></td>
+      <td>Theo quy định</td>
+      <td>Theo Điều 33 NĐ 356</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.3. Mô tả công việc DPO — Template</h3>
+
+<div class="doc-block">
+  <div class="doc-header">
+    <span class="tag">Template</span>
+    <h3>Mô tả công việc DPO — CTCK</h3>
+  </div>
+  <div class="doc-body">
+    <p><strong>Vị trí:</strong> Người phụ trách BVDLCN (DPO)</p>
+    <p><strong>Báo cáo:</strong> Trực tiếp Ban Giám đốc / Tổng Giám đốc</p>
+    <p><strong>Thời gian dành cho nhiệm vụ DPO:</strong> Tối thiểu [X] giờ/tuần (khuyến nghị: tương đương 50% trở lên)</p>
+    <hr style="border:none;border-top:1px solid var(--rule);margin:1rem 0;">
+    <p><strong>Nhiệm vụ chính:</strong></p>
+    <ol>
+      <li>Giám sát việc tuân thủ Nghị định 356/2025/NĐ-CP và các văn bản hướng dẫn về BVDLCN.</li>
+      <li>Điều phối và giám sát việc thực hiện Đánh giá tác động DLCN (DPIA) khi cần thiết.</li>
+      <li>Tiếp nhận, xử lý và giám sát phản hồi các yêu cầu thực hiện quyền của chủ thể DLCN.</li>
+      <li>Báo cáo sự cố vi phạm DLCN trong vòng 72 giờ theo Điều 12 NĐ 356.</li>
+      <li>Tổ chức đào tạo và bồi dưỡng nhận thức về BVDLCN cho nhân viên.</li>
+      <li>Đánh giá và giám sát việc chuyển DLCN ra nước ngoài (CTIA) khi có hợp đồng mới.</li>
+      <li>Review và đề xuất cập nhật chính sách, quy trình BVDLCN hàng năm.</li>
+      <li>Phối hợp với các phòng ban để đảm bảo DLCN được xử lý đúng mục đích.</li>
+    </ol>
+    <hr style="border:none;border-top:1px solid var(--rule);margin:1rem 0;">
+    <p><strong>Quyền hạn:</strong></p>
+    <ol>
+      <li>Được truy cập vào mọi hệ thống, dữ liệu và tài liệu liên quan đến DLCN.</li>
+      <li>Độc lập trong việc đưa ra khuyến nghị và báo cáo vi phạm.</li>
+      <li>Được tham dự các cuộc họp liên quan đến xử lý DLCN.</li>
+      <li>Được bảo vệ không bị sa thải hoặc kỷ luật vì thực hiện nhiệm vụ DPO.</li>
+    </ol>
+  </div>
+</div>
+
+<h2 id="phan-7">Phần 7 — Quy trình bổ nhiệm DPO</h2>
+
+<div class="flow-box">
+  <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">Quy trình bổ nhiệm DPO — 5 bước</div>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>Đánh giá ứng viên</strong>
+      Sàng lọc ứng viên theo 3 tiêu chuẩn (i)(ii)(iii). Ưu tiên Compliance Officer, Pháp chế, AML Manager.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Đăng ký đào tạo (nếu chưa có chứng chỉ)</strong>
+      Đăng ký khóa học CIPP/A hoặc CIPM cho ứng viên. Thời gian: 1-3 tháng trước khi chính thức bổ nhiệm.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>Ra Quyết định bổ nhiệm</strong>
+      Bằng văn bản, ký bởi Tổng Giám đốc. Nêu rõ: tên, chức danh, quyền hạn, thời gian dành cho DPO.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Công khai thông tin DPO</strong>
+      Đăng thông tin DPO trên website CTCK (trang Privacy / Liên hệ). Thông báo cho cơ quan quản lý nếu yêu cầu.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-text">
+      <strong>Giao nhiệm vụ & onboarding</strong>
+      Giao mô tả công việc, cung cấp quyền truy cập hệ thống, ký cam kết bảo mật, bắt đầu training nhân viên.
+    </div>
+  </div>
+</div>
+
+<h3>Template Quyết định bổ nhiệm DPO</h3>
+
+<div class="doc-block">
+  <div class="doc-header">
+    <span class="tag">Template</span>
+    <h3>CÔNG TY CỔ PHẦN CHỨNG KHOÁN [...]. QUYẾT ĐỊNH Về việc bổ nhiệm Người phụ trách BVDLCN</h3>
+  </div>
+  <div class="doc-body">
+    <p style="font-size:0.85rem;color:var(--ink-soft);margin-bottom:1rem;">Số: [...]/QĐ-... | [Địa danh], ngày [...]] tháng [...]] năm [...]]</p>
+    <p><strong>TỔNG GIÁM ĐỐC CÔNG TY CỔ PHẦN CHỨNG KHOÁN [...]]</strong></p>
+    <p><em>Căn cứ Nghị định số 356/2025/NĐ-CP ngày [...] về BVDLCN;</em></p>
+    <p><em>Căn cứ Điều lệ Công ty;</em></p>
+    <p><em>Xét đề xuất của [...]];</em></p>
+    <hr style="border:none;border-top:1px solid var(--rule);margin:1rem 0;">
+    <p><strong>QUYẾT ĐỊNH</strong></p>
+    <ol>
+      <li>Bổ nhiệm Ông/Bà <strong>[Họ tên đầy đủ]</strong>, sinh năm [...], chức danh: <strong>[Chức danh hiện tại]</strong>, làm <strong>Người phụ trách Bảo vệ Dữ liệu Cá nhân (DPO)</strong> của Công ty kể từ ngày [...].</li>
+      <li>Ông/Bà [...]] chịu trách nhiệm thực hiện các nhiệm vụ theo Điều 13 Nghị định 356/2025/NĐ-CP, bao gồm: giám sát tuân thủ, điều phối DPIA, tiếp nhận yêu cầu CTDL, báo cáo sự cố trong 72 giờ, và đào tạo nhân viên.</li>
+      <li>Ông/Bà [...]] được cấp quyền truy cập vào mọi hệ thống và dữ liệu liên quan đến DLCN để thực hiện nhiệm vụ. Việc sa thải hoặc kỷ luật Ông/Bà [...]] vì thực hiện nhiệm vụ DPO là trái pháp luật.</li>
+      <li>Thời gian dành cho nhiệm vụ DPO: tối thiểu [...]] giờ/tuần.</li>
+      <li>Thông tin DPO sẽ được công khai trên website công ty và thông báo cho cơ quan quản lý theo quy định.</li>
+      <li>Quyết định này có hiệu lực kể từ ngày ký. Các quyết định trước đây (nếu có) trái với quyết định này đều bãi bỏ.</li>
+    </ol>
+    <hr style="border:none;border-top:1px solid var(--rule);margin:1rem 0;">
+    <p><strong>Tổng Giám đốc</strong><br>[Ký và ghi rõ họ tên, chức danh]</p>
+    <p style="margin-top:1.5rem;"><strong>Người được bổ nhiệm</strong><br>[Ký và ghi rõ họ tên]</p>
+  </div>
+</div>
+
+<h2 id="phan-8">Phần 8 — Gap DPO đặc thù CTCK</h2>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Gap</th><th>Hậu quả</th><th>Cách phát hiện</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="old">Chưa có người được bổ nhiệm DPO</td>
+      <td>Vi phạm Điều 13 NĐ 356</td>
+      <td>Hỏi: "Ai là DPO hiện tại?" → không có câu trả lời</td>
+    </tr>
+    <tr>
+      <td class="old">DPO chưa có chứng chỉ PDPD (tiêu chuẩn iii)</td>
+      <td>Vi phạm Điều 13.2(iii) — bổ nhiệm không hợp lệ</td>
+      <td>Hỏi về chứng chỉ → không có</td>
+    </tr>
+    <tr>
+      <td class="old">DPO chỉ là IT Manager, thiếu kinh nghiệm tuân thủ</td>
+      <td>Tiêu chuẩn (ii) yếu — có thể không đạt</td>
+      <td>Hỏi về kinh nghiệm tuân thủ / AML</td>
+    </tr>
+    <tr>
+      <td class="old">DPO không có thời gian đủ (2-3 giờ/tuần)</td>
+      <td>DPO không thể giám sát hiệu quả</td>
+      <td>Hỏi: "Thời gian dành cho DPO mỗi tuần là bao nhiêu?"</td>
+    </tr>
+    <tr>
+      <td class="old">DPO không báo cáo trực tiếp Ban Giám đốc</td>
+      <td>Vi phạm nguyên tắc độc lập</td>
+      <td>Hỏi: "DPO báo cáo cho ai?"</td>
+    </tr>
+    <tr>
+      <td class="old">Thông tin DPO chưa công khai trên website</td>
+      <td>Vi phạm nghĩa vụ công khai</td>
+      <td>Kiểm tra website CTCK</td>
+    </tr>
+    <tr>
+      <td class="old">Không có Quyết định bổ nhiệm bằng văn bản</td>
+      <td>Không có bằng chứng pháp lý</td>
+      <td>Yêu cầu xem quyết định</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="phan-9">Phần 9 — Output giao cho khách</h2>
+
+<ul class="checklist">
+  <li><strong>Quyết định bổ nhiệm DPO</strong> — bằng văn bản, ký bởi Tổng Giám đốc</li>
+  <li><strong>Mô tả công việc DPO</strong> — quyền hạn, nhiệm vụ, thời gian</li>
+  <li><strong>Kế hoạch đào tạo DPO</strong> — chứng chỉ CIPP/A hoặc CIPM, lịch trình</li>
+  <li><strong>Báo cáo Gap DPO</strong> — ghi rõ tiêu chuẩn nào chưa đạt, kế hoạch khắc phục</li>
+  <li><strong>Thông tin DPO đăng trên website</strong> — email liên hệ DPO</li>
+</ul>
+
+<div class="orange-box">
+  <strong>Thời gian ước tính:</strong>
+  <br>Nếu CTCK đã có ứng viên đáp ứng (i) và (ii): <strong>1-2 ngày</strong> (viết QĐ, giao nhiệm vụ, đăng ký học chứng chỉ)
+  <br>Nếu CTCK chưa có ứng viên đáp ứng đủ: <strong>1-3 tháng</strong> (tuyển người mới hoặc đăng ký khóa học dài hạn)
+</div>
+
+<div class="quote">
+  <strong>Nguyên tắc:</strong> DPO không phải "ghế trang trí". Người này phải có thời gian thực, quyền hạn thực, và chứng chỉ thực. Pre Sales nên giúp CTCK hiểu: bổ nhiệm DPO đúng cách = bước đệm để CTCK tự tin khi bị kiểm tra.
+</div>
+
+<h2>Câu hỏi trắc nghiệm</h2>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">1. Theo Điều 13.2 NĐ 356, DPO phải đáp ứng đồng thời bao nhiêu tiêu chuẩn?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>1 tiêu chuẩn</li>
+    <li>2 tiêu chuẩn</li>
+    <li>3 tiêu chuẩn</li>
+    <li>4 tiêu chuẩn</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">2. Tiêu chuẩn (ii) — kinh nghiệm, yêu cầu bao nhiêu năm trong lĩnh vực nào?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>01 năm trong pháp chế hoặc CNTT</li>
+    <li>02 năm trong ít nhất 1 trong 6 lĩnh vực được liệt kê</li>
+    <li>03 năm trong bất kỳ lĩnh vực nào</li>
+    <li>05 năm trong lĩnh vực tuân thủ hoặc pháp chế</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">3. Ứng viên nào LÝ TƯỞNG nhất cho vị trí DPO tại CTCK?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Trưởng phòng IT — hiểu hệ thống, bảo mật</li>
+    <li>HR Manager — hiểu DLCN nhân sự</li>
+    <li>Compliance Officer — hiểu tuân thủ pháp luật CK, AML, và rủi ro</li>
+    <li>Tuyển người mới có chứng chỉ CIPP/A</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">4. DPO có quyền bị sa thải vì phát hiện và báo cáo vi phạm PDPD không?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Được — nếu Ban Giám đốc muốn</li>
+    <li>Được — nếu vi phạm nghiêm trọng</li>
+    <li>Không — DPO được pháp luật bảo vệ không bị sa thải vì thực hiện nhiệm vụ</li>
+    <li>Không — nhưng có thể bị kỷ luật nếu báo cáo sai</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">5. CTCK nào dưới đây THUỘC DIỆN bắt buộc có DPO?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>CTCK xử lý 500 khách hàng</li>
+    <li>CTCK xử lý hàng nghìn khách hàng, có DLCN nhạy cảm (AML, ghi âm) mỗi ngày</li>
+    <li>CTCK chỉ xử lý dữ liệu cơ bản (họ tên, số điện thoại)</li>
+    <li>CTCK mới thành lập, chưa có khách hàng</li>
+  </ol>
+</div>
+
+<h2>Câu hỏi suy nghĩ</h2>
+
+<ol>
+  <li>Tại sao CTCK thường không muốn bổ nhiệm DPO? Họ sợ gì? Pre Sales nên trả lời như thế nào?</li>
+  <li>Nếu ứng viên tốt nhất của CTCK (Compliance Officer) thi trượt chứng chỉ CIPP/A, CTCK nên làm gì?</li>
+  <li>Khi CTCK hỏi "DPO có cần phải làm việc full-time không?", bạn sẽ trả lời như thế nào để họ hiểu đây là công việc nghiêm túc?</li>
+</ol>
+
+<div class="quote">
+  Nếu có gì chưa rõ, hỏi. Bài tiếp theo trong series: <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-4--dpia-và-ctia">Lesson 0003 — Bước 4: DPIA và CTIA</a>.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">← Bài trước</span>
+    <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003</a> ·
+    <a href="0004-data-mapping-deep-dive.html">Lesson 0004</a> ·
+    <a href="0005-ho-so-tu-an-thu-deep-dive.html">Lesson 0005</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">Bài tiếp</span>
+    <a href="0007-dpia-ctia-deep-dive.html">Lesson 0007: DPIA &amp; CTIA →</a>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005: Hồ sơ tuân thủ Deep Dive — Chính sách, SOP, và thực thi</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --green: #2c5e2e;
+      --green-bg: #e8f5e9;
+      --blue: #1a3a5c;
+      --blue-bg: #e8f0f7;
+      --purple: #5b2c6f;
+      --purple-bg: #f3e5f5;
+      --orange: #c45a00;
+      --orange-bg: #fff3e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2rem; }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-green { background: var(--green); }
+    .meta .badge-purple { background: var(--purple); }
+    .meta .badge-blue { background: var(--blue); }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.75rem 0 0.6rem;
+    }
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin: 1.25rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .green-box {
+      background: var(--green-bg);
+      border-left: 4px solid var(--green);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .green-box strong { color: var(--green); }
+    .blue-box {
+      background: var(--blue-bg);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .blue-box strong { color: var(--blue); }
+    .purple-box {
+      background: var(--purple-bg);
+      border-left: 4px solid var(--purple);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .purple-box strong { color: var(--purple); }
+    .orange-box {
+      background: var(--orange-bg);
+      border-left: 4px solid var(--orange);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .orange-box strong { color: var(--orange); }
+    .warning {
+      background: #fff9e6;
+      border: 1px solid #e6c800;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .warning strong { color: #b8860b; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .checklist {
+      list-style: none;
+      margin: 0 0 1rem;
+    }
+    .checklist li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .checklist li::before {
+      content: "\2610";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 1rem;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .doc-block {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .doc-header {
+      background: var(--blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .doc-header h3 { margin: 0; color: white; font-size: 0.95rem; }
+    .doc-header .tag {
+      background: rgba(255,255,255,0.2);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.78rem;
+    }
+    .doc-body { padding: 1.25rem; }
+    .toc {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .toc ol { margin: 0; padding-left: 1.5rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc li a { color: var(--accent); text-decoration: none; }
+    .toc li a:hover { text-decoration: underline; }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .flow-box {
+      background: #f9f7f4;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 0.75rem 0;
+    }
+    .flow-num {
+      background: var(--blue);
+      color: white;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .flow-text strong { display: block; }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+    }
+    .compare-table th {
+      background: var(--ink);
+      color: white;
+      padding: 0.6rem 0.5rem;
+    }
+    .compare-table td {
+      padding: 0.5rem;
+      border: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    .compare-table .old { background: #fff9f9; }
+    .compare-table .new { background: #f0fff0; }
+    .compare-table .changed { background: #fffbe6; }
+    kbd {
+      background: #f0ebe3;
+      border: 1px solid var(--rule);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.82em;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0005<br>Hồ sơ tuân thủ Deep Dive — Chính sách, SOP, và thực thi</h1>
+
+<div class="subtitle">Xây dựng đầy đủ hồ sơ tuân thủ PDPD từ Thông báo Quyền riêng tư đến SOP phản hồi yêu cầu CTDL.</div>
+
+<div class="meta">
+  <span class="badge badge-purple">Deep Dive</span>
+  <span class="badge badge-blue">Thực hành</span>
+  <span class="pill">Đọc ~45 phút</span>
+  <span class="pill">Có template + SOP + checklist</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="toc">
+  <strong>Mục lục</strong>
+  <ol>
+    <li><a href="#phan-1">Tổng quan: 5 tài liệu bắt buộc</a></li>
+    <li><a href="#phan-2">Tài liệu 1 — Thông báo Quyền riêng tư (Privacy Notice)</a></li>
+    <li><a href="#phan-3">Tài liệu 2 — Chính sách BVDLCN nội bộ</a></li>
+    <li><a href="#phan-4">Tài liệu 3 — Hợp đồng & Điều khoản sử dụng</a></li>
+    <li><a href="#phan-5">Tài liệu 4 — SOP phản hồi yêu cầu CTDL</a></li>
+    <li><a href="#phan-6">Tài liệu 5 — Audit trail consent</a></li>
+    <li><a href="#phan-7">Gap đặc thù CTCK</a></li>
+    <li><a href="#phan-8">Output giao cho khách</a></li>
+  </ol>
+</div>
+
+<div class="highlight">
+  <strong>Bạn đang ở đâu?</strong> Bài này mở rộng từ <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-2--cập-nhật-hồ-sơ-tuân-thủ">Bước 2 trong Lesson 0003</a>. Đọc <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003</a> và <a href="0004-data-mapping-deep-dive.html">Lesson 0004 (Data Mapping)</a> trước. Bài này đi sâu vào chi tiết từng tài liệu.
+</div>
+
+<p>Với bản đồ dữ liệu đã rõ (từ Bước 1), bước tiếp theo là làm cho <strong>chính sách đi trước hành động</strong>. Không có chính sách rõ ràng → nhân viên không biết làm đúng → vi phạm pháp luật khi có sự cố. CTCK thường có 5 tài liệu bắt buộc, mỗi tài liệu phải được cập nhật theo NĐ 356.</p>
+
+<h2 id="phan-1">Phần 1 — 5 tài liệu bắt buộc theo NĐ 356</h2>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>#</th><th>Tài liệu</th><th>Căn cứ NĐ 356</th><th>Đối tượng</th><th>Tần suất cập nhật</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td><strong>Thông báo Quyền riêng tư</strong> (Privacy Notice)</td>
+      <td>Điều 5, 17, 18</td>
+      <td>Khách hàng, nhân sự, đối tác</td>
+      <td>Khi có thay đổi về xử lý DLCN</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>Chính sách BVDLCN nội bộ</strong></td>
+      <td>Điều 11, 14</td>
+      <td>Nhân viên CTCK</td>
+      <td>Hàng năm hoặc khi thay đổi pháp luật</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>Hợp đồng & Điều khoản sử dụng</strong></td>
+      <td>Điều 7, 9, 10</td>
+      <td>Khách hàng</td>
+      <td>Khi thay đổi dịch vụ hoặc pháp luật</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>SOP phản hồi yêu cầu CTDL</strong></td>
+      <td>Điều 5</td>
+      <td>Khách hàng, Bộ phận tiếp nhận</td>
+      <td>Cố định, có version control</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><strong>Audit trail consent</strong></td>
+      <td>Điều 5(3)</td>
+      <td>Hệ thống IT</td>
+      <td>Tích hợp vào hệ thống, liên tục</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="blue-box">
+  <strong>Nguyên tắc vàng:</strong> 5 tài liệu này phải <strong>nhất quán với nhau</strong>. Privacy Notice nói A → Chính sách nội bộ phải hỗ trợ A → SOP phải thực thi A → Hợp đồng phải thể hiện A. Nếu mâu thuẫn → vi phạm.
+</div>
+
+<h2 id="phan-2">Phần 2 — Thông báo Quyền riêng tư (Privacy Notice)</h2>
+
+<h3>2.1. Đây là gì, tại sao quan trọng</h3>
+
+<p>Thông báo Quyền riêng tư là văn bản công khai thông tin cho chủ thể DLCN biết: công ty thu thập gì, vì sao, giữ bao lâu, chia sẻ cho ai, và có những quyền gì. Điều 5 NĐ 356 yêu cầu thông báo phải <strong>ngắn gọn, minh bạch, dễ tiếp cận</strong> — không phải văn bản pháp luật dài 30 trang.</p>
+
+<p>CTCK thường mắc 2 lỗi phổ biến:</p>
+<ul>
+  <li><strong>Lỗi 1:</strong> Privacy Notice cũ copy từ NĐ 13/2023 — thiếu các trường nhạy cảm mới theo NĐ 356 (đặc biệt: <em>"hành vi vi phạm pháp luật"</em>).</li>
+  <li><strong>Lỗi 2:</strong> Privacy Notice dài quá, viết bằng ngôn ngữ pháp lý → khách hàng không đọc = không có giá trị thực.</li>
+</ul>
+
+<h3>2.2. Cấu trúc bắt buộc theo Điều 5</h3>
+
+<table>
+  <thead>
+    <tr><th>Phần</th><th>Nội dung bắt buộc</th><th>Ví dụ cho CTCK</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Thông tin ĐVXL</strong></td>
+      <td>Tên, địa chỉ, SĐT, email liên hệ</td>
+      <td>"CTCP Chứng khoán ABC, Tầng 20, Tòa nhà A, 123 Nguyễn Huệ, Q.1, TP.HCM. Email: privacy@abc.com.vn"</td>
+    </tr>
+    <tr>
+      <td><strong>2. Mục đích xử lý</strong></td>
+      <td>Mỗi mục đích phải liệt kê rõ</td>
+      <td>"Xác minh danh tính theo quy định Luật CK 2019. Thực hiện nghĩa vụ phòng chống rửa tiền theo Nghị định 59."</td>
+    </tr>
+    <tr>
+      <td><strong>3. Phạm vi DLCN</strong></td>
+      <td>Liệt kê cụ thể, không dùng "v.v."</td>
+      <td>"Họ tên, số CCCD, hình ảnh eKYC, lịch sử giao dịch, nguồn tiền, kết quả phân loại AML."</td>
+    </tr>
+    <tr>
+      <td><strong>4. Căn cứ pháp lý</strong></td>
+      <td>Điều khoản cụ thể</td>
+      <td>"Điều 7(1)(a) NĐ 356 — đồng ý của chủ thể. Điều 7(1)(b) — thực hiện hợp đồng."</td>
+    </tr>
+    <tr>
+      <td><strong>5. Thời hạn lưu trữ</strong></td>
+      <td>Cụ thể, có căn cứ</td>
+      <td>"10 năm kể từ ngày đóng tài khoản, theo Điều 58 Luật Chứng khoán 2019."</td>
+    </tr>
+    <tr>
+      <td><strong>6. Bên nhận</strong></td>
+      <td>Danh sách cụ thể, không gộp chung</td>
+      <td>"VSD (đăng ký tài khoản), Ngân hàng lưu ký (đối soát), UBCKNN (báo cáo theo quy định)."</td>
+    </tr>
+    <tr>
+      <td><strong>7. Quyền của chủ thể</strong></td>
+      <td>Theo Điều 5 — 5 quyền + thời hạn</td>
+      <td>"Quyền truy cập: 10 ngày. Quyền chỉnh sửa: 15 ngày. Quyền xóa: 30 ngày."</td>
+    </tr>
+    <tr>
+      <td><strong>8. Nơi công bố</strong></td>
+      <td>Website + app + điểm giao dịch</td>
+      <td>"Đăng tải tại: www.abc.com.vn/privacy, ứng dụng ABC Mobile, quầy giao dịch."</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>2.3. Checklist cho Privacy Notice CTCK</h3>
+
+<ul class="checklist">
+  <li>Có liệt kê <strong>đầy đủ 7 phần</strong> theo Điều 5 không?</li>
+  <li>Có đề cập <strong>giọng nói (ghi âm)</strong> như DLCN nhạy cảm không?</li>
+  <li>Có đề cập <strong>hành vi vi phạm pháp luật</strong> nếu có hệ thống tag vi phạm không?</li>
+  <li>Có đề cập <strong>lịch sử giao dịch, lịch sử AML</strong> như DLCN nhạy cảm không?</li>
+  <li>Thời hạn phản hồi từng quyền có đúng 10/15/30 ngày không?</li>
+  <li>Thông tin liên hệ DPO có trong Privacy Notice không?</li>
+  <li>Privacy Notice có <strong>đường link rõ ràng</strong> từ trang chủ không?</li>
+  <li>Có bản tiếng Anh nếu có khách hàng nước ngoài không?</li>
+</ul>
+
+<div class="doc-block">
+  <div class="doc-header">
+    <span class="tag">Template</span>
+    <h3>Privacy Notice — Mẫu rút gọn cho CTCK</h3>
+  </div>
+  <div class="doc-body">
+    <p style="font-size:0.85rem;color:var(--ink-soft);margin-bottom:1rem;">Bản đầy đủ phải thay thế [...] bằng thông tin thực tế của CTCK.</p>
+    <p><strong>CÔNG TY CỔ PHẦN CHỨNG KHOÁN [...](sau đây gọi là "Công ty")</strong></p>
+    <p><em>Thông báo về việc xử lý Dữ liệu cá nhân</em><br>
+    <em>Cập nhật: [Ngày tháng năm] | Phiên bản: [X.X]</em></p>
+    <hr style="border:none;border-top:1px solid var(--rule);margin:1rem 0;">
+    <p><strong>1. Mục đích xử lý DLCN</strong></p>
+    <p>Công ty thu thập và xử lý DLCN của quý khách hàng cho các mục đích: (a) mở và quản lý tài khoản chứng khoán theo Luật Chứng khoán 2019; (b) thực hiện nghĩa vụ phòng chống rửa tiền theo Nghị định 59/2019/NĐ-CP; (c) tư vấn đầu tư theo hợp đồng dịch vụ đã ký; (d) ghi nhận và lưu trữ giao dịch theo nghĩa vụ pháp luật.</p>
+    <p><strong>2. Phạm vi DLCN được xử lý</strong></p>
+    <p>DLCN cơ bản: họ tên, số CCCD, ngày sinh, địa chỉ, SĐT, email, số tài khoản chứng khoán, lịch sử giao dịch.<br>
+    DLCN nhạy cảm: kết quả phân loại mức độ rủi ro AML, nguồn tiền, ghi âm cuộc gọi tư vấn (giọng nói = sinh trắc học), hình ảnh từ camera an ninh.</p>
+    <p><strong>3. Căn cứ pháp lý</strong></p>
+    <p>Điều 7(1)(b) NĐ 356 — thực hiện hợp đồng dịch vụ. Điều 7(1)(c) — tuân thủ nghĩa vụ pháp luật (Luật CK 2019, Nghị định 59). Ghi âm cuộc gọi: căn cứ pháp lý hợp pháp theo Điều 7(1)(b) — nghĩa vụ lưu trữ 10 năm.</p>
+    <p><strong>4. Thời hạn lưu trữ</strong></p>
+    <p>10 năm kể từ ngày đóng tài khoản chứng khoán, theo Điều 58 Luật Chứng khoán 2019.</p>
+    <p><strong>5. Bên nhận DLCN</strong></p>
+    <p>VSD, Ngân hàng lưu ký, UBCKNN (theo yêu cầu pháp luật). Không chuyển DLCN ra ngoài Việt Nam trừ khi có CTIA theo Điều 32 NĐ 356.</p>
+    <p><strong>6. Quyền của quý khách hàng</strong></p>
+    <p>Quý khách có quyền: (1) Truy cập — phản hồi trong 10 ngày; (2) Chỉnh sửa — 15 ngày; (3) Xóa — 30 ngày; (4) Cấp bản sao — 10 ngày; (5) Phản đối xử lý — 15 ngày.<br>
+    Gửi yêu cầu: email <strong>[privacy@ctck.com.vn]</strong> hoặc gửi thư về địa chỉ [địa chỉ công ty], hoặc gọi hotline [SĐT].</p>
+    <p><strong>7. Thông tin liên hệ DPO</strong></p>
+    <p>Người phụ trách BVDLCN: [Họ tên], Chức vụ: [Chức vụ], Email: [dpo@ctck.com.vn]</p>
+  </div>
+</div>
+
+<h3>2.4. So sánh NĐ 13/2023 vs NĐ 356 — Điểm khác biệt Pre Sales phải cập nhật</h3>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Nội dung</th><th>NĐ 13/2023</th><th>NĐ 356/2025</th><th>Thay đổi</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DLCN nhạy cảm — nhóm mới</td>
+      <td class="old">Không có</td>
+      <td class="new"><strong>"Hành vi vi phạm pháp luật"</strong></td>
+      <td class="changed">⚠️ MỚI — CTCK nào tag "vi phạm" khách → phải khai báo</td>
+    </tr>
+    <tr>
+      <td>DLCN nhạy cảm — tài chính</td>
+      <td class="old">Chung chung "tài chính"</td>
+      <td class="new">Cụ thể: tài khoản, số dư, thu nhập, nguồn tiền</td>
+      <td class="changed">⚠️ Rõ ràng hơn</td>
+    </tr>
+    <tr>
+      <td>DLCN nhạy cảm — sinh trắc học</td>
+      <td class="old">Vân tay, võng mạc, khuôn mặt</td>
+      <td class="new"><strong>Bổ sung: giọng nói</strong></td>
+      <td class="changed">⚠️ MỚI — ghi âm tổng đài = nhạy cảm</td>
+    </tr>
+    <tr>
+      <td>Quyền xóa (Right to Erasure)</td>
+      <td class="old">30 ngày</td>
+      <td class="new">30 ngày</td>
+      <td>Không đổi</td>
+    </tr>
+    <tr>
+      <td>DPO</td>
+      <td class="old">Khuyến khích</td>
+      <td class="new"><strong>Bắt buộc</strong> với doanh nghiệp xử lý nhạy cảm</td>
+      <td class="changed">⚠️ THAY ĐỔI LỚN</td>
+    </tr>
+    <tr>
+      <td>Điều khoản chuyển nhượng</td>
+      <td class="old">Không quy định rõ</td>
+      <td class="new"><strong>Bắt buộc</strong> — phải thông báo khi chuyển nhượng hợp đồng</td>
+      <td class="changed">⚠️ MỚI</td>
+    </tr>
+    <tr>
+      <td>Báo cáo sự cố vi phạm</td>
+      <td class="old">Không bắt buộc</td>
+      <td class="new"><strong>Bắt buộc 72 giờ</strong> theo Điều 12</td>
+      <td class="changed">⚠️ MỚI</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="phan-3">Phần 3 — Chính sách BVDLCN nội bộ</h2>
+
+<h3>3.1. Đây là gì</h3>
+
+<p>Chính sách BVDLCN nội bộ là văn bản hướng dẫn <strong>cách nhân viên CTCK</strong> xử lý DLCN đúng chuẩn mỗi ngày. Khác với Privacy Notice (hướng ra ngoài — cho khách hàng), Chính sách nội bộ hướng vào trong — cho nhân viên.</p>
+
+<p>Điều 11 NĐ 356 yêu cầu: "Đơn vị xử lý phải xây dựng và thực hiện biện pháp bảo mật phù hợp với mức độ rủi ro." Chính sách nội bộ là văn bản thể hiện nghĩa vụ này.</p>
+
+<h3>3.2. Cấu trúc Chính sách nội bộ cho CTCK</h3>
+
+<table>
+  <thead>
+    <tr><th>Phần</th><th>Nội dung</th><th>Ghi chú</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Phạm vi áp dụng</strong></td>
+      <td>Tất cả nhân viên, hợp đồng, bên thứ ba</td>
+      <td>Ghi rõ: "Chính sách này áp dụng cho mọi người có quyền truy cập DLCN"</td>
+    </tr>
+    <tr>
+      <td><strong>2. Vai trò & trách nhiệm</strong></td>
+      <td>DPO, IT, phòng ban, từng nhân viên</td>
+      <td>Mỗi vai trò phải có mô tả rõ ràng</td>
+    </tr>
+    <tr>
+      <td><strong>3. Phân loại DLCN</strong></td>
+      <td>DLCN cơ bản vs nhạy cảm (từ Data Mapping)</td>
+      <td>Tham chiếu đến Data Register đã hoàn thành ở Bước 1</td>
+    </tr>
+    <tr>
+      <td><strong>4. Biện pháp bảo mật</strong></td>
+      <td>Kỹ thuật (mã hóa, firewall) + tổ chức (quy trình, phân quyền)</td>
+      <td>Áp dụng theo mức độ nhạy cảm của trường</td>
+    </tr>
+    <tr>
+      <td><strong>5. Quản lý truy cập</strong></td>
+      <td>Ai được truy cập gì, theo quy trình nào</td>
+      <td>Nguyên tắc least privilege</td>
+    </tr>
+    <tr>
+      <td><strong>6. Xử lý sự cố</strong></td>
+      <td>Báo cáo, khắc phục, thông báo trong 72 giờ</td>
+      <td>Theo Điều 12 NĐ 356</td>
+    </tr>
+    <tr>
+      <td><strong>7. Đào tạo nhân sự</strong></td>
+      <td>Training PDPD khi onboarding, hàng năm</td>
+      <td>Ghi nhận trong hồ sơ nhân sự</td>
+    </tr>
+    <tr>
+      <td><strong>8. Giám sát & đánh giá</strong></td>
+      <td>Audit nội bộ, review chính sách hàng năm</td>
+      <td>Có ghi nhận bằng văn bản</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>3.3. Biện pháp bảo mật theo nhóm DLCN</h3>
+
+<table>
+  <thead>
+    <tr><th>Nhóm DLCN</th><th>Biện pháp kỹ thuật</th><th>Biện pháp tổ chức</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>DLCN cơ bản</strong><br>(họ tên, CCCD, email)</td>
+      <td>Mã hóa AES-256 khi lưu trữ, TLS khi truyền tải, kiểm soát truy cập theo vai trò</td>
+      <td>Chỉ nhân viên được phân quyền mới truy cập. Ký NDA khi onboarding.</td>
+    </tr>
+    <tr>
+      <td><strong>DLCN nhạy cảm — tài chính</strong><br>(nguồn tiền, SAR, phân loại AML)</td>
+      <td>Mã hóa tăng cường, log truy cập chi tiết, 2FA bắt buộc, backup mã hóa riêng</td>
+      <td>Chỉ phòng AML và DPO được truy cập. Không copy ra USB. Audit hàng quý.</td>
+    </tr>
+    <tr>
+      <td><strong>DLCN nhạy cảm — sinh trắc học</strong><br>(ghi âm, camera, eKYC)</td>
+      <td>Mã hóa end-to-end, lưu trữ riêng biệt, auto-delete theo lịch, access log đầy đủ</td>
+      <td>QC (kiểm soát chất lượng) chỉ nghe trong phạm vi công việc. Camera chỉ lưu 30-90 ngày.</td>
+    </tr>
+    <tr>
+      <td><strong>DLCN nhạy cảm — vi phạm pháp luật</strong><br>(nếu có hệ thống tag)</td>
+      <td>Phân quyền nghiêm ngặt nhất, mã hóa, không export được</td>
+      <td>Chỉ phòng Compliance và DPO. Không chia sẻ qua email/chat. Báo cáo khi có truy cập.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="green-box">
+  <strong>Checkpoint cho Pre Sales:</strong> Khi khảo sát CTCK, hỏi: <em>"Chính sách bảo mật hiện tại của công ty có phân biệt DLCN cơ bản và nhạy cảm không? Có biện pháp khác nhau cho từng nhóm không?"</em> — Nếu câu trả là "giống nhau hết" → gap cần báo cáo.
+</div>
+
+<h2 id="phan-4">Phần 4 — Hợp đồng & Điều khoản sử dụng</h2>
+
+<h3>4.1. 3 điểm cần cập nhật trong hợp đồng CTCK</h3>
+
+<p>Theo Điều 7, 9, 10 NĐ 356, các điều khoản hợp đồng dịch vụ chứng khoán cần có:</p>
+
+<ol>
+  <li><strong>Điều khoản về xử lý DLCN</strong> (Điều 9) — Hợp đồng phải nêu rõ: mục đích xử lý, phạm vi, thời hạn. Không được dùng câu chung chung "và các mục đích khác theo quy định pháp luật."</li>
+  <li><strong>Điều khoản về chuyển nhượng hợp đồng</strong> (Điều 10) — Nếu CTCK chuyển nhượng hợp đồng cho bên khác, phải thông báo cho khách hàng và đảm bảo bên nhận tuân thủ NĐ 356.</li>
+  <li><strong>Điều khoản về nghĩa vụ của bên xử lý</strong> (Điều 9) — Nếu CTCK dùng bên xử lý khác (VD: VNG Cloud, AWS), hợp đồng phải có điều khoản ràng buộc bên xử lý tuân thủ PDPD.</li>
+</ol>
+
+<h3>4.2. Checklist cho Hợp đồng dịch vụ CK</h3>
+
+<ul class="checklist">
+  <li>Hợp đồng có <strong>mục đích xử lý DLCN cụ thể</strong> không — hay chỉ ghi chung "theo quy định pháp luật"?</li>
+  <li>Có điều khoản <strong>thời hạn lưu trữ</strong> rõ ràng (10 năm theo Luật CK) không?</li>
+  <li>Có điều khoản <strong>quyền của khách hàng</strong> (truy cập, chỉnh sửa, xóa, phản đối) không?</li>
+  <li>Có điều khoản <strong>chuyển nhượng hợp đồng</strong> không?</li>
+  <li>Nếu dùng cloud provider: có <strong>điều khoản bên xử lý</strong> ràng buộc họ tuân thủ PDPD không?</li>
+  <li>Hợp đồng cũ có <strong>copy từ NĐ 13/2023</strong> cần cập nhật không?</li>
+</ul>
+
+<h3>4.3. Cập nhật Điều khoản sử dụng app/web</h3>
+
+<p>CTCK ngày càng nhiều giao dịch qua app mobile. Điều khoản sử dụng app cần có thêm:</p>
+
+<ul>
+  <li><strong>Thu thập log đăng nhập</strong> (IP, thiết bị, thời gian) — có thông báo cho khách hàng.</li>
+  <li><strong>Cookie & tracking</strong> — nếu app/web có analytics, phải thông báo.</li>
+  <li><strong>Thông báo thay đổi</strong> — khi cập nhật điều khoản, thông báo cho khách hàng như thế nào?</li>
+</ul>
+
+<div class="warning">
+  <strong>Gap CTCK thường gặp:</strong> App giao dịch CTCK dùng third-party SDK (VD: Firebase, Adjust, AppsFlyer) để tracking người dùng — nhưng không thông báo trong Điều khoản sử dụng. Đây là vi phạm nghĩa vụ minh bạch (Điều 5).
+</div>
+
+<h2 id="phan-5">Phần 5 — SOP phản hồi yêu cầu CTDL</h2>
+
+<h3>5.1. 5 quyền của chủ thể DLCN theo Điều 5</h3>
+
+<p>Điều 5 NĐ 356 trao cho khách hàng 5 quyền. CTCK phải phản hồi đúng hạn:</p>
+
+<table>
+  <thead>
+    <tr><th>Quyền</th><th>Nội dung</th><th>Thời hạn phản hồi</th><th>Chú ý cho CTCK</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Truy cập</strong></td>
+      <td>Yêu cầu biết mình đang bị xử lý gì</td>
+      <td><strong>10 ngày</strong></td>
+      <td>Cấp bản sao DLCN đang xử lý. Có thể phí hợp lý.</td>
+    </tr>
+    <tr>
+      <td><strong>2. Chỉnh sửa</strong></td>
+      <td>Yêu cầu sửa thông tin sai</td>
+      <td><strong>15 ngày</strong></td>
+      <td>Cập nhật trên CRM, trading system, AML — đảm bảo nhất quán.</td>
+    </tr>
+    <tr>
+      <td><strong>3. Xóa</strong></td>
+      <td>Yêu cầu xóa DLCN</td>
+      <td><strong>30 ngày</strong></td>
+      <td><strong>Lưu ý đặc thù:</strong> Luật CK yêu cầu lưu 10 năm. CTCK có thể từ chối xóa nếu căn cứ pháp lý hợp pháp (Điều 8(2)) — nhưng phải giải thích rõ bằng văn bản.</td>
+    </tr>
+    <tr>
+      <td><strong>4. Cấp bản sao</strong></td>
+      <td>Yêu cầu bản sao DLCN đang xử lý</td>
+      <td><strong>10 ngày</strong></td>
+      <td>Bản sao điện tử hoặc bản cứng, có đóng dấu.</td>
+    </tr>
+    <tr>
+      <td><strong>5. Phản đối xử lý</strong></td>
+      <td>Yêu cầu ngừng xử lý</td>
+      <td><strong>15 ngày</strong></td>
+      <td>CTCK đánh giá: nếu xử lý có căn cứ pháp lý hợp pháp → có thể tiếp tục nhưng phải thông báo lý do.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>5.2. SOP mẫu — Tiếp nhận & phản hồi yêu cầu CTDL</h3>
+
+<div class="flow-box">
+  <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">SOP Phản hồi yêu cầu quyền của chủ thể DLCN</div>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>Tiếp nhận yêu cầu</strong>
+      Khách gửi email <kbd>privacy@ctck.com.vn</kbd> hoặc gửi thư / gọi hotline.
+      Nhân viên tiếp nhận ghi nhận: ngày nhận, loại yêu cầu, người yêu cầu, kênh nhận.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Xác minh danh tính (trong 24h)</strong>
+      Gọi điện lại khách xác minh: họ tên, số CCCD, số tài khoản CK. Nếu ủy quyền → kiểm tra giấy ủy quyền.
+      Không xác minh được → từ chối với lý do bằng văn bản.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>Phân loại & chuyển phòng ban</strong>
+      <ul style="margin:0.25rem 0 0 1rem;font-size:0.9rem;">
+        <li>Truy cập / Cấp bản sao → Phòng IT + DPO</li>
+        <li>Chỉnh sửa → Phòng mở tài khoản</li>
+        <li>Xóa / Phản đối → Phòng Compliance + Legal + DPO</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Xử lý yêu cầu</strong>
+      Phòng ban liên quan xử lý trong thời hạn nội bộ (<strong>7 ngày</strong> — để dự phòng 3 ngày).
+      Ghi nhận chi tiết vào <strong>Log yêu cầu CTDL</strong>: ngày bắt đầu, ngày hoàn thành, nội dung xử lý.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-text">
+      <strong>Phản hồi khách hàng</strong>
+      Gửi văn bản phản hồi (email có đính kèm / thư) trong thời hạn luật định.
+      Nếu từ chối hoặc gia hạn → gửi <strong>thông báo bằng văn bản</strong> nêu rõ lý do + căn cứ pháp luật.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">6</div>
+    <div class="flow-text">
+      <strong>Đóng yêu cầu & lưu hồ sơ</strong>
+      Lưu toàn bộ email, văn bản, log vào hồ sơ. DPO review mỗi tháng.
+    </div>
+  </div>
+</div>
+
+<div class="purple-box">
+  <strong>Pre Sales lưu ý:</strong> Nhiều CTCK hỏi: <em>"Nếu khách yêu cầu xóa dữ liệu, mình phải xóa hết?"</em> Không. Điều 8(2) NĐ 356 cho phép CTCK <strong>từ chối xóa</strong> nếu: (a) còn nghĩa vụ pháp luật lưu trữ (Luật CK 10 năm), (b) còn cần thiết cho mục đích pháp lý, (c) đang có tranh chấp. CTCK phải giải thích bằng văn bản — không được im lặng.
+</div>
+
+<h2 id="phan-6">Phần 6 — Audit trail consent</h2>
+
+<h3>6.1. Tại sao cần audit trail</h3>
+
+<p>Điều 5(3) NĐ 356 yêu cầu: "Việc đồng ý phải được ghi nhận và có thể truy xuất được." CTCK phải chứng minh: ai đồng ý, khi nào, bằng cách nào, với nội dung gì. Không có audit trail → không có bằng chứng → vi phạm khi kiểm tra.</p>
+
+<h3>6.2. 4 loại consent tại CTCK</h3>
+
+<table>
+  <thead>
+    <tr><th>Loại consent</th><th>Cách ghi nhận</th><th>Nền tảng</th><th>Thời gian lưu</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Đồng ý mở tài khoản</strong></td>
+      <td>Chữ ký trên hồ sơ mở tài khoản + checkbox điện tử (eKYC)</td>
+      <td>Hệ thống eKYC, CRM</td>
+      <td>10 năm</td>
+    </tr>
+    <tr>
+      <td><strong>Đồng ý nhận marketing</strong></td>
+      <td>Checkbox riêng, không ticks sẵn (opt-in, không opt-out)</td>
+      <td>App, web, CRM</td>
+      <td>3 năm hoặc đến khi rút lại</td>
+    </tr>
+    <tr>
+      <td><strong>Đồng ý ghi âm cuộc gọi</strong></td>
+      <td>Thông báo tự động khi kết nối tổng đài + thông báo trong Privacy Notice</td>
+      <td>Hệ thống tổng đài</td>
+      <td>10 năm</td>
+    </tr>
+    <tr>
+      <td><strong>Rút lại consent</strong></td>
+      <td>Khách gửi email yêu cầu → ghi nhận ngày rút + xóa khỏi danh sách marketing</td>
+      <td>Email + CRM</td>
+      <td>3 năm sau khi rút</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.3. Checklist audit trail</h3>
+
+<ul class="checklist">
+  <li>Hệ thống eKYC có <strong>ghi nhận thời gian</strong> (timestamp) khi khách đồng ý không?</li>
+  <li>Checkbox đồng ý có <strong> không?</strong> (Không ticks sẵn)</li>
+  <li>Có <strong>log truy cập</strong> — ai xem DLCN khách, khi nào, từ đâu?</li>
+  <li>Khi khách <strong>rút lại consent marketing</strong>: có quy trình xóa khỏi danh sách không?</li>
+  <li>Hệ thống CRM có <strong>lưu version</strong> của từng lần đồng ý không?</li>
+  <li>Log consent có <strong>được backup</strong> định kỳ không?</li>
+</ul>
+
+<h2 id="phan-7">Phần 7 — Gap đặc thù CTCK</h2>
+
+<h3>7.1. Những gap CTCK hay gặp nhất</h3>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Gap</th><th>Hậu quả</th><th>Cách Pre Sales phát hiện</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="old">Chính sách copy NĐ 13/2023, chưa cập nhật NĐ 356</td>
+      <td>Thiếu "hành vi vi phạm pháp luật", thiếu giọng nói</td>
+      <td>Hỏi: "Chính sách cập nhật lần cuối khi nào?"</td>
+    </tr>
+    <tr>
+      <td class="old">Privacy Notice không thông báo ghi âm tổng đài</td>
+      <td>Vi phạm nghĩa vụ minh bạch (Điều 5)</td>
+      <td>Nghe thử hotline CTCK — có thông báo ghi âm không?</td>
+    </tr>
+    <tr>
+      <td class="old">Hợp đồng không có điều khoản chuyển nhượng</td>
+      <td>Vi phạm Điều 10 NĐ 356</td>
+      <td>Yêu cầu xem hợp đồng mẫu</td>
+    </tr>
+    <tr>
+      <td class="old">Không có SOP phản hồi yêu cầu CTDL</td>
+      <td>Không phản hồi đúng hạn → vi phạm Điều 5</td>
+      <td>Hỏi: "Khi khách gửi email yêu cầu xóa, ai xử lý, quy trình ra sao?"</td>
+    </tr>
+    <tr>
+      <td class="old">Không có audit trail consent</td>
+      <td>Không có bằng chứng đồng ý → vi phạm Điều 5(3)</td>
+      <td>Yêu cầu demo hệ thống eKYC</td>
+    </tr>
+    <tr>
+      <td class="old">App có third-party SDK tracking không thông báo</td>
+      <td>Vi phạm nghĩa vụ minh bạch</td>
+      <td>Yêu cầu xem Điều khoản sử dụng app</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>7.2. Câu hỏi Pre Sales hỏi để phát hiện gap</h3>
+
+<ol>
+  <li><em>"Chính sách bảo mật hiện tại cập nhật lần cuối khi nào? Có bao giờ được soạn mới hoàn toàn không, hay chỉ sửa từ bản cũ?"</em> → Phát hiện bản cũ copy NĐ 13.</li>
+  <li><em>"Khi khách hàng gửi email yêu cầu xóa dữ liệu, công ty phản hồi trong bao lâu? Ai chịu trách nhiệm?"</em> → Phát hiện không có SOP.</li>
+  <li><em>"Hệ thống tổng đài có thông báo cho khách là cuộc gọi đang được ghi âm không? Privacy Notice có đề cập việc ghi âm không?"</em> → Phát hiện gap ghi âm.</li>
+  <li><em>"Khi khách đồng ý mở tài khoản, hệ thống ghi nhận timestamp và nội dung đồng ý ở đâu? Có lưu được không?"</em> → Phát hiện không có audit trail.</li>
+  <li><em>"App giao dịch có dùng SDK tracking (Firebase, Adjust, AppsFlyer) không? Có thông báo trong Điều khoản sử dụng không?"</em> → Phát hiện gap third-party SDK.</li>
+</ol>
+
+<h2 id="phan-8">Phần 8 — Output giao cho khách</h2>
+
+<p>Sau buổi khảo sát, giao cho khách hàng 4 deliverable cụ thể:</p>
+
+<ul class="checklist">
+  <li><strong>Privacy Notice phiên bản NĐ 356</strong> — đầy đủ 7 phần theo Điều 5. Có version, ngày cập nhật.</li>
+  <li><strong>Chính sách BVDLCN nội bộ</strong> — đầy đủ 8 phần, có phân biệt DLCN cơ bản và nhạy cảm.</li>
+  <li><strong>SOP phản hồi yêu cầu CTDL</strong> — quy trình 6 bước, có template văn bản phản hồi.</li>
+  <li><strong>Báo cáo Gap Hồ sơ tuân thủ</strong> — ghi rõ tài liệu nào thiếu, tài liệu nào cần cập nhật, gap nào cần xử lý ngay.</li>
+</ul>
+
+<div class="orange-box">
+  <strong>Thời gian ước tính:</strong>
+  <br>CTCK quy mô nhỏ (< 50 nhân viên): <strong>3-5 ngày</strong> (2 ngày viết tài liệu, 2 ngày review + chỉnh sửa)
+  <br>CTCK quy mô vừa (50-200 nhân viên): <strong>5-10 ngày</strong>
+  <br>CTCK quy mô lớn (> 200 nhân viên): <strong>10-15 ngày</strong> (nhiều phòng ban cần phối hợp)
+</div>
+
+<div class="quote">
+  <strong>Nguyên tắc:</strong> Tài liệu phải được <strong>thực thi</strong>, không chỉ để trên kệ. Sau khi giao tài liệu, Pre Sales nên hướng dẫn khách hàng: tài liệu nào cần đăng tải (Privacy Notice), tài liệu nào cần training nhân viên (Chính sách nội bộ), tài liệu nào cần tích hợp vào hệ thống (SOP, audit trail).
+</div>
+
+<h2>Câu hỏi trắc nghiệm</h2>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">1. Theo Điều 5 NĐ 356, thời hạn phản hồi yêu cầu <strong>xóa DLCN</strong> là bao lâu?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>10 ngày</li>
+    <li>15 ngày</li>
+    <li>30 ngày</li>
+    <li>72 giờ</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">2. Điều nào NĐ 356 bổ sung MỚI so với NĐ 13/2023 khiến CTCK phải cập nhật Privacy Notice ngay?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Bổ sung "giọng nói" vào nhóm sinh trắc học</li>
+    <li>Bổ sung "hành vi vi phạm pháp luật" vào DLCN nhạy cảm</li>
+    <li>Bắt buộc báo cáo sự cố trong 72 giờ</li>
+    <li>Tất cả đều đúng</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">3. Ghi âm cuộc gọi tư vấn CTCK cần thông báo cho khách hàng ở đâu?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Chỉ cần thông báo bằng lời khi kết nối tổng đài</li>
+    <li>Chỉ cần ghi trong Privacy Notice</li>
+    <li>Cần thông báo BẰNG LỜI (khi gọi) VÀ trong Privacy Notice</li>
+    <li>Không cần thông báo — CTCK có căn cứ pháp lý hợp pháp</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">4. Khách hàng yêu cầu xóa toàn bộ DLCN. CTCK có thể từ chối không?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Không được — phải xóa ngay</li>
+    <li>Được — nếu còn nghĩa vụ pháp luật lưu trữ (Luật CK 10 năm) nhưng phải giải thích bằng văn bản</li>
+    <li>Được — vì CTCK là doanh nghiệp tài chính</li>
+    <li>Được — nếu DPO đồng ý</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">5. CTCK dùng third-party SDK (Firebase) trong app giao dịch nhưng không thông báo trong Điều khoản sử dụng. Đây là gap gì?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Gap bảo mật — SDK không an toàn</li>
+    <li>Gap minh bạch — vi phạm nghĩa vụ thông báo theo Điều 5</li>
+    <li>Gap CTIA — chuyển DLCN ra nước ngoài</li>
+    <li>Không phải gap — SDK không phải DLCN</li>
+  </ol>
+</div>
+
+<h2>Câu hỏi suy nghĩ</h2>
+
+<ol>
+  <li>Khi khách hàng nói "Chúng tôi đã có chính sách bảo mật từ 2023, đâu cần sửa gì?", bạn sẽ dùng bảng so sánh NĐ 13 vs NĐ 356 để thuyết phục họ bằng cách nào?</li>
+  <li>Nếu khách hỏi "Tại sao mình phải có SOP cho yêu cầu xóa dữ liệu, mình chưa từng có ai yêu cầu?", bạn sẽ trả lời sao?</li>
+  <li>Trong 5 tài liệu, bạn nghĩ tài liệu nào là khó nhất để CTCK chấp nhận làm? Tại sao?</li>
+</ol>
+
+<div class="quote">
+  Nếu có gì chưa rõ, hỏi. Bài tiếp theo trong series: <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-3--bổ-nhiệm-dpo">Lesson 0003 — Bước 3: Bổ nhiệm DPO</a>.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">← Bài trước</span>
+    <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003</a> ·
+    <a href="0004-data-mapping-deep-dive.html">Lesson 0004</a> ·
+    <a href="../MISSION.html">Mission</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">Bài tiếp</span>
+    <a href="0006-bo-nhiem-dpo-deep-dive.html">Lesson 0006: Bổ nhiệm DPO →</a>
+  </div>
+</div>
+
+</body>
+</html>

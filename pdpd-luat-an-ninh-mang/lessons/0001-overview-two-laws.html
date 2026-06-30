@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: Hai luật sắp có hiệu lực — bạn cần biết gì trong 24h tới</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --green: #2c5e2e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.6rem;
+      color: var(--ink);
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.25rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .urgent {
+      background: #fdecea;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .urgent strong { color: var(--accent); }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.95rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    .ladder {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.9rem;
+    }
+    .ladder-step {
+      display: flex;
+      gap: 1rem;
+      padding: 0.4rem 0;
+    }
+    .ladder-num { color: var(--accent); font-weight: 700; min-width: 1.5rem; }
+    .ladder-arrow { color: var(--ink-soft); font-size: 0.8rem; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0001<br>Hai luật sắp có hiệu lực — bạn cần biết gì trong 24h tới</h1>
+
+<div class="subtitle">Tổng quan Nghị định 356/2025/NĐ-CP (bảo vệ dữ liệu cá nhân) và Luật An ninh mạng 2025.</div>
+
+<div class="meta">
+  <span class="badge">Cơ bản</span>
+  <span class="pill">Đọc ~20 phút</span>
+  <span class="pill">Không cần code</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="urgent">
+  <strong>Thời điểm:</strong> Hôm nay là 30/06/2026. Luật An ninh mạng 2025 có hiệu lực <strong>01/07/2026</strong> — tức khoảng 24 giờ tới. Nghị định 356/2025/NĐ-CP đã có hiệu lực từ 01/01/2026. Đây không phải bài học lý thuyết — đây là <em>deadline</em>.
+</div>
+
+<p>Bài học mở đầu này bám theo webinar #14 của Quyền Võ (<a href="https://www.youtube.com/watch?v=dDUkq8f35j0">xem video</a>) làm hook ngữ cảnh, nhưng mọi con số và điều khoản đều đối chiếu với văn bản gốc (xem <a href="../RESOURCES.md">RESOURCES.md</a>). Đến cuối bài bạn sẽ có một khung quyết định để xác định: <em>"Công ty mình / khách hàng mình có rơi vào phạm vi hai luật này không, và nghĩa vụ là gì?"</em></p>
+
+<h2>Vì sao đây là hai luật quan trọng nhất năm 2026?</h2>
+
+<p>Cả hai văn bản đều vừa được thay thế/sửa đổi lớn trong vòng 12 tháng qua:</p>
+
+<ul>
+  <li><strong>Nghị định 13/2023/NĐ-CP</strong> (hướng dẫn Luật Bảo vệ dữ liệu cá nhân) đã <strong>hết hiệu lực từ 01/01/2026</strong>, được thay bằng <strong>Nghị định 356/2025/NĐ-CP</strong> ban hành 31/12/2025 — có hiệu lực cùng ngày Luật Bảo vệ dữ liệu cá nhân 2025. <em>Nếu bạn đã đọc tài liệu cũ, phải đọc lại.</em></li>
+  <li><strong>Luật An ninh mạng 2018</strong> và <strong>Luật An toàn thông tin mạng 2015</strong> bị hợp nhất thành <strong>Luật An ninh mạng 2025</strong> (số 116/2025/QH15) ban hành 10/12/2025, hiệu lực <strong>01/07/2026</strong>. Đây là văn bản <em>thay thế hoàn toàn</em> hai luật cũ — không phải sửa đổi.</li>
+</ul>
+
+<div class="highlight">
+  <strong>Lưu ý cho Pre Sales:</strong> Khách hàng của bạn có thể đang dùng tài liệu compliance cũ (NĐ 13, Luật ANM 2018). Khi đi tư vấn, <em>đề xuất review lại checklist của họ</em>. Đây là cơ hội thể hiện giá trị ngay lập tức.
+</div>
+
+<h2>Trụ cột 1 — Nghị định 356/2025/NĐ-CP (Bảo vệ dữ liệu cá nhân)</h2>
+
+<h3>Dữ liệu cá nhân (DLCN) được phân thành 2 nhóm</h3>
+
+<p>Điều 3 và Điều 4 của NĐ 356 phân chia rõ:</p>
+
+<table>
+  <thead>
+    <tr><th>Loại</th><th>Định nghĩa</th><th>Ví dụ</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>DLCN cơ bản</strong></td>
+      <td>Thông tin gắn liền với một con người cụ thể, không thuộc nhóm nhạy cảm.</td>
+      <td>Họ tên, ngày sinh, địa chỉ, SĐT, email, số định danh cá nhân.</td>
+    </tr>
+    <tr>
+      <td><strong>DLCN nhạy cảm</strong></td>
+      <td>Nhóm dữ liệu cần bảo vệ đặc biệt — nếu lộ có thể gây hại trực tiếp đến quyền, lợi ích của cá nhân.</td>
+      <td>Sinh trắc học, vị trí GPS, tài khoản định danh, giao dịch ngân hàng / CK / BH, dữ liệu y tế, <strong>hành vi vi phạm pháp luật</strong>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Điểm mới quan trọng:</strong> NĐ 13 cũ chỉ coi "hành vi cấu thành tội phạm" là nhạy cảm. NĐ 356 mở rộng ra <strong>mọi hành vi vi phạm pháp luật</strong> — kể cả vi phạm hành chính, giao thông, v.v. <em>Nếu hệ thống CRM/log của khách hàng có tag vi phạm luật, phải xếp vào nhóm nhạy cảm.</em></p>
+
+<h3>Đồng ý (Consent) phải có bằng chứng</h3>
+
+<p>NĐ 356 cấm triệt để 3 kiểu consent "gây hiểu lầm":</p>
+
+<ul>
+  <li>Đồng ý <strong>mặc định</strong> (mở app là auto-agree) — <em>bị cấm</em></li>
+  <li>Chỉ dẫn <strong>lừa người dùng đồng ý</strong> (nút "Tiếp tục" với nội dung mơ hồ) — <em>bị cấm</em></li>
+  <li>Thiết kế buộc phải đồng ý mới dùng được dịch vụ — <em>có điều kiện</em> (phải tách bạch giữa DLCN cần thiết vs DLCN gia tăng)</li>
+</ul>
+
+<p><strong>Bắt buộc:</strong> doanh nghiệp phải lưu trữ bằng chứng đồng ý dạng có thể truy xuất được (audit trail, IP + timestamp + lựa chọn).</p>
+
+<h3>Thời hạn phản hồi yêu cầu của Chủ thể dữ liệu (Điều 5)</h3>
+
+<p>NĐ 13 cũ chỉ quy định mức chung 72 giờ. NĐ 356 cụ thể hóa <strong>từng loại yêu cầu</strong>:</p>
+
+<table>
+  <thead>
+    <tr><th>Loại yêu cầu của CTDL</th><th>Thời hạn tối đa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Cung cấp, cập nhật, đình chỉ xử lý</td><td>10 ngày</td></tr>
+    <tr><td>Cấp bản sao dữ liệu</td><td>15 ngày</td></tr>
+    <tr><td>Xóa dữ liệu</td><td>30 ngày (trường hợp phức tạp)</td></tr>
+  </tbody>
+</table>
+
+<h3>Nhân sự bảo vệ dữ liệu (DPO) — Điều 13.2 NĐ 356/2025</h3>
+
+<p>Theo <strong>Điều 13.2 Nghị định 356/2025/NĐ-CP</strong>, DPO phải thỏa <strong>đồng thời cả 3 tiêu chuẩn</strong>. Thiếu bất kỳ tiêu chuẩn nào thì không đủ điều kiện:</p>
+
+<div class="ladder">
+  <div class="ladder-step"><span class="ladder-num">(i)</span><span class="ladder-text">Trình độ <strong>cao đẳng trở lên</strong> (bất kỳ ngành nào)</span></div>
+  <div class="ladder-step"><span class="ladder-num">(ii)</span><span class="ladder-text">Ít nhất <strong>02 năm kinh nghiệm</strong> trong một trong các lĩnh vực: pháp chế, CNTT, an ninh mạng, an ninh dữ liệu, quản trị rủi ro, kiểm soát tuân thủ, quản lý nhân sự. Tính từ lúc tốt nghiệp.</span></div>
+  <div class="ladder-step"><span class="ladder-num">(iii)</span><span class="ladder-text">Đã được <strong>đào tạo, bồi dưỡng</strong> kiến thức pháp luật và kỹ năng chuyên môn về bảo vệ DLCN. Phải có <strong>chứng chỉ hoặc bằng cấp</strong> — tự tìm hiểu không đủ.</span></div>
+</div>
+
+<p>Đây là yêu cầu tối thiểu năng lực — không phải chỉ "chỉ định 1 người ký tên". Khi tư vấn, hỏi khách hàng: <em>"Ai là DPO của anh/chị? Họ đáp ứng đủ 3 tiêu chuẩn này chưa?"</em></p>
+
+<h2>Trụ cột 2 — Luật An ninh mạng 2025 (116/2025/QH15)</h2>
+
+<h3>Tin quan trọng nhất: 4 con số phải thuộc lòng</h3>
+
+<p>Đối với doanh nghiệp cung cấp dịch vụ trên mạng viễn thông / Internet / dịch vụ gia tăng trên không gian mạng tại VN — áp dụng Điều 25 khoản 2:</p>
+
+<table>
+  <thead>
+    <tr><th>Hành động</th><th>Thời hạn thường</th><th>Thời hạn khẩn cấp</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cung cấp thông tin người dùng cho lực lượng chuyên trách BCA</td>
+      <td><strong>24 giờ</strong></td>
+      <td><strong>3 giờ</strong></td>
+    </tr>
+    <tr>
+      <td>Ngăn chặn / xóa bỏ thông tin vi phạm</td>
+      <td><strong>24 giờ</strong></td>
+      <td><strong>6 giờ</strong></td>
+    </tr>
+    <tr>
+      <td>Tỷ lệ kinh phí tối thiểu cho an ninh mạng (Điều 17)</td>
+      <td colspan="2"><strong>15%</strong> tổng đầu tư xây dựng + vận hành hệ thống thông tin</td>
+    </tr>
+    <tr>
+      <td>Mức đầu tư lưu trữ dữ liệu tại VN</td>
+      <td colspan="2"><strong>Bắt buộc</strong> với DLCN + dữ liệu quan hệ + dữ liệu do người dùng VN tạo ra</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="urgent">
+  <strong>Đây là khác biệt cốt lõi so với Luật 2018:</strong> Luật cũ <em>không quy định thời hạn cụ thể</em>. Luật 2025 ép doanh nghiệp phải có quy trình ứng phó tự động hóa — không thể "xử lý sau 1 tuần" được nữa.
+</div>
+
+<h3>Cơ quan đầu mối: Bộ Công an</h3>
+
+<p>Trước đây có sự chồng chéo giữa Luật ANM 2018 (Bộ CA phụ trách) và Luật ATTTM 2015 (Bộ TT&amp;TT phụ trách). Luật ANM 2025 hợp nhất và giao <strong>Bộ Công an</strong> là cơ quan đầu mối. Khi khách hàng hỏi <em>"Tuân thủ ở đâu?"</em>, bạn có thể nói: <strong>Bộ Công an</strong>, không phải Bộ TT&amp;TT.</p>
+
+<h3>Nghĩa vụ Điều 41 — checklist ứng cứu ANM</h3>
+
+<p>DN cung cấp dịch vụ trên không gian mạng phải có:</p>
+
+<ul>
+  <li>Phương án <strong>ứng cứu khẩn cấp</strong> — bắt buộc</li>
+  <li>Báo cáo khả năng mất ANM + hướng dẫn phòng ngừa cho người dùng</li>
+  <li>Định danh địa chỉ IP của tổ chức</li>
+  <li>Phối hợp kết nối hạ tầng giám sát ANM</li>
+  <li>Quản trị viên MXH: kiểm soát nội dung, ngăn chặn tiêu cực</li>
+</ul>
+
+<h3>Doanh nghiệp nước ngoài</h3>
+
+<p>Phải <strong>đặt chi nhánh hoặc văn phòng đại diện tại VN</strong> nếu cung cấp dịch vụ tại VN. Nếu xử lý DLCN người dùng VN → phải lưu trữ tại VN (theo thời hạn Chính phủ quy định).</p>
+
+<h2>Decision Tree — "Khách hàng mình có rơi vào phạm vi không?"</h2>
+
+<p>Đây là khung quyết định bạn có thể mang đi gặp khách hàng. In ra, đặt trên bàn:</p>
+
+<h3>Bước 1: Khách hàng có "dịch vụ trên không gian mạng" không?</h3>
+
+<ul>
+  <li><strong>Không</strong> (ví dụ: công ty sản xuất, công ty bán lẻ chỉ có POS offline) → Luật ANM 2025 <em>không</em> áp dụng trực tiếp. Nhưng nếu có <strong>website</strong> hoặc <strong>app</strong> xử lý DLCN → vẫn rơi vào PDPD.</li>
+  <li><strong>Có</strong> (SaaS, MXH, fintech, e-commerce, fintech, logistics có app...) → tiếp bước 2.</li>
+</ul>
+
+<h3>Bước 2: Họ xử lý dữ liệu cá nhân nào?</h3>
+
+<ul>
+  <li>Chỉ DLCN cơ bản → áp dụng Điều 3 NĐ 356 + consent thường.</li>
+  <li>Có bất kỳ DLCN nhạy cảm nào → phải DPO đạt chuẩn năng lực + thỏa thuận bằng văn bản với bên xử lý + biện pháp bảo mật cao hơn.</li>
+</ul>
+
+<h3>Bước 3: Họ có cung cấp dịch vụ tại VN không?</h3>
+
+<ul>
+  <li>Trong nước, toàn bộ data ở VN → triển khai 4 deadlines (24h/3h/24h/6h).</li>
+  <li>Hoặc nước ngoài có user VN → phải có chi nhánh/VPĐD + lưu trữ dữ liệu tại VN.</li>
+</ul>
+
+<h3>Bước 4: Budget cho an ninh mạng là bao nhiêu?</h3>
+
+<ul>
+  <li>Nếu <em>dưới 15%</em> tổng đầu tư công nghệ → <strong>vi phạm Điều 17</strong>. Cảnh báo khách hàng ngay.</li>
+</ul>
+
+<div class="highlight">
+  <strong>Bài tập nhỏ cho bạn hôm nay:</strong> Chọn 1 khách hàng đang nhớ trong đầu. Đi qua 4 bước. Ghi lại đáp án ở giấy — đó là checklist tuần này.
+</div>
+
+<h2>Câu hỏi trắc nghiệm — kiểm tra hiểu bài</h2>
+
+<div class="quiz" style="background:#fff;border:1px solid var(--rule);padding:1.25rem;margin:1rem 0;">
+  <p style="font-weight:700;margin-bottom:0.75rem;">1. Theo NĐ 356/2025, đâu KHÔNG phải DLCN nhạy cảm?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Dữ liệu sinh trắc học</li>
+    <li style="color:var(--green);"><strong>Số điện thoại cá nhân</strong> (Đáp án đúng — số ĐT là DLCN cơ bản. Các đáp án còn lại: vị trí GPS, hành vi vi phạm pháp luật, tài khoản định danh đều là nhạy cảm)</li>
+    <li>Tài khoản định danh</li>
+    <li>Dữ liệu về hành vi vi phạm pháp luật</li>
+  </ol>
+</div>
+
+<div class="quiz" style="background:#fff;border:1px solid var(--rule);padding:1.25rem;margin:1rem 0;">
+  <p style="font-weight:700;margin-bottom:0.75rem;">2. Theo Luật ANM 2025, khi nhận yêu cầu cung cấp thông tin người dùng từ BCA trong trường hợp KHẨN CẤP, doanh nghiệp phải phản hồi trong bao lâu?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>24 giờ</li>
+    <li>72 giờ</li>
+    <li style="color:var(--green);"><strong>3 giờ</strong> (Đáp án đúng — khoản 2 Điều 25. Trường hợp không khẩn cấp: 24 giờ. Trước đây Luật 2018 không quy định thời hạn cụ thể.)</li>
+    <li>1 tuần</li>
+  </ol>
+</div>
+
+<div class="quiz" style="background:#fff;border:1px solid var(--rule);padding:1.25rem;margin:1rem 0;">
+  <p style="font-weight:700;margin-bottom:0.75rem;">3. Tỷ lệ kinh phí TỐI THIỂU cho an ninh mạng theo Luật ANM 2025?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>5%</li>
+    <li>10%</li>
+    <li style="color:var(--green);"><strong>15%</strong> (Đáp án đúng — Điều 17. Đây là tỷ lệ đầu tư tối thiểu, không phải khuyến nghị.)</li>
+    <li>25%</li>
+  </ol>
+</div>
+
+<div class="quiz" style="background:#fff;border:1px solid var(--rule);padding:1.25rem;margin:1rem 0;">
+  <p style="font-weight:700;margin-bottom:0.75rem;">4. DPO theo NĐ 356/2025 cần thỏa bao nhiêu tiêu chuẩn năng lực tối thiểu?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>1 (chỉ cần ký tên)</li>
+    <li>2 (trình độ + kinh nghiệm)</li>
+    <li style="color:var(--green);"><strong>3</strong> (Đáp án đúng — cao đẳng + 2 năm KN + đào tạo. Điều 13.2 NĐ 356/2025.)</li>
+    <li>4</li>
+  </ol>
+</div>
+
+<h2>Tổng kết Lesson 0001</h2>
+
+<p>Sau bài này bạn đã có:</p>
+
+<ul>
+  <li>Phân biệt được DLCN cơ bản vs nhạy cảm theo NĐ 356.</li>
+  <li>Biết 4 con số "phải thuộc lòng" của Luật ANM 2025: 24h / 3h / 24h / 6h / 15%.</li>
+  <li>Có decision tree 4 bước để áp dụng ngay cho khách hàng.</li>
+  <li>Hiểu điểm mới so với NĐ 13/2023 & Luật ANM 2018 (không xài tài liệu cũ!).</li>
+</ul>
+
+<h2>Câu hỏi suy nghĩ trước lesson 0002</h2>
+
+<ol>
+  <li>Nếu khách hàng của bạn có SaaS B2B xử lý hóa đơn + thông tin nhân sự — họ rơi vào Điều nào của cả 2 luật?</li>
+  <li>DPO hiện tại của khách hàng có đủ 3 tiêu chuẩn không? Nếu thiếu 1, đề xuất khách hàng làm gì?</li>
+  <li>Trường hợp nào bạn cần leo thang lên luật sư chuyên ngành thay vì tự tư vấn?</li>
+</ol>
+
+<div class="quote">
+  <strong>Nếu có gì chưa rõ, hỏi.</strong> Đây là teacher của bạn. Nếu một khái niệm gây mơ hồ, nếu bạn cần ví dụ cụ thể hơn cho use case thật của mình — đặt câu hỏi. Lesson 0002 sẽ được thiết kế quanh các điểm bạn vướng.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">— —</span>
+    <a href="../MISSION.html">Mission</a> ·
+    <a href="../GLOSSARY.md">Glossary</a> ·
+    <a href="../RESOURCES.md">Resources</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">Bài tiếp</span>
+    <a href="0002-doanh-nghiep-chung-khoan.html">Lesson 0002 →</a>
+  </div>
+</div>
+
+</body>
+</html>

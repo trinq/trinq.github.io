@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0007: DPIA & CTIA Deep Dive — Đánh giá tác động và chuyển nhượng xuyên biên giới</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --green: #2c5e2e;
+      --green-bg: #e8f5e9;
+      --blue: #1a3a5c;
+      --blue-bg: #e8f0f7;
+      --purple: #5b2c6f;
+      --purple-bg: #f3e5f5;
+      --orange: #c45a00;
+      --orange-bg: #fff3e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2rem; }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-green { background: var(--green); }
+    .meta .badge-purple { background: var(--purple); }
+    .meta .badge-blue { background: var(--blue); }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.75rem 0 0.6rem;
+    }
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin: 1.25rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .green-box {
+      background: var(--green-bg);
+      border-left: 4px solid var(--green);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .green-box strong { color: var(--green); }
+    .blue-box {
+      background: var(--blue-bg);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .blue-box strong { color: var(--blue); }
+    .purple-box {
+      background: var(--purple-bg);
+      border-left: 4px solid var(--purple);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .purple-box strong { color: var(--purple); }
+    .orange-box {
+      background: var(--orange-bg);
+      border-left: 4px solid var(--orange);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .orange-box strong { color: var(--orange); }
+    .warning {
+      background: #fff9e6;
+      border: 1px solid #e6c800;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .warning strong { color: #b8860b; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .checklist {
+      list-style: none;
+      margin: 0 0 1rem;
+    }
+    .checklist li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .checklist li::before {
+      content: "\2610";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 1rem;
+    }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .doc-block {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .doc-header {
+      background: var(--blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .doc-header.purple { background: var(--purple); }
+    .doc-header.green { background: var(--green); }
+    .doc-header.orange { background: var(--orange); }
+    .doc-header h3 { margin: 0; color: white; font-size: 0.95rem; }
+    .doc-header .tag {
+      background: rgba(255,255,255,0.2);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.78rem;
+    }
+    .doc-body { padding: 1.25rem; }
+    .toc {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .toc ol { margin: 0; padding-left: 1.5rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc li a { color: var(--accent); text-decoration: none; }
+    .toc li a:hover { text-decoration: underline; }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .flow-box {
+      background: #f9f7f4;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 0.75rem 0;
+    }
+    .flow-num {
+      background: var(--blue);
+      color: white;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .flow-text strong { display: block; }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+    }
+    .compare-table th {
+      background: var(--ink);
+      color: white;
+      padding: 0.6rem 0.5rem;
+    }
+    .compare-table td {
+      padding: 0.5rem;
+      border: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    .compare-table .old { background: #fff9f9; }
+    .compare-table .new { background: #f0fff0; }
+    .compare-table .changed { background: #fffbe6; }
+    kbd {
+      background: #f0ebe3;
+      border: 1px solid var(--rule);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.82em;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .decision-tree {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0007<br>DPIA &amp; CTIA Deep Dive — Đánh giá tác động và chuyển nhượng xuyên biên giới</h1>
+
+<div class="subtitle">Hai báo cáo quan trọng nhất mà CTCK phải có: DPIA cho mọi xử lý nhạy cảm, CTIA cho mọi dòng dữ liệu ra khỏi Việt Nam.</div>
+
+<div class="meta">
+  <span class="badge badge-purple">Deep Dive</span>
+  <span class="badge badge-blue">Thực hành</span>
+  <span class="pill">Đọc ~40 phút</span>
+  <span class="pill">Có template DPIA + checklist CTIA</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="toc">
+  <strong>Mục lục</strong>
+  <ol>
+    <li><a href="#phan-1">Tổng quan: DPIA và CTIA là gì</a></li>
+    <li><a href="#phan-2">Phần 2: DPIA — Khi nào bắt buộc</a></li>
+    <li><a href="#phan-3">Phần 3: Quy trình DPIA 6 bước</a></li>
+    <li><a href="#phan-4">Phần 4: Template DPIA cho CTCK</a></li>
+    <li><a href="#phan-5">Phần 5: CTIA — Khi nào bắt buộc</a></li>
+    <li><a href="#phan-6">Phần 6: 3 căn cứ để chuyển DLCN ra nước ngoài</a></li>
+    <li><a href="#phan-7">Phần 7: Checklist CTIA cho CTCK</a></li>
+    <li><a href="#phan-8">Phần 8: Gap đặc thù CTCK</a></li>
+    <li><a href="#phan-9">Phần 9: Output giao cho khách</a></li>
+  </ol>
+</div>
+
+<div class="highlight">
+  <strong>Bạn đang ở đâu?</strong> Bài này mở rộng từ <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-4--dpia-và-ctia">Bước 4 trong Lesson 0003</a>. Đọc <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003</a>, <a href="0004-data-mapping-deep-dive.html">0004</a>, <a href="0005-ho-so-tu-an-thu-deep-dive.html">0005</a>, và <a href="0006-bo-nhiem-dpo-deep-dive.html">0006</a> trước.
+</div>
+
+<h2 id="phan-1">Phần 1 — Tổng quan: DPIA và CTIA là gì</h2>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Tiêu chí</th><th>DPIA</th><th>CTIA</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Tên đầy đủ</strong></td>
+      <td>Đánh giá tác động bảo vệ DLCN (Data Protection Impact Assessment)</td>
+      <td>Đánh giá tác động chuyển nhượng xuyên biên giới (Cross-border Transfer Impact Assessment)</td>
+    </tr>
+    <tr>
+      <td><strong>Căn cứ NĐ 356</strong></td>
+      <td>Điều 31</td>
+      <td>Điều 32</td>
+    </tr>
+    <tr>
+      <td><strong>Mục đích</strong></td>
+      <td>Phát hiện &amp; giảm thiểu rủi ro trước khi xử lý DLCN nhạy cảm</td>
+      <td>Đánh giá việc chuyển DLCN ra nước ngoài có hợp pháp không</td>
+    </tr>
+    <tr>
+      <td><strong>Đối tượng áp dụng</strong></td>
+      <td>Mọi hoạt động xử lý DLCN nhạy cảm, xử lý tự động quy mô lớn</td>
+      <td>Mọi lệnh chuyển DLCN ra ngoài Việt Nam</td>
+    </tr>
+    <tr>
+      <td><strong>Khi nào làm</strong></td>
+      <td>Trước khi bắt đầu xử lý (proactive)</td>
+      <td>Trước khi ký hợp đồng với bên nước ngoài</td>
+    </tr>
+    <tr>
+      <td><strong>Output</strong></td>
+      <td>Báo cáo DPIA + biện pháp giảm thiểu</td>
+      <td>Báo cáo CTIA + quyết định có chuyển hay không</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="blue-box">
+  <strong>Tại sao quan trọng:</strong> DPIA và CTIA là <strong>hai công cụ phòng ngừa</strong> — giúp CTCK phát hiện rủi ro trước khi xảy ra sự cố, không phải sau khi bị kiểm tra. Không có DPIA/CTIA khi bị kiểm tra = vi phạm nghiêm trọng.
+</div>
+
+<h2 id="phan-2">Phần 2 — DPIA: Khi nào bắt buộc</h2>
+
+<h3>2.1. Theo Điều 31 NĐ 356</h3>
+
+<p>DPIA bắt buộc khi <strong>ít nhất 1 trong các trường hợp</strong> sau xảy ra:</p>
+
+<ul>
+  <li><strong>Xử lý DLCN nhạy cảm</strong> quy mô lớn — eKYC, AML, ghi âm, sinh trắc học, sức khỏe, vi phạm pháp luật.</li>
+  <li><strong>Xử lý tự động quy mô lớn</strong> — hệ thống giao dịch tự động, AI/ML phân loại khách hàng, scoring rủi ro.</li>
+  <li><strong>Theo dõi công khai</strong> — camera giám sát khu vực công cộng, WiFi tracking.</li>
+  <li><strong>Xử lý DLCN của trẻ em</strong> (dưới 18 tuổi).</li>
+  <li><strong>Xử lý DLCN kết hợp nhiều mục đích</strong> khiến chủ thể không thể kiểm soát.</li>
+</ul>
+
+<h3>2.2. Áp dụng cho CTCK — bảng đánh giá</h3>
+
+<table>
+  <thead>
+    <tr><th>Hoạt động xử lý</th><th>Thuộc diện DPIA?</th><th>Lý do</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Hệ thống eKYC (chụp CCCD, selfie, video call)</td>
+      <td>✅ CÓ</td>
+      <td>Sinh trắc học = DLCN nhạy cảm</td>
+    </tr>
+    <tr>
+      <td>Hệ thống giao dịch tự động (matching orders)</td>
+      <td>✅ CÓ</td>
+      <td>Xử lý tự động quy mô lớn</td>
+    </tr>
+    <tr>
+      <td>Hệ thống AML (phân loại rủi ro, SAR)</td>
+      <td>✅ CÓ</td>
+      <td>DLCN nhạy cảm — tài chính + vi phạm pháp luật</td>
+    </tr>
+    <tr>
+      <td>Ghi âm cuộc gọi tổng đài</td>
+      <td>✅ CÓ</td>
+      <td>Giọng nói = sinh trắc học = nhạy cảm</td>
+    </tr>
+    <tr>
+      <td>Camera giám sát tại quầy giao dịch</td>
+      <td>✅ CÓ</td>
+      <td>Sinh trắc học (khuôn mặt) + theo dõi</td>
+    </tr>
+    <tr>
+      <td>CRM quản lý khách hàng</td>
+      <td>⚠️ TÙY</td>
+      <td>Nếu chỉ xử lý DLCN cơ bản → không bắt buộc. Nếu có phân tích hành vi, profiling → CÓ.</td>
+    </tr>
+    <tr>
+      <td>Email marketing tự động</td>
+      <td>❌ KHÔNG</td>
+      <td>Chỉ xử lý DLCN cơ bản (email)</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="warning">
+  <strong>Gap CTCK thường gặp:</strong> CTCK nghĩ DPIA chỉ cần cho hệ thống "lớn lắm" (CRM, core banking). Thực ra: <strong>mọi hoạt động xử lý DLCN nhạy cảm đều cần DPIA</strong>. eKYC, AML, ghi âm, camera đều thuộc diện.
+</div>
+
+<h2 id="phan-3">Phần 3 — Quy trình DPIA 6 bước</h2>
+
+<div class="flow-box">
+  <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">Quy trình DPIA theo Điều 31 NĐ 356</div>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>Mô tả hoạt động xử lý</strong>
+      Xử lý gì? Mục đích gì? Phạm vi DLCN nào? Hệ thống nào? Ai tham gia?
+      <ul style="margin:0.25rem 0 0 1rem;font-size:0.9rem;">
+        <li>VD: "Hệ thống eKYC thu thập hình ảnh CCCD, selfie, video call để mở tài khoản CK online"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Đánh giá sự cần thiết và tỷ lệ</strong>
+      Mục đích có hợp pháp không? Có cách nào ít xâm phạm hơn không?
+      <ul style="margin:0.25rem 0 0 1rem;font-size:0.9rem;">
+        <li>VD: "eKYC bắt buộc theo Luật CK 2019 — không có cách thay thế"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>Đánh giá rủi ro</strong>
+      Rủi ro gì có thể xảy ra? Mức độ nghiêm trọng? Xác suất? Ai bị ảnh hưởng?
+      <ul style="margin:0.25rem 0 0 1rem;font-size:0.9rem;">
+        <li>VD: "Rủi ro lộ hình ảnh CCCD qua video call — nếu server bị tấn công"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Biện pháp giảm thiểu rủi ro</strong>
+      Biện pháp kỹ thuật + tổ chức nào áp dụng? Có giảm xuống mức chấp nhận được không?
+      <ul style="margin:0.25rem 0 0 1rem;font-size:0.9rem;">
+        <li>VD: "Mã hóa end-to-end video call, lưu trữ riêng, access log, 2FA"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-text">
+      <strong>Ý kiến của DPO</strong>
+      DPO review độc lập, đánh giá có đồng ý triển khai không? Có điều kiện gì?
+      <ul style="margin:0.25rem 0 0 1rem;font-size:0.9rem;">
+        <li>VD: "DPO đồng ý với điều kiện audit 6 tháng/lần"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">6</div>
+    <div class="flow-text">
+      <strong>Phê duyệt &amp; lưu hồ sơ</strong>
+      Ban Giám đốc phê duyệt dựa trên ý kiến DPO. Lưu báo cáo DPIA vào hồ sơ. Review định kỳ (ít nhất 2 năm/lần hoặc khi có thay đổi).
+    </div>
+  </div>
+</div>
+
+<div class="green-box">
+  <strong>Nguyên tắc:</strong> DPIA phải được làm <strong>TRƯỚC khi xử lý</strong>. Nếu đã xử lý rồi mới làm DPIA → DPIA không có giá trị. CTCK hay sai lầm: "Hệ thống đang chạy rồi, sau này làm DPIA" — không đúng.
+</div>
+
+<h2 id="phan-4">Phần 4 — Template DPIA cho CTCK</h2>
+
+<div class="doc-block">
+  <div class="doc-header">
+    <span class="tag green">Template</span>
+    <h3>MẪU BÁO CÁO DPIA — HỆ THỐNG [eKYC / AML / GHI ÂM / KHÁC]</h3>
+  </div>
+  <div class="doc-body">
+
+    <p><strong>1. Thông tin chung</strong></p>
+    <table style="margin:0.5rem 0 1rem;">
+      <tr><td><strong>Tên dự án / hệ thống:</strong></td><td>[...]]</td></tr>
+      <tr><td><strong>Ngày đánh giá:</strong></td><td>[...]/[...]/[...]</td></tr>
+      <tr><td><strong>Người đánh giá:</strong></td><td>DPO + Phòng IT + Phòng nghiệp vụ</td></tr>
+      <tr><td><strong>Phiên bản:</strong></td><td>v[...]</td></tr>
+    </table>
+
+    <p><strong>2. Mô tả hoạt động xử lý</strong></p>
+    <table style="margin:0.5rem 0 1rem;">
+      <tr><td><strong>Mục đích xử lý:</strong></td><td>[...]] (căn cứ pháp lý: [...])</td></tr>
+      <tr><td><strong>Phạm vi DLCN:</strong></td><td>[...]]</td></tr>
+      <tr><td><strong>Đối tượng chủ thể:</strong></td><td>Khách hàng mở tài khoản / khách hàng hiện hữu / nhân viên</td></tr>
+      <tr><td><strong>Quy mô xử lý:</strong></td><td>[...] tài khoản / ngày (ước tính)</td></tr>
+      <tr><td><strong>Hệ thống:</strong></td><td>[...]]</td></tr>
+      <tr><td><strong>Thời hạn lưu trữ:</strong></td><td>[...] năm</td></tr>
+    </table>
+
+    <p><strong>3. Căn cứ pháp lý để xử lý</strong></p>
+    <ul style="margin:0.25rem 0 1rem 1rem;font-size:0.9rem;">
+      <li>Điều 7(1)(b) NĐ 356 — thực hiện hợp đồng / nghĩa vụ pháp luật</li>
+      <li>[Luật/Nghị định cụ thể — VD: Luật CK 2019, Nghị định 59]</li>
+    </ul>
+
+    <p><strong>4. Đánh giá rủi ro</strong></p>
+    <table style="margin:0.5rem 0 1rem;">
+      <thead>
+        <tr><th>Rủi ro</th><th>Mức độ</th><th>Xác suất</th><th>Biện pháp giảm thiểu</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lộ/lạc DLCN qua tấn công mạng</td>
+          <td>Cao</td>
+          <td>Trung bình</td>
+          <td>Mã hóa AES-256, WAF, IDS/IPS, audit truy cập</td>
+        </tr>
+        <tr>
+          <td>Truy cập trái phép từ nội bộ</td>
+          <td>Cao</td>
+          <td>Trung bình</td>
+          <td>Phân quyền RBAC, 2FA, log chi tiết, review theo quý</td>
+        </tr>
+        <tr>
+          <td>Chia sẻ DLCN với bên thứ ba không kiểm soát</td>
+          <td>Trung bình</td>
+          <td>Thấp</td>
+          <td>DPA với nhà cung cấp, danh sách bên nhận cụ thể</td>
+        </tr>
+        <tr>
+          <td>Mất dữ liệu do sự cố kỹ thuật</td>
+          <td>Trung bình</td>
+          <td>Thấp</td>
+          <td>Backup mã hóa hàng ngày, DR plan, test phục hồi 6 tháng/lần</td>
+        </tr>
+        <tr>
+          <td>Khách hàng yêu cầu xóa khi còn nghĩa vụ pháp lý lưu trữ</td>
+          <td>Thấp</td>
+          <td>Trung bình</td>
+          <td>SOP từ chối xóa có căn cứ, thông báo cho khách bằng văn bản</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>5. Đánh giá rủi ro tổng thể (sau biện pháp giảm thiểu)</strong></p>
+    <ul style="margin:0.25rem 0 1rem 1rem;font-size:0.9rem;">
+      <li>Rủi ro tổng thể: <strong>CHẤP NHẬN ĐƯỢC / KHÔNG CHẤP NHẬN</strong></li>
+      <li>Lý do: [Đánh giá chi tiết]</li>
+    </ul>
+
+    <p><strong>6. Ý kiến của DPO</strong></p>
+    <p style="font-size:0.9rem;background:#fffbe6;padding:0.75rem;border-radius:3px;">DPO [đồng ý / đồng ý có điều kiện / không đồng ý] triển khai hệ thống [tên]. Điều kiện: [...]</p>
+
+    <p><strong>7. Phê duyệt của Ban Giám đốc</strong></p>
+    <p style="font-size:0.9rem;">Ban Giám đốc [phê duyệt / từ chối] triển khai dựa trên báo cáo DPIA và ý kiến DPO.</p>
+
+    <p><strong>8. Lịch review</strong></p>
+    <p style="font-size:0.9rem;">Báo cáo DPIA này phải được review <strong>ít nhất 2 năm/lần</strong> hoặc khi có thay đổi về hệ thống, mục đích xử lý, hoặc pháp luật.</p>
+
+  </div>
+</div>
+
+<h2 id="phan-5">Phần 5 — CTIA: Khi nào bắt buộc</h2>
+
+<h3>5.1. Theo Điều 32 NĐ 356</h3>
+
+<p>CTIA bắt buộc khi CTCK chuyển DLCN <strong>ra ngoài lãnh thổ Việt Nam</strong>. Đây là tình huống phổ biến khi CTCK dùng cloud provider nước ngoài hoặc có văn phòng/bộ phận ở nước ngoài.</p>
+
+<h3>5.2. Áp dụng cho CTCK — bảng đánh giá</h3>
+
+<table>
+  <thead>
+    <tr><th>Tình huống</th><th>Thuộc diện CTIA?</th><th>Lý do</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sử dụng AWS Singapore region lưu trữ DLCN khách VN</td>
+      <td>✅ CÓ</td>
+      <td>Dữ liệu lưu ở nước ngoài</td>
+    </tr>
+    <tr>
+      <td>Sử dụng Google Cloud Platform (GCP) nước ngoài</td>
+      <td>✅ CÓ</td>
+      <td>Dữ liệu lưu ở nước ngoài</td>
+    </tr>
+    <tr>
+      <td>Sử dụng Microsoft Azure nước ngoài</td>
+      <td>✅ CÓ</td>
+      <td>Dữ liệu lưu ở nước ngoài</td>
+    </tr>
+    <tr>
+      <td>CTCK có bộ phận back-office ở Philippines/Ấn Độ xử lý dữ liệu</td>
+      <td>✅ CÓ</td>
+      <td>Dữ liệu được truy cập từ nước ngoài</td>
+    </tr>
+    <tr>
+      <td>Sử dụng VNG Cloud, Viettel IDC, CMC Cloud (datacenter VN)</td>
+      <td>❌ KHÔNG</td>
+      <td>Datacenter đặt tại VN</td>
+    </tr>
+    <tr>
+      <td>App dùng Firebase Cloud Messaging (FCM) của Google</td>
+      <td>⚠️ TÙY</td>
+      <td>Nếu FCM chỉ xử lý push token → thường không phải DLCN. Nếu gửi nội dung → có thể là DLCN → CTIA</td>
+    </tr>
+    <tr>
+      <td>App dùng third-party SDK analytics (Firebase Analytics, Adjust)</td>
+      <td>⚠️ TÙY</td>
+      <td>Nếu gửi device ID, IP → DLCN → CTIA</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="purple-box">
+  <strong>Pre Sales lưu ý:</strong> Rất nhiều CTCK không biết rằng dùng AWS, GCP, Azure là CTIA. Họ nghĩ "cloud là bình thường". Nhưng NĐ 356 phân biệt rất rõ: <strong>datacenter ở đâu là chuyển DLCN đến đó</strong>. CTCK phải có CTIA nếu dùng cloud nước ngoài.
+</div>
+
+<h2 id="phan-6">Phần 6 — 3 căn cứ để chuyển DLCN ra nước ngoài</h2>
+
+<p>Theo Điều 32 NĐ 356, chuyển DLCN ra nước ngoài chỉ được phép khi có <strong>một trong 3 căn cứ</strong>:</p>
+
+<table class="compare-table">
+  <thead>
+    <tr><th>Căn cứ</th><th>Điều kiện</th><th>Bằng chứng cần có</th><th>Phù hợp với CTCK?</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>(1) Quốc gia nhận đủ mức bảo vệ</strong></td>
+      <td>Quốc gia/vùng lãnh thổ nhận được Bộ Công an đánh giá là "có mức bảo vệ tương đương"</td>
+      <td>Danh sách quốc gia được Bộ Công an công bố. Theo dõi <a href="https://mps.gov.vn">mps.gov.vn</a></td>
+      <td>Phổ biến nhất — Singapore, Hàn Quốc, Nhật Bản, EU có thể thuộc diện này (theo công bố của BCA)</td>
+    </tr>
+    <tr>
+      <td><strong>(2) Có thỏa thuận giữa ĐVXL với bên nhận</strong></td>
+      <td>Doanh nghiệp ký thỏa thuận riêng với bên nhận nước ngoài, cam kết tuân thủ NĐ 356</td>
+      <td>Hợp đồng có điều khoản: tuân thủ NĐ 356, quyền giám sát, quyền rút lại, thông báo khi có yêu cầu của CQNN nước nhận</td>
+      <td>Khi dùng cloud provider, thường phải ký DPA riêng</td>
+    </tr>
+    <tr>
+      <td><strong>(3) Chủ thể đồng ý</strong></td>
+      <td>Chủ thể DLCN đồng ý sau khi được thông báo rõ về rủi ro</td>
+      <td>Consent form tách riêng (opt-in), có nội dung cụ thể về việc chuyển ra nước ngoài</td>
+      <td>Khó thực thi — vì ít khách đồng ý sau khi biết rủi ro</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.1. Áp dụng thực tế cho CTCK</h3>
+
+<p>Hầu hết CTCK Việt Nam dùng AWS Singapore. Để chuyển DLCN ra Singapore hợp pháp:</p>
+
+<div class="decision-tree">Căn cứ (1) — Singapore có trong danh sách "đủ mức bảo vệ"?
+  ├── CÓ → chuyển được, cần ghi nhận quốc gia đích
+  └── KHÔNG → cần căn cứ (2)
+       └── Ký DPA với bên nhận (AWS Singapore)
+            ├── DPA cam kết tuân thủ NĐ 356? → ✓ chuyển được
+            └── DPA không cam kết? → cần căn cứ (3)
+                 └── Khách hàng đồng ý sau khi biết rủi ro?
+                      ├── CÓ opt-in rõ ràng → ✓ chuyển được
+                      └── KHÔNG → KHÔNG được chuyển</div>
+
+<div class="warning">
+  <strong>Gap nghiêm trọng:</strong> Nhiều CTCK dùng AWS Singapore mà không có bất kỳ căn cứ nào trong 3 căn cứ trên — tức đang vi phạm Điều 32. Khi bị kiểm tra → có thể bị xử phạt 5% doanh thu hoặc tạm ngưng hoạt động.
+</div>
+
+<h2 id="phan-7">Phần 7 — Checklist CTIA cho CTCK</h2>
+
+<ul class="checklist">
+  <li>Danh sách <strong>tất cả dòng dữ liệu</strong> ra nước ngoài (cloud, back-office, app SDK)</li>
+  <li>Mỗi dòng có <strong>căn cứ pháp lý</strong> rõ ràng — thuộc 1 trong 3 căn cứ Điều 32</li>
+  <li>Có <strong>báo cáo CTIA</strong> cho mỗi dòng dữ liệu ra nước ngoài</li>
+  <li>Privacy Notice có <strong>thông báo</strong> cho khách về việc chuyển dữ liệu ra nước ngoài</li>
+  <li>Có <strong>DPA</strong> với mỗi nhà cung cấp nước ngoài</li>
+  <li>DPA có các <strong>điều khoản</strong>: mục đích giới hạn, bảo mật, thông báo khi CQNN yêu cầu, quyền giám sát, xóa khi kết thúc</li>
+  <li>Cloud provider đặt tại VN hay nước ngoài? <strong>Xác nhận rõ region</strong></li>
+  <li>Có <strong>review định kỳ</strong> CTIA khi thay đổi nhà cung cấp hoặc mục đích</li>
+  <li>Có <strong>biện pháp dự phòng</strong> nếu một ngày nước nhận không còn đủ mức bảo vệ (chuyển về VN? thay provider?)</li>
+</ul>
+
+<div class="doc-block">
+  <div class="doc-header purple">
+    <span class="tag">Template</span>
+    <h3>MẪU BÁO CÁO CTIA — MỘT DÒNG DỮ LIỆU RA NƯỚC NGOÀI</h3>
+  </div>
+  <div class="doc-body">
+
+    <p><strong>1. Thông tin chung</strong></p>
+    <table style="margin:0.5rem 0 1rem;">
+      <tr><td><strong>Dòng dữ liệu:</strong></td><td>[...]]</td></tr>
+      <tr><td><strong>Bên nhận:</strong></td><td>[...]] (tên, quốc gia)</td></tr>
+      <tr><td><strong>Mục đích chuyển:</strong></td><td>[...]]</td></tr>
+      <tr><td><strong>Ngày đánh giá:</strong></td><td>[...]/[...]/[...]</td></tr>
+    </table>
+
+    <p><strong>2. Phạm vi DLCN chuyển</strong></p>
+    <table style="margin:0.5rem 0 1rem;">
+      <tr><td><strong>DLCN cơ bản:</strong></td><td>[...]] (họ tên, email, SĐT...)</td></tr>
+      <tr><td><strong>DLCN nhạy cảm:</strong></td><td>[...]] (sinh trắc học, tài chính, vi phạm PL...)</td></tr>
+      <tr><td><strong>Số lượng chủ thể ảnh hưởng:</strong></td><td>[...] (ước tính)</td></tr>
+    </table>
+
+    <p><strong>3. Căn cứ pháp lý để chuyển</strong></p>
+    <ul style="margin:0.25rem 0 1rem 1rem;font-size:0.9rem;">
+      <li>Căn cứ (1) — Quốc gia đủ mức bảo vệ: [...] / Không áp dụng</li>
+      <li>Căn cứ (2) — Có DPA tuân thủ NĐ 356: Có / Không</li>
+      <li>Căn cứ (3) — Chủ thể đồng ý opt-in: Có / Không</li>
+    </ul>
+
+    <p><strong>4. Đánh giá rủi ro tại quốc gia nhận</strong></p>
+    <table style="margin:0.5rem 0 1rem;">
+      <tr><td><strong>Mức bảo vệ pháp luật tại quốc gia nhận:</strong></td><td>Cao / Trung bình / Thấp</td></tr>
+      <tr><td><strong>Khả năng CQNN nước nhận truy cập:</strong></td><td>Cao / Trung bình / Thấp</td></tr>
+      <tr><td><strong>Rủi ro chính trị:</strong></td><td>Cao / Trung bình / Thấp</td></tr>
+      <tr><td><strong>Lịch sử vi phạm của bên nhận:</strong></td><td>Có / Không — Chi tiết: [...]</td></tr>
+    </table>
+
+    <p><strong>5. Biện pháp giảm thiểu</strong></p>
+    <ol style="margin:0.25rem 0 1rem 1.5rem;font-size:0.9rem;">
+      <li>Mã hóa dữ liệu khi truyền tải và lưu trữ tại quốc gia nhận</li>
+      <li>DPA có điều khoản thông báo trong 48h khi CQNN yêu cầu</li>
+      <li>[Thêm các biện pháp khác]</li>
+    </ol>
+
+    <p><strong>6. Kết luận CTIA</strong></p>
+    <p style="font-size:0.9rem;">Việc chuyển DLCN ra nước ngoài <strong>[CHẤP NHẬN ĐƯỢC / KHÔNG CHẤP NHẬN]</strong> với biện pháp giảm thiểu nêu trên. Review định kỳ: [X] tháng/lần.</p>
+
+  </div>
+</div>
+
+<h2 id="phan-8">Phần 8 — Gap đặc thù CTCK</h2>
+
+<table>
+  <thead>
+    <tr><th>Gap</th><th>Hậu quả pháp lý</th><th>Cách phát hiện</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>eKYC đang chạy nhưng chưa có DPIA</td>
+      <td>Vi phạm Điều 31 — không có báo cáo DPIA cho xử lý nhạy cảm</td>
+      <td>Hỏi: "Hệ thống eKYC có báo cáo DPIA không?"</td>
+    </tr>
+    <tr>
+      <td>Dùng AWS Singapore nhưng không có CTIA</td>
+      <td>Vi phạm Điều 32 — chuyển DLCN không có căn cứ</td>
+      <td>Hỏi: "Cloud ở đâu? Có báo cáo CTIA không?"</td>
+    </tr>
+    <tr>
+      <td>Hợp đồng cloud mặc định không có DPA PDPD</td>
+      <td>DPA thiếu → không đủ căn cứ (2) cho CTIA</td>
+      <td>Yêu cầu xem hợp đồng cloud</td>
+    </tr>
+    <tr>
+      <td>Hệ thống mới triển khai nhưng không có DPIA trước</td>
+      <td>DPIA lùi → vi phạm Điều 31</td>
+      <td>Hỏi: "Trước khi triển khai XYZ, DPO review chưa?"</td>
+    </tr>
+    <tr>
+      <td>App dùng SDK nước ngoài (Firebase, Adjust) nhưng không thông báo trong Privacy Notice</td>
+      <td>DLCN chuyển ra nước ngoài nhưng không minh bạch</td>
+      <td>Yêu cầu xem Điều khoản sử dụng app + danh sách SDK</td>
+    </tr>
+    <tr>
+      <td>CTCK có bộ phận back-office ở nước ngoài truy cập DLCN VN</td>
+      <td>Chuyển gián tiếp ra nước ngoài → vi phạm</td>
+      <td>Hỏi: "Có bộ phận nào ở nước ngoài truy cập DLCN không?"</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Câu hỏi Pre Sales hỏi để phát hiện gap DPIA/CTIA</h3>
+
+<ol>
+  <li><em>"Hệ thống giao dịch chứng khoán xử lý tự động bao nhiêu tài khoản? Có báo cáo DPIA không?"</em> → DPIA</li>
+  <li><em>"Dữ liệu khách hàng có lưu trên cloud provider nước ngoài không (AWS, Google Cloud, Azure)? Cloud region ở đâu?"</em> → CTIA</li>
+  <li><em>"Trước khi triển khai hệ thống xử lý DLCN nhạy cảm mới, DPO có tham gia đánh giá không?"</em> → DPIA trước triển khai</li>
+  <li><em>"App giao dịch có dùng SDK của Google/Firebase/Adjust không? Có thông báo trong Privacy Notice không?"</em> → CTIA ẩn</li>
+  <li><em>"CTCK có bộ phận hoặc đối tác ở nước ngoài truy cập DLCN không?"</em> → CTIA gián tiếp</li>
+  <li><em>"Hợp đồng cloud có điều khoản DPA về tuân thủ NĐ 356 không?"</em> → DPA</li>
+</ol>
+
+<h2 id="phan-9">Phần 9 — Output giao cho khách</h2>
+
+<ul class="checklist">
+  <li><strong>Báo cáo DPIA</strong> cho mỗi hệ thống xử lý nhạy cảm: eKYC, AML, ghi âm, camera, giao dịch tự động</li>
+  <li><strong>Báo cáo CTIA</strong> cho mỗi dòng dữ liệu ra nước ngoài (AWS, GCP, Azure, back-office nước ngoài, SDK)</li>
+  <li><strong>Bảng tổng hợp DPIA/CTIA</strong> — để theo dõi và review định kỳ</li>
+  <li><strong>Biện pháp giảm thiểu rủi ro</strong> đã ghi nhận và đang được triển khai</li>
+  <li><strong>Ý kiến DPO đã ghi nhận</strong> trước khi triển khai mỗi hệ thống mới</li>
+</ul>
+
+<div class="orange-box">
+  <strong>Thời gian ước tính:</strong>
+  <br>CTCK quy mô nhỏ: <strong>3-5 ngày</strong> cho 2-3 DPIA + 1 CTIA
+  <br>CTCK quy mô vừa: <strong>7-15 ngày</strong> cho 4-6 DPIA + 2-3 CTIA
+  <br>CTCK quy mô lớn: <strong>15-30 ngày</strong> cho nhiều DPIA + nhiều CTIA + review định kỳ hàng năm
+</div>
+
+<div class="quote">
+  <strong>Nguyên tắc:</strong> DPIA/CTIA không phải "báo cáo cho có". Chúng phải được <strong>sử dụng thực sự</strong> — DPO review trước khi triển khai, review định kỳ khi có thay đổi. Pre Sales nên giúp CTCK hiểu: DPIA/CTIA là công cụ <strong>phòng ngừa rủi ro</strong>, không phải gánh nặng hành chính.
+</div>
+
+<h2>Câu hỏi trắc nghiệm</h2>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">1. Theo Điều 31 NĐ 356, DPIA bắt buộc khi nào?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Xử lý bất kỳ DLCN nào</li>
+    <li>Xử lý DLCN nhạy cảm, xử lý tự động quy mô lớn, theo dõi công khai</li>
+    <li>Khi công ty muốn</li>
+    <li>Chỉ khi có sự cố</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">2. Hệ thống nào sau đây của CTCK thuộc diện DPIA bắt buộc?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>CRM quản lý thông tin khách hàng (chỉ thông tin cơ bản)</li>
+    <li>Email marketing tự động</li>
+    <li>Hệ thống eKYC thu thập hình ảnh, video call</li>
+    <li>Báo cáo nội bộ</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">3. CTCK dùng AWS Singapore lưu trữ DLCN khách VN. Đây là tình huống CTIA hay DPIA?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>DPIA — xử lý tự động</li>
+    <li>CTIA — chuyển DLCN ra nước ngoài</li>
+    <li>Cả hai</li>
+    <li>Không cái nào</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">4. Theo Điều 32 NĐ 356, chuyển DLCN ra nước ngoài được khi nào?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Luôn được — doanh nghiệp có quyền tự quyết</li>
+    <li>Khi có 1 trong 3 căn cứ: quốc gia đủ bảo vệ, có DPA, chủ thể đồng ý</li>
+    <li>Khi DPO đồng ý</li>
+    <li>Khi không có khách hàng nào phản đối</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">5. DPIA phải được làm khi nào trong vòng đời dự án?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Sau khi hệ thống đã chạy ổn định 6 tháng</li>
+    <li>Khi khách hàng có khiếu nại</li>
+    <li>Trước khi bắt đầu xử lý — TRƯỚC khi triển khai</li>
+    <li>Khi cơ quan quản lý yêu cầu</li>
+  </ol>
+</div>
+
+<h2>Câu hỏi suy nghĩ</h2>
+
+<ol>
+  <li>Khi CTCK hỏi "Chúng tôi đang dùng AWS từ 5 năm rồi, giờ mới phải làm CTIA thì có quá muộn không?", bạn sẽ trả lời thế nào?</li>
+  <li>Nếu CTCK không có DPO (hoặc DPO chưa có chứng chỉ), DPIA có giá trị pháp lý không? Tại sao?</li>
+  <li>Singapore có trong danh sách "đủ mức bảo vệ" của Bộ Công an không? Nếu không có sẵn danh sách công bố, CTCK nên dùng căn cứ nào trong 3 căn cứ?</li>
+</ol>
+
+<div class="quote">
+  Nếu có gì chưa rõ, hỏi. Bài tiếp theo trong series: <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-5--rà-soát-hợp-đồng-với-nhà-cung-cấp">Lesson 0003 — Bước 5: Rà soát hợp đồng nhà cung cấp</a>.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">← Bài trước</span>
+    <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003</a> ·
+    <a href="0005-ho-so-tu-an-thu-deep-dive.html">Lesson 0005</a> ·
+    <a href="0006-bo-nhiem-dpo-deep-dive.html">Lesson 0006</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">Bài tiếp</span>
+    <a href="0008-dpa-deep-dive.html">Lesson 0008: DPA Deep Dive →</a>
+  </div>
+</div>
+
+</body>
+</html>

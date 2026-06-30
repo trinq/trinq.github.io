@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: Data Mapping Deep Dive — Bản đồ dữ liệu từ A đến Z</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --accent-soft: #fff3e0;
+      --green: #2c5e2e;
+      --green-bg: #e8f5e9;
+      --blue: #1a3a5c;
+      --blue-bg: #e8f0f7;
+      --purple: #5b2c6f;
+      --purple-bg: #f3e5f5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2rem; }
+    .meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-green { background: var(--green); }
+    .meta .badge-purple { background: var(--purple); }
+    .meta .pill {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.75rem 0 0.6rem;
+    }
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin: 1.25rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1.25rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    code {
+      background: #f0ebe3;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.88em;
+    }
+    .highlight {
+      background: var(--accent-soft);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .green-box {
+      background: var(--green-bg);
+      border-left: 4px solid var(--green);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .green-box strong { color: var(--green); }
+    .blue-box {
+      background: var(--blue-bg);
+      border-left: 4px solid var(--blue);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .blue-box strong { color: var(--blue); }
+    .purple-box {
+      background: var(--purple-bg);
+      border-left: 4px solid var(--purple);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .purple-box strong { color: var(--purple); }
+    .warning {
+      background: #fff9e6;
+      border: 1px solid #e6c800;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .warning strong { color: #b8860b; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      background: #fff;
+      border-bottom: 2px solid var(--rule);
+      padding: 0.6rem 0.5rem;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.6rem 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    .checklist {
+      list-style: none;
+      margin: 0 0 1rem;
+    }
+    .checklist li {
+      padding-left: 1.5rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .checklist li::before {
+      content: "\2610";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 1rem;
+    }
+    .flow-box {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 0.75rem 0;
+    }
+    .flow-num {
+      background: var(--blue);
+      color: white;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .flow-text strong { display: block; }
+    .quote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .example-block {
+      background: #f9f7f4;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .example-block .label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .quiz {
+      background: #fff;
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .progress-box {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2c5e2e 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+    }
+    .progress-box h3 { color: white; margin-top: 0; }
+    .progress-box p { color: rgba(255,255,255,0.85); margin-bottom: 0; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); display: block; }
+    .section-card {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .section-header {
+      background: var(--blue);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-header h3 { margin: 0; color: white; font-size: 0.95rem; }
+    .section-body { padding: 1.25rem; }
+    kbd {
+      background: #f0ebe3;
+      border: 1px solid var(--rule);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.82em;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Lesson 0004<br>Data Mapping Deep Dive — Bản đồ dữ liệu từ A đến Z</h1>
+
+<div class="subtitle">Một bài học chuyên sâu hoàn toàn về Bước 1 trong 6 bước tuân thủ PDPD.</div>
+
+<div class="meta">
+  <span class="badge badge-purple">Deep Dive</span>
+  <span class="badge badge-green">Thực hành</span>
+  <span class="pill">Đọc ~40 phút</span>
+  <span class="pill">Có sơ đồ + bảng + checklist</span>
+  <span class="pill">Tiếng Việt</span>
+</div>
+
+<div class="highlight">
+  <strong>Bạn đang ở đâu?</strong> Bài này mở rộng từ <a href="0003-6-buoc-pdpd-thuc-hanh.html#bước-1--data-mapping">Bước 1 trong Lesson 0003</a>. Nếu chưa đọc phần tổng quan, hãy đọc trước. Bài này đi sâu vào chi tiết từng khía cạnh.
+</div>
+
+<p>Data Mapping là bước nền tảng nhưng cũng là bước bị hiểu sai và làm qua loa nhiều nhất. Bài học này sẽ đi từ căn pháp lý → taxonomy dữ liệu → khung 5W1H → cách vẽ sơ đồ → checklist thực tế → câu hỏi điều tra khách hàng. Không lý thuyết chung — chỉ hướng dẫn cụ thể để làm được việc.</p>
+
+<h2>Phần 1 — Căn pháp lý: Tại sao Data Mapping không phải tùy chọn</h2>
+
+<p>Nhiều CTCK hỏi: "Luật có bắt buộc vẽ bản đồ dữ liệu không?" Câu trả lời là: không có điều khoản nào viết đúng từ "bản đồ dữ liệu", nhưng nghĩa vụ này <strong>ngầm chảy xuyên suốt Nghị định 356</strong>. Không làm = vi phạm nhiều điều cùng lúc.</p>
+
+<table>
+  <thead>
+    <tr><th>Điều luật</th><th>Nghĩa vụ cụ thể</th><th>Sao chép từ đâu?</th><th>Data Mapping giúp gì</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Điều 6</strong></td>
+      <td>Xác định rõ mục đích xử lý DLCN</td>
+      <td>Article 5 GDPR</td>
+      <td>Map trường → mục đích rõ ràng</td>
+    </tr>
+    <tr>
+      <td><strong>Điều 7</strong></td>
+      <td>Thu thập đúng mục đích, đúng phạm vi</td>
+      <td>Article 5(1)(b) GDPR</td>
+      <td>Biết trường nào thu cho mục đích nào</td>
+    </tr>
+    <tr>
+      <td><strong>Điều 11</strong></td>
+      <td>Xác định và phân loại DLCN để bảo mật</td>
+      <td>Article 32 GDPR</td>
+      <td>Biết trường nào cần bảo vệ cao hơn</td>
+    </tr>
+    <tr>
+      <td><strong>Điều 12</strong></td>
+      <td>Báo cáo sự cố vi phạm DLCN trong 72 giờ</td>
+      <td>Article 33 GDPR</td>
+      <td>Biết ảnh hưởng đến trường nào nếu bị xâm nhập</td>
+    </tr>
+    <tr>
+      <td><strong>Điều 31</strong></td>
+      <td>DPIA khi xử lý DLCN nhạy cảm</td>
+      <td>Article 35 GDPR</td>
+      <td>Biết trường nhạy cảm nằm ở hệ thống nào</td>
+    </tr>
+    <tr>
+      <td><strong>Điều 32</strong></td>
+      <td>CTIA khi chuyển DLCN ra nước ngoài</td>
+      <td>Chapter V GDPR</td>
+      <td>Biết dữ liệu đi qua biên giới nào</td>
+    </tr>
+    <tr>
+      <td><strong>Điều 33</strong></td>
+      <td>Báo cáo định kỳ cho cơ quan quản lý</td>
+      <td>Mới, không có tương đương GDPR</td>
+      <td>Không map = báo cáo bừa hoặc bỏ sót</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Bottom line: Data Mapping là <strong>điều kiện cần</strong> để thực hiện mọi nghĩa vụ khác. Không map thì không biết mình có DLCN nhạy cảm ở đâu → không biết có phải làm DPIA không → không biết có phải làm CTIA không → không biết khi bị tấn công ảnh hưởng những trường nào → không báo cáo đúng hạn.</p>
+
+<div class="blue-box">
+  <strong>Thực tế kiểm tra:</strong> Khi UBCK hoặc Cục An ninh mạng kiểm tra, họ thường hỏi: <em>"Hệ thống nào lưu số CCCD? Ai có quyền truy cập? Ai xử lý?"</em> — đây chính là câu hỏi Data Mapping. Không có sẵn câu trả lời = bị phạt.
+</div>
+
+<h2>Phần 2 — Taxonomy: 7 lớp dữ liệu tại CTCK</h2>
+
+<p>CTCK không chỉ có dữ liệu trong CRM. Dưới đây là 7 lớp dữ liệu mà Pre Sales cần điều tra đầy đủ — theo thứ tự từ dễ thấy nhất (lớp 1) đến dễ bị bỏ qua nhất (lớp 7).</p>
+
+<div class="section-card">
+  <div class="section-header">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Lớp 1</span>
+    <h3>Khách hàng cơ bản</h3>
+  </div>
+  <div class="section-body">
+    <p><strong>Hệ thống:</strong> CRM, hệ thống mở tài khoản, hệ thống eKYC, ứng dụng di động</p>
+    <p><strong>Trường DLCN điển hình:</strong> Họ tên, số CCCD, ngày sinh, địa chỉ thường trú, địa chỉ tạm trú, số điện thoại, email, ảnh chân dung, ảnh CCCD mặt trước/sau, chữ ký mẫu, nghề nghiệp, thu nhập hàng năm, mục đích đầu tư, nguồn tiền ban đầu.</p>
+    <p><strong>Đặc điểm:</strong> Đây là lớp dễ thấy nhất, thường đã được map từ trước. Tuy nhiên, ngay cả lớp này cũng thường thiếu trường <em>"người liên hệ khẩn cấp"</em> (DLCN của bên thứ ba) và <em>"hình ảnh chân dung eKYC"</em>.</p>
+    <p><strong>Căn cứ pháp lý:</strong> Điều 6 NĐ 356 — thu thập để thực hiện hợp đồng, tuân thủ nghĩa vụ pháp luật (Luật CK 2019).</p>
+  </div>
+</div>
+
+<div class="section-card">
+  <div class="section-header">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Lớp 2</span>
+    <h3>Tài khoản giao dịch</h3>
+  </div>
+  <div class="section-body">
+    <p><strong>Hệ thống:</strong> Hệ thống giao dịch chứng khoán (trading system), hệ thống phái sinh, hệ thống фондовый, hệ thống quản lý tài sản</p>
+    <p><strong>Trường DLCN điển hình:</strong> Số tài khoản chứng khoán, mã khách hàng, lịch sử giao dịch (lệnh mua/bán, giá, khối lượng, thời gian), số dư tiền mặt, số dư chứng khoán, giá trị tài sản ròng (NAV), danh mục đầu tư, lịch sử nạp/rút tiền, thông tin tài khoản ngân hàng liên kết.</p>
+    <p><strong>Đặc điểm:</strong> <strong>Thường bị quên khi map.</strong> Không nằm trong CRM — nằm trong hệ thống trading riêng. Lịch sử giao dịch có thể bị coi là DLCN nhạy cảm (thuộc nhóm tài chính) nếu kết hợp với thông tin cá nhân.</p>
+    <p><strong>Căn cứ pháp lý:</strong> Luật CK 2019 — CTCK có nghĩa vụ lưu trữ 10 năm theo Điều 58. Thông tin tài khoản ngân hàng = DLCN tài chính nhạy cảm (Điều 4(6)).</p>
+    <div class="warning">
+      <strong>Gap cụ thể:</strong> Hệ thống trading thường có bảng <em>"history_log"</em> hoặc <em>"audit_trail"</em> lưu IP, thời gian login, thiết bị — đây cũng là DLCN và thường bị bỏ qua.
+    </div>
+  </div>
+</div>
+
+<div class="section-card">
+  <div class="section-header">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Lớp 3</span>
+    <h3>AML / Kiểm soát gian lận</h3>
+  </div>
+  <div class="section-body">
+    <p><strong>Hệ thống:</strong> Hệ thống AML, hồ sơ SAR (Suspicious Activity Report), hệ thống phát hiện gian lận, hệ thống giám sát giao dịch bất thường</p>
+    <p><strong>Trường DLCN điển hình:</strong> Nguồn tiền, giấy tờ chứng minh thu nhập (bảng lương, sao kê tài khoản, hợp đồng lao động, giấy tờ sở hữu tài sản), kết quả kiểm tra AML (phân loại khách hàng theo mức độ rủi ro: CA, HA, RA), báo cáo SAR, thông tin người có liên quan (UBO, người thụ hưởng), giấy tờ pháp lý doanh nghiệp (ĐKKD, quyết định thành lập).</p>
+    <p><strong>Đặc điểm:</strong> Đây là lớp <strong>nhạy cảm nhất</strong>. Mọi trường trong AML đều thuộc nhóm tài chính (Điều 4(6)). Báo cáo SAR là thông tin tuyệt mật — tiết lộ nội dung SAR cho người không có thẩm quyền là hành vi bị phạt nặng.</p>
+    <p><strong>Căn cứ pháp lý:</strong> Luật CK 2019, Nghị định 59/2019/NĐ-CP về phòng chống rửa tiền, Điều 4(6) NĐ 356.</p>
+    <div class="warning">
+      <strong>Gap đặc biệt nguy hiểm:</strong> Nhiều CTCK dùng trường <em>"mục đích sử dụng tiền"</em> trong hệ thống AML — trường này lưu thông tin tài chính rất chi tiết nhưng thường không được map. Đây là điểm nổi bật nhất khi kiểm tra.
+    </div>
+  </div>
+</div>
+
+<div class="section-card">
+  <div class="section-header">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Lớp 4</span>
+    <h3>Reconciliation & Ngân hàng lưu ký</h3>
+  </div>
+  <div class="section-body">
+    <p><strong>Hệ thống:</strong> Hệ thống đối soát, hệ thống ngân hàng lưu ký (VSD, bank custody), hệ thống thanh toán bù trừ</p>
+    <p><strong>Trường DLCN điển hình:</strong> Thông tin tài khoản ngân hàng của khách hàng (số TK, ngân hàng, chi nhánh), số dư tài khoản, lịch sử đối soát, bản ghi thanh toán, thông tin người ủy thác đầu tư.</p>
+    <p><strong>Đặc điểm:</strong> <strong>Bị bỏ qua thường xuyên nhất.</strong> Không nằm trong CRM, không nằm trong trading system — nằm trong hệ thống riêng của ngân hàng lưu ký hoặc bộ phận Back Office. Dữ liệu này thuộc DLCN tài chính nhạy cảm (Điều 4(6)).</p>
+    <p><strong>Căn cứ pháp lý:</strong> Điều 4(6) NĐ 356 — thông tin tài chính. Điều 11 NĐ 356 — nghĩa vụ bảo mật.</p>
+  </div>
+</div>
+
+<div class="section-card">
+  <div class="section-header">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Lớp 5</span>
+    <h3>Giao tiếp & Tư vấn</h3>
+  </div>
+  <div class="section-body">
+    <p><strong>Hệ thống:</strong> Hệ thống tổng đài, phần mềm call recording, email server, ứng dụng chat (nếu có), hệ thống CRM ghi nhận tương tác, nhật ký email marketing</p>
+    <p><strong>Trường DLCN điển hình:</strong> Ghi âm cuộc gọi tư vấn (hệ thống tổng đài), email trao đổi giữa khách hàng và tư vấn viên, tin nhắn chat, nội dung email tư vấn, nhật ký cuộc gọi (số gọi, thời gian, thời lượng), địa chỉ IP khi đăng nhập app/web.</p>
+    <p><strong>Đặc điểm:</strong> Ghi âm cuộc gọi thuộc DLCN nhạy cảm — nhóm sinh trắc học (giọng nói) theo Điều 4(3). CTCK có nghĩa vụ lưu 10 năm theo Luật CK → đây là <strong>căn cứ pháp lý hợp pháp</strong> (Điều 7(1) NĐ 356), nhưng vẫn phải thông báo cho khách hàng. Metadata (số điện thoại, thời gian gọi) là DLCN cơ bản.</p>
+    <p><strong>Căn cứ pháp lý:</strong> Điều 4(3) NĐ 356 (giọng nói = sinh trắc học). Điều 7(1)(b) — căn cứ pháp lý hợp pháp: nghĩa vụ lưu trữ theo pháp luật.</p>
+    <div class="green-box">
+      <strong>Điểm cần lưu ý:</strong> "Căn cứ pháp lý hợp pháp" cho phép lưu ghi âm mà không cần xin phép khách hàng — nhưng vẫn phải <strong>thông báo</strong> trong Thông báo Quyền riêng tư. Không thông báo = vi phạm nghĩa vụ minh bạch (Điều 5).
+    </div>
+  </div>
+</div>
+
+<div class="section-card">
+  <div class="section-header">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Lớp 6</span>
+    <h3>Nhân sự nội bộ</h3>
+  </div>
+  <div class="section-body">
+    <p><strong>Hệ thống:</strong> HRM, hệ thống chấm công, hệ thống ERP (nếu chứa thông tin nhân sự), hệ thống đánh giá hiệu suất (KPI), hệ thống quản lý hợp đồng lao động, hệ thống phân quyền (IAM)</p>
+    <p><strong>Trường DLCN điển hình:</strong> Họ tên nhân viên, CCCD, ngày sinh, địa chỉ, số tài khoản ngân hàng (để chuyển lương), hồ sơ tuyển dụng, bằng cấp, chứng chỉ, đánh giá hiệu suất (KPI), lương và phúc lợi, thông tin bảo hiểm xã hội, thông tin thuế, quyền truy cập hệ thống (username, role), lịch sử đăng nhập.</p>
+    <p><strong>Đặc điểm:</strong> CTCK tập trung vào dữ liệu khách hàng, quên rằng nhân sự cũng có DLCN. Lương, thông tin thuế = DLCN cơ bản (không nhạy cảm theo NĐ 356, nhưng vẫn phải bảo mật theo Điều 11). Quyền truy cập hệ thống + lịch sử đăng nhập = thuộc phạm vi PDPD.</p>
+    <p><strong>Căn cứ pháp lý:</strong> Điều 3 NĐ 356 — DLCN cơ bản. Điều 11 — nghĩa vụ bảo mật. Bộ luật Lao động — lưu trữ hồ sơ lao động.</p>
+  </div>
+</div>
+
+<div class="section-card">
+  <div class="section-header">
+    <span style="background:rgba(255,255,255,0.2);padding:0.1rem 0.5rem;border-radius:3px;font-size:0.8rem;">Lớp 7</span>
+    <h3>Đối tác & Bên thứ ba</h3>
+  </div>
+  <div class="section-body">
+    <p><strong>Hệ thống:</strong> Hệ thống quản lý hợp đồng, hệ thống kết nối API đối tác, portal đối tác, hệ thống duyệt web proxy (nếu đối tác cung cấp)</p>
+    <p><strong>Trường DLCN điển hình:</strong> Thông tin người đại diện pháp lý đối tác (họ tên, CCCD, chức vụ), thông tin người liên hệ (tên, số điện thoại, email), thông tin ngân hàng của đối tác, thông tin UBO nếu đối tác là doanh nghiệp.</p>
+    <p><strong>Đặc điểm:</strong> Nếu đối tác ở nước ngoài (VD: Bloomberg, Refinitiv, AWS, Azure) → có thể phát sinh <strong>nghĩa vụ CTIA</strong> (Điều 32 NĐ 356). Đây là lớp dễ bị bỏ qua nhất vì "không phải DLCN của khách hàng mình" — nhưng vẫn thuộc phạm vi PDPD.</p>
+    <p><strong>Căn cứ pháp lý:</strong> Điều 32 NĐ 356 — chuyển DLCN ra nước ngoài. Điều 3 NĐ 356.</p>
+  </div>
+</div>
+
+<h2>Phần 3 — Phân loại chi tiết từng trường DLCN</h2>
+
+<p>Với mỗi trường DLCN, Pre Sales phải xác định: (1) phân loại, (2) căn cứ theo NĐ 356, (3) hệ thống lưu trữ, (4) căn cứ pháp lý xử lý, (5) thời hạn lưu trữ. Bảng dưới là template đầy đủ:</p>
+
+<table>
+  <thead>
+    <tr><th>STT</th><th>Trường DLCN</th><th>Phân loại</th><th>Điều khoản</th><th>Hệ thống lưu</th><th>Căn cứ pháp lý xử lý</th><th>Thời hạn</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Họ tên khách hàng</td><td>Cơ bản</td><td>Điều 3</td><td>CRM, eKYC</td><td>Hợp đồng dịch vụ CK</td><td>10 năm sau đóng TK</td></tr>
+    <tr><td>2</td><td>Số CCCD / CMND</td><td>Cơ bản</td><td>Điều 3</td><td>CRM, eKYC</td><td>Luật CK — xác minh danh tính</td><td>10 năm sau đóng TK</td></tr>
+    <tr><td>3</td><td>Ảnh chân dung (eKYC)</td><td>Nhạy cảm (sinh trắc)</td><td>Điều 4(3)</td><td>eKYC, CRM</td><td>Xác minh danh tính điện tử</td><td>10 năm sau đóng TK</td></tr>
+    <tr><td>4</td><td>Địa chỉ email</td><td>Cơ bản</td><td>Điều 3</td><td>CRM, app mobile</td><td>Hợp đồng dịch vụ</td><td>10 năm sau đóng TK</td></tr>
+    <tr><td>5</td><td>Số điện thoại</td><td>Cơ bản</td><td>Điều 3</td><td>CRM, tổng đài</td><td>Hợp đồng dịch vụ</td><td>10 năm sau đóng TK</td></tr>
+    <tr><td>6</td><td>Số tài khoản CK</td><td>Cơ bản</td><td>Điều 3</td><td>Trading system</td><td>Luật CK</td><td>10 năm</td></tr>
+    <tr><td>7</td><td>Lịch sử giao dịch</td><td>Nhạy cảm (tài chính)</td><td>Điều 4(6)</td><td>Trading system, database</td><td>Luật CK — lưu trữ bắt buộc</td><td>10 năm</td></tr>
+    <tr><td>8</td><td>Số dư tài khoản ngân hàng KH</td><td>Nhạy cảm (tài chính)</td><td>Điều 4(6)</td><td>Reconciliation, bank custody</td><td>Đối soát giao dịch</td><td>10 năm</td></tr>
+    <tr><td>9</td><td>Nguồn tiền, giấy tờ CM thu nhập</td><td>Nhạy cảm (tài chính)</td><td>Điều 4(6)</td><td>Hệ thống AML</td><td>AML — nghĩa vụ pháp luật</td><td>10 năm</td></tr>
+    <tr><td>10</td><td>Kết quả SAR (báo cáo giao dịch đáng ngờ)</td><td>Nhạy cảm (tài chính)</td><td>Điều 4(6)</td><td>Hệ thống AML</td><td>Nghị định 59 CP rửa tiền</td><td>Vĩnh viễn / dài hạn</td></tr>
+    <tr><td>11</td><td>Phân loại mức độ rủi ro AML (CA/HA/RA)</td><td>Nhạy cảm (tài chính)</td><td>Điều 4(6)</td><td>Hệ thống AML</td><td>AML — nghĩa vụ pháp luật</td><td>10 năm</td></tr>
+    <tr><td>12</td><td>Ghi âm cuộc gọi tư vấn</td><td>Nhạy cảm (sinh trắc)</td><td>Điều 4(3)</td><td>Tổng đài, call recording</td><td>Luật CK — căn cứ pháp lý hợp pháp</td><td>10 năm</td></tr>
+    <tr><td>13</td><td>Email, tin nhắn với tư vấn viên</td><td>Cơ bản (nội dung) / có thể nhạy cảm</td><td>Điều 3 / 4(6)</td><td>Email server, CRM</td><td>Hợp đồng dịch vụ</td><td>10 năm</td></tr>
+    <tr><td>14</td><td>Địa chỉ IP khi đăng nhập</td><td>Cơ bản</td><td>Điều 3</td><td>App, web, server log</td><td>Bảo mật hệ thống</td><td>1-2 năm</td></tr>
+    <tr><td>15</td><td>Thông tin người liên hệ khẩn cấp</td><td>Cơ bản (DLCN bên thứ 3)</td><td>Điều 3</td><td>CRM</td><td>Đồng ý của chính người liên hệ</td><td>10 năm sau đóng TK</td></tr>
+    <tr><td>16</td><td>Hình ảnh từ camera an ninh</td><td>Nhạy cảm (sinh trắc)</td><td>Điều 4(3)</td><td>Hệ thống camera (NVR)</td><td>Bảo mật tại cơ sở</td><td>30-90 ngày</td></tr>
+    <tr><td>17</td><td>Ảnh CCCD (scan)</td><td>Cơ bản</td><td>Điều 3</td><td>eKYC, CRM</td><td>Luật CK — xác minh danh tính</td><td>10 năm sau đóng TK</td></tr>
+    <tr><td>18</td><td>Lương nhân viên</td><td>Cơ bản</td><td>Điều 3</td><td>HRM, ERP</td><td>Hợp đồng lao động, thuế</td><td>5 năm sau nghỉ việc</td></tr>
+    <tr><td>19</td><td>Quyền truy cập hệ thống (role, permission)</td><td>Cơ bản</td><td>Điều 3</td><td>IAM, HRM</td><td>Quản lý nhân sự</td><td>5 năm sau nghỉ việc</td></tr>
+    <tr><td>20</td><td>Thông tin người đại diện đối tác</td><td>Cơ bản</td><td>Điều 3</td><td>Hệ thống hợp đồng</td><td>Thực hiện hợp đồng</td><td>10 năm sau kết thúc HĐ</td></tr>
+  </tbody>
+</table>
+
+<div class="purple-box">
+  <strong>Mẹo điền bảng này với khách hàng:</strong> In sẵn bảng 20 dòng trên. Đi qua từng dòng, hỏi "có hay không" — khách thường phản ứng "Ồ, có hệ thống đó hả?" hoặc "Cái đó chúng tôi chưa bao giờ nghĩ tới." Đó là lúc bạn phát hiện gap.
+</div>
+
+<h2>Phần 4 — Khung 5W1H cho từng trường DLCN</h2>
+
+<p>Với mỗi trường DLCN đã xác định, điền đầy đủ 6 câu hỏi để tạo bản đồ dữ liệu hoàn chỉnh. Khung này giúp CTCK trả lời được mọi câu hỏi khi bị kiểm tra.</p>
+
+<table>
+  <thead>
+    <tr><th>Câu hỏi</th><th>Ý nghĩa</th><th>Câu hỏi cụ thể cần trả lời</th><th>Ví dụ: Số CCCD</th><th>Ví dụ: Ghi âm cuộc gọi</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>WHAT</strong></td>
+      <td>Tên trường cụ thể</td>
+      <td>Tên chính xác trong database</td>
+      <td>Số CCCD / identity_number</td>
+      <td>Call_recording / audio_url</td>
+    </tr>
+    <tr>
+      <td><strong>WHY</strong></td>
+      <td>Căn cứ pháp lý xử lý</td>
+      <td>Điều khoản nào cho phép?</td>
+      <td>Luật CK — xác minh danh tính (Điều 58)</td>
+      <td>Luật CK — lưu trữ 10 năm (Điều 58)</td>
+    </tr>
+    <tr>
+      <td><strong>WHO</strong></td>
+      <td>Ai xử lý</td>
+      <td>Phòng ban, vai trò, hệ thống nào</td>
+      <td>Phòng mở tài khoản (đọc), Phòng AML (đọc)</td>
+      <td>Tổng đài (ghi), QC (nghe), Back Office (nghe khi khiếu nại)</td>
+    </tr>
+    <tr>
+      <td><strong>WHERE</strong></td>
+      <td>Lưu ở đâu</td>
+      <td>Tên hệ thống, server, data center, cloud region</td>
+      <td>CRM (on-premise HCM), eKYC (VNG Cloud VN)</td>
+      <td>Tổng đài (on-premise), backup (AWS Singapore)</td>
+    </tr>
+    <tr>
+      <td><strong>HOW</strong></td>
+      <td>Cách xử lý</td>
+      <td>Tự động / thủ công / bán tự động, có mã hóa không</td>
+      <td>Scan → OCR → nhập tay → lưu DB (có mã hóa AES-256)</td>
+      <td>Ghi tự động → lưu file .wav → mã hóa → lưu backup</td>
+    </tr>
+    <tr>
+      <td><strong>HOW LONG</strong></td>
+      <td>Thời hạn lưu trữ</td>
+      <td>Baо lâu? Sau đó xóa hay lưu tiếp?</td>
+      <td>10 năm kể từ ngày đóng TK. Xóa chuyên nghiệp (secure wipe).</td>
+      <td>10 năm theo Luật CK. Không xóa trước hạn.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="flow-box">
+  <div class="label" style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin-bottom:0.75rem;">Quy trình điền khung 5W1H với khách hàng</div>
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text">
+      <strong>Chuẩn bị bảng 20 trường</strong>
+      In sẵn bảng ở Phần 3. Đây là điểm bắt đầu.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text">
+      <strong>Gặp từng phòng ban</strong>
+      IT (hệ thống, server, cloud) → Phòng mở tài khoản (quy trình thu thập) → Back Office (reconciliation, lưu trữ) → AML (xử lý nhạy cảm) → HRM (nhân sự) → Legal (hợp đồng đối tác).
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text">
+      <strong>Điền từng dòng 5W1H</strong>
+      Mỗi trường một dòng. Nếu không biết câu trả lời → đánh dấu <kbd>???</kbd> → yêu cầu khách xác minh.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text">
+      <strong>Review với DPO</strong>
+      Sau khi hoàn thành bản draft, DPO xem lại: phân loại đúng chưa, căn cứ pháp lý đủ chưa.
+    </div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-text">
+      <strong>Giao báo cáo Data Mapping</strong>
+      Bảng 5W1H đầy đủ + sơ đồ luồng dữ liệu + gap report.
+    </div>
+  </div>
+</div>
+
+<h2>Phần 5 — Cách vẽ Data Flow Diagram</h2>
+
+<p>Bản đồ luồng dữ liệu không cần công cụ phức tạp. CTCK có thể dùng draw.io (miễn phí), Microsoft Visio, hoặc thậm chí vẽ tay trên giấy A3 — quan trọng là <strong>chính xác</strong>, không phải đẹp.</p>
+
+<h3>5.1. 4 ký hiệu cơ bản</h3>
+
+<table>
+  <thead>
+    <tr><th>Ký hiệu</th><th>Tên</th><th>Ý nghĩa</th><th>Ví dụ CTCK</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>◯</strong> Hình tròn</td>
+      <td>Nguồn / Đích dữ liệu</td>
+      <td>Nơi DLCN phát sinh hoặc kết thúc</td>
+      <td>Khách hàng (phát sinh), VSD (nhận), UBCK (báo cáo)</td>
+    </tr>
+    <tr>
+      <td><strong>□</strong> Hình vuông</td>
+      <td>Hệ thống xử lý / lưu trữ</td>
+      <td>Nơi DLCN được xử lý hoặc lưu trữ</td>
+      <td>CRM, Trading System, AML, Reconciliation, Call Recording</td>
+    </tr>
+    <tr>
+      <td><strong>→</strong> Mũi tên</td>
+      <td>Luồng dữ liệu</td>
+      <td>Cách DLCN di chuyển giữa các hệ thống</td>
+      <td>CRM → AML (qua API), eKYC → CRM (file export), Trading → Reconciliation (FTP)</td>
+    </tr>
+    <tr>
+      <td><strong>◻</strong> Hình chữ nhật gạch</td>
+      <td>Bên ngoài</td>
+      <td>Đối tác / cơ quan nằm ngoài CTCK</td>
+      <td>VSD, Ngân hàng lưu ký, UBCK, AWS, Bloomberg</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>5.2. Sơ đồ mẫu: Luồng DLCN khi mở tài khoản CK</h3>
+
+<div class="example-block">
+  <div class="label">Sơ đồ mẫu — Mở tài khoản chứng khoán</div>
+  <pre style="font-family:'SF Mono',Menlo,monospace;font-size:0.82rem;line-height:1.7;white-space:pre;">Khách hàng
+    │
+    ├──► [eKYC System] ──── scan CCCD, chụp ảnh, OCR
+    │           │
+    │           ├──► [CRM] ──── lưu hồ sơ KH, thông tin CCCD
+    │           │       │
+    │           │       ├──► [Trading System] ──── mở tài khoản CK
+    │           │       │       │
+    │           │       │       ├──► [AML System] ──── kiểm tra nguồn tiền, SAR
+    │           │       │       │       │
+    │           │       │       │       └──► [VSD] ──── đăng ký tài khoản
+    │           │       │       │
+    │           │       │       └──► [Bank Custody] ──── kết nối tài khoản ngân hàng
+    │           │       │               │
+    │           │       │               └──► [Reconciliation] ──── đối soát
+    │           │       │
+    │           └──► [Call Recording] ──── ghi âm tư vấn (10 năm)
+    │                   │
+    │                   └──► [Backup: AWS Singapore] ──── DR site
+
+Ghi chú mũi tên:
+  ───► = chuyển tự động qua API
+  - -► = chuyển thủ công / file export
+</pre>
+</div>
+
+<h3>5.3. Checklist vẽ sơ đồ</h3>
+
+<ul class="checklist">
+  <li>Mỗi hệ thống có tên chính xác (không viết chung chung "hệ thống")</li>
+  <li>Mỗi mũi tên ghi rõ cách truyền (API, file, USB, email, nhập tay)</li>
+  <li>Đánh dấu ⭐ cho trường nhạy cảm trên mỗi luồng</li>
+  <li>Nếu có mũi tên ra bên ngoài VN (VD: AWS Singapore, Bloomberg) → đánh dấu 🌍 → cờ CTIA</li>
+  <li>Mỗi hệ thống ghi rõ: lưu trữ ở đâu (on-premise / cloud / ai làm chủ)</li>
+  <li>Review lại với IT Admin trước khi giao cho khách</li>
+</ul>
+
+<div class="blue-box">
+  <strong>Mẹo:</strong> Khi vẽ sơ đồ, hỏi IT: <em>"Ngoài luồng chính, có luồng phụ nào không? VD: developer có thể export database ra test environment không?"</em> — Luồng phụ thường là nơi rủi ro cao nhất.
+</div>
+
+<h2>Phần 6 — 4 câu hỏi then chốt để không bỏ sót hệ thống</h2>
+
+<p>Đây là 4 câu hỏi đặt riêng từng câu — không gộp chung. Mỗi câu có mục đích riêng và thường phát hiện ra 1-3 hệ thống bị bỏ qua:</p>
+
+<table>
+  <thead>
+    <tr><th>Câu hỏi</th><th>Mục đích</th><th>Thường phát hiện thêm</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>"Ngoài CRM, <strong>hệ thống nào</strong> của công ty lưu thông tin khách hàng?"</em></td>
+      <td>Phát hiện hệ thống không nằm trong CRM</td>
+      <td>Trading system, AML, reconciliation, call recording, BI/reporting</td>
+    </tr>
+    <tr>
+      <td><em>"Dữ liệu từ hệ thống A có <strong>chuyển sang hệ thống B</strong> không? Qua cổng nào?"</em></td>
+      <td>Phát hiện luồng không được document</td>
+      <td>API undocumented, file export thủ công, user có quyền truy cập cross-system</td>
+    </tr>
+    <tr>
+      <td><em>"Khi hợp đồng với <strong>ngân hàng lưu ký</strong> kết thúc, dữ liệu khách hàng được xử lý thế nào?"</em></td>
+      <td>Phát hiện gap về xóa dữ liệu và CTIA</td>
+      <td>Data chưa được xóa, data chuyển sang bên thứ 3 không kiểm soát</td>
+    </tr>
+    <tr>
+      <td><em>"Có hệ thống nào <strong>xử lý tự động</strong> dữ liệu khách hàng không? (VD: auto-screening AML, auto-matching giao dịch, auto-alert)"</em></td>
+      <td>Xác định có thuộc diện DPIA không</td>
+      <td>Auto-AML, auto-screening, ML/AI model dùng DLCN để scoring</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Phần 7 — Output: 3 deliverable giao cho khách</h2>
+
+<p>Sau buổi khảo sát Data Mapping, giao cho khách hàng đúng 3 deliverable cụ thể. Không giao thừa, không giao thiếu:</p>
+
+<h3>Deliverable 1 — Bảng liệt kê DLCN (Data Register)</h3>
+<p>File Excel hoặc Google Sheets. Mỗi dòng = 1 trường DLCN. Mỗi cột = 1 thuộc tính 5W1H. Cột cuối cùng = trạng thái: <strong>Đã map</strong> / <strong>Cần xác minh</strong> / <strong>Gap</strong>.</p>
+
+<h3>Deliverable 2 — Sơ đồ luồng dữ liệu (Data Flow Diagram)</h3>
+<p>Xuất ra draw.io, Visio, hoặc giấy A3. Có đủ 4 ký hiệu. Có ghi chú mũi tên. Có đánh dấu trường nhạy cảm (⭐) và luồng xuyên biên giới (🌍).</p>
+
+<h3>Deliverable 3 — Báo cáo Gap Data Mapping</h3>
+<p>1-2 trang. Ghi rõ:</p>
+<ul>
+  <li><strong>Gap Hệ thống:</strong> Hệ thống nào có DLCN nhưng chưa được map</li>
+  <li><strong>Gap Căn cứ pháp lý:</strong> Trường nào xử lý nhưng chưa xác định rõ căn cứ</li>
+  <li><strong>Gap Bảo mật:</strong> Trường nhạy cảm nào chưa có biện pháp bảo vệ đầy đủ</li>
+  <li><strong>Cờ CTIA:</strong> Hệ thống nào lưu DLCN ở nước ngoài → cần đánh giá CTIA</li>
+  <li><strong>Cờ DPIA:</strong> Hệ thống nào xử lý tự động DLCN nhạy cảm → cần DPIA</li>
+</ul>
+
+<div class="progress-box">
+  <h3>Thời gian ước tính theo quy mô CTCK</h3>
+  <p>
+    <strong>Nhỏ</strong> (< 50 nhân viên, 2-3 hệ thống): 2-3 ngày làm việc<br>
+    <strong>Vừa</strong> (50-200 nhân viên, 5-8 hệ thống): 3-5 ngày làm việc<br>
+    <strong>Lớn</strong> (> 200 nhân viên, 10+ hệ thống): 5-10 ngày làm việc, có thể cần team từ 2 người
+  </p>
+</div>
+
+<h2>Câu hỏi trắc nghiệm</h2>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">1. Lớp dữ liệu nào TẠI CTCK thường bị BỎ SÓT NHẤT khi Data Mapping?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Dữ liệu trong CRM</li>
+    <li>Dữ liệu trong hệ thống giao dịch (trading system)</li>
+    <li>Dữ liệu trong hệ thống reconciliation và ngân hàng lưu ký</li>
+    <li>Dữ liệu nhân sự trong HRM</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">2. Ghi âm cuộc gọi tư vấn chứng khoán thuộc nhóm DLCN nào theo NĐ 356?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>DLCN cơ bản — vì là giao tiếp thông thường</li>
+    <li>DLCN nhạy cảm — nhóm sinh trắc học (giọng nói)</li>
+    <li>DLCN nhạy cảm — nhóm tài chính</li>
+    <li>Không phải DLCN — vì CTCK có căn cứ pháp lý hợp pháp</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">3. Theo khung 5W1H, "Hệ thống AML, lưu trên VNG Cloud Vietnam" thuộc câu hỏi nào?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>WHAT (trường gì)</li>
+    <li>WHO (ai xử lý)</li>
+    <li>WHERE (lưu ở đâu)</li>
+    <li>HOW (xử lý tự động hay thủ công)</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">4. CTCK lưu dữ liệu khách hàng trên AWS Singapore. Đây là cờ gì?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>Cờ DPIA — vì dữ liệu ra nước ngoài</li>
+    <li>Cờ CTIA — vì chuyển DLCN ra ngoài biên giới Việt Nam</li>
+    <li>Cờ bảo mật — vì cloud nước ngoài kém bảo mật</li>
+    <li>Không phải cờ gì — chỉ là nơi lưu trữ</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <p style="font-weight:700;margin-bottom:0.75rem;">5. Câu hỏi nào giúp phát hiện NHANH NHẤT hệ thống AML chưa được map?</p>
+  <ol style="list-style:upper-alpha;margin:0 0 0 1rem;">
+    <li>"Anh/chị đang thu thập những loại thông tin gì?"</li>
+    <li>"Ngoài CRM, hệ thống nào lưu thông tin khách hàng?"</li>
+    <li>"Dữ liệu có chia sẻ cho ngân hàng lưu ký không?"</li>
+    <li>"Có ai được phép export dữ liệu ra file không?"</li>
+  </ol>
+</div>
+
+<h2>Câu hỏi suy nghĩ</h2>
+
+<ol>
+  <li>Bạn đã từng đi khảo sát CTCK chưa? Khi đó, họ có hệ thống nào mà bạn không ngờ tới — không nằm trong CRM? Hệ thống đó thuộc lớp mấy trong 7 lớp trên?</li>
+  <li>Khi khách hàng nói "chúng tôi không có gì nhạy cảm cả", bạn sẽ dùng câu hỏi nào trong 4 câu ở Phần 6 để thuyết phục họ?</li>
+  <li>Nếu khách hàng hỏi "Data Mapping mất bao lâu và tốn bao nhiêu chi phí", bạn sẽ trả lời như thế nào để họ hiểu đây là đầu tư, không phải chi phí?</li>
+</ol>
+
+<div class="quote">
+  <strong>Nếu có gì chưa rõ, hỏi.</strong> Data Mapping là bước nền tảng quyết định chất lượng toàn bộ 5 bước còn lại. Bước tiếp theo trong series: <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003 — Bước 2: Cập nhật hồ sơ tuân thủ</a>.
+</div>
+
+<div class="lesson-nav">
+  <div>
+    <span class="nav-label">← Bài trước</span>
+    <a href="0003-6-buoc-pdpd-thuc-hanh.html">Lesson 0003</a> ·
+    <a href="../MISSION.html">Mission</a> ·
+    <a href="../GLOSSARY.md">Glossary</a>
+  </div>
+  <div style="text-align:right;">
+    <span class="nav-label">Bài tiếp</span>
+    <a href="0005-ho-so-tu-an-thu-deep-dive.html">Lesson 0005: Hồ sơ tuân thủ →</a>
+  </div>
+</div>
+
+</body>
+</html>
