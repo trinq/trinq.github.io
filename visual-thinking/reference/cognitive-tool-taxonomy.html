@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference — Cognitive-Tool Taxonomy</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    p { margin-bottom: 1rem; }
+    code {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+    }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .ref-position { color: var(--ink-soft); font-style: italic; }
+    .ladder {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+    }
+    .rung {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .rung:last-child { border-bottom: none; }
+    .rung-num {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-weight: 700;
+      min-width: 5rem;
+    }
+    .rung-body { flex: 1; }
+    .rung-name {
+      font-weight: 700;
+      color: var(--ink);
+      font-size: 0.95rem;
+    }
+    .rung-desc {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      margin-top: 0.2rem;
+    }
+    .arrow {
+      text-align: center;
+      color: var(--ink-soft);
+      margin: 0.3rem 0;
+      font-size: 0.85rem;
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.92rem;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--rule);
+      text-align: left;
+      vertical-align: top;
+    }
+    .comparison-table th {
+      background: var(--code-bg);
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="../index.html" class="back-home">← all lessons</a>
+  <span class="ref-position">Reference — Cognitive-Tool Taxonomy</span>
+</nav>
+
+<h1>Cognitive-tool taxonomy</h1>
+<p class="subtitle">Fan's three-behavior ladder — perception → production → communication — and the agent-design corollaries. One-page cheat sheet. Print-friendly.</p>
+
+<p>Around 11:00 of the talk, Fan lays out a three-rung ladder of visual cognition. Each rung builds on the previous one. Each has an agent-design corollary that lands cleanly. Memorize the rungs; the corollaries fall out.</p>
+
+<h2>The ladder</h2>
+
+<div class="ladder">
+  <div class="rung">
+    <div class="rung-num">RUNG 1</div>
+    <div class="rung-body">
+      <div class="rung-name">Visual perception</div>
+      <div class="rung-desc">Transform raw sensory input into semantically meaningful perceptual experience. The pre-requisite for anything else. Talk: 11:00–11:40.</div>
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+  <div class="rung">
+    <div class="rung-num">RUNG 2</div>
+    <div class="rung-body">
+      <div class="rung-name">Visual production</div>
+      <div class="rung-desc">Generate a set of markings that leave a meaningful, visible trace in the physical environment. Talk: 11:40–12:10.</div>
+    </div>
+  </div>
+  <div class="arrow">↓</div>
+  <div class="rung">
+    <div class="rung-num">RUNG 3</div>
+    <div class="rung-body">
+      <div class="rung-name">Visual communication</div>
+      <div class="rung-desc">Decide how to arrange the graphical elements and in what order to have a particular impact on other minds. Talk: 12:10–13:00.</div>
+    </div>
+  </div>
+</div>
+
+<p>The progression matters. You can't communicate with a drawing you can't perceive. You can't communicate a drawing you can't produce. The hard rung — and the one Fan spends 80% of the talk on — is rung 3: <em>communication</em>. That's where context, intent, and audience enter.</p>
+
+<h2>Mapping to agent behavior</h2>
+
+<p>Each rung has an agent-design reading. They're corollaries, not equivalences — agents don't "perceive" in Fan's sense, but the functional mapping is useful.</p>
+
+<table class="comparison-table">
+  <tr>
+    <th>Rung</th>
+    <th>Human behavior</th>
+    <th>Agent behavior</th>
+    <th>Failure mode</th>
+  </tr>
+  <tr>
+    <td>1 — Perception</td>
+    <td>See a bird; recognize it as a robin</td>
+    <td>Encode an image; identify what's in it</td>
+    <td>VLM misclassifies; CLIP-style aliasing</td>
+  </tr>
+  <tr>
+    <td>2 — Production</td>
+    <td>Move a pen; leave a mark</td>
+    <td>Emit a sketch, diagram, or chart</td>
+    <td>CLIPasso-style sparsification that loses meaning distribution</td>
+  </tr>
+  <tr>
+    <td>3 — Communication</td>
+    <td>Decide how much detail, which vocabulary, which level</td>
+    <td>Decide <em>what shape of artifact</em> matches the user's question</td>
+    <td>Bar-plot purist; depiction-when-explanation-needed; budget-sparsification without question-relevance</td>
+  </tr>
+</table>
+
+<p>The recurring theme: <strong>most agent failures on visual artifacts are rung-3 failures, dressed up as rung-1 or rung-2 failures.</strong> The model sees fine. The model produces fine. The <em>choice</em> of what to produce is wrong.</p>
+
+<h2>The "closing the loop" extension</h2>
+
+<p>Fan's research program extends the ladder into a fourth concept: closing the discovery-and-engineering loop.</p>
+
+<div class="ladder">
+  <div class="rung">
+    <div class="rung-num">EXT 1</div>
+    <div class="rung-body">
+      <div class="rung-name">Discovery</div>
+      <div class="rung-desc">Find an abstraction that explains how the world works.</div>
+    </div>
+  </div>
+  <div class="arrow">↓ ↓ (the loop)</div>
+  <div class="rung">
+    <div class="rung-num">EXT 2</div>
+    <div class="rung-body">
+      <div class="rung-name">Application</div>
+      <div class="rung-desc">Apply the abstraction to make new things. (Darwin → land management. Feynman diagrams → QED calculations. Playfair → economic policy.)</div>
+    </div>
+  </div>
+</div>
+
+<p>For agents: <strong>an agent that only "discovers" (parses the chart) but never "applies" (acts on what it parsed) has half-closed the loop</strong>. A chart-reading agent that doesn't <em>use</em> the chart for a downstream decision is doing Fan-style discovery in isolation. That isn't cognitive-tool behavior. It's a perception exercise.</p>
+
+<h2>One-line summary</h2>
+
+<p>Perception → Production → Communication. The cognitive-tool frame lives on rung 3. The closing-the-loop frame adds Application. Most agent failures are rung-3 failures in disguise.</p>
+
+<p style="margin-top: 2rem;"><a href="glossary.html">← Glossary</a> · <a href="../index.html">All lessons</a></p>
+
+</body>
+</html>

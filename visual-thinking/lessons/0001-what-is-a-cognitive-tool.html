@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: What is a cognitive tool?</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span::before { content: "· "; }
+    .meta span:first-child::before { content: ""; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .quiz {
+      background: var(--code-bg);
+      padding: 1.25rem 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+    }
+    .quiz h3 { margin-top: 0; }
+    .quiz ol { margin: 0.5rem 0 0 1.25rem; }
+    .quiz li { margin-bottom: 0.6rem; }
+    .reveal {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { border: none; color: var(--ink-soft); }
+    .nav a:hover { color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .lesson-position { color: var(--ink-soft); font-style: italic; }
+    blockquote {
+      margin: 1.25rem 0;
+      padding: 0.4rem 1rem;
+      border-left: 3px solid var(--rule);
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .stamp {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="../index.html" class="back-home">← all lessons</a>
+  <span class="lesson-position">Lesson 0001 of 3</span>
+</nav>
+
+<h1>What is a cognitive tool?</h1>
+<div class="subtitle">The frame Judy Fan's whole research program hangs on — and the question it asks about every artifact your agent produces or consumes.</div>
+
+<div class="meta">
+  <span>~6 min</span>
+  <span>Lesson 0001</span>
+  <span><a href="../reference/glossary.html">glossary</a> · <a href="../reference/cognitive-tool-taxonomy.html">taxonomy</a></span>
+</div>
+
+<p>Judy Fan opens her talk the way a good math teacher would: with the number line.</p>
+
+<blockquote>
+  "Nature didn't give us the number line. We invented it. As Antoni Gaudí once put it, there are no straight lines or sharp corners in nature, but that didn't stop us. We created them anyway."
+  <br>— Judy Fan, MIT BCS Colloquium, 03:52–05:15
+</blockquote>
+
+<p>The number line is not a fact about the world. It is a <strong>cognitive tool</strong> — an external representation that, once you have it, lets you think thoughts you couldn't think before. Extend it into two dimensions and you get the Cartesian coordinate system. Extend that and you get the algebra-geometric bridge that, in Fan's framing, took humans to the moon.</p>
+
+<p>Every cognitive tool in Fan's frame passes the same test: <em>does this representation change what its user can think about?</em></p>
+
+<div class="callout">
+  <strong>The test for any cognitive tool:</strong> what new questions does it make answerable that weren't before? The number line makes ordering answerable. Cartesian coordinates make intersection-of-curves answerable. A timeline chart makes "how has this changed over time" answerable. A box plot makes distribution-comparison answerable.
+</div>
+
+<h2>Three examples Fan uses to set the frame</h2>
+
+<p>From the first ten minutes of the talk (03:52–13:00):</p>
+
+<ul>
+  <li><strong>Darwin's finches (John Gould's drawings).</strong> Side-by-side illustrations are what makes the morphological variation <em>visible</em>. Without the comparison panel, the differences don't pop. The panel is the cognitive tool, not the bird.</li>
+  <li><strong>Galileo's telescope.</strong> An optical tool that resolves detail invisible to the naked eye. Cognitive tool by direct analogy: it extends what its user can perceive.</li>
+  <li><strong>Feynman diagrams.</strong> Subatomic particles wink in and out of existence — events we will <em>never</em> see with our eyes. The diagram doesn't show us the event. It shows us a calculational handle that lets us reason about it. (Richard Feynman's own words, on the diagrams' invention: "I invented them to help me think.")</li>
+</ul>
+
+<p>All three pass the test. All three make questions answerable that weren't answerable before. None of them are <em>just</em> data — they are <em>structured</em> for a particular kind of question.</p>
+
+<h2>Drawing is the original cognitive tool</h2>
+
+<p>Fan spends the rest of Part 1 on the most ancient cognitive tool we have: freehand drawing. 30,000–80,000 years ago, anatomically modern humans started making marks on cave walls. The marks are not the thing — they are a tool that lets the maker <em>communicate</em> what they see, and the viewer <em>recover</em> what was seen.</p>
+
+<p>This is where the frame turns useful for agent design. An agent asked to "explain the system" has access to many representations — prose, bullet lists, sketches, diagrams, Mermaid, screenshots. The frame's question is: <strong>which one makes the question the user actually has answerable?</strong></p>
+
+<div class="callout">
+  <strong>Heuristic for agent output format.</strong> Don't ask "what does this look like in markdown?" Ask "what question is the user trying to answer, and which representation makes that question answerable for the agent's downstream consumer?" A system-architecture sketch makes "what calls what" answerable. A sequence diagram makes "what happens during the race condition" answerable. A bulleted list makes "what are the components" answerable. The choice is upstream of the syntax.
+</div>
+
+<h2>The "closing the loop" frame Fan closes the talk with</h2>
+
+<p>The two halves of Fan's research program — drawing as cognitive tool, and data viz as cognitive tool — share one thesis: humans don't just <em>discover</em> useful abstractions, they <em>apply</em> them to make new things. The discovery-and-engineering loop is what Fan calls the "closing the loop" frame.</p>
+
+<blockquote>
+  "If I had to state it really bluntly, research in my group aims to close this loop — to develop psychological theories that explain how we go about discovering useful abstractions that explain how the world works, jointly with theories that explain how we then apply those abstractions to go make new things."
+  <br>— Judy Fan, 08:00
+</blockquote>
+
+<p>Agents have the same loop. Parse a chart → use what you parsed to act on the world. Render a diagram → check that it communicates what the next tool in the pipeline needs to know. The agent doesn't need to "think" — it needs the representation that <em>makes the next step cheap</em>.</p>
+
+<h2>What this lesson leaves you with</h2>
+
+<p>One frame, three applications:</p>
+
+<ol>
+  <li><strong>The cognitive-tool test.</strong> "What new question does this representation make answerable?" Use it before you write the agent prompt or pick the output format.</li>
+  <li><strong>The agent-design reading.</strong> Any artifact an agent produces (or consumes) is a candidate cognitive tool. The question is whether it's <em>shaped</em> for the question that follows it.</li>
+  <li><strong>The discovery-and-engineering loop.</strong> Don't stop at "the agent can render this." Ask: "and then what?" The answer to <em>that</em> question is what makes the representation load-bearing.</li>
+</ol>
+
+<h2>Try it now</h2>
+
+<div class="quiz">
+  <h3>Quick check: pick the cognitive tool</h3>
+  <p>Your agent has finished a long task. The user is about to ask "did this work?" The agent must produce one output that will be used by the user to judge success. Which is shaped most like a cognitive tool for <em>that question</em>?</p>
+  <ol>
+    <li>
+      <input type="radio" name="q1" id="q1-a">
+      <label for="q1-a">A 400-word prose summary of what the agent did.</label>
+    </li>
+    <li>
+      <input type="radio" name="q1" id="q1-b" data-correct="true">
+      <label for="q1-b">A pass/fail table — each rubric criterion as a row, ✓ / ✗ / partial in cells.</label>
+      <span class="reveal">A pass/fail table is shaped for the question "did this work?" — it makes each criterion answerable at a glance. Prose makes the user re-derive the answer. The table is the cognitive tool.</span>
+    </li>
+    <li>
+      <input type="radio" name="q1" id="q1-c">
+      <label for="q1-c">A Mermaid sequence diagram of every tool call the agent made.</label>
+    </li>
+    <li>
+      <input type="radio" name="q1" id="q1-d">
+      <label for="q1-d">A bulleted list of the agent's intermediate thoughts.</label>
+    </li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <h3>Spot the non-example</h3>
+  <p>Which of these is <em>not</em> a cognitive tool in Fan's frame, even though it's commonly called one in casual usage?</p>
+  <ol>
+    <li>
+      <input type="radio" name="q2" id="q2-a">
+      <label for="q2-a">The Feynman diagram, used to compute scattering amplitudes.</label>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-b" data-correct="true">
+      <label for="q2-b">A Jira board, used to track who is working on what.</label>
+      <span class="reveal">A Jira board is a coordination artifact, not a cognitive tool. It doesn't make a new question answerable — it makes the <em>same</em> question ("who's doing what") answerable to a different audience (the team). Cognitive tools in Fan's frame change what their user can think about, not just who can see it.</span>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-c">
+      <label for="q2-c">A phylogenetic tree, used to reason about common ancestry.</label>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-d">
+      <label for="q2-d">A bar chart, used to compare category magnitudes.</label>
+    </li>
+  </ol>
+</div>
+
+<h2>Action items</h2>
+
+<ol>
+  <li>
+    <strong>Audit one agent's outputs.</strong>
+    Pick one agent you actually run. Look at its last five outputs. For each, ask: <em>what question does the user have next?</em> Is the current output shaped for that question? If not, the output is a missing cognitive tool, not just a formatting choice.
+  </li>
+  <li>
+    <strong>Pick one artifact to upgrade.</strong>
+    Find the output that's most often a "the user has to re-derive it" output (a wall of text where they want a comparison, a screenshot where they want a delta, etc.). Replace it with the representation shaped for the question. Run it for a week.
+  </li>
+  <li>
+    <strong>Read the source.</strong>
+    Watch <a href="https://www.youtube.com/watch?v=AF3XJT9YKpM">the first 13 minutes of Fan's talk</a> (03:52–13:00) for the cognitive-tools frame and the first set of historical examples. <a href="../RESOURCES.md">RESOURCES.md</a> has the full reading list.
+  </li>
+</ol>
+
+<div class="nav">
+  <a href="../index.html">← workspace index</a>
+  <a href="0002-visual-abstraction.html">next: Visual abstraction →</a>
+</div>
+
+</body>
+</html>

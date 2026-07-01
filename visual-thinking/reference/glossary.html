@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference — Glossary</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    p { margin-bottom: 1rem; }
+    code {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+    }
+    dl { margin: 1.5rem 0; }
+    dt {
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 1em;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.92rem;
+    }
+    dd {
+      margin: 0.3em 0 0 1em;
+      color: var(--ink-soft);
+    }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .ref-position { color: var(--ink-soft); font-style: italic; }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="../index.html" class="back-home">← all lessons</a>
+  <span class="ref-position">Reference — Glossary</span>
+</nav>
+
+<h1>Glossary</h1>
+<p class="subtitle">Vocabulary for Fan's cognitive-tools frame, anchored to the talk and ready for agent-design conversations.</p>
+
+<h2>The frame</h2>
+<dl>
+  <dt>Cognitive tool</dt>
+  <dd>Fan's term for an external representation (number line, coordinate system, sketch, diagram, chart) that changes what its user can think about. The defining test: <em>does this representation make a new question answerable?</em> See Lesson 0001. Talk timestamp: 03:52–13:00.</dd>
+
+  <dt>Closing the loop</dt>
+  <dd>Fan's research-program motto: humans don't just discover useful abstractions, they <em>apply</em> them to make new things. The discovery-and-engineering loop is the throughline. Agent equivalent: parse a chart → use what you parsed to act.</dd>
+
+  <dt>Visual abstraction</dt>
+  <dd>The deliberate reduction of visual detail to highlight what is relevant. Two forms: sparsification (fewer strokes) and selective omission (drop the background). Sparsification is one knob; selective omission is a different one.</dd>
+
+  <dt>Production budget</dt>
+  <dd>The constraint on how much an artist can produce — time, strokes, ink. SEVA uses four budgets. At the tight end, humans and CLIPasso diverge. See Lesson 0002.</dd>
+</dl>
+
+<h2>Drawing (Part 1)</h2>
+<dl>
+  <dt>Depiction</dt>
+  <dd>Drawing intended to communicate <em>what something looks like</em>. Faithful to surface. Preserves background and non-causal structure. Huey: depicted drawings win on object-identification tasks.</dd>
+
+  <dt>Explanation</dt>
+  <dd>Drawing intended to communicate <em>how something works</em>. Suppresses surface. Privileges causal parts, motion lines, arrows. Huey: explanation drawings win on action-understanding tasks.</dd>
+
+  <dt>Cumulative hypothesis</dt>
+  <dd>The hypothesis that explanations are depictions + extra mechanism (the same drawing, with more arrows). Rejected by Huey's data — if cumulative were true, depictions should be at least as good as explanations on every task. They are not.</dd>
+
+  <dt>Dissociable hypothesis</dt>
+  <dd>The hypothesis that explanations and depictions are <em>different</em> drawings, with different vocabularies. Causal parts are drawn in both, but the relative weights differ. Supported by Huey's data. Agent implication: an explanation prompt should not start from a depiction and add arrows.</dd>
+
+  <dt>Referential context</dt>
+  <dd>The lineup of alternative objects the viewer is choosing among. The drawing-game studies show that the lineup — not the target alone — determines how much detail a human will produce.</dd>
+
+  <dt>SEVA</dt>
+  <dd>Sketch-ELaborated Visual Abstraction benchmark. 90,000 sketches from 5,500 people of 128 concepts at four production budgets. Fan-lab, 2024. Use for: stress-testing any sketch-generation system against human sparsification behavior.</dd>
+
+  <dt>CLIPasso</dt>
+  <dd>A neural sketch-generation algorithm from Fan's collaborators (Winkler et al.). Generates vector sketches with controllable stroke budget. The comparison point for SEVA — recognizability matches humans at matched budget, but the meaning distribution diverges at the tight end.</dd>
+
+  <dt>Stroke-budget sparsification</dt>
+  <dd>The behavior of reducing detail as the budget tightens. CLIPasso sparsifies differently from humans. The lesson is: "less detail" is not the same thing as "lower fidelity."</dd>
+
+  <dt>Meaning distribution</dt>
+  <dd>The full distribution of labels a sketch evokes when shown to viewers. Not just the top label — the entropy and the semantic-neighborhood structure. CLIPasso and humans match on the top label; they diverge on the distribution.</dd>
+</dl>
+
+<h2>Data viz (Part 2)</h2>
+<dl>
+  <dt>Playfair 1786</dt>
+  <dd>William Playfair's <em>Commercial and Political Atlas</em> — the first time-series line chart ever made. Kicker for the data-viz half of the talk: like the number line, the time-series line chart was invented, not discovered.</dd>
+
+  <dt>VLM</dt>
+  <dd>Vision-Language Model. A multimodal model that ingests images (and text) and produces text. The class Fan + Verma benchmarked: BLIP-2, LLaVA, GPT-4V, Matcha, Pix2Struct, specialized variants. Note: "VLM" as a term is overloaded in 2024–25 to also mean "video-language model" — Fan uses the image-text sense.</dd>
+
+  <dt>GGR</dt>
+  <dd>Graphic Gestalt Reasoning. One of six plot-reading tests in the Verma benchmark. Tests basic visual reasoning over charts.</dd>
+
+  <dt>VLAT</dt>
+  <dd>Visual-Literacy Assessment Test. A commonly used chart-reading instrument. Used in Brockbank's measurement analysis.</dd>
+
+  <dt>CALVI</dt>
+  <dd>Critical-thinking Assessment of Literacy in Visualization. Adversarial plots — designed to trick with misleading axis scales. The test where the VLM accuracy gap is largest. See Lesson 0003.</dd>
+
+  <dt>HOLF / HOLF-multi</dt>
+  <dd>Higher-Order Learning Framework. Chart-reading test variants. Less commonly cited by name in industry evals; Fan's lab uses them.</dd>
+
+  <dt>Chart-QA</dt>
+  <dd>A standard ML benchmark for chart-question answering. The benchmark Fan argues is <em>flattering</em> — it shows the smallest accuracy gap between humans and VLMs, but the gap widens dramatically on CALVI-style adversarial items.</dd>
+
+  <dt>Human-noise ceiling</dt>
+  <dd>The expected band of human-vs-human divergence on a chart-reading test — how much two random humans would disagree. Models falling below this band on wrong-answer divergence are failing in <em>non-human</em> ways, even if their accuracy is high.</dd>
+
+  <dt>Audience-sensitive hypothesis</dt>
+  <dd>Huey's plot-selection proposal: people pick plots based on what features of the plot are <em>needed to answer the question</em>, not based on chart-type prior. Supported by Fan's data on plot-choice distributions. Agent implication: agents that pick charts should rank by question-relevance, not chart-type preference.</dd>
+
+  <dt>Bar-plot purist</dt>
+  <dd>The hypothesis (rejected) that humans default to bar plots regardless of the question. Used as a strawman in Huey's analysis. Agent trap: an agent that defaults to "always render a bar chart" is a bar-plot purist. Don't be that agent.</dd>
+
+  <dt>Factor structure</dt>
+  <dd>The latent skill decomposition that explains error patterns on a chart-reading test. Brockbank shows the textbook ontology (find-max, identify-cluster, etc.) is not the right factor structure — a four-factor alternative predicts errors much better. Agent implication: don't trust the textbook decomposition for prompt engineering.</dd>
+</dl>
+
+<h2>Frame for agent design</h2>
+<dl>
+  <dt>Question-shaping</dt>
+  <dd>The principle that an artifact (drawing, chart, diagram) is shaped by the question that follows it, not by the object alone. The cognitive-tool frame applied to output generation.</dd>
+
+  <dt>Explanation-prompt</dt>
+  <dd>An agent prompt structured for the dissociable hypothesis: (a) name the causal structure first, (b) suppress non-causal parts, (c) privilege arrows and motion lines. Not "depiction + extras."</dd>
+
+  <dt>Chart-pick rubric</dt>
+  <dd>A three-step process for an agent that picks a chart: (1) name the question, (2) name the features of the chart needed to answer it, (3) pick the chart with those features. Closes the bar-plot-purist trap.</dd>
+
+  <dt>Error-pattern check</dt>
+  <dd>An evaluation method that compares the wrong-answer distribution of an agent against the wrong-answer distribution of a human baseline, not just the accuracy number. The right number to look at when "Chart-QA says 92%" but you don't trust it.</dd>
+</dl>
+
+<p style="margin-top: 2rem;"><a href="cognitive-tool-taxonomy.html">→ Cognitive-tool taxonomy cheat sheet</a> for the perception → production → communication ladder as a one-page diagram.</p>
+
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: VLMs read plots wrong (even when they're accurate)</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span::before { content: "· "; }
+    .meta span:first-child::before { content: ""; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .quiz {
+      background: var(--code-bg);
+      padding: 1.25rem 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+    }
+    .quiz h3 { margin-top: 0; }
+    .quiz ol { margin: 0.5rem 0 0 1.25rem; }
+    .quiz li { margin-bottom: 0.6rem; }
+    .reveal {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { border: none; color: var(--ink-soft); }
+    .nav a:hover { color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .lesson-position { color: var(--ink-soft); font-style: italic; }
+    blockquote {
+      margin: 1.25rem 0;
+      padding: 0.4rem 1rem;
+      border-left: 3px solid var(--rule);
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    table.compare {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    table.compare th, table.compare td {
+      text-align: left;
+      padding: 0.6rem 0.7rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    table.compare th {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="../index.html" class="back-home">← all lessons</a>
+  <span class="lesson-position">Lesson 0003 of 3</span>
+</nav>
+
+<h1>VLMs read plots wrong (even when they're accurate)</h1>
+<div class="subtitle">A chart-reading benchmark shows GPT-4V, LLaVA, and BLIP-2 trail humans — not on accuracy, but on which errors they make. And a plot-selection experiment shows humans pick charts by question, not by chart-type.</div>
+
+<div class="meta">
+  <span>~9 min</span>
+  <span>Lesson 0003</span>
+  <span><a href="../reference/glossary.html">glossary</a></span>
+</div>
+
+<p>Part 2 of Fan's talk shifts from drawing to data visualization. The provocation: humans can read charts. Vision-language models can read charts. The two should be benchmarked head-to-head.</p>
+
+<p>What Fan + Verma's team found is that the headline accuracy gap is the wrong thing to look at. The interesting gap is the <strong>error pattern</strong>.</p>
+
+<h2>The benchmark</h2>
+
+<p>Six commonly used tests of graph-based reasoning, administered "in as parallel a manner as possible" to both humans and several VLMs (~38:00–44:00):</p>
+
+<ul>
+  <li><strong>GGR</strong> (Graphic Gestalt Reasoning)</li>
+  <li><strong>VLAT</strong> (Visual-Literacy Assessment Test)</li>
+  <li><strong>CALVI</strong> (adversarial plots — designed to trick with misleading y-axis scales)</li>
+  <li><strong>HOLF</strong> / <strong>HOLF-multi</strong></li>
+  <li><strong>Chart-QA</strong> subset</li>
+</ul>
+
+<p>VLMs tested: two variants of BLIP-2 + FlanT5, three LLaVA variants, Matcha + Pix2Struct, GPT-4V. Human reference: US adults with at least one high-school math class.</p>
+
+<blockquote>
+  "Even though GPT-4V might look to be approaching human-level performance, none of these models, GPT-4V included, generated human-like error patterns."
+  <br>— Judy Fan, 39:30
+</blockquote>
+
+<p>The score Fan uses for the error-pattern check is a divergence between the model's wrong-answer distribution and the humans' wrong-answer distribution. The human noise ceiling — the band you'd expect from humans being imperfect — is shown in green. Every model's dots fall <em>below</em> that band. The models make wrong answers humans wouldn't make.</p>
+
+<div class="callout">
+  <strong>Why this matters:</strong> if a model makes wrong answers humans wouldn't make, you can't trust its right answers either, even at high accuracy. The shape of the failure mode is the question, not just the rate. A model that's "human-level on Chart-QA" but wrong in alien ways is a model you'll misread on the cases that matter.
+</div>
+
+<h2>The CALVI finding is the most actionable</h2>
+
+<p>CALVI plots are designed to be adversarial: funny y-axis limits, ambiguous units, things designed to make you misread the magnitude. The accuracy gap on CALVI is much larger than on Chart-QA, which is the standard benchmark everyone reports.</p>
+
+<blockquote>
+  "We might have missed [the gap] had we relied exclusively on the chart understanding benchmarks that are currently most popular in the machine learning literature."
+  <br>— Judy Fan, 39:00
+</blockquote>
+
+<p>Lesson: if you're evaluating a VLM's chart-reading for any application where the data might be messy (dashboards, ambiguous scaling, real-world reports), Chart-QA is a <em>flattering</em> benchmark. Pick something with adversarial plots, or build your own.</p>
+
+<h2>The plot-selection experiment (Huey)</h2>
+
+<p>The second half of Part 2 (~44:00–54:00) shifts from <em>reading</em> plots to <em>picking</em> plots. Holly Huey's experiment: present participants with a question (e.g., "what is the average speed of aircraft in overcast skies that encounter bird strikes at 0–5K [typo aside] altitude?") and a menu of candidate plots — bar, line, scatter — at varying levels of aggregation. Let them pick.</p>
+
+<p>Then measure how often their chosen plot, when paired with the question, produced correct answers from a separate group of participants.</p>
+
+<p>Several hypotheses tested:</p>
+
+<table class="compare">
+  <tr>
+    <th>Hypothesis</th>
+    <th>What it predicts</th>
+    <th>What the data shows</th>
+  </tr>
+  <tr>
+    <td>Bar-plot purist</td>
+    <td>Always pick bar plot</td>
+    <td>Rejected — humans don't default to bar</td>
+  </tr>
+  <tr>
+    <td>Targeted-plot purist</td>
+    <td>Always pick the most aggregated plot</td>
+    <td>Rejected — humans prefer relevance over aggregation</td>
+  </tr>
+  <tr>
+    <td>Show-more-data</td>
+    <td>Pick the plot with the most underlying data shown</td>
+    <td>Partially supported but not the best predictor</td>
+  </tr>
+  <tr>
+    <td><strong>Audience-sensitive</strong></td>
+    <td>Pick the plot whose features are <em>needed</em> to answer the question</td>
+    <td>Best fit — predicts the answerer-performance distribution</td>
+  </tr>
+</table>
+
+<blockquote>
+  "I'm excited about that result as an initial validation of a strategy for measuring visualization understanding using more open-ended tasks, and also because it suggests that even non-experts … are sensitive to those features of plots that make some suitable for answering some questions than others."
+  <br>— Judy Fan, 47:30
+</blockquote>
+
+<h2>The measurement problem (Brockbank)</h2>
+
+<p>The third leg of Part 2 (~54:00–57:00) is a quiet bomb. Postdoc Erik Brockbank took two of the most-used graph-reading tests (GGR and VLAT), administered them to ~1,700 US adults across two samples (UCSD campus + Prolific representative), and asked: what are these tests <em>actually measuring</em>?</p>
+
+<p>Two findings:</p>
+
+<ol>
+  <li>The two tests correlate — people who do well on one do well on the other. So they're measuring something real, not noise.</li>
+  <li>But <em>what</em> they're measuring is not the kind of plot, the type of question, or the standard textbook ontology. A four-factor model that doesn't use the standard taxonomy (find-max / identify-cluster / characterize-distribution / retrieve-value) predicts error patterns <em>much better</em> than the textbook categorization.</li>
+</ol>
+
+<blockquote>
+  "Other underlying factors that aren't well described by the ontology are really accounting for error patterns much more efficiently."
+  <br>— Judy Fan, 56:30
+</blockquote>
+
+<p>Lesson: your standard taxonomy of "graph-reading skills" is probably not what's actually driving the difficulty. The skill decomposition you've been using to teach (or to write your agent's prompt) might be wrong.</p>
+
+<h2>What this lesson leaves you with</h2>
+
+<p>Three rules, each tied to a concrete agent-design move:</p>
+
+<h3>1. Score error patterns, not just accuracy</h3>
+
+<p>If you're benchmarking a VLM on a chart-reading task, accuracy is the <em>first</em> cut, not the last. Compute the divergence between the model's wrong-answer distribution and a human baseline's wrong-answer distribution. If they don't match, the model is failing in ways that won't generalize — and your "human-level" number is misleading.</p>
+
+<div class="callout">
+  <strong>Heuristic for evaluating an agent's chart-reading:</strong> don't accept a chart-QA score alone. Pair it with an adversarial plot set (CALVI-style) and a wrong-answer-shape comparison. Report both.
+</div>
+
+<h3>2. Pick charts by question-relevance, not by chart-type prior</h3>
+
+<p>An agent that's asked to "explain the data" should not default to a bar chart. It should pick the chart whose features make the question answerable. The audience-sensitive hypothesis is your rubric.</p>
+
+<div class="callout">
+  <strong>Heuristic for an agent that picks or generates charts:</strong> in the prompt, force the agent to first name the question, then name the features of the chart that answer it, then pick. Three steps, not one. This is the bar-plot-purist trap closed.
+</div>
+
+<h3>3. Treat your "skills taxonomy" as a hypothesis</h3>
+
+<p>If your agent's chart-reading prompt is structured around "find the max," "identify the cluster," "retrieve a value," etc., you're using the textbook ontology. Fan's data says that ontology is the wrong factor structure. Watch for chart-reading failures that don't fit your decomposition — they're telling you your taxonomy is wrong.</p>
+
+<div class="callout">
+  <strong>Heuristic for iterating on chart-reading agents:</strong> when the agent fails on a specific chart, ask "what factor was this failure about?" Don't slot it into your existing skill categories by reflex. Let the failures update the taxonomy.
+</div>
+
+<h2>Try it now</h2>
+
+<div class="quiz">
+  <h3>Pick the better chart-reading eval</h3>
+  <p>You're about to ship an agent that reads revenue charts and answers "why did revenue drop?" Two evaluation strategies. Which one matches Fan's argument?</p>
+  <ol>
+  <li>
+    <input type="radio" name="q1" id="q1-a">
+    <label for="q1-a">Run the agent on 1,000 Chart-QA items, report the accuracy number.</label>
+  </li>
+  <li>
+    <input type="radio" name="q1" id="q1-b" data-correct="true">
+    <label for="q1-b">Run the agent on Chart-QA plus 200 adversarially scaled plots, and report both accuracy AND the divergence between the agent's wrong-answer distribution and a human baseline's wrong-answer distribution.</label>
+    <span class="reveal">Fan's argument is exactly this. Headline accuracy is the wrong number to look at — the wrong-answer shape is what reveals alien failures. Adversarial plots catch what the standard benchmark flatters.</span>
+  </li>
+  <li>
+    <input type="radio" name="q1" id="q1-c">
+    <label for="q1-c">Run the agent on 100 hand-picked charts from your real dashboards and report whether the answers match your own intuitions.</label>
+  </li>
+  <li>
+    <input type="radio" name="q1" id="q1-d">
+    <label for="q1-d">Skip the eval — the agent's answers look right when you read them, so it's good enough.</label>
+  </li>
+</ol>
+</div>
+
+<div class="quiz">
+  <h3>Pick the question-driven chart pick</h3>
+  <p>A user asks the agent: "Did the conversion rate drop more in mobile or web last quarter?" The agent has access to: (a) a daily line chart of mobile conversion, (b) a daily line chart of web conversion, (c) a daily line chart of both overlaid, (d) a bar chart of monthly conversion for both, side by side. Per the audience-sensitive hypothesis, which chart should the agent pick?</p>
+  <ol>
+    <li>
+      <input type="radio" name="q2" id="q2-a">
+      <label for="q2-a">Chart (d) — monthly bars side by side. Bar charts are easier to read.</label>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-b">
+      <label for="q2-b">Chart (c) — both lines overlaid. You can compare the magnitudes directly.</label>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-c" data-correct="true">
+      <label for="q2-c">The chart whose features make "did mobile or web drop more" directly answerable — which is most likely (c) the overlay, because the question is comparative and the chart is comparative. The bars (d) would force the viewer to compute the difference; the overlay lets them read it.</label>
+      <span class="reveal">The audience-sensitive hypothesis says: pick the chart whose features are <em>needed</em> to answer the question. The question is a comparison. The chart should make the comparison answerable directly. The overlay (c) is the right pick — not because lines are better than bars in general, but because the comparison is what the question asks for.</span>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-d">
+      <label for="q2-d">Either (c) or (d) — it doesn't matter, pick whatever is faster to render.</label>
+  </li>
+</ol>
+</div>
+
+<h2>Action items</h2>
+
+<ol>
+  <li>
+    <strong>Audit one chart-reading evaluation you've shipped or relied on.</strong>
+    If it was just an accuracy number, note the gap. Fan would say the gap matters more than the number. Add a wrong-answer-shape check next time, even informally.
+  </li>
+  <li>
+    <strong>Find one chart-pick decision your agent made.</strong>
+    Look at a chart the agent recently picked (for a dashboard, a report, a recommendation). Walk it back through the three steps: (1) what was the question? (2) what features of the chart answer it? (3) does the picked chart have those features? If not, that's a bar-plot-purist slip.
+  </li>
+  <li>
+    <strong>Read the source.</strong>
+    Watch <a href="https://www.youtube.com/watch?v=AF3XJT9YKpM">37:17–57:19 of Fan's talk</a> for the plot-reading benchmark, the plot-selection experiment, and the measurement critique. Plus the Q&A (57:19–end) for misconception diagnosis and mechanistic interpretability.
+  </li>
+</ol>
+
+<div class="nav">
+  <a href="0002-visual-abstraction.html">← previous: Visual abstraction</a>
+  <a href="../index.html">workspace index →</a>
+</div>
+
+</body>
+</html>

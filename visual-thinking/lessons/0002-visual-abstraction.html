@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: Visual abstraction — detail scales with context</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span::before { content: "· "; }
+    .meta span:first-child::before { content: ""; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .quiz {
+      background: var(--code-bg);
+      padding: 1.25rem 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+    }
+    .quiz h3 { margin-top: 0; }
+    .quiz ol { margin: 0.5rem 0 0 1.25rem; }
+    .quiz li { margin-bottom: 0.6rem; }
+    .reveal {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { border: none; color: var(--ink-soft); }
+    .nav a:hover { color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .lesson-position { color: var(--ink-soft); font-style: italic; }
+    blockquote {
+      margin: 1.25rem 0;
+      padding: 0.4rem 1rem;
+      border-left: 3px solid var(--rule);
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    table.compare {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    table.compare th, table.compare td {
+      text-align: left;
+      padding: 0.6rem 0.7rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    table.compare th {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="../index.html" class="back-home">← all lessons</a>
+  <span class="lesson-position">Lesson 0002 of 3</span>
+</nav>
+
+<h1>Visual abstraction</h1>
+<div class="subtitle">Humans draw detail that scales with the lineup, not with the object. CLIPasso doesn't. Implications for any agent that renders diagrams.</div>
+
+<div class="meta">
+  <span>~8 min</span>
+  <span>Lesson 0002</span>
+  <span><a href="../reference/glossary.html">glossary</a> · <a href="../reference/cognitive-tool-taxonomy.html">taxonomy</a></span>
+</div>
+
+<p>Picture two scenes. In both, someone is playing a drawing game: they see a target object and they have to draw it so a partner can identify it.</p>
+
+<p><strong>Scene A.</strong> The lineup is five birds. The target is a robin. To uniquely identify the robin, you have to draw it carefully — beak shape, breast color, size. The lineup is full of close alternatives.</p>
+
+<p><strong>Scene B.</strong> The lineup is a robin, a teapot, a clock, a car, and a shoe. The target is the robin. To uniquely identify the robin, you can draw it as a small bird-shape with a beak. The lineup is full of distant alternatives.</p>
+
+<p>Same target. Same drawer. Same task. <strong>Different drawings.</strong></p>
+
+<blockquote>
+  "We discovered how readily ordinary folks can adjust the way they use depiction to communicate — making more detailed and faithful drawings on those close trials when they needed their drawing to uniquely identify a particular exemplar, but then sparser drawings on the far trials when they could get away with these category-level abstractions."
+  <br>— Judy Fan, 16:30
+</blockquote>
+
+<p>This is the first big finding of Fan's talk (the drawing-game studies, ~13:00–21:00). Detail scales with the <em>referential context</em>, not with the object. The drawing isn't a property of the robin. It's a property of the robin-and-its-lineup together.</p>
+
+<div class="callout">
+  <strong>The frame, restated:</strong> a drawing is not a representation of an object — it's a representation of an object <em>given a question</em>. Same for diagrams. Same for charts. Same for any visual artifact an agent produces. The agent that ignores the question will draw the wrong amount.
+</div>
+
+<h2>Dissociable vs. cumulative: how to explain vs. how to depict</h2>
+
+<p>The second big finding shifts the question from <em>how much detail</em> to <em>what kind of detail</em>. Holly Huey (Fan's PhD student, now at Adobe Research) ran a study where participants were shown six novel contraptions — each with a clear causal mechanism that turned on a light. Each participant was asked to draw <em>two</em> things for two different audiences:</p>
+
+<ul>
+  <li>A <strong>depiction</strong>: "your drawing will be used by someone to identify this object out of a lineup."</li>
+  <li>An <strong>explanation</strong>: "your drawing will be used by someone to understand how this object works."</li>
+</ul>
+
+<p>Huey tagged every stroke (causal / non-causal / background / symbolic — arrows and motion lines) and ran three downstream tasks. The result, ~24:00:</p>
+
+<table class="compare">
+  <tr>
+    <th>Question for the viewer</th>
+    <th>Which drawing wins?</th>
+    <th>Why</th>
+  </tr>
+  <tr>
+    <td>"What kind of action operates this machine?"</td>
+    <td><strong>Explanation</strong></td>
+    <td>Causal parts and motion lines are emphasized.</td>
+  </tr>
+  <tr>
+    <td>"Which of these machines is this?"</td>
+    <td><strong>Depiction</strong></td>
+    <td>Background and surface features preserved.</td>
+  </tr>
+  <tr>
+    <td>"Which highlighted part is the causal one?"</td>
+    <td><strong>Tie</strong></td>
+    <td>Explanations drop too much background for the viewer to map parts.</td>
+  </tr>
+</table>
+
+<p>The clean summary:</p>
+
+<blockquote>
+  "Explanations better communicated how the mechanism worked, but depictions were better for communicating object identity."
+  <br>— Judy Fan, 25:00
+</blockquote>
+
+<h2>What this rules out: the cumulative hypothesis</h2>
+
+<p>There were two competing hypotheses going in:</p>
+
+<ul>
+  <li><strong>Cumulative hypothesis:</strong> explanations are depictions + extra mechanism. Same visual style, more arrows.</li>
+  <li><strong>Dissociable hypothesis:</strong> explanations and depictions use <em>different</em> visual strategies. Suppress surface detail; emphasize causal structure.</li>
+</ul>
+
+<p>Fan's data rules out the strong cumulative hypothesis. If explanations were just depictions-with-extras, then depictions should be at least as good as explanations on every task. They're not — depictions fail the action task because they don't privilege the causal part.</p>
+
+<div class="callout">
+  <strong>The hypothesis that survived:</strong> dissociable. Explanation and depiction are not the same drawing with extra markup. They are different drawings, shaped for different questions, with overlapping but distinct vocabularies. The vocabulary overlaps (causal parts get drawn in both), but the relative weights are different.
+</div>
+
+<h2>The SEVA benchmark: humans sparsify, CLIPasso doesn't</h2>
+
+<p>The third leg of Part 1 (28:00–37:00) is a benchmark. Fan's team collected 90,000 sketches from 5,500 people of 128 visual concepts under <em>four production budgets</em> (think: "you have N seconds to draw"). They then compared human sketches to those produced by CLIPasso, a state-of-the-art neural sketch generator — both at matched recognizability.</p>
+
+<p>The finding:</p>
+
+<blockquote>
+  "Even while human drawings and CLIPasso's drawings were similarly recognizable across the four production budgets, humans and CLIPasso sparsify their drawings differently."
+  <br>— Judy Fan, 31:30
+</blockquote>
+
+<p>Specifically: at the generous end (32 seconds for humans, 32 strokes for CLIPasso), the two distributions of <em>meaning</em> (which labels the sketch evokes) are close. At the tight end (4 seconds for humans, fewer strokes for CLIPasso), they diverge. CLIPasso's budget-compressed sketches evoke a <em>different</em> distribution of meanings than human budget-compressed sketches. They're functionally not the same drawing.</p>
+
+<h2>Three takeaways for agent design</h2>
+
+<p>You're not building CLIPasso. But you might be building (or choosing between) agents that render diagrams, sketches, or visual explanations. Fan's three findings collapse into three rules.</p>
+
+<h3>1. Detail scales with referential context, not with the object</h3>
+
+<p>An agent asked to draw the difference between Service A and Service B should draw Service A and Service B in detail. An agent asked to draw "what is a service" should draw <em>any one</em> service in minimal form. The lineup is the question, and the drawing is shaped by it.</p>
+
+<div class="callout">
+  <strong>Heuristic:</strong> don't pass the agent just the object. Pass the agent (object, comparison set, question). All three shape what the drawing should look like.
+</div>
+
+<h3>2. Explanation is dissociable from depiction</h3>
+
+<p>An agent asked to explain a system is not being asked to draw a depiction + arrows. It's being asked to draw a <em>different</em> drawing that suppresses surface and emphasizes causal structure. If the agent's first instinct is "let me render a faithful picture and then add motion lines," it's already on the wrong strategy.</p>
+
+<div class="callout">
+  <strong>Heuristic:</strong> for explanation tasks, set the agent's instructions to (a) identify the causal structure first, (b) suppress non-causal parts deliberately, (c) privilege arrows and motion lines over shading. The drawing is the causal diagram; the depiction is optional context.
+</div>
+
+<h3>3. Budget-constrained generation is qualitatively different, not just quantitatively</h3>
+
+<p>CLIPasso at 4 strokes isn't "a worse version of CLIPasso at 32 strokes" — it's a sketch that evokes a different distribution of meanings. The same will be true for any agent you push toward terseness. "Less detail" is not the same thing as "lower fidelity."</p>
+
+<div class="callout">
+  <strong>Heuristic:</strong> when you budget-constrain an agent's visual output (token cap, stroke cap, time cap), don't measure success with a single "did it look like the unconstrained version?" metric. Measure the <em>distribution of meanings</em> the output evokes, not just the top label. Lesson 0003 takes this further with a chart-reading benchmark.
+</div>
+
+<h2>Try it now</h2>
+
+<div class="quiz">
+  <h3>Pick the explanation-shaped drawing</h3>
+  <p>An agent is asked: "Explain how the parser dispatches tokens to handlers in this system." Which output is most explanation-shaped, per the dissociable hypothesis?</p>
+  <ol>
+    <li>
+      <input type="radio" name="q1" id="q1-a">
+      <label for="q1-a">A box labeled "PARSER" connected by an arrow to a box labeled "HANDLERS" — nothing else.</label>
+      <span class="reveal">This is closer to explanation, but it's too sparse — it skips the causal structure (which token, which handler, in what order). Explanation needs the causal pathway visible.</span>
+    </li>
+    <li>
+      <input type="radio" name="q1" id="q1-b">
+      <label for="q1-b">A detailed icon of the parser class, surrounded by all its methods, with arrows to every handler showing every possible dispatch.</label>
+    </li>
+    <li>
+      <input type="radio" name="q1" id="q1-c" data-correct="true">
+      <label for="q1-c">A diagram showing one token → through the parser → through a switch → to a specific handler, with motion arrows emphasizing the dispatch path.</label>
+      <span class="reveal">Explanation-shaped: causal path is the foreground (one token, one dispatch), surface details (class methods, fields, surrounding code) are suppressed, motion arrows emphasize the mechanism. Per Huey's data, this beats depiction for the action-question.</span>
+    </li>
+    <li>
+      <input type="radio" name="q1" id="q1-d">
+      <label for="q1-d">A screenshot of the parser's source file, with the dispatch line highlighted in red.</label>
+    </li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <h3>Spot the sparSIFICATION mistake</h3>
+  <p>An agent is generating a chart for a dashboard. The original chart has 14 series. You budget-constrain the agent to "render at most 4 series, you choose." Which picking strategy produces a chart most likely to preserve the meaning of the original?</p>
+  <ol>
+    <li>
+      <input type="radio" name="q2" id="q2-a">
+      <label for="q2-a">Drop the 10 series with the smallest individual values.</label>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-b" data-correct="true">
+      <label for="q2-b">Pick the 4 series that together cover the question the dashboard is being read for — even if some of them have small values.</label>
+      <span class="reveal">Sparsification should track the question, not the magnitude distribution. CLIPasso's "sparsify by strokes" preserves recognizability for the top label but loses the surrounding meaning distribution. Pick by relevance-to-the-question.</span>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-c">
+      <label for="q2-c">Keep the top 4 series by sum of values.</label>
+    </li>
+    <li>
+      <input type="radio" name="q2" id="q2-d">
+      <label for="q2-d">Drop the 10 series alphabetically last.</label>
+    </li>
+  </ol>
+</div>
+
+<h2>Action items</h2>
+
+<ol>
+  <li>
+    <strong>Audit one diagram your agent produced.</strong>
+    Pick the last diagram (Mermaid, ASCII, screenshot-with-callouts) an agent produced for you. Is it depiction-shaped or explanation-shaped? Does the question you actually had map onto the strategy? If not, redo the prompt with the (object, comparison set, question) framing.
+  </li>
+  <li>
+    <strong>Try the dissociable framing explicitly.</strong>
+    Next time you ask an agent to "explain" a system, add: <em>"Suppress non-causal parts. Lead with the causal path. Use arrows and motion lines for mechanism. Keep one example of the flow, not the full state space."</em> Compare the result to your usual prompt.
+  </li>
+  <li>
+    <strong>Read the source.</strong>
+    Watch <a href="https://www.youtube.com/watch?v=AF3XJT9YKpM">13:00–37:00 of Fan's talk</a> for the drawing-game study, the dissociable/cumulative evidence, and the SEVA/CLIPasso comparison.
+  </li>
+</ol>
+
+<div class="nav">
+  <a href="0001-what-is-a-cognitive-tool.html">← previous: What is a cognitive tool?</a>
+  <a href="0003-vlms-and-plot-reading.html">next: VLMs read plots wrong →</a>
+</div>
+
+</body>
+</html>
