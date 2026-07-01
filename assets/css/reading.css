@@ -329,6 +329,12 @@ body.home-body .archive-month-label {
   border-bottom: 1px solid var(--_rule);
 }
 
+body.home-body .archive-month .post-card {
+  border-left: 3px solid var(--course-fg, var(--_rule));
+}
+
+body.home-body .archive-month-label {
+
 body.home-body .archive-back {
   margin-bottom: 2rem;
 }
@@ -342,6 +348,279 @@ body.home-body .archive-back a {
 
 body.home-body .archive-back a:hover {
   text-decoration: underline;
+}
+
+/* ===== VnExpress-style homepage: news sections ===== */
+
+body.home-body .news-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--_rule);
+}
+
+body.home-body .news-section:last-of-type {
+  border-bottom: none;
+}
+
+body.home-body .news-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+}
+
+body.home-body .news-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+body.home-body .news-section-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 1.4rem;
+  background: var(--course-fg);
+  border-radius: 2px;
+  margin-right: 0.25rem;
+}
+
+body.home-body .news-section-emoji {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+body.home-body .news-section-link {
+  color: var(--_ink);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+body.home-body .news-section-link:hover {
+  color: var(--course-fg);
+}
+
+body.home-body .news-section-more-link {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.8rem;
+  color: var(--course-fg);
+  text-decoration: none;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.15s;
+}
+
+body.home-body .news-section-more-link:hover {
+  border-bottom-color: var(--course-fg);
+}
+
+body.home-body .news-block {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (max-width: 800px) {
+  body.home-body .news-block {
+    grid-template-columns: 1fr;
+  }
+}
+
+body.home-body .news-hero {
+  display: block;
+  background: var(--_paper);
+  border: 1px solid var(--_rule);
+  border-left: 3px solid var(--course-fg);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--_ink);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+body.home-body .news-hero:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+body.home-body .news-hero-thumb {
+  height: 220px;
+  background: linear-gradient(135deg, var(--course-fg) 0%, var(--course-bg) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+body.home-body .news-hero-thumb::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 60%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+  transform: rotate(15deg);
+}
+
+body.home-body .news-hero-emoji {
+  font-size: 5rem;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+}
+
+body.home-body .news-hero-body {
+  padding: 1.25rem 1.4rem 1.4rem;
+}
+
+body.home-body .news-hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+body.home-body .news-hero-date {
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 0.7rem;
+  color: var(--_ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+body.home-body .news-hero-tag {
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--course-fg);
+  background: var(--_paper);
+  border: 1px solid var(--course-fg);
+  padding: 0.1em 0.5em;
+  border-radius: 2px;
+}
+
+body.home-body .news-hero-title {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 0.6rem;
+  color: var(--_ink);
+  letter-spacing: -0.01em;
+}
+
+body.home-body .news-hero:hover .news-hero-title {
+  color: var(--course-fg);
+}
+
+body.home-body .news-hero-desc {
+  font-size: 0.92rem;
+  color: var(--_ink-soft);
+  line-height: 1.55;
+  margin: 0 0 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.home-body .news-hero-cta {
+  display: inline-block;
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--course-fg);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+body.home-body .news-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+body.home-body .news-side-item {
+  display: flex;
+  align-items: stretch;
+  gap: 0.85rem;
+  padding: 0.6rem;
+  border-radius: 4px;
+  background: var(--_paper);
+  border: 1px solid var(--_rule);
+  text-decoration: none;
+  color: var(--_ink);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+body.home-body .news-side-item:hover {
+  border-color: var(--course-fg);
+}
+
+body.home-body .news-side-thumb {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, var(--course-fg) 0%, var(--course-bg) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.home-body .news-side-emoji {
+  font-size: 1.6rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
+}
+
+body.home-body .news-side-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.1rem 0;
+}
+
+body.home-body .news-side-title {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 0.3rem;
+  color: var(--_ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.home-body .news-side-item:hover .news-side-title {
+  color: var(--course-fg);
+}
+
+body.home-body .news-side-meta {
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 0.65rem;
+  color: var(--_ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  gap: 0.3rem;
 }
 
 /* Site footer */
@@ -624,6 +903,12 @@ body.home-body .archive-month-label {
   border-bottom: 1px solid var(--_rule);
 }
 
+body.home-body .archive-month .post-card {
+  border-left: 3px solid var(--course-fg, var(--_rule));
+}
+
+body.home-body .archive-month-label {
+
 body.home-body .archive-back {
   margin-bottom: 2rem;
 }
@@ -637,4 +922,277 @@ body.home-body .archive-back a {
 
 body.home-body .archive-back a:hover {
   text-decoration: underline;
+}
+
+/* ===== VnExpress-style homepage: news sections ===== */
+
+body.home-body .news-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--_rule);
+}
+
+body.home-body .news-section:last-of-type {
+  border-bottom: none;
+}
+
+body.home-body .news-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+}
+
+body.home-body .news-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+body.home-body .news-section-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 1.4rem;
+  background: var(--course-fg);
+  border-radius: 2px;
+  margin-right: 0.25rem;
+}
+
+body.home-body .news-section-emoji {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+body.home-body .news-section-link {
+  color: var(--_ink);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+body.home-body .news-section-link:hover {
+  color: var(--course-fg);
+}
+
+body.home-body .news-section-more-link {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.8rem;
+  color: var(--course-fg);
+  text-decoration: none;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.15s;
+}
+
+body.home-body .news-section-more-link:hover {
+  border-bottom-color: var(--course-fg);
+}
+
+body.home-body .news-block {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (max-width: 800px) {
+  body.home-body .news-block {
+    grid-template-columns: 1fr;
+  }
+}
+
+body.home-body .news-hero {
+  display: block;
+  background: var(--_paper);
+  border: 1px solid var(--_rule);
+  border-left: 3px solid var(--course-fg);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--_ink);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+body.home-body .news-hero:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+body.home-body .news-hero-thumb {
+  height: 220px;
+  background: linear-gradient(135deg, var(--course-fg) 0%, var(--course-bg) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+body.home-body .news-hero-thumb::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 60%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+  transform: rotate(15deg);
+}
+
+body.home-body .news-hero-emoji {
+  font-size: 5rem;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+}
+
+body.home-body .news-hero-body {
+  padding: 1.25rem 1.4rem 1.4rem;
+}
+
+body.home-body .news-hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+body.home-body .news-hero-date {
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 0.7rem;
+  color: var(--_ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+body.home-body .news-hero-tag {
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--course-fg);
+  background: var(--_paper);
+  border: 1px solid var(--course-fg);
+  padding: 0.1em 0.5em;
+  border-radius: 2px;
+}
+
+body.home-body .news-hero-title {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 0.6rem;
+  color: var(--_ink);
+  letter-spacing: -0.01em;
+}
+
+body.home-body .news-hero:hover .news-hero-title {
+  color: var(--course-fg);
+}
+
+body.home-body .news-hero-desc {
+  font-size: 0.92rem;
+  color: var(--_ink-soft);
+  line-height: 1.55;
+  margin: 0 0 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.home-body .news-hero-cta {
+  display: inline-block;
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--course-fg);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+body.home-body .news-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+body.home-body .news-side-item {
+  display: flex;
+  align-items: stretch;
+  gap: 0.85rem;
+  padding: 0.6rem;
+  border-radius: 4px;
+  background: var(--_paper);
+  border: 1px solid var(--_rule);
+  text-decoration: none;
+  color: var(--_ink);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+body.home-body .news-side-item:hover {
+  border-color: var(--course-fg);
+}
+
+body.home-body .news-side-thumb {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, var(--course-fg) 0%, var(--course-bg) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.home-body .news-side-emoji {
+  font-size: 1.6rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
+}
+
+body.home-body .news-side-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.1rem 0;
+}
+
+body.home-body .news-side-title {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 0.3rem;
+  color: var(--_ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.home-body .news-side-item:hover .news-side-title {
+  color: var(--course-fg);
+}
+
+body.home-body .news-side-meta {
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 0.65rem;
+  color: var(--_ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  gap: 0.3rem;
 }

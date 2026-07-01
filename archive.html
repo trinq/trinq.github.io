@@ -11,7 +11,7 @@ permalink: /archive.html
   <a href="/">← back to home</a>
 </div>
 
-{% assign cat_pairs = "four-loops=The 4-Loop Ladder;agent-loop-skills=Agent Loop Skills;agent-skills=Agent Skills;agentic-engineering=Agentic Engineering;loop=Loop Engineer;reading=Reading;ponytail=Ponytail;prompting=Prompting;clanker=Clanker Engineer;pdpd-luat-an-ninh-mang=PDPD & An ninh mạng;loop-engineering=Loop Engineering" | split: ";" %}
+{% assign course_meta = "four-loops|#1f6feb|#0a3069;agent-loop-skills|#9333ea|#581c87;agent-skills|#d97706|#92400e;agentic-engineering|#059669|#065f46;loop|#dc2626|#7f1d1d;reading|#0891b2|#155e75;ponytail|#db2777|#831843;prompting|#7c3aed|#4c1d95;clanker|#ea580c|#7c2d12;pdpd-luat-an-ninh-mang|#be123c|#881337;loop-engineering|#0f4c75|#0c3a5e" | split: ";" %}
 
 {% assign all_sorted = site.posts | sort: 'date' | reverse %}
 {% assign current_month = "" %}
@@ -25,25 +25,30 @@ permalink: /archive.html
     {% endif %}
     {% assign current_month = post_month %}
     {% assign section_open = true %}
+
+    {% comment %}Find course colors for this post's category{% endcomment %}
+    {% assign arch_fg = "#1f6feb" %}
+    {% assign arch_bg = "#0a3069" %}
+    {% for course in course_meta %}
+      {% assign parts = course | split: "|" %}
+      {% if parts[0] == post.category %}
+        {% assign arch_fg = parts[1] %}
+        {% assign arch_bg = parts[2] %}
+      {% endif %}
+    {% endfor %}
+
     <section class="archive-month" id="{{ post_month }}">
-      <div class="archive-month-label">{{ post.date | date: "%B %Y" }}</div>
+      <h2 class="archive-month-label">{{ post.date | date: "%B %Y" }}</h2>
       <div class="posts-grid">
   {% endif %}
-  {% assign cat_label = post.category %}
-  {% for pair in cat_pairs %}
-    {% assign kv = pair | split: "=" %}
-    {% if kv[0] == post.category %}
-      {% assign cat_label = kv[1] %}
-    {% endif %}
-  {% endfor %}
-  <a href="{{ post.url }}" class="post-card">
+  <a href="{{ post.url }}" class="post-card" style="--course-fg: {{ arch_fg }}; --course-bg: {{ arch_bg }};">
     <div class="post-card-meta">
       <span class="post-card-date">{{ post.date | date: "%b %d, %Y" }}</span>
       {% if post["lesson-num"] %}
       <span class="post-card-lesson">#{{ post["lesson-num"] }}</span>
       {% endif %}
       {% if post.category %}
-      <span class="post-card-label">{{ cat_label }}</span>
+      <span class="post-card-label">{{ post.category }}</span>
       {% endif %}
     </div>
     <div class="post-card-title">{{ post.title }}</div>
