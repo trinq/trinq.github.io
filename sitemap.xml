@@ -1,0 +1,41 @@
+---
+layout: null
+permalink: /sitemap.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  {% comment %}— Homepage —{% endcomment %}
+  <url>
+    <loc>https://trinq.io.vn/</loc>
+    <lastmod>{{ site.time | date: "%Y-%m-%d" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  {% comment %}— Static pages (about, archive, tagged, etc.) —{% endcomment %}
+  {% for page in site.pages %}
+    {% unless page.sitemap == false or page.url contains "sitemap" or page.url contains "feed" or page.url contains "404" or page.url == "/" or page.url contains "google" %}
+  <url>
+    <loc>https://trinq.io.vn{{ page.url | replace: "index.html", "" }}</loc>
+    <lastmod>{{ site.time | date: "%Y-%m-%d" }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+    {% endunless %}
+  {% endfor %}
+
+  {% comment %}— All posts —{% endcomment %}
+  {% for post in site.posts %}
+  <url>
+    <loc>https://trinq.io.vn{{ post.url }}</loc>
+    <lastmod>{{ post.date | date: "%Y-%m-%d" }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  {% endfor %}
+
+</urlset>
