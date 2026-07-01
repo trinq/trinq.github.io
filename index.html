@@ -77,9 +77,6 @@ Course colors — each category gets its own accent. Used for the hero gradient 
         {% for post in posts limit:4 %}
           {% if forloop.first %}{% continue %}{% endif %}
           <a href="{{ post.url }}" class="news-side-item">
-            <div class="news-side-thumb">
-              <span class="news-side-emoji">{{ emoji }}</span>
-            </div>
             <div class="news-side-body">
               <h4 class="news-side-title">{{ post.title }}</h4>
               <div class="news-side-meta">
