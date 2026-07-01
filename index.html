@@ -4,43 +4,71 @@ title: Home
 ---
 
 <h1 class="home-title">Trinq Zone</h1>
-<p class="home-subtitle">Software engineer. Writes about loops, agents, and tools that make AI actually work.</p>
+<p class="home-subtitle">Software engineer. Writes about loops, agents, and tools that make AI actually work. Posts in reverse chronological order — newest on top.</p>
 
 {% comment %}
-Group posts by category: defined order, skip empty categories
+Map: category slug -> pretty name (only for known courses; unknown slugs fall back to the slug itself).
 {% endcomment %}
+{% assign cat_pairs = "four-loops=The 4-Loop Ladder;agent-loop-skills=Agent Loop Skills;agent-skills=Agent Skills;agentic-engineering=Agentic Engineering;loop=Loop Engineer;reading=Reading;ponytail=Ponytail;prompting=Prompting;clanker=Clanker Engineer;pdpd-luat-an-ninh-mang=PDPD & An ninh mạng;loop-engineering=Loop Engineering" | split: ";" %}
+{% assign cat_map = "" %}
+{% for pair in cat_pairs %}
+  {% assign kv = pair | split: "=" %}
+  {% if cat_map == "" %}
+    {% assign cat_map = kv[0] | append:"|" | append: kv[1] %}
+  {% else %}
+    {% assign cat_map = cat_map | append:";" | append: kv[0] | append:"|" | append: kv[1] %}
+  {% endif %}
+{% endfor %}
 
-{% assign cat_order = "four-loops,agent-loop-skills,agent-skills,agentic-engineering,loop,reading,ponytail,prompting,clanker,pdpd-luat-an-ninh-mang,loop-engineering" | split: "," %}
-{% assign name_order = "The 4-Loop Ladder,Agent Loop Skills,Agent Skills,Agentic Engineering,Loop Engineer,Reading,Ponytail,Prompting,Clanker Engineer,PDPD & An ninh mạng,Loop Engineering" | split: "," %}
+{% comment %}
+Reverse chronological timeline: all posts sorted by date desc, grouped by year-month for scanning. Each card carries a category badge so you can see which course it belongs to.
+{% endcomment %}
+{% assign all_sorted = site.posts | sort: 'date' | reverse %}
 
-{% for cat in cat_order %}
-  {% assign cat_posts = site.posts | where: "category", cat %}
-  {% assign cat_name = name_order[forloop.index0] %}
-
-  {% if cat_posts.size > 0 %}
-  <section class="cat-group">
-    <header class="cat-group-header">
-      <div class="cat-group-label">{{ cat_name }}</div>
-      <div class="cat-group-count">{{ cat_posts.size }} lesson{{ cat_posts.size | pluralize: "", "s" }}</div>
-    </header>
-    <div class="posts-grid">
-      {% for post in cat_posts %}
+{% assign current_month = "" %}
+{% assign section_open = false %}
+{% for post in all_sorted %}
+  {% assign post_month = post.date | date: "%Y-%m" %}
+  {% if post_month != current_month %}
+    {% if section_open %}
+      </div>
+      </section>
+    {% endif %}
+    {% assign current_month = post_month %}
+    {% assign section_open = true %}
+    <section class="cat-group">
+      <header class="cat-group-header">
+        <div class="cat-group-label">{{ post.date | date: "%B %Y" }}</div>
+        <div class="cat-group-count">&nbsp;</div>
+      </header>
+      <div class="posts-grid">
+  {% endif %}
+      {% comment %}Resolve category pretty name{% endcomment %}
+      {% assign cat_label = post.category %}
+      {% for pair in cat_pairs %}
+        {% assign kv = pair | split: "=" %}
+        {% if kv[0] == post.category %}
+          {% assign cat_label = kv[1] %}
+        {% endif %}
+      {% endfor %}
       <a href="{{ post.url }}" class="post-card">
         <div class="post-card-meta">
           <span class="post-card-date">{{ post.date | date: "%b %d" }}</span>
           {% if post["lesson-num"] %}
           <span class="post-card-lesson">#{{ post["lesson-num"] }}</span>
           {% endif %}
+          {% if post.category %}
+          <span class="post-card-label">{{ cat_label }}</span>
+          {% endif %}
         </div>
         <div class="post-card-title">{{ post.title }}</div>
         <div class="post-card-desc">{{ post.description }}</div>
       </a>
-      {% endfor %}
-    </div>
-  </section>
-  {% endif %}
-
 {% endfor %}
+{% if section_open %}
+  </div>
+  </section>
+{% endif %}
 
 <hr class="section-divider"/>
 
@@ -70,9 +98,9 @@ Tags
 <div class="tag-cloud" id="Tags">
   <span class="tag-cloud-heading">Tags</span>
   {% for tag in tags %}
-    <a id="{{ tag | slugify }}" class="tag-anchor" href="{{ site.url }}{{ site.baseurl }}/tagged#{{ tag | slugify }}">
-      <i class="fa fa-hashtag" aria-hidden="true"></i> {{ tag }}
-    </a>
+  <a id="{{ tag | slugify }}" class="tag-anchor" href="{{ site.url }}{{ site.baseurl }}/tagged#{{ tag | slugify }}">
+    <i class="fa fa-hashtag" aria-hidden="true"></i> {{ tag }}
+  </a>
   {% endfor %}
 </div>
 {% endif %}
