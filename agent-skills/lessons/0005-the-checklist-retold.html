@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005: The Skill Checklist — retold</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span::before { content: "· "; }
+    .meta span:first-child::before { content: ""; }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.4rem 0 0.4rem 1.1rem;
+      margin: 1.25rem 0;
+      font-style: italic;
+      color: var(--ink-soft);
+    }
+    blockquote cite {
+      display: block;
+      margin-top: 0.5rem;
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { border: none; color: var(--ink-soft); }
+    .nav a:hover { color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .lesson-position { color: var(--ink-soft); font-style: italic; }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="index.html" class="back-home">← all lessons</a>
+  <span class="lesson-position">Lesson 0005 of 5</span>
+</nav>
+
+<h1>The Skill Checklist, retold</h1>
+<div class="subtitle">The whole framework, in one lesson · my retelling of the talk, with citations to the original</div>
+
+<div class="meta">
+  <span>~10 min</span>
+  <span>Lesson 0005</span>
+  <span><a href="../reference/glossary.html">glossary</a> · <a href="../reference/skill-checklist.html">checklist</a> · <a href="../reference/lecture-deep-dive.html">deep dive</a></span>
+</div>
+
+<p>Lessons 0001–0004 took the framework apart axis by axis. This lesson reassembles it as one essay — closer in shape to a talk, with the four axes knitted together the way Matt Pocock knit them together in "Building Great Agent Skills". If you only have ten minutes, read this lesson. If you have an hour, read it, then watch the talk.</p>
+
+<p class="meta">Read these first: <a href="0001-trigger.html">Trigger</a>, <a href="0002-structure.html">Structure</a>, <a href="0003-steering.html">Steering</a>, <a href="0004-pruning.html">Pruning</a>. This lesson is a synthesis, not a replacement.</p>
+
+<h2>The argument</h2>
+
+<p>The talk opens on a diagnosis. Developers, Matt argues, keep walking into the same trap in a new disguise. A few years ago it was tutorial hell: you read everything, you can't piece it together. Before that it was framework hell: every ten minutes a new JavaScript framework, you can't keep up. The version we're walking into now he calls <strong>skill hell</strong>.</p>
+
+<blockquote>We have all of these skills available freely that you can download, contribute to, you can figure out on your own — but you don't really know how the pieces all work together. You can't tell a good skill from a bad skill.<cite>— Matt Pocock, opening of <a href="https://www.youtube.com/watch?v=UNzCG3lw6O0">the talk</a></cite></blockquote>
+
+<p>Skill hell isn't a property of any individual skill. It's the state of an <em>ecosystem</em>: a community where the supply of skills has outrun the ability of users to evaluate them. The fix isn't more skills. "Just one more skill, bro," Matt says, is what we've been telling ourselves, and it's not working.</p>
+
+<p>He also names what he thinks the missing piece is. Not better authoring tools. Not more contributors. A <em>rubric</em> — a shared way to look at a skill and say what makes it good or bad.</p>
+
+<blockquote>The thing we're missing is we don't know what makes a skill great. We can't yet look at a skill and go, okay, this skill is doing these good things and these bad things. There's no shared rubric.<cite>— Matt Pocock</cite></blockquote>
+
+<p>The checklist that follows is his attempt to fill that gap. It's a procedure you can run on any skill: four audits, in a fixed order, that give you a verdict and a direction for fixing it. The order matters because each audit depends on the previous being roughly right.</p>
+
+<h2>Axis 1 — Trigger</h2>
+
+<p>First question: <em>who fires this skill</em>? You, the pilot, or the agent?</p>
+
+<p>The mechanism is small. If a skill has a <code>description</code> in its frontmatter, that description sits in the agent's context on every request — a pointer the agent can choose to follow. That's a <strong>model-invoked</strong> skill. If the description is hidden (<code>disable-model-invocation: true</code>), only you can fire it. That's a <strong>user-invoked</strong> skill.</p>
+
+<p>Both have a cost. Model-invoked adds a description to every context window — <em>context load</em>. User-invoked requires you to remember to fire it — <em>cognitive load</em>. Choosing is partly economics: with a hundred model-invoked skills you've spent a hundred descriptions' worth of attention; with a hundred user-invoked skills you've reserved a hundred slots in your head.</p>
+
+<p>But Matt's real reason for preferring user-invoked is sharper than the economics.</p>
+
+<blockquote>Every time you have a context pointer pointing from one resource to another, the model may just choose not to follow it. Even if it's absolutely perfect for the task, it may just choose not to invoke the skill.<cite>— Matt Pocock</cite></blockquote>
+
+<p>A model-invoked skill is a <em>probabilistic</em> commitment that the agent will pick it up. A user-invoked skill is a <em>deterministic</em> commitment that you will. The unpredictability isn't a tax — it's a class of bugs. To use a model-invoked skill responsibly, you have to run evals to verify the agent fires it at the right times. Matt doesn't run evals on his skills. So his skills are user-invoked. He is removing a class of bugs from existing.</p>
+
+<blockquote>I much prefer removing that level of unpredictability, imposing a bit more cognitive load on the user. You're removing a class of problem from even being a problem.<cite>— Matt Pocock</cite></blockquote>
+
+<p>His decision rule, distilled: if the agent would reliably know when to fire it without seeing the description, user-invoke it. Otherwise, model-invoke it and accept the eval burden.</p>
+
+<h2>Axis 2 — Structure</h2>
+
+<p>Once you've decided who fires the skill, the next axis is what's inside the file. Matt recognises two units: <strong>steps</strong> (imperatives the agent does) and <strong>reference</strong> (descriptive material the agent reads). Some skills are all steps. Some are all reference. Most are mixes.</p>
+
+<blockquote>You can have skills that have no steps and are only reference. And you can have skills that are no reference and only a set of simple steps. But if you start thinking of skills as composed of these two units, it really helps just break them down a lot more.<cite>— Matt Pocock</cite></blockquote>
+
+<p>The push to keep <code>skill.md</code> minimal comes from two forces. Small files are easier to maintain, audit, and read. And every word you shave is a token shaved — <em>per request</em>, when the skill is model-invoked.</p>
+
+<blockquote>Every time you shave off a word, that is a token shaved. That multiple token shave from your skill's cost.<cite>— Matt Pocock</cite></blockquote>
+
+<p>The lever he reaches for is branches. If a skill has multiple routes it can take (different paths based on context), the reference material that applies to only one route is a candidate for moving out of the main file. His domain-modeling skill, for example, sometimes updates a context glossary and sometimes writes an ADR. Each template lives in its own file, linked from the main skill only when the relevant branch fires.</p>
+
+<p>The test is simple. Walk through the branches in your head. For each piece of reference material, ask: does this apply to <em>every</em> branch? If yes, leave it in. If no, push it behind a context pointer. The result is a main file small enough to read in one screen — and an agent that loads only the material it needs for the branch it's actually on.</p>
+
+<h2>Axis 3 — Steering</h2>
+
+<p>Now the most opinionated axis. Even with the right trigger and a clean structure, the agent often does what you literally said instead of what you meant. Matt's response is a technique he calls <strong>leading words</strong>.</p>
+
+<blockquote>The agent doesn't do what I want. I specify something in the skill. I think that I've been clear and then it just doesn't do the thing.<cite>— Matt Pocock</cite></blockquote>
+
+<p>A leading word is a precise term — usually two or three words — that packs a procedure into a phrase the agent already half-knows. Matt's canonical example is <em>vertical slice</em>. The naive instruction is "don't code layer by layer, make a small slice first". The leading-word version repeats <em>vertical slice</em> everywhere. The agent, having seen the term in prior training, picks it up — and you can verify it did, because <em>vertical slice</em> shows up in its reasoning trace.</p>
+
+<blockquote>You say vertical slice in your skill and then you'll notice in the reasoning traces that the agent is saying, "Okay, we're going to do this as a thin vertical slice."<cite>— Matt Pocock</cite></blockquote>
+
+<p>Matt borrows the term from literary theory — <em>Leitwort</em>, a guiding word that recurs and signals intent. The same move works across prose and agents: a precise, repeated term activates more useful priors than a paragraph of explanation.</p>
+
+<p>There's a second lever on this axis. Sometimes the agent doesn't do enough <em>leg work</em> on a step. The example he keeps returning to is plan mode: the agent has two steps (ask clarifying questions, then create a plan), and it sees the future goal. So it rushes through clarifying questions, asks you two things, and eagerly produces a half-formed plan. The fix is to <em>split</em> the skill so the agent doing step 1 cannot see step 2. Hiding the future goal forces depth on the present goal.</p>
+
+<blockquote>We have step one and step two, but the agent only sees one step at a time… It's not always necessary to split skills into individual steps, but in particular cases where you really want an extra chunk of leg work — there is no technique like it.<cite>— Matt Pocock</cite></blockquote>
+
+<p>Two steering tools, both compact. Leading words change what the agent hears you say. Splitting skills changes what the agent sees ahead of it.</p>
+
+<h2>Axis 4 — Pruning</h2>
+
+<p>Last axis, cheapest in spirit but costliest in attention. Pruning catches the sediment that accumulates when many people edit a file for a long time. Three failure modes, in increasing levels of insidiousness.</p>
+
+<p><strong>Single source of truth.</strong> Don't repeat material across branches or across skills. If a PRD template lives in two places, extract it. If "what is a test seam" is explained twice in the same file, decide where it canonically belongs.</p>
+
+<p><strong>Sediment.</strong> Legacy material that doesn't apply anymore. People add their bit, no one feels brave enough to delete anyone else's, and the file accretes. Look for dated references — old APIs, old branches, old workflows.</p>
+
+<p><strong>No-ops.</strong> The worst offender. Paragraphs that look like they're doing something, but if you deleted them the agent's behaviour wouldn't change. Matt's example: a paragraph in an <code>implement</code> skill that tells the agent to "write a long detailed commit message". If you delete it, the agent would probably still write a long detailed commit message. The paragraph is theatre.</p>
+
+<blockquote>Things inside the skill that appear to do something, but don't actually influence the agent's behavior inside the context of the skill.<cite>— Matt Pocock</cite></blockquote>
+
+<p>The deletion test is the one technique that consistently catches no-ops. Save the skill's current output. Delete a paragraph. Re-run the skill. If the output is materially the same, the paragraph was a no-op. Leave it deleted.</p>
+
+<p>Matt closes the talk on the same question with which he opened it. People ask him how his skills get so small. He lists four contributors — <em>in this order</em>:</p>
+
+<blockquote>Using deletion tests, using making sure that I compact things into leading words, I don't have anything irrelevant in there, and I don't have any no ops.<cite>— Matt Pocock</cite></blockquote>
+
+<p>Notice: not the deletion tests <em>alone</em>. The deletion tests catch what's already there. To keep skills small in the first place, you lead with compaction — choosing leading words while you write, not just pruning after.</p>
+
+<h2>What he didn't cover</h2>
+
+<p>Three honest gaps. Matt doesn't quantify the cost of model-invoked skills at scale. "A hundred descriptions in context" is an example, not a measurement. He compares his repo to superpowers structurally — user-invoked versus model-invoked — but never runs the checklist on a third-party skill. And he doesn't address what to do when the deletion test gives a false positive — a paragraph that <em>looks</em> like a no-op but is silently load-bearing.</p>
+
+<p>These gaps matter because they remind us the framework is one expert's opinion. It's a well-reasoned opinion, but it's not yet a measured one. Use the checklist. Watch for counter-examples. When you find one, that's signal, not noise.</p>
+
+<h2>The order as a cost sequence</h2>
+
+<p>The order — Trigger, Structure, Steering, Pruning — is also a <em>cost</em> sequence. Trigger changes rewrite frontmatter, which is cheap. Structure changes reshape the file. Steering changes are vocabulary edits. Pruning changes require running the deletion test, which is medium effort. Audit in this order so cheap fixes don't get buried under expensive ones.</p>
+
+<h2>The escape</h2>
+
+<p>The closing image, used twice in the talk, is escape. Skill hell, Matt says, is the latest version of a recurring pattern. Tutorial hell was the previous one. Framework hell before that. Each had a moment where the community had the knowledge but no rubric — no shared way to look at the tool and say what made it good.</p>
+
+<blockquote>I hope that what I've given you is enough to help you escape from skill hell, or at least try to make the bitter journey out of there.<cite>— Matt Pocock, closing</cite></blockquote>
+
+<p>The checklist doesn't make that escape automatic. It gives you a procedure for escaping. Whether you run it on your skills, your team's skills, or the skills of strangers — that's the choice the talk hands you at the end.</p>
+
+<h2>Takeaway</h2>
+
+<p>Four audits, one order, one goal. Audit the trigger — who fires this, and what's the bug class? Audit the structure — are steps and reference separated, is branching material behind pointers? Audit the steering — are you using leading words, is the agent seeing too much future? Audit the pruning — are there no-ops, sediment, or duplicates?</p>
+
+<p>Run it on the next skill you touch. Then run it on a community skill you've been hesitant to trust. The rubric exists because no one had one. Now you do.</p>
+
+<div class="nav">
+  <a href="0004-pruning.html">← previous: Pruning</a>
+  <a href="../reference/skill-checklist.html">back to the checklist →</a>
+</div>
+
+</body>
+</html>

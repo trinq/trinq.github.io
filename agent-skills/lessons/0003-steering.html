@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: Steering — Leading words and leg work</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span::before { content: "· "; }
+    .meta span:first-child::before { content: ""; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .term {
+      font-style: italic;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { border: none; color: var(--ink-soft); }
+    .nav a:hover { color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .lesson-position { color: var(--ink-soft); font-style: italic; }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="index.html" class="back-home">← all lessons</a>
+  <span class="lesson-position">Lesson 0003 of 5</span>
+</nav>
+
+<h1>Steering</h1>
+<div class="subtitle">Leading words and leg work · the third axis of the skill checklist</div>
+
+<div class="meta">
+  <span>~6 min</span>
+  <span>Lesson 0003</span>
+  <span><a href="../reference/glossary.html">glossary</a> · <a href="../reference/skill-checklist.html">checklist</a></span>
+</div>
+
+<p>Structure tells you what's <em>in</em> the file. Steering tells you whether the agent does what you mean. Matt calls steering "the main thing" — the technique that crosses every other axis and turns into a habit.</p>
+
+<h2>The problem steering fixes</h2>
+
+<p>The classic failure: you write a skill. You explain something clearly, in plain English, in a paragraph. The agent reads it, then does something <em>close to but not what you wanted</em>. You add more words. The agent gets more verbose about doing the wrong thing.</p>
+
+<p>Why? Because long explanations of behaviour get diluted in the agent's reasoning. The agent hears "lots of words about X" and pattern-matches to "this is the kind of thing where I do whatever is typical". A vague paragraph about doing X well is <em>easier to ignore</em> than a precise term.</p>
+
+<h2>The technique: leading words</h2>
+
+<p>Pick a <strong>leading word</strong> — a precise, dense term the agent already half-knows from prior training. Pack your meaning into that term. Use it consistently throughout the skill.</p>
+
+<p>The agent will echo the term in its reasoning trace: <em>"I'll do this as a thin vertical slice..."</em> And that echo <em>changes its behaviour</em> — because the term activates a richer prior than your prose did.</p>
+
+<div class="callout">
+  <strong>Matt's canonical example.</strong> The leading word is <span class="term">vertical slice</span>. The problem is agents coding layer by layer — all the DB, then all the API, then all the UI. The naive instruction is "don't code layer by layer; create a small slice first". The leading-word version just says <em>vertical slice</em>, everywhere. The agent's prior on that phrase does the rest.
+</div>
+
+<h2>What makes a good leading word</h2>
+
+<ul style="margin: 0 0 1rem 1.25rem;">
+  <li><strong>Already exists in the agent's prior.</strong> The agent has seen this phrase. It carries weight. <em>Vertical slice</em>, <em>red-green-refactor</em>, <em>event sourcing</em>, <em>type-driven design</em>, <em>evidence before assertions</em>.</li>
+  <li><strong>Carries a procedure, not just a fact.</strong> A leading word should imply <em>how to act</em>. <em>Test seam</em> implies "find a place where you can isolate and verify behaviour".</li>
+  <li><strong>Short enough to repeat.</strong> You will write it many times. One to three words is right.</li>
+  <li><strong>Different from your neighbour's.</strong> If you use <em>vertical slice</em> and so does every other skill in your repo, the term gets diluted. Pick terms that are <em>yours</em>.</li>
+</ul>
+
+<h2>How to use them</h2>
+
+<p>Put them in the skill's prose. The agent will echo them. Verify by reading the agent's reasoning trace.</p>
+
+<pre><code># A skill with weak steering:
+When implementing a feature, don't build the whole data layer first.
+Make a small, working piece first that goes from the user interface
+all the way down to the database. Get it working end-to-end. Then
+extend it. Don't build layer by layer.
+
+# Same skill with leading-word steering:
+Use a vertical slice. The first slice must be thin, end-to-end,
+and runnable. Each subsequent slice extends the previous one.
+Repeat until the feature is complete.</code></pre>
+
+<p>Both paragraphs say the same thing. The second one has a leading word that the agent already half-knows. The first one is just… words.</p>
+
+<h2>Building the habit</h2>
+
+<p>This is the one technique in the framework that crosses the boundary into every other skill — it becomes a habit, not a one-off fix. Three habits to install:</p>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li><strong>Pick 2–4 personal leading words.</strong> Don't recycle the obvious ones — pick the ones that match how <em>you</em> think. Examples: <em>minimal pivot</em>, <em>evidence before assertions</em>, <em>narrow waist</em>, <em>smallest diff that still teaches me something</em>.</li>
+  <li><strong>Repeat them across skills.</strong> When the agent sees <em>vertical slice</em> in three skills, it generalises. When it sees <em>narrow waist</em> in five, that's <em>your</em> lens.</li>
+  <li><strong>Audit the trace.</strong> After running a skill, read the agent's reasoning. Are your leading words present? If not, the steering is too weak — make the words more prominent, or pick better ones.</li>
+</ol>
+
+<h2>The leg-work lever: hiding the future goal</h2>
+
+<p>Sometimes the problem isn't <em>what</em> the agent does, it's <em>how little effort</em> it puts in. Matt's example: every plan-mode implementation he's tried has <em>ask clarifying questions</em> doing too little leg work, because the agent can see the future step <em>create plan</em> and rushes toward it.</p>
+
+<p>The fix: <strong>split the skill</strong>. Two skills instead of one. The first skill does step 1 (and only step 1). The second skill does step 2. The agent running skill 1 cannot see step 2, so it cannot shortcut toward it.</p>
+
+<p>This is not always the right move. Use it when:</p>
+
+<ul style="margin: 0 0 1rem 1.25rem;">
+  <li>The agent visibly under-invests in a step.</li>
+  <li>The shortcut is specifically caused by seeing the future goal.</li>
+  <li>You're willing to pay the cost of two skills (more to maintain, more to remember).</li>
+</ul>
+
+<h2>Try it now</h2>
+
+<div class="callout">
+  <strong>Audit the leading words in your three highest-leverage skills.</strong>
+</div>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li>Read each skill. Underline every term that sounds like it carries a procedure.</li>
+  <li>For each underlined term, ask: does this appear in the agent's reasoning trace after I run the skill? If you've never checked, run the skill once and check.</li>
+  <li>Find one place where a long paragraph could be replaced by one or two leading words. Rewrite it.</li>
+  <li>Re-run. Did the agent's behaviour change in the direction you wanted? If yes, that leading word is doing real work.</li>
+</ol>
+
+<h2>Common trap: leading words that don't lead</h2>
+
+<p>It's tempting to invent your own jargon. <em>"We always do a <strong>contextual rehydration</strong> before refactoring"</em>. The agent has never seen this phrase. It carries no prior. It's not a leading word — it's an in-group idiom, and the agent will treat it as decorative.</p>
+
+<p>If you want to coin a term, you have to also <em>teach</em> it inside the skill — define it, give an example, repeat. That's expensive. If you can't justify the cost, pick a term the agent already half-knows.</p>
+
+<h2>Takeaway</h2>
+
+<p>Leading words are the one technique that becomes a habit. Pick two, repeat them everywhere, watch the trace. Split a skill only when the agent is rushing toward a future goal it shouldn't see.</p>
+
+<div class="nav">
+  <a href="0002-structure.html">← previous: Structure</a>
+  <a href="0004-pruning.html">next: Pruning →</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: Trigger — Who fires the skill?</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span::before { content: "· "; }
+    .meta span:first-child::before { content: ""; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .quiz {
+      background: var(--code-bg);
+      padding: 1.25rem 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+    }
+    .quiz h3 { margin-top: 0; }
+    .quiz ol { margin: 0.5rem 0 0 1.25rem; }
+    .quiz li { margin-bottom: 0.6rem; }
+    .reveal {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { border: none; color: var(--ink-soft); }
+    .nav a:hover { color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .lesson-position { color: var(--ink-soft); font-style: italic; }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="index.html" class="back-home">← all lessons</a>
+  <span class="lesson-position">Lesson 0001 of 5</span>
+</nav>
+
+<h1>Trigger</h1>
+<div class="subtitle">The first axis of the skill checklist · who fires the skill, and what's that costing?</div>
+
+<div class="meta">
+  <span>~5 min</span>
+  <span>Lesson 0001</span>
+  <span><a href="../reference/glossary.html">glossary</a> · <a href="../reference/skill-checklist.html">checklist</a></span>
+</div>
+
+<p>Every skill has a <strong>trigger</strong>: the moment when its instructions enter the agent's context. Two fundamentally different mechanisms, two fundamentally different costs. The first axis of Matt's checklist is choosing deliberately between them — and being honest about which cost you'd rather pay.</p>
+
+<h2>The two mechanisms</h2>
+
+<p><strong>User-invoked.</strong> You, the pilot, type <code>/skill-name</code> (or otherwise tell the agent which skill to run). The skill's description is <em>not</em> in the agent's context. The harness loads the full <code>SKILL.md</code> only when you fire it.</p>
+
+<p><strong>Model-invoked.</strong> A short <code>description</code> in the skill's frontmatter sits in the agent's context on <em>every request</em>. The agent reads that description, decides the skill is relevant, and pulls the full <code>SKILL.md</code> into context itself.</p>
+
+<div class="callout">
+  <strong>The description is a context pointer.</strong> It lives in the agent's permanent context and points at the file the agent <em>can</em> load — but doesn't have to. Whether the agent actually loads it is its choice.
+</div>
+
+<h2>What each costs</h2>
+
+<p>Matt's framing is sharp: each style of trigger imposes a different kind of load.</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.5rem; font-size: 0.92rem;">
+  <tr>
+    <th style="text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule); font-family: -apple-system, sans-serif; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);">Trigger</th>
+    <th style="text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule); font-family: -apple-system, sans-serif; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);">Cost</th>
+    <th style="text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule); font-family: -apple-system, sans-serif; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);">Who pays</th>
+  </tr>
+  <tr>
+    <td style="padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule);">Model-invoked</td>
+    <td style="padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule);"><strong>Context load</strong> — every description is on every request</td>
+    <td style="padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule);">The agent</td>
+  </tr>
+  <tr>
+    <td style="padding: 0.5rem 0.6rem;">User-invoked</td>
+    <td style="padding: 0.5rem 0.6rem;"><strong>Cognitive load</strong> — you must remember to fire it</td>
+    <td style="padding: 0.5rem 0.6rem;">You</td>
+  </tr>
+</table>
+
+<p>If you have 100 model-invoked skills, you have 100 descriptions in your context window on every request. Tokens, but also attention: the agent now has 100 things to think about. The agent's <em>judgment</em> about which to fire becomes a failure mode in itself — sometimes it'll load the wrong skill, sometimes it'll load none and improvise badly.</p>
+
+<p>If you have 100 user-invoked skills, you have to remember all 100. That's a lot of headspace reserved for tooling.</p>
+
+<h2>Frontmatter tells you which one you have</h2>
+
+<pre><code>---
+name: writing-great-skills
+description: Audit an existing agent skill against the four-axis checklist...
+# (no disable-model-invocation) → model-invoked
+---
+
+---
+name: grill-me
+description: Stress-test a plan by interviewing the user relentlessly...
+disable-model-invocation: true   # user-invoked
+---</code></pre>
+
+<p>Open any skill in your environment and check the frontmatter. If the description is there and there is no <code>disable-model-invocation: true</code>, you have a model-invoked skill sitting in your context right now.</p>
+
+<h2>The decision rule</h2>
+
+<p>Matt's heuristic, distilled:</p>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li><strong>Will the agent reliably know when to fire this skill without seeing the description?</strong></li>
+  <li>If <span class="ok">yes</span> → <strong>user-invoked</strong> (cheaper context).</li>
+  <li>If <span class="warn">no</span> → <strong>model-invoked</strong> (cheaper cognitive load).</li>
+</ol>
+
+<p>Most "I just want this to happen when X is true" skills are user-invoked. Most "I want this fire pattern to be discoverable" skills are model-invoked. The mistake is leaving the default in place because you didn't think about it.</p>
+
+<div class="callout">
+  <strong>Why the order in the checklist matters.</strong> Trigger is axis one because every later axis can be wasted work if the skill never fires (user-invoked and you forget it) or fires wrong (model-invoked and the description is sloppy). Audit this first.
+</div>
+
+<h2>Try it now</h2>
+
+<div class="quiz">
+  <h3>Audit: what triggers are in your environment right now?</h3>
+  <p>Run this in your shell:</p>
+  <pre><code>find ~/.claude/skills ~/.cursor/skills-cursor ~/.agents/skills \
+  ~/.cursor/projects/*/mcps 2>/dev/null \
+  -name "SKILL.md" -o -name "skill.md" \
+  | head -50</code></pre>
+  <p>For the first 10 skills:</p>
+  <ol>
+    <li>Open the file. Read the frontmatter.</li>
+    <li>Does it have a <code>description:</code>? Is <code>disable-model-invocation: true</code> set?</li>
+    <li>Classify: <strong>user-invoked</strong> or <strong>model-invoked</strong>.</li>
+    <li>For each <em>model-invoked</em> one, ask: would the agent reliably fire this on its own, or is this a tax I'm paying on every request?</li>
+  </ol>
+  <p class="reveal">Expected finding for most environments: 60–80% of skills are model-invoked by default, and half of those would be cheaper as user-invoked. That's the context-load bloat Matt is calling out.</p>
+</div>
+
+<h2>Common trap</h2>
+
+<p>"I'll just make everything model-invoked — more flexible!" The trap: every model-invoked skill adds a description to every request. The agent's ability to <em>choose well</em> degrades as the menu grows. Matt explicitly prefers user-invoked skills; the tradeoff is that <em>he</em> has to remember them. That's a price he pays deliberately for cheaper agent context.</p>
+
+<p>If you've never made this tradeoff consciously, you haven't audited your trigger yet.</p>
+
+<h2>Takeaway</h2>
+
+<p>Open the next skill you write and decide: <em>who fires this</em>? The answer should appear in the frontmatter, not in the default.</p>
+
+<div class="nav">
+  <a href="../reference/skill-checklist.html">← the checklist</a>
+  <a href="0002-structure.html">next: Structure →</a>
+</div>
+
+</body>
+</html>

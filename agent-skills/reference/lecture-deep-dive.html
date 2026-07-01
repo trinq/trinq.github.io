@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Dive — The Lecture Itself</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 0.9rem; }
+    .meta {
+      color: var(--ink-soft);
+      font-style: italic;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0 0.5rem 1.25rem;
+      margin: 1.25rem 0;
+      font-style: italic;
+      color: var(--ink-soft);
+    }
+    blockquote::before {
+      content: "“";
+      font-size: 1.5em;
+      color: var(--accent);
+      line-height: 0;
+      vertical-align: -0.15em;
+      margin-right: 0.1em;
+    }
+    blockquote::after {
+      content: "”";
+    }
+    blockquote cite {
+      display: block;
+      margin-top: 0.5rem;
+      font-style: normal;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    code {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+    }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    ul, ol { margin: 0 0 1rem 1.25rem; }
+    li { margin-bottom: 0.4rem; }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .back {
+      display: inline-block;
+      margin-top: 3rem;
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .back:hover { color: var(--accent); border-color: var(--accent); }
+    @media print {
+      body { padding: 1rem; max-width: none; }
+      .back { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>The Lecture Itself — A Deep Dive</h1>
+<div class="subtitle">The second-order insights from Matt Pocock's "Building Great Agent Skills" · read this once and you'll catch lines the lessons glossed over</div>
+
+<p class="meta">This document is what you get if you read the talk at 0.5× speed and underline twice. It is the <em>ground</em> the four lessons stand on. Use it when you're auditing a skill and one of the lessons feels too neat — this doc has the messy parts.</p>
+
+<h2>The frame Matt sets up</h2>
+
+<p>The talk opens with three hells. Tutorial hell (you can't piece things together). Framework hell (the next hot thing every ten minutes). <strong>Skill hell</strong>: you have many skills, but you can't tell good from bad, so the skills don't deliver on their promise.</p>
+
+<blockquote>The thing we're missing is we don't know what makes a skill great. There's no shared rubric.
+<cite>— Matt Pocock</cite></blockquote>
+
+<p>The frame is important because it licenses the rest of the talk. Without it, "use a four-axis checklist" sounds like personal taste. With it, the checklist is an <em>escape</em> from a recognised pathology. Matt is presenting a rubric to fix an industry-wide failure mode — not to optimise his own skills.</p>
+
+<p>This is also why the talk feels opinionated. He's filling a gap that didn't exist a year ago. There's no peer-reviewed work on skill writing yet. The checklist is one expert's well-reasoned answer.</p>
+
+<h2>The Trigger axis — what the lessons underplayed</h2>
+
+<p>The lesson stopped at the frontmatter distinction. The transcript has three lines worth pausing on:</p>
+
+<blockquote>Every time you have a context pointer pointing from one resource to another, the model may just choose not to follow it. Even if it's absolutely perfect for the task, it may just choose not to invoke the skill.<cite>— Matt Pocock</cite></blockquote>
+
+<p>This is the *real* reason he prefers user-invoked. Not the context-cost math (he mentions it, then moves on). The reason is <strong>unpredictability</strong>. A model-invoked skill is a probabilistic bet that the model will pick it up. A user-invoked skill is a deterministic bet that <em>you</em> will pick it. He prefers deterministic bets when the cost of getting it wrong is high.</p>
+
+<blockquote>I much prefer removing that level of unpredictability, imposing a bit more cognitive load on the user. You are removing a class of problem from even being a problem.<cite>— Matt Pocock</cite></blockquote>
+
+<p>That last phrase is the giveaway: the goal isn't "small context". The goal is "fewer classes of bug". A skill that <em>can't</em> misfire is a class of bug eliminated, not just a token cost saved.</p>
+
+<p>The follow-on implication: if you write a model-invoked skill, you implicitly take on the eval burden. You have to verify the model picks it up at the right times. Matt says this "leaves people to need to eval their skills to make sure they're being called at the right time which is really nasty and it's a problem that I prefer to avoid." Most skill authors don't run evals. So most model-invoked skills are silently misfiring.</p>
+
+<div class="callout">
+  <strong>The Trigger question reframed:</strong> not "which is cheaper", but "which class of bug am I willing to own?". User-invoked owns the recall problem (you forget to fire it). Model-invoked owns the recognition problem (the agent forgets to fire it). Pick the bug class you can debug.
+</div>
+
+<h2>The Structure axis — what the lessons underplayed</h2>
+
+<p>The lesson framed steps and reference as the two units. The transcript makes a sharper claim:</p>
+
+<blockquote>You can have skills that have no steps and are only reference. And you can have skills that are no reference and only a set of simple steps. But if you start thinking of skills as composed of these two units, it really helps just break them down a lot more.<cite>— Matt Pocock</cite></blockquote>
+
+<p>Read that carefully. <strong>Skills can be pure reference.</strong> The lesson's structure mental model was "steps with reference attached". The talk's mental model is broader: any skill is a mix, but the <em>ratio</em> is up to you. A pure-reference skill is a glossary the agent loads on demand. A pure-step skill is a checklist. Most skills are mixes.</p>
+
+<blockquote>Smaller skills are just easier to maintain, easier to audit, fewer words to think about. And every time you shave off a word, that is a token shaved. That multiple token shave from your skill's cost.<cite>— Matt Pocock</cite></blockquote>
+
+<p>The "multiple token shave" line is doing work. Every model-invoked description is on every request. Every word shaved from a description saves tokens on every request — across all your sessions. Across all your sessions and across all the agents using that skill. Matt is hinting that small skills have <em>network effects</em> on cost, not just line-item savings.</p>
+
+<p>The branches reasoning has a second layer the lesson skipped:</p>
+
+<blockquote>If you feel like your skill is going to be used in lots of different ways, then take the reference material that's relevant for those branches and hide them behind context pointers.<cite>— Matt Pocock</cite></blockquote>
+
+<p>Two distinct branches tests. The first: <em>does every branch need this material?</em> If yes, inline. If only one branch, push out. The second test (which Matt doesn't state, but is implied): <em>does the agent reliably know which branch it's on before loading anything?</em> If yes, the routing happens in <code>skill.md</code> and the branches live behind pointers. If no, the agent has to load everything to figure out what to do — at which point the inline material is back in the main file regardless.</p>
+
+<h2>The Steering axis — what the lessons underplayed</h2>
+
+<p>The transcript has a subtle aside:</p>
+
+<blockquote>The idea of leading words or <em>Leitwort</em> if you like literary theory.<cite>— Matt Pocock</cite></blockquote>
+
+<p><em>Leitwort</em> is a real concept from literary criticism — a "lead word" or "guiding word" that recurs in a text and signals thematic continuity. Matt is borrowing deliberately. This isn't a fresh coinage; it's a known technique from a different field, ported in. The transfer is legitimate because both cases (novels, agent context) are trying to inject a specific meaning into a reader's reasoning by repetition.</p>
+
+<blockquote>Agents are actually pretty good at helping you think of them.<cite>— Matt Pocock</cite></blockquote>
+
+<p>This is a permission slip. If you're struggling to invent leading words, ask the agent. The agent knows its own prior. "What 3-word phrases from software engineering pack a procedure into them?" is a great prompt to run.</p>
+
+<blockquote>Sometimes the agent just doesn't do enough leg work.<cite>— Matt Pocock</cite></blockquote>
+
+<p>The leg-work problem is broader than plan mode. <strong>Anywhere a skill has steps that depend on each other</strong>, the agent sees the future step and shortcuts toward it. Matt says he's found this "almost everywhere" plan mode exists, but the principle is general: sequence your steps by splitting them when an earlier one isn't pulling its weight.</p>
+
+<p>There's a counter-tactic Matt doesn't mention: instead of splitting the skill, you can split the steps by giving the earlier steps a <em>different leading word</em>. If "ask clarifying questions" is tagged as <em>grilling</em> — and the user invokes a separate skill for "create plan" tagged as <em>focused</em> — the agent has two different frames. This is the same trick as leg-work splitting, but achieved through vocabulary, not skill boundaries.</p>
+
+<h2>The Pruning axis — what the lessons underplayed</h2>
+
+<blockquote>People ask me a lot how I get my skills so small and it's just using these techniques, using deletion tests, using making sure that I compact things into leading words, I don't have anything irrelevant in there, and I don't have any no ops.<cite>— Matt Pocock</cite></blockquote>
+
+<p>The lessons made the deletion test sound like the one trick. But Matt lists <em>four</em> contributors to small skills: deletion tests, leading words (compaction), no-irrelevant-content, no-no-ops. <strong>Deletion tests catch the no-ops. But to get small skills in the first place you have to lead with compaction while writing, not just prune at the end.</strong></p>
+
+<blockquote>The next failure mode is really common when an <strong>agent writes your skills</strong>...<cite>— Matt Pocock</cite></blockquote>
+
+<p>This is the part that should scare you if you author with agents. Agents love to add paragraphs that sound important. The deletion test is the guard. But the meta-lesson is: <em>if you used an agent to write a skill, plan to audit it ruthlessly.</em> Don't ship AI-authored skills without running the deletion test on every paragraph.</p>
+
+<div class="callout">
+  <strong>The hierarchy of fixes.</strong> Matt's sequence (Trigger → Structure → Steering → Pruning) is also a <em>cost</em> sequence. Trigger changes rewrite frontmatter (cheap). Structure changes reshape the file (cheap). Steering changes are vocabulary edits (cheap). Pruning changes are deletion tests (medium). <strong>The earlier the axis, the cheaper the fix</strong>. Audit in this order so cheap fixes don't get buried under expensive ones.
+</div>
+
+<h2>What the talk does <em>not</em> address</h2>
+
+<p>Three things Matt doesn't cover — gaps a careful reader should notice.</p>
+
+<ol>
+  <li><strong>No measurement.</strong> He never quantifies the context cost of N model-invoked skills. No benchmarks, no rule of thumb beyond "if you have a hundred".</li>
+  <li><strong>No skill examples outside his own repo.</strong> The contrast with superpowers is structural (user- vs model-invoked), not deep. There's no audit of a third-party skill using his checklist.</li>
+  <li><strong>No failure recovery.</strong> What do you do if you delete a paragraph and the agent <em>stops</em> doing the right thing? Matt doesn't address false positives of the deletion test — paragraphs that <em>look</em> like no-ops but are silently load-bearing.</li>
+</ol>
+
+<p>These aren't criticisms — the talk is 20 minutes. They're gaps future sessions can fill: a session measuring context cost at scale, a session auditing a third-party skill with the checklist, a session probing the limits of the deletion test.</p>
+
+<h2>Lines worth saving</h2>
+
+<ul>
+  <li>"Skill hell is what happens when nobody has a shared rubric." — your mission statement.</li>
+  <li>"Removing a class of problem from even being a problem." — the Trigger justification, in one phrase.</li>
+  <li>"Every time you shave off a word, that is a token shaved. That multiple token shave from your skill's cost." — the network effect of small skills.</li>
+  <li>"English is a pretty wide API." — a permission slip to experiment with leading words.</li>
+  <li>"Use deletion tests, compact into leading words, no irrelevant content, no no-ops." — Matt's four-part formula for small skills, in order.</li>
+</ul>
+
+<a class="back" href="../../lessons/">← back to lessons</a>
+
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: Pruning — Sediment, crud, and no-ops</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span::before { content: "· "; }
+    .meta span:first-child::before { content: ""; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .failure {
+      margin: 1rem 0;
+    }
+    .failure h4 {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .failure h4.sediment { color: #8e6e3b; }
+    .failure h4.crud { color: #5d6d7e; }
+    .failure h4.noop { color: var(--warn); }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { border: none; color: var(--ink-soft); }
+    .nav a:hover { color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .lesson-position { color: var(--ink-soft); font-style: italic; }
+    .finish {
+      background: var(--code-bg);
+      padding: 1.25rem 1.5rem;
+      border-radius: 4px;
+      margin: 2rem 0;
+      border-left: 3px solid var(--ok);
+    }
+    .finish h3 { margin-top: 0; }
+    .finish h3::before { content: "✓ "; color: var(--ok); }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="index.html" class="back-home">← all lessons</a>
+  <span class="lesson-position">Lesson 0004 of 5</span>
+</nav>
+
+<h1>Pruning</h1>
+<div class="subtitle">Sediment, crud, and no-ops · the fourth axis of the skill checklist</div>
+
+<div class="meta">
+  <span>~5 min</span>
+  <span>Lesson 0004</span>
+  <span><a href="../reference/glossary.html">glossary</a> · <a href="../reference/skill-checklist.html">checklist</a></span>
+</div>
+
+<p>Pruning is the last axis because it only matters once Trigger, Structure, and Steering are roughly right. Pruning a skill with a broken trigger is just rearranging deck chairs.</p>
+
+<p>Pruning is also the axis where Matt's question — "how do you keep your skills so small?" — gets its one clean answer: <strong>deletion tests</strong>. Run them, delete what survives them.</p>
+
+<h2>Three failure modes</h2>
+
+<div class="failure">
+  <h4 class="sediment">Sediment</h4>
+  <p>Irrelevant legacy paragraphs. Most common in skills that multiple people have edited: each person adds their bit, nobody deletes anyone else's, and the file accretes. A paragraph about a deprecated branch. A workflow that worked three versions ago. A note from when the harness loaded skills differently.</p>
+  <p>Sediment is the easiest failure to spot because it usually dates itself — references to old APIs, old branches, old file paths.</p>
+</div>
+
+<div class="failure">
+  <h4 class="crud">Crud</h4>
+  <p>Generic material inside the skill that doesn't apply to every branch of its use cases. A paragraph that helps in 30% of cases but bloats the skill for the other 70%. The fix is almost always to push it behind a context pointer (Structure-axis work).</p>
+  <p>Crud is the failure mode where Structure and Pruning meet — when you find crud, the answer is structure.</p>
+</div>
+
+<div class="failure">
+  <h4 class="noop">No-ops</h4>
+  <p>Instructions that look like they do something but don't actually change the agent's behaviour. Matt's example: a paragraph in an <code>implement</code> skill that says <em>"write a long, detailed commit message"</em>. If you delete that paragraph, the agent probably still writes a decent commit message — because the agent already does this without being told. The paragraph is a no-op. Delete it.</p>
+  <p>No-ops are the hardest to spot by eye. You need the deletion test.</p>
+</div>
+
+<h2>The deletion test</h2>
+
+<p>One procedure, applied paragraph by paragraph:</p>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li>Pick a paragraph in a skill.</li>
+  <li>Save a copy of the skill's current output (the agent's response on a representative task).</li>
+  <li>Delete the paragraph.</li>
+  <li>Run the skill again on the same task.</li>
+  <li>Compare the output to the saved copy.</li>
+  <li>If the output is <strong>materially the same</strong> → the paragraph is a no-op → leave it deleted.</li>
+  <li>If the output is <strong>materially different</strong> → the paragraph was doing real work → put it back.</li>
+</ol>
+
+<div class="callout">
+  <strong>The deletion test is the one technique that consistently catches no-ops.</strong> Build it into your review workflow for any skill — yours or community-authored. A skill you've never deletion-tested is a skill you don't actually know.
+</div>
+
+<h2>Single source of truth</h2>
+
+<p>The non-obvious pruning rule: every piece of reference material should live in <strong>exactly one place</strong>. If a glossary term appears in two skills, one of them should reference the other. If a PRD template appears in two places, extract it.</p>
+
+<p>Why: duplicated reference goes stale. One copy gets updated, the other doesn't. The agent then reads two slightly-different versions and doesn't know which to trust. Single source of truth means there's only one version to update, and the others are guaranteed consistent.</p>
+
+<h2>The quickfire pruning checklist</h2>
+
+<ul style="margin: 0 0 1rem 1.25rem;">
+  <li><span class="ok">Massive skill</span> — symptom of one of the other three failures. Find the cause first.</li>
+  <li><span class="ok">Repeated material</span> — single-source-of-truth violation. Extract.</li>
+  <li><span class="ok">Sediment</span> — legacy paragraphs. Look for dated references (old API names, old branches). Kill.</li>
+  <li><span class="ok">Crud</span> — material that helps one branch but bloats all. Push behind a context pointer.</li>
+  <li><span class="ok">No-ops</span> — paragraphs the agent ignores. Deletion test, then delete.</li>
+</ul>
+
+<h2>Try it now</h2>
+
+<div class="callout">
+  <strong>Pick the same skill you structured in lesson 0002.</strong>
+</div>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li>Save the current output of the skill on a representative task.</li>
+  <li>Delete one paragraph at a time. Re-run. Compare.</li>
+  <li>For each paragraph that survives the deletion test: leave it deleted. For each that doesn't: put it back, but consider whether you can <em>shorten</em> it without breaking it.</li>
+  <li>Look for paragraphs that exist in two skills. Extract to a single reference file.</li>
+  <li>Final goal: the main file is one screen.</li>
+</ol>
+
+<p>You will almost certainly find 2–3 no-ops per skill. That's normal. Matt's skills are small partly because he runs this test every time he edits.</p>
+
+<h2>Common trap: "but I want the agent to do X"</h2>
+
+<p>The hardest no-ops to delete are the ones that reflect <em>your</em> taste, not the agent's behaviour. <em>"I always want the agent to write tests first."</em> If the agent writes tests first without being told, that instruction is a no-op — keep the behaviour, delete the paragraph.</p>
+
+<p>Test of whether it's a no-op: would removing the paragraph change what the agent <em>actually does</em>? If not, it's a no-op, even if removing it makes you feel less safe.</p>
+
+<h2>Takeaway</h2>
+
+<div class="finish">
+  <h3>You now have the full checklist.</h3>
+  <p>Trigger → Structure → Steering → Pruning. In that order. Five minutes per skill.</p>
+  <p>The discipline is to keep the loop short: every skill you touch, audit it. Every new skill you write, audit it before you commit it. Every skill you read from a community, deletion-test it before you trust it.</p>
+  <p>Matt's whole point: skill hell is what happens when nobody has a rubric. You have one now. Use it.</p>
+</div>
+
+<p>Primary source: <a href="https://www.youtube.com/watch?v=UNzCG3lw6O0">"Building Great Agent Skills: The Missing Manual" — Matt Pocock</a>. The skill Matt mentions at the end of the talk — the checklist runnable as a skill — is at <a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-great-skills/SKILL.md">mattpocock/skills</a>.</p>
+
+<div class="nav">
+  <a href="0003-steering.html">← previous: Steering</a>
+  <a href="../reference/skill-checklist.html">back to the checklist →</a>
+</div>
+
+</body>
+</html>

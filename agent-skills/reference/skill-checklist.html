@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Skill Checklist — Reference</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.25rem 0 0.5rem;
+    }
+    p { margin-bottom: 0.85rem; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1.5rem;
+      font-size: 0.92rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    th {
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .meta {
+      color: var(--ink-soft);
+      font-style: italic;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    ul { margin: 0 0 1rem 1.25rem; }
+    li { margin-bottom: 0.35rem; }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .back {
+      display: inline-block;
+      margin-top: 3rem;
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .back:hover { color: var(--accent); border-color: var(--accent); }
+    @media print {
+      body { padding: 1rem; max-width: none; }
+      .back { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>The Skill Checklist</h1>
+<div class="subtitle">A one-page audit rubric for agent skills · derived from Matt Pocock's "The Missing Manual"</div>
+
+<p class="meta">Order matters. Audit Trigger first — every later axis can be wasted work if the skill never fires (or fires too often).</p>
+
+<h2>The four axes</h2>
+
+<table>
+  <tr><th>Axis</th><th>Question</th><th>Failure mode it catches</th></tr>
+  <tr>
+    <td><span class="axis">Trigger</span></td>
+    <td>Who fires this — me or the agent? What's the cost?</td>
+    <td>Context bloat from accidental model-invocation; pilot fatigue from too many user-invoked skills</td>
+  </tr>
+  <tr>
+    <td><span class="axis">Structure</span></td>
+    <td>Are steps and reference separated? Is branching material pushed behind context pointers?</td>
+    <td>Bloated <code>skill.md</code> full of crud that applies to one branch only</td>
+  </tr>
+  <tr>
+    <td><span class="axis">Steering</span></td>
+    <td>Do I use leading words? Are they consistent? Is each step getting enough leg work?</td>
+    <td>The agent doing what I literally said, not what I meant</td>
+  </tr>
+  <tr>
+    <td><span class="axis">Pruning</span></td>
+    <td>Is every paragraph a no-op survivor? Any sediment? Single source of truth?</td>
+    <td>Bloated skills full of instructions that don't change behaviour</td>
+  </tr>
+</table>
+
+<h2>Trigger — quick audit</h2>
+
+<pre><code>Frontmatter question:
+  Has `disable-model-invocation: true`  → user-invoked
+  Has a `description:`                    → model-invoked (description lives in agent context)
+
+Decision tree:
+  Will the agent reliably know when to fire it WITHOUT seeing the description?
+    yes  → user-invoked (cheaper context)
+    no   → model-invoked (cheaper cognitive load)
+  Cost check:
+    Every model-invoked skill adds N tokens to every request.
+    Every user-invoked skill adds one thing the pilot must remember.
+    Pick the cheaper cost for your situation.</code></pre>
+
+<h2>Structure — quick audit</h2>
+
+<ul>
+  <li>Two units only: <strong>steps</strong> (imperative) and <strong>reference</strong> (descriptive).</li>
+  <li>Is the <code>skill.md</code> minimal? Move branch-specific reference behind context pointers (link to another file, don't inline).</li>
+  <li>If material applies to only one branch of the skill's use cases, push it out.</li>
+  <li>Reference docs (glossary, templates, examples) get their own files and get linked.</li>
+</ul>
+
+<h2>Steering — quick audit</h2>
+
+<ul>
+  <li>Pick <strong>2–4 leading words</strong> — dense terms the agent will recognise from prior training (e.g. <em>vertical slice</em>, <em>red-green-refactor</em>, <em>evidence before assertions</em>).</li>
+  <li>Repeat each leading word throughout the skill so it shows up in the agent's reasoning traces.</li>
+  <li>If the agent isn't doing enough leg work on a step: split the skill. Hide the future goal so the agent can't see it.</li>
+  <li><strong>Test:</strong> after running the skill, scan the agent's thinking trace for your leading words. If they're absent, the steering is too weak.</li>
+</ul>
+
+<h2>Pruning — quick audit</h2>
+
+<ul>
+  <li>Run the <strong>deletion test</strong> on every paragraph: delete it, re-run the skill, compare output. If unchanged → <span class="warn">no-op</span>, delete permanently.</li>
+  <li>Hunt <strong>sediment</strong>: irrelevant legacy paragraphs. Most likely accumulated from copy-paste between skills.</li>
+  <li>Hunt <strong>crud</strong>: generic material that doesn't apply to every branch.</li>
+  <li>Enforce <strong>single source of truth</strong>: each piece of reference material (PRD template, glossary term, test seam definition) lives in one place.</li>
+</ul>
+
+<div class="callout">
+  <strong>The deletion test is the one technique that consistently catches no-ops.</strong>
+  Build it into your workflow: when reviewing any skill (yours or community), delete paragraphs first and watch what changes.
+</div>
+
+<h2>Five-minute audit workflow</h2>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li>Open <code>SKILL.md</code>. Read the frontmatter.</li>
+  <li><span class="axis">Trigger</span> — is this user or model invoked? Right for this skill?</li>
+  <li><span class="axis">Structure</span> — is anything branch-specific inline? Push it out.</li>
+  <li><span class="axis">Steering</span> — what are the leading words? Run the skill and check the trace.</li>
+  <li><span class="axis">Pruning</span> — deletion-test each paragraph. Kill no-ops.</li>
+</ol>
+
+<p>Total budget: 5 minutes per skill. Most skills need at most 1–2 axis fixes.</p>
+
+<a class="back" href="../../lessons/">← back to lessons</a>
+
+</body>
+</html>

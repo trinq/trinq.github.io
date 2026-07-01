@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Skills Glossary</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.25rem 0 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+      color: var(--accent);
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.25rem 0 0.25rem;
+    }
+    p { margin-bottom: 0.6rem; }
+    code {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+    }
+    .term-meta {
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+    .meta {
+      color: var(--ink-soft);
+      font-style: italic;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .back {
+      display: inline-block;
+      margin-top: 3rem;
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .back:hover { color: var(--accent); border-color: var(--accent); }
+    @media print {
+      body { padding: 1rem; max-width: none; }
+      .back { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Agent Skills Glossary</h1>
+<div class="subtitle">The terms of art · cheat sheet for re-reading the lessons</div>
+
+<p class="meta">Terms are listed in roughly the order they appear in the lessons. Definitions are minimal — go to the lessons for nuance and examples.</p>
+
+<h2>The framework</h2>
+
+<h3>Skill</h3>
+<p>A markdown file (typically <code>SKILL.md</code>) with frontmatter that an agent loads to perform a specific task. The unit of authored behaviour.</p>
+
+<h3>Skill hell</h3>
+<p>Matt's term for the state of having many skills you can't tell good from bad, so they don't deliver the value they promise.</p>
+
+<h3>The four axes</h3>
+<p><strong>Trigger · Structure · Steering · Pruning</strong> — the checklist for auditing a skill, in this order. From Matt Pocock, "Building Great Agent Skills: The Missing Manual".</p>
+
+<h2>Trigger</h2>
+
+<h3>Trigger</h3>
+<p>How a skill gets loaded: by the user explicitly (e.g. <code>/skill-name</code>) or by the model deciding to based on the description.</p>
+
+<h3>User-invoked skill</h3>
+<p>Only the user can fire it. The agent cannot — the description either doesn't exist or is hidden (<code>disable-model-invocation: true</code>). Lower context load, higher cognitive load on the pilot.</p>
+
+<h3>Model-invoked skill</h3>
+<p>The agent can fire it itself based on the description sitting in its context. Higher context load, lower cognitive load on the pilot.</p>
+
+<h3>Context pointer</h3>
+<p>A short description (frontmatter <code>description:</code>) that sits in the agent's context and points to the full skill file. Lets the agent choose to load more.</p>
+
+<h3>Context load</h3>
+<p>The cost imposed on the <em>agent</em> by having skills loaded. Every model-invoked skill adds its description to every request.</p>
+
+<h3>Cognitive load</h3>
+<p>The cost imposed on the <em>user</em> by having to remember and decide which skill to fire.</p>
+
+<h2>Structure</h2>
+
+<h3>Structure</h3>
+<p>The internal layout of a skill. Two units: <strong>steps</strong> (imperative actions) and <strong>reference</strong> (descriptive material). Branching content goes behind context pointers.</p>
+
+<h3>Step</h3>
+<p>An imperative action the agent takes inside a skill: "Read the file. Run the test. Ask the user."</p>
+
+<h3>Reference</h3>
+<p>Descriptive material the agent reads to inform its actions: a glossary, a template, a PRD example.</p>
+
+<h3>Crud</h3>
+<p>Generic material inside a skill that doesn't apply to every branch of its use cases. Should be pushed behind a context pointer.</p>
+
+<h2>Steering</h2>
+
+<h3>Steering</h3>
+<p>How the skill gets the agent to do what you want. Primarily through <em>leading words</em>, secondarily by managing <em>leg work</em> via skill splitting.</p>
+
+<h3>Leading word</h3>
+<p>A term that packs dense meaning into a small phrase, repeated throughout a skill so the agent adopts it in its reasoning traces. Examples: <em>vertical slice</em>, <em>red-green-refactor</em>, <em>evidence before assertions</em>.</p>
+
+<h3>Vertical slice</h3>
+<p>Matt's canonical example leading word: ship a thin end-to-end slice (UI → API → DB) instead of a horizontal layer (all DB, then all API, then all UI). Used as the antidote to "code layer by layer".</p>
+
+<h3>Leg work</h3>
+<p>The depth of effort the agent puts into a single step. Plan-mode agents famously do too little <em>ask clarifying questions</em> leg work because they can see the future goal of "create plan".</p>
+
+<h3>Hidden future goal</h3>
+<p>The technique of splitting one skill into two so the agent working on step 1 cannot see step 2. Forces more leg work on step 1 because there is no tempting shortcut toward step 2.</p>
+
+<h2>Pruning</h2>
+
+<h3>Pruning</h3>
+<p>The final pass to remove sediment, crud, and no-ops from a skill. Order matters: prune last, after Trigger / Structure / Steering are right.</p>
+
+<h3>Sediment</h3>
+<p>Irrelevant legacy material accumulated as multiple people contributed without deleting. Most common in skills authored collaboratively.</p>
+
+<h3>No-op</h3>
+<p>An instruction that looks like it does something but doesn't actually change the agent's behaviour. Caught by the deletion test.</p>
+
+<h3>Deletion test</h3>
+<p>Delete a paragraph from a skill. Re-run the skill. Compare the agent's output to before. If unchanged, the paragraph was a no-op — leave it deleted.</p>
+
+<h3>Single source of truth</h3>
+<p>Each piece of reference material (PRD template, glossary term, test seam definition) lives in exactly one place. Reference it from elsewhere rather than copying.</p>
+
+<h2>Harness terms</h2>
+
+<h3>Frontmatter</h3>
+<p>The YAML block at the top of a <code>SKILL.md</code> containing <code>name</code>, <code>description</code>, <code>disable-model-invocation</code>, and other harness-specific fields.</p>
+
+<h3>Reasoning trace</h3>
+<p>The agent's "thinking" output before its reply. A leading word shows up here if the steering worked.</p>
+
+<a class="back" href="../../lessons/">← back to lessons</a>
+
+</body>
+</html>

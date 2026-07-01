@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: Structure — Steps and reference, nothing else</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+      --ok: #4caf50;
+      --warn: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span::before { content: "· "; }
+    .meta span:first-child::before { content: ""; }
+    code, pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+    code { padding: 0.1em 0.3em; }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      line-height: 1.5;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre code { padding: 0; background: none; }
+    .axis {
+      display: inline-block;
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .compare > div {
+      background: var(--code-bg);
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.92rem;
+    }
+    .compare h4 {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .compare h4.bad { color: var(--warn); }
+    .compare h4.good { color: var(--ok); }
+    .compare ul { margin: 0 0 0 1.1rem; }
+    .compare li { margin-bottom: 0.3rem; }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+    a:hover { border-color: var(--accent); }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { border: none; color: var(--ink-soft); }
+    .nav a:hover { color: var(--accent); }
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 2rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .lesson-nav .back-home {
+      color: var(--accent);
+      text-decoration: none;
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .lesson-nav .back-home:hover { border-bottom: 1px solid var(--accent); }
+    .lesson-nav .lesson-position { color: var(--ink-soft); font-style: italic; }
+  </style>
+</head>
+<body>
+
+<nav class="lesson-nav">
+  <a href="index.html" class="back-home">← all lessons</a>
+  <span class="lesson-position">Lesson 0002 of 5</span>
+</nav>
+
+<h1>Structure</h1>
+<div class="subtitle">Steps and reference, nothing else · the second axis of the skill checklist</div>
+
+<div class="meta">
+  <span>~5 min</span>
+  <span>Lesson 0002</span>
+  <span><a href="../reference/glossary.html">glossary</a> · <a href="../reference/skill-checklist.html">checklist</a></span>
+</div>
+
+<p>Once you've decided <em>who fires</em> the skill, the next axis is <strong>structure</strong>: what does the inside of <code>SKILL.md</code> look like? Matt's discipline is to recognise exactly two kinds of content, and to keep the file minimal by pushing everything else out behind context pointers.</p>
+
+<h2>The two units</h2>
+
+<p><strong>Steps</strong> are imperative. The agent does these.</p>
+<p><strong>Reference</strong> is descriptive. The agent reads these to inform its actions.</p>
+
+<pre><code># Inside a skill:
+1. Read the failing test.                 ← step
+2. Read ./reference/error-glossary.md.     ← step (also a context pointer)
+3. Match the error to a category.         ← step
+4. Apply the fix template.                ← step
+
+# Inside reference/error-glossary.md:
+- TIMEOUT: ...                            ← reference
+- NULL_POINTER: ...                       ← reference</code></pre>
+
+<p>That's it. If a paragraph is neither an action the agent takes nor material the agent reads to take an action, it's in the wrong place.</p>
+
+<div class="callout">
+  <strong>Why two units?</strong> Steps are the skeleton. Reference is the muscle. Mixing them is how skills bloat: a paragraph that "explains why" creeps into the steps section, then the reference section grows a duplicate of it, then neither can be deleted without leaving the other stranded.
+</div>
+
+<h2>The branches problem</h2>
+
+<p>The real test of structure is what happens when the skill has <em>branches</em> — different paths the agent might take based on context.</p>
+
+<p>Suppose a debug skill can route errors into TIMEOUT, NULL_POINTER, or PERMISSION_DENIED. The fix templates for each are wildly different. You have three options:</p>
+
+<div class="compare">
+  <div>
+    <h4 class="bad">Inline everything</h4>
+    <ul>
+      <li>All three templates in the main file</li>
+      <li>The agent reads all three even if only one applies</li>
+      <li>Bloats every run, bloats every model-invoked description</li>
+    </ul>
+  </div>
+  <div>
+    <h4 class="good">Push behind context pointers</h4>
+    <ul>
+      <li>Main file has the routing logic (the only universal part)</li>
+      <li>Each template in its own file, linked</li>
+      <li>Agent loads only the file that matches its branch</li>
+    </ul>
+  </div>
+</div>
+
+<p>The second option is what Matt means by "make <code>skill.md</code> minimal". A skill with branches should look like a router, not a phone book.</p>
+
+<h2>Three rules for a minimal <code>skill.md</code></h2>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li><strong>Steps only at the top.</strong> Imperative sentences. Each one is an action.</li>
+  <li><strong>Reference only behind context pointers.</strong> Link to it, don't inline it. The agent will load it if needed.</li>
+  <li><strong>If a paragraph applies to only one branch, push it out.</strong> The main file should be readable in one screen.</li>
+</ol>
+
+<h2>What "context pointer" actually means</h2>
+
+<p>A context pointer is anything that lets the agent load more context on demand:</p>
+
+<ul style="margin: 0 0 1rem 1.25rem;">
+  <li>A markdown link to another file (<code>see ./reference/glossary.md</code>)</li>
+  <li>An instruction to read a specific file (<code>Read the PRD template at ./templates/PRD.md</code>)</li>
+  <li>A pointer to an external resource (<code>see https://...</code>)</li>
+</ul>
+
+<p>What it is <em>not</em>: a paragraph that explains the same content inline. If you can move it behind a pointer without changing the agent's behaviour, move it.</p>
+
+<h2>Try it now</h2>
+
+<div class="callout">
+  <strong>Pick one of your skills.</strong> The largest one. Open it. Now:
+</div>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li>Highlight every paragraph. Classify each: <span class="ok">step</span>, <span class="ok">reference</span>, or <span class="warn">other</span>.</li>
+  <li>For each "other" paragraph, ask: which branch of the skill is this for? If only one, push it behind a context pointer.</li>
+  <li>For each step, ask: is the action imperative, or is it actually advice dressed up as an instruction? Move advice to reference.</li>
+  <li>Goal: main file readable in one screen.</li>
+</ol>
+
+<p>If your skill has 5+ branches and the main file is <em>still</em> under a screen, congratulations — you've already done the work. If it's two screens of prose, you have a structure problem, not a pruning problem.</p>
+
+<h2>Common trap: "but the agent needs to know X"</h2>
+
+<p>The pushback you'll give yourself: <em>"but if I don't include this paragraph, the agent won't know X"</em>. Two responses:</p>
+
+<ol style="margin: 0 0 1rem 1.25rem;">
+  <li>Move it to reference. The agent will read it when it needs to.</li>
+  <li>If the agent <em>always</em> needs it, it's not branch-specific — but it might still be reference, not a step. The agent reads it once at the top, then acts.</li>
+</ol>
+
+<p>Default to pushing out. You'll be surprised how rarely the agent actually needed that paragraph inline.</p>
+
+<h2>Takeaway</h2>
+
+<p>Two units. Steps and reference. Anything else is structure waiting to be cleaned up.</p>
+
+<div class="nav">
+  <a href="0001-trigger.html">← previous: Trigger</a>
+  <a href="0003-steering.html">next: Steering →</a>
+</div>
+
+</body>
+</html>
