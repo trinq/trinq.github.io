@@ -2,4 +2,14 @@
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
 @charset "utf-8";
-@import "main";
+// Note: This file is compiled by Jekyll's sass plugin. The pre-compiled
+// output is committed as main.css so the site works even if Sass compilation
+// is skipped. To rebuild, run:
+//   npx sass assets/scss/_layout.scss:assets/css/main.css --no-source-map --style=compressed
+//
+// Source of truth: assets/scss/_layout.scss
+//
+// We intentionally do not @import the other partials (normalize, layout_old,
+// responsive, print, syntax, bourbon/*) here. The legacy Bourbon-based imports
+// no longer compile with modern Dart Sass, and the dark dashboard theme in
+// _layout.scss is the only stylesheet the homepage needs.
