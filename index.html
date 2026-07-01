@@ -4,7 +4,7 @@ title: Home
 permalink: /
 ---
 
-<h1 class="home-title">Trinq Zone</h1>
+<h1 class="home-title">Trinq Zone;</h1>
 <p class="home-subtitle">Software engineer. Writes about loops, agents, and tools that make AI actually work.</p>
 
 <div class="system-status">
@@ -24,7 +24,7 @@ permalink: /
 </div>
 
 {% comment %}
-Course colors — each category gets its own accent. Used for the hero gradient and category label.
+Course colors — each category gets its own accent. Used for the category label.
 {% endcomment %}
 {% assign course_meta = "four-loops|The 4-Loop Ladder|#1f6feb|#0a3069|🚁;agent-loop-skills|Agent Loop Skills|#9333ea|#581c87|🔁;agent-skills|Agent Skills|#d97706|#92400e|🧰;agentic-engineering|Agentic Engineering|#059669|#065f46|🛠;loop|Loop Engineer|#dc2626|#7f1d1d|🧭;reading|Reading|#0891b2|#155e75|📖;ponytail|Ponytail|#db2777|#831843|💇;prompting|Prompting|#7c3aed|#4c1d95|💬;clanker|Clanker Engineer|#ea580c|#7c2d12|⚙;pdpd-luat-an-ninh-mang|PDPD & An ninh mạng|#be123c|#881337|🛡;loop-engineering|Loop Engineering|#0f4c75|#0c3a5e|🕰" | split: ";" %}
 
@@ -40,54 +40,33 @@ Course colors — each category gets its own accent. Used for the hero gradient 
   {% assign post_count = posts | size %}
 
   {% if post_count > 0 %}
-  <section class="news-section" style="--course-fg: {{ fg }}; --course-bg: {{ bg }};">
-    <header class="news-section-header">
-      <h2 class="news-section-title">
-        <span class="news-section-emoji">{{ emoji }}</span>
-        <a href="/{{ slug }}/" class="news-section-link">{{ pretty }}</a>
+  <section class="ed-section" style="--course-fg: {{ fg }}; --course-bg: {{ bg }};">
+    <header class="ed-section-header">
+      <h2 class="ed-section-title">
+        <a href="/{{ slug }}/" class="ed-section-link">{{ pretty }}</a>
       </h2>
-      {% if post_count > 1 %}
-      <div class="news-section-more">
-        <a href="/archive.html#{{ posts.first.date | date: '%Y-%m' }}" class="news-section-more-link">archive →</a>
-      </div>
-      {% endif %}
+      <span class="ed-section-meta">{{ post_count }} bài · cập nhật {{ posts.first.date | date: "%d tháng %m, %Y" }}</span>
     </header>
 
-    {% assign hero = posts.first %}
-
-    {% comment %}hero = first (newest) post; sidebar = next 3{% endcomment %}
-    <div class="news-block">
-      <a href="{{ hero.url }}" class="news-hero">
-        <div class="news-hero-thumb">
-          <span class="news-hero-emoji">{{ emoji }}</span>
-        </div>
-        <div class="news-hero-body">
-          <div class="news-hero-meta">
-            <span class="news-hero-date">{{ hero.date | date: "%b %d, %Y" }}</span>
-            {% if hero["lesson-num"] %}<span class="news-hero-tag">#{{ hero["lesson-num"] }}</span>{% endif %}
+    <div class="ed-post-list">
+      {% for post in posts %}
+      <a href="{{ post.url }}" class="ed-post-row{% if forloop.first %} ed-post-row--first{% endif %}">
+        <span class="ed-post-date">{{ post.date | date: "%d/%m/%Y" }}</span>
+        <div class="ed-post-body">
+          <div class="ed-post-tags">
+            <span class="ed-post-category">{{ pretty }}</span>
+            {% if forloop.first %}<span class="ed-post-newest">↑ Mới nhất</span>{% endif %}
           </div>
-          <h3 class="news-hero-title">{{ hero.title }}</h3>
-          <p class="news-hero-desc">{{ hero.description }}</p>
-          <span class="news-hero-cta">Read lesson →</span>
+          <h3 class="ed-post-title">{{ post.title }}</h3>
+          {% if post.description %}<p class="ed-post-desc">{{ post.description | truncate: 160 }}</p>{% endif %}
+        </div>
+        <div class="ed-post-aside">
+          <span class="ed-post-author">{{ site.author.name }}</span>
+          {% if post.lesson-num %}<span class="ed-post-lesson">#{{ post.lesson-num }}</span>{% endif %}
+          <span class="ed-post-arrow">↗</span>
         </div>
       </a>
-
-      {% if post_count > 1 %}
-      <aside class="news-side">
-        {% for post in posts limit:4 %}
-          {% if forloop.first %}{% continue %}{% endif %}
-          <a href="{{ post.url }}" class="news-side-item">
-            <div class="news-side-body">
-              <h4 class="news-side-title">{{ post.title }}</h4>
-              <div class="news-side-meta">
-                <span>{{ post.date | date: "%b %d" }}</span>
-                {% if post["lesson-num"] %}<span>· #{{ post["lesson-num"] }}</span>{% endif %}
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </aside>
-      {% endif %}
+      {% endfor %}
     </div>
   </section>
   {% endif %}
