@@ -7,6 +7,22 @@ permalink: /
 <h1 class="home-title">Trinq Zone</h1>
 <p class="home-subtitle">Software engineer. Writes about loops, agents, and tools that make AI actually work.</p>
 
+<div class="system-status">
+  <div class="status-item">
+    <span class="blink">&#9632;</span>
+    <strong>SYSTEM</strong> ONLINE
+  </div>
+  <div class="status-item">
+    <strong>TRACKS</strong> 11
+  </div>
+  <div class="status-item">
+    <strong>LESSONS</strong> 86+
+  </div>
+  <div class="status-item">
+    <strong>BUILD</strong> {% assign total_posts = 0 %}{% for post in site.posts %}{% assign total_posts = total_posts | plus: 1 %}{% endfor %}{{ total_posts }} ARTICLES
+  </div>
+</div>
+
 {% comment %}
 Course colors — each category gets its own accent. Used for the hero gradient and category label.
 {% endcomment %}
