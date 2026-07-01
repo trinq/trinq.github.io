@@ -48,7 +48,7 @@ Course colors — each category gets its own accent. Used for the category label
       <span class="ed-section-meta">{{ post_count }} bài · cập nhật {{ posts.first.date | date: "%d tháng %m, %Y" }}</span>
     </header>
 
-    <div class="ed-post-list">
+    <div class="ed-post-list" markdown="0">
       {% for post in posts %}
       <a href="{{ post.url }}" class="ed-post-row{% if forloop.first %} ed-post-row--first{% endif %}">
         <span class="ed-post-date">{{ post.date | date: "%d/%m/%Y" }}</span>
