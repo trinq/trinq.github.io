@@ -290,6 +290,60 @@ body.home-body .tag-cloud a.tag-anchor:hover {
   border-color: var(--_accent);
 }
 
+body.home-body .home-more {
+  margin: 1.5rem 0 0;
+  text-align: center;
+}
+
+body.home-body .home-more-btn {
+  display: inline-block;
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--_accent);
+  text-decoration: none;
+  padding: 0.55em 1.2em;
+  border: 1px solid var(--_rule);
+  border-radius: 3px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+body.home-body .home-more-btn:hover {
+  color: var(--_paper);
+  background: var(--_accent);
+  border-color: var(--_accent);
+}
+
+body.home-body .archive-month {
+  margin-bottom: 3rem;
+}
+
+body.home-body .archive-month-label {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_ink);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--_rule);
+}
+
+body.home-body .archive-back {
+  margin-bottom: 2rem;
+}
+
+body.home-body .archive-back a {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--_accent);
+  text-decoration: none;
+}
+
+body.home-body .archive-back a:hover {
+  text-decoration: underline;
+}
+
 /* Site footer */
 body.home-body .home-footer {
   margin-top: 4rem;
@@ -529,4 +583,58 @@ body.home-body .tag-cloud a.tag-anchor:hover {
   background: var(--_accent);
   color: #fff;
   border-color: var(--_accent);
+}
+
+body.home-body .home-more {
+  margin: 1.5rem 0 0;
+  text-align: center;
+}
+
+body.home-body .home-more-btn {
+  display: inline-block;
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--_accent);
+  text-decoration: none;
+  padding: 0.55em 1.2em;
+  border: 1px solid var(--_rule);
+  border-radius: 3px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+body.home-body .home-more-btn:hover {
+  color: var(--_paper);
+  background: var(--_accent);
+  border-color: var(--_accent);
+}
+
+body.home-body .archive-month {
+  margin-bottom: 3rem;
+}
+
+body.home-body .archive-month-label {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--_ink);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--_rule);
+}
+
+body.home-body .archive-back {
+  margin-bottom: 2rem;
+}
+
+body.home-body .archive-back a {
+  font-family: "Iowan Old Style", Charter, Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--_accent);
+  text-decoration: none;
+}
+
+body.home-body .archive-back a:hover {
+  text-decoration: underline;
 }
