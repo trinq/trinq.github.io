@@ -55,6 +55,7 @@ body.home-body .posts-grid { /* these old selectors are now unused */ }
   --_accent-soft: #f3e9e4;
 }
 
+html.reading-theme,
 body.home-body {
   background: var(--_paper) !important;
   color: var(--_ink) !important;
@@ -65,6 +66,8 @@ body.home-body {
   -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
+  height: auto !important;
+  min-height: 100%;
 }
 
 /* Reset wrap from old CSS */
@@ -692,6 +695,7 @@ body.home-body .bio {
 
 /* Direct dark mode — bypasses specificity issues from main.css */
 @media (prefers-color-scheme: dark) {
+  html.reading-theme,
   body.home-body {
     background-color: #15140f !important;
     color: #ece7da !important;
