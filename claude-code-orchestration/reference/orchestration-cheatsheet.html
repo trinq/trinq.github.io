@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orchestration Cheatsheet</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Orchestration Cheatsheet</h1>
+  <div class="lesson-meta">
+    <span class="num">REF</span>
+    Quick reference · print-friendly · read once, refer back often
+  </div>
+
+  <p>
+    The compressed essence of the orchestrator pattern. Designed to print out as a one-pager.
+    Read <a href="../lessons/0001-the-orchestrator-pattern.html">Lesson 1</a> for the
+    reasoning behind each item here.
+  </p>
+
+  <hr>
+
+  <h2>Architecture</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Role</th>
+        <th>Claude Code config</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Fable 5</strong></td>
+        <td>Orchestrator</td>
+        <td><code>/model</code> &rarr; Fable 5 &rarr; reasoning effort &rarr; max</td>
+      </tr>
+      <tr>
+        <td><strong>Opus</strong></td>
+        <td><code>deep-reasoner</code></td>
+        <td><code>/agents</code> &rarr; pinned to Opus</td>
+      </tr>
+      <tr>
+        <td><strong>Sonnet</strong></td>
+        <td><code>fast-worker</code></td>
+        <td><code>/agents</code> &rarr; pinned to Sonnet</td>
+      </tr>
+      <tr>
+        <td><strong>Codex</strong></td>
+        <td>Peer engineer</td>
+        <td>Plugin: <code>codex@openai-codex</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Setup commands</h2>
+
+  <h3>1. Set the orchestrator</h3>
+  <pre data-lang="Claude Code"><code>/model &rarr; Fable 5 &rarr; reasoning effort to max</code></pre>
+
+  <h3>2. Create the two subagents</h3>
+  <pre data-lang="Claude Code · /agents"><code><strong>deep-reasoner</strong> &rarr; pinned to Opus
+"Use for reasoning-heavy phases, architecture, debugging
+complex issues, algorithm design. Think thoroughly, return
+a concise conclusion the orchestrator can act on."</code></pre>
+
+  <pre data-lang="Claude Code · /agents"><code><strong>fast-worker</strong> &rarr; pinned to Sonnet
+"Use for mechanical tasks, boilerplate, tests, formatting,
+simple edits. Execute efficiently."</code></pre>
+
+  <h3>3. Install the Codex plugin</h3>
+  <pre data-lang="Terminal"><code># Install Codex CLI first (if not installed)
+npm install -g @openai/codex</code></pre>
+
+  <pre data-lang="Claude Code"><code>/plugin marketplace add openai/codex-plugin-cc
+/plugin install codex@openai-codex
+/codex:setup</code></pre>
+
+  <h3>4. Drop this into your CLAUDE.md</h3>
+  <pre data-lang="CLAUDE.md"><code>## Orchestration workflow
+You (Fable) are the orchestrator. Plan, decompose, synthesize.
+Reasoning-heavy phases &rarr; deep-reasoner
+Mechanical work &rarr; fast-worker
+Codex (/codex:rescue --background) is a cracked engineer on
+par with deep-reasoner, from a different perspective.
+Treat as a peer, not a reviewer.
+High-stakes decisions: task Opus + Codex on the same problem
+in parallel, synthesize the best of both, without showing
+either the other's answer. Keep your own context lean.</code></pre>
+
+  <h2>Routing decision tree</h2>
+
+  <h3>&rarr; Opus (deep-reasoner)</h3>
+  <ul>
+    <li>Architecture decisions</li>
+    <li>Complex debugging</li>
+    <li>Algorithm design</li>
+    <li>Analyzing tradeoffs</li>
+    <li>System design review</li>
+  </ul>
+
+  <h3>&rarr; Sonnet (fast-worker)</h3>
+  <ul>
+    <li>Boilerplate code</li>
+    <li>Writing tests</li>
+    <li>Formatting and linting</li>
+    <li>Simple refactors</li>
+    <li>Documentation updates</li>
+  </ul>
+
+  <h3>&rarr; Codex (peer)</h3>
+  <ul>
+    <li>Fresh perspective needed</li>
+    <li>Suspected tunnel vision</li>
+    <li>Different training distribution</li>
+    <li>Cross-validate an approach</li>
+  </ul>
+
+  <h3>&rarr; Opus + Codex (parallel)</h3>
+  <ul>
+    <li>High-stakes architecture</li>
+    <li>Irreversible decisions</li>
+    <li>Two independent analyses</li>
+    <li>Orchestrator synthesizes</li>
+  </ul>
+
+  <h2>Prompt template</h2>
+
+  <pre data-lang="paste into Fable 5"><code>Goal:     [what you want]
+Context:  [files, constraints]
+You're the lead. Delegate reasoning to deep-reasoner,
+grunt work to fast-worker, fresh-perspective problems
+to Codex. Show me your plan first, then execute.</code></pre>
+
+  <hr>
+
+  <div class="footer-nav">
+    <span>Multi-Model Orchestration · Quick reference</span>
+    <span><a href="../lessons/0001-the-orchestrator-pattern.html">Back to Lesson 1</a></span>
+  </div>
+
+</body>
+</html>

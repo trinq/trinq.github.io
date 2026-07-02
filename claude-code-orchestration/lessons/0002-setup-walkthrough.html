@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 2 — Setup Walkthrough</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Setup Walkthrough</h1>
+  <div class="lesson-meta">
+    <span class="num">L2</span>
+    Hands-on · ~15 min · Lesson 2 of the Multi-Model Orchestration series
+  </div>
+
+  <p>
+    <a href="0001-the-orchestrator-pattern.html">Lesson 1</a> explained the orchestrator
+    pattern as a mental model. This lesson runs the setup on your machine. Four steps,
+    each with a verification check so you know it actually worked.
+  </p>
+
+  <p>
+    By the end, Fable 5 will be your orchestrator, two subagents will be pinned, the
+    Codex plugin will be installed, and your <code>CLAUDE.md</code> will tell Fable 5 how
+    to delegate.
+  </p>
+
+  <div class="callout info">
+    <div class="callout-label">Before you start</div>
+    You need Claude Code <strong>v2.1.170 or later</strong> (Fable 5 requires it). Run
+    <code>claude --version</code> to check, and <code>claude update</code> to upgrade.
+    You also need Node.js 18+ if you don't have the Codex CLI installed yet, and an
+    OpenAI account with either a ChatGPT subscription or an API key for
+    <code>!codex login</code>.
+  </div>
+
+  <h2>Step 1 &mdash; Pin Fable 5 as the orchestrator</h2>
+
+  <p>
+    Open Claude Code. Run <code>/model</code> with no argument to open the picker, then
+    select <strong>Fable 5</strong>. Press <code>Enter</code> to save Fable 5 as your
+    default for new sessions.
+  </p>
+
+  <p>
+    Or skip the picker and run <code>/model fable</code> directly. Both are equivalent.
+  </p>
+
+  <p>
+    Then crank the reasoning effort. Fable 5 ships with a default effort of
+    <code>high</code>; for orchestrator duty you want <code>max</code>:
+  </p>
+
+  <pre data-lang="Claude Code"><code>/effort max</code></pre>
+
+  <div class="callout tip">
+    <div class="callout-label">Verify it worked</div>
+    Look at the spinner area. The current effort level is displayed next to the logo,
+    e.g. <code>with max effort</code>. If you don't see that line, run <code>/effort</code>
+    with no argument and the slider should show <code>max</code>.
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-label">If Fable 5 isn't in the picker</div>
+    Your Claude Code is too old. Run <code>claude update</code> and restart. If it's
+    still missing after the upgrade, your account may not have Fable 5 access yet &mdash;
+    check the [model configuration docs](https://docs.anthropic.com/en/docs/claude-code/model-config)
+    under "Work with Fable 5" for the access requirements.
+  </div>
+
+  <h2>Step 2 &mdash; Create the two subagents</h2>
+
+  <p>
+    Subagents are <code>Markdown</code> files with <code>YAML</code> frontmatter. The
+    <code>/agents</code> command opens a tabbed interface that creates them for you, but
+    it's faster and more reproducible to write the files directly. Both paths produce
+    the same result.
+  </p>
+
+  <h3>Path A &mdash; write the files directly (recommended)</h3>
+
+  <p>
+    Pick a scope. <strong>User-level</strong> (<code>~/.claude/agents/</code>) makes the
+    subagents available in every project on your machine. <strong>Project-level</strong>
+    (<code>.claude/agents/</code>) is fine if you want them tied to one repo. The recipe
+    below assumes user-level.
+  </p>
+
+  <pre data-lang="~/.claude/agents/deep-reasoner.md"><code>---
+name: deep-reasoner
+description: Reasoning-heavy subagent. Use for architecture, debugging complex issues, algorithm design, and tradeoff analysis. Thinks thoroughly and returns a concise conclusion the orchestrator can act on.
+model: opus
+effort: high
+---
+
+You are the deep reasoner in a multi-model orchestration. You are pinned to Opus and
+configured for hard thinking. Take your time. State assumptions. Return a conclusion
+the orchestrator can act on &mdash; not a 500-line exploration.
+</code></pre>
+
+  <pre data-lang="~/.claude/agents/fast-worker.md"><code>---
+name: fast-worker
+description: Mechanical work subagent. Use for boilerplate, tests, formatting, simple edits, and other high-volume, low-complexity tasks. Execute efficiently and return a diff.
+model: sonnet
+---
+
+You are the fast worker in a multi-model orchestration. You are pinned to Sonnet and
+configured for throughput. Skip the preamble. Show the diff or the file. Don't restate
+the task.
+</code></pre>
+
+  <p>
+    Save both files. The next time you start a Claude Code session, the subagents will
+    be loaded automatically. You can verify by running <code>/agents</code> and looking
+    in the Library tab &mdash; you should see <code>deep-reasoner</code> and
+    <code>fast-worker</code> listed.
+  </p>
+
+  <h3>Path B &mdash; the <code>/agents</code> interactive flow</h3>
+
+  <ol>
+    <li>Run <code>/agents</code> in Claude Code.</li>
+    <li>Switch to the <strong>Library</strong> tab, select <em>Create new agent</em>, then choose <em>Personal</em>.</li>
+    <li>Either <em>Generate with Claude</em> (paste a description like "reasoning-heavy subagent for architecture and debugging") or skip the generator and fill in the fields manually.</li>
+    <li>On the model step, pick <code>Opus</code> for the deep-reasoner and <code>Sonnet</code> for the fast-worker.</li>
+    <li>Save. Repeat for the second subagent.</li>
+  </ol>
+
+  <div class="callout tip">
+    <div class="callout-label">Verify it worked</div>
+    Run <code>/agents</code>. In the Library tab you should see both subagents with the
+    right models pinned. If a subagent shows the wrong model, open it for editing and
+    change the model field.
+  </div>
+
+  <p>
+    A note on the <code>effort</code> field in <code>deep-reasoner</code>: this overrides
+    the session effort level when the subagent is active. We set it to <code>high</code>
+    rather than <code>max</code> on purpose &mdash; <code>max</code> on Opus is fine for a
+    single architecture call, but if the orchestrator fans out to the deep-reasoner
+    many times in a session, the cost adds up. Leave <code>max</code> on the
+    <em>orchestrator</em> (Fable 5) where it pays for itself by keeping context lean.
+  </p>
+
+  <h2>Step 3 &mdash; Install the Codex plugin</h2>
+
+  <p>
+    Run these four commands in order, inside Claude Code. The first three add and install
+    the plugin; the fourth verifies everything is connected.
+  </p>
+
+  <pre data-lang="Claude Code"><code>/plugin marketplace add openai/codex-plugin-cc
+/plugin install codex@openai-codex
+/codex:setup</code></pre>
+
+  <p>
+    The <code>/codex:setup</code> command is the one that actually does the work of
+    checking the connection. It will tell you one of three things:
+  </p>
+
+  <ol>
+    <li><strong>Codex is installed and authenticated.</strong> You're done &mdash; skip to Step 4.</li>
+    <li><strong>Codex is not installed but <code>npm</code> is available.</strong> It will offer to install Codex for you. Accept.</li>
+    <li><strong>Codex is installed but not authenticated.</strong> Run <code>!codex login</code> and sign in with a ChatGPT account or an API key.</li>
+  </ol>
+
+  <p>
+    If you'd rather install the Codex CLI yourself before running <code>/codex:setup</code>:
+  </p>
+
+  <pre data-lang="Terminal"><code>npm install -g @openai/codex
+codex login</code></pre>
+
+  <div class="callout tip">
+    <div class="callout-label">Verify it worked</div>
+    Run <code>/codex:status</code> in Claude Code. It should report that Codex is ready
+    and the session is connected. Then run <code>/codex:rescue --background "echo hello"</code>
+    &mdash; a trivial task &mdash; to confirm Codex actually responds.
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-label">Common pitfall</div>
+    If <code>/codex:setup</code> says "Codex is installed but not authenticated," the
+    login step is on the <em>Codex</em> side, not the Claude Code side. Run
+    <code>!codex login</code> (with the exclamation mark) so it runs in the shell, not
+    in the Claude session. Then re-run <code>/codex:setup</code>.
+  </div>
+
+  <h2>Step 4 &mdash; Drop the orchestration snippet into CLAUDE.md</h2>
+
+  <p>
+    The subagents and the plugin know what <em>they</em> do. They don't yet know how
+    Fable 5 should <em>delegate</em> to them. That's the job of <code>CLAUDE.md</code> &mdash;
+    a Markdown file in the project root that Claude Code reads at the start of every
+    session.
+  </p>
+
+  <p>
+    Create or open <code>CLAUDE.md</code> in the project you'll be orchestrating from.
+    The snippet below is the minimum the orchestrator needs. Adapt the rest of your
+    <code>CLAUDE.md</code> as usual &mdash; this block just adds the delegation rules.
+  </p>
+
+  <pre data-lang="CLAUDE.md"><code>## Orchestration workflow
+You (Fable) are the orchestrator. Plan, decompose, synthesize.
+Reasoning-heavy phases &rarr; deep-reasoner
+Mechanical work &rarr; fast-worker
+Codex (/codex:rescue --background) is a cracked engineer on
+par with deep-reasoner, from a different perspective.
+Treat as a peer, not a reviewer.
+High-stakes decisions: task Opus + Codex on the same problem
+in parallel, synthesize the best of both, without showing
+either the other's answer. Keep your own context lean.</code></pre>
+
+  <div class="callout tip">
+    <div class="callout-label">Verify it worked</div>
+    Start a new Claude Code session in that project. Fable 5 should respond by
+    acknowledging the orchestration rules before you ask your first question &mdash;
+    or, more commonly, by <em>behaving</em> like an orchestrator on the first task
+    (decomposing before answering, mentioning when it routes to a subagent).
+  </div>
+
+  <hr>
+
+  <h2>End-to-end smoke test</h2>
+
+  <p>
+    All four setup steps are done. Run this one prompt to confirm the whole system is
+    wired up. It exercises the orchestrator + the deep-reasoner + the fast-worker in a
+    single pass.
+  </p>
+
+  <pre data-lang="Claude Code · paste into Fable 5"><code>Goal: Add input validation to the createUser function in src/users.ts.
+Context: Express + zod. The function currently takes (req, res) and
+         inserts into Postgres with no validation.
+You're the lead. Plan first, then execute. Delegate reasoning to
+deep-reasoner, grunt work to fast-worker.</code></pre>
+
+  <p>
+    You should see Fable 5 produce a plan, route the schema-design question to
+    <code>deep-reasoner</code> (Opus), and route the actual implementation to
+    <code>fast-worker</code> (Sonnet). If Fable 5 just writes the code itself, your
+    <code>CLAUDE.md</code> snippet isn't being read &mdash; check the file is at the
+    project root and named exactly <code>CLAUDE.md</code>.
+  </p>
+
+  <hr>
+
+  <h2>Micro-experiment &mdash; one number, one data point</h2>
+
+  <p>
+    The mission says you want to <em>measure</em> cost vs. quality. The smallest possible
+    data point is a single-task A/B: run the same task twice, once with orchestration
+    and once without, and log the tokens.
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Run the task un-orchestrated</h3>
+      <span class="step-body">Switch to <code>/model opus</code> (or whatever your most expensive default is). Run the task. Note the input/output/total tokens from the session footer.</span>
+    </li>
+    <li>
+      <h3>Run the task orchestrated</h3>
+      <span class="step-body">Switch back to <code>/model fable</code> with the orchestration rules in CLAUDE.md. Run the same task. Note the tokens again.</span>
+    </li>
+    <li>
+      <h3>Log both runs</h3>
+      <span class="step-body">Open <code>learning-records/0003-cost-experiment-first-run.md</code> and record: task description, two token counts, two wall-clock times, two-line quality assessment. Just one run, both arms.</span>
+    </li>
+  </ol>
+
+  <p>
+    One data point is not a benchmark. But it converts "the orchestrator pattern saves
+    money" from a claim into a measurement, and the act of recording it is what
+    separates reading the lesson from doing the work.
+  </p>
+
+  <hr>
+
+  <h2>Troubleshooting quick reference</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Symptom</th>
+        <th>Likely cause</th>
+        <th>Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Fable 5 missing from <code>/model</code> picker</td>
+        <td>Claude Code &lt; v2.1.170, or no Fable access on the account</td>
+        <td>Run <code>claude update</code>; check account access</td>
+      </tr>
+      <tr>
+        <td><code>with max effort</code> line missing</td>
+        <td>Effort not set, or model is not Fable 5 / Opus 4.7+ / Opus 4.8</td>
+        <td>Run <code>/effort max</code> after confirming the model</td>
+      </tr>
+      <tr>
+        <td>Subagent shows wrong model in <code>/agents</code></td>
+        <td>Frontmatter <code>model</code> field set to wrong alias</td>
+        <td>Edit the file, use <code>opus</code> / <code>sonnet</code> / <code>haiku</code> / <code>fable</code> (no quotes)</td>
+      </tr>
+      <tr>
+        <td><code>/codex:setup</code> says not authenticated</td>
+        <td><code>!codex login</code> never ran, or token expired</td>
+        <td>Run <code>!codex login</code> in the shell, re-run setup</td>
+      </tr>
+      <tr>
+        <td>Fable 5 writes implementation instead of delegating</td>
+        <td><code>CLAUDE.md</code> snippet missing or in wrong location</td>
+        <td>Confirm the file is at the project root, named exactly <code>CLAUDE.md</code>, with the snippet from Step 4</td>
+      </tr>
+      <tr>
+        <td>Subagent never invoked even when it should be</td>
+        <td>Subagent <code>description</code> too vague</td>
+        <td>Make the description specific: include the trigger phrases (e.g. "Use for X, Y, Z")</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">You run <code>/model fable</code> then look at the spinner. What should you see to confirm Fable 5 is the active model?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">A red badge in the top-right corner</button>
+      <button class="quiz-opt" data-correct="true">The current effort level displayed next to the logo, e.g. <code>with high effort</code></button>
+      <button class="quiz-opt" data-correct="false">The literal text <code>FABLE 5</code> in the status line</button>
+      <button class="quiz-opt" data-correct="false">Nothing &mdash; there's no way to tell from the spinner</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q"><code>/codex:setup</code> reports "Codex installed but not authenticated." What's the correct next step?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Re-run <code>/plugin install codex@openai-codex</code></button>
+      <button class="quiz-opt" data-correct="true">Run <code>!codex login</code> in the shell, then re-run <code>/codex:setup</code></button>
+      <button class="quiz-opt" data-correct="false">Reinstall the Codex CLI from scratch with <code>npm uninstall -g @openai/codex</code></button>
+      <button class="quiz-opt" data-correct="false">Switch the main model to Codex via <code>/model codex</code></button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">You add the orchestration snippet to <code>CLAUDE.md</code>, start a session, and Fable 5 just writes code instead of delegating. What's the most likely cause?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Fable 5 doesn't support delegation &mdash; the recipe was wrong</button>
+      <button class="quiz-opt" data-correct="false">The subagents are pinned to the wrong models</button>
+      <button class="quiz-opt" data-correct="true"><code>CLAUDE.md</code> isn't at the project root, or the file isn't named exactly <code>CLAUDE.md</code></button>
+      <button class="quiz-opt" data-correct="false">You need to set effort to <code>ultracode</code> for delegation to work</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    The three docs that ground this lesson, in order of how much you'll lean on them:
+  </p>
+
+  <ul>
+    <li><a href="https://docs.anthropic.com/en/docs/claude-code/model-config" target="_blank" rel="noopener">Model configuration</a> &mdash; the <code>fable</code> alias, the <code>/effort</code> slider, the <code>max</code> effort level.</li>
+    <li><a href="https://docs.anthropic.com/en/docs/claude-code/sub-agents" target="_blank" rel="noopener">Subagents</a> &mdash; the <code>/agents</code> interface, the frontmatter schema, the user vs. project scope.</li>
+    <li><a href="https://github.com/openai/codex-plugin-cc" target="_blank" rel="noopener">openai/codex-plugin-cc</a> &mdash; the official plugin's install commands, slash commands, and auth flow.</li>
+  </ul>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      Lesson 3 runs a real feature through the orchestrator and measures the result.
+      You'll take the micro-experiment from this lesson, scale it to a multi-file task,
+      and log the comparison.
+    </p>
+    <p>&rarr; <a href="./0003-first-real-task.html">Lesson 3: First Real Task</a></p>
+    <p>&rarr; <a href="../reference/orchestration-cheatsheet.html">Reference: Orchestration Cheatsheet</a> (for when you forget the exact commands)</p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Multi-Model Orchestration · Lesson 2</span>
+    <span><a href="./0001-the-orchestrator-pattern.html">&larr; L1</a> &middot; <a href="../index.html">Index</a> &middot; <a href="./0003-first-real-task.html">L3 &rarr;</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Questions?</div>
+    Hit a snag during setup? Stuck on the smoke test? Come back to the agent anytime
+    &mdash; type <code>/teach</code> and tell me which step you're on. I'm your teacher.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. That\u2019s the right verification step.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the verification block for that step.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

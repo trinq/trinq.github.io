@@ -1,0 +1,365 @@
+/* Tufte-inspired shared styles for the claude-code-orchestration workspace.
+   Mirrors the visual language used in sibling folders (agent-skills, clanker-engineer, loop, four-loops).
+   Cream paper, warm red accent, Georgia serif, SF Mono for paths and code. */
+
+:root {
+  --bg: #faf8f5;
+  --ink: #1a1a1a;
+  --ink-soft: #666;
+  --ink-dim: #999;
+  --rule: #e8e4df;
+  --rule-strong: #d8d2c8;
+  --accent: #c0392b;
+  --accent-soft: #e8c5bf;
+  --code-bg: #f4efe9;
+  --ok: #4caf50;
+  --info: #5a7a9a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+/* ---- Typography ---- */
+h1 {
+  font-size: 2.1rem;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.4rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+}
+
+h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+p { margin-bottom: 0.9rem; }
+p:last-child { margin-bottom: 0; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+a:hover { border-bottom-color: var(--accent); }
+
+ul, ol { margin: 0.6rem 0 1rem 1.4rem; }
+li { margin-bottom: 0.35rem; }
+li::marker { color: var(--accent); }
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+hr {
+  border: none;
+  height: 1px;
+  background: var(--rule);
+  margin: 2.5rem 0;
+}
+
+blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 0.4rem 0 0.4rem 1rem;
+  margin: 1rem 0;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* ---- Lesson meta strip (small italic line under h1) ---- */
+.lesson-meta {
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 0.9rem;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+.lesson-meta .num {
+  font-family: "SF Mono", Menlo, monospace;
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+
+/* ---- Callout (left-accent box) ---- */
+.callout {
+  border-left: 3px solid var(--accent);
+  padding: 0.85rem 1rem 0.85rem 1.1rem;
+  background: var(--code-bg);
+  margin: 1.3rem 0;
+  font-size: 0.95rem;
+}
+.callout.tip     { border-left-color: var(--ok); }
+.callout.warning { border-left-color: #b58520; }
+.callout.info    { border-left-color: var(--info); }
+.callout-label {
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--accent);
+  display: inline-block;
+  margin-bottom: 0.3rem;
+}
+.callout.tip     .callout-label { color: var(--ok); }
+.callout.warning .callout-label { color: #b58520; }
+.callout.info    .callout-label { color: var(--info); }
+
+/* ---- Code ---- */
+code {
+  font-family: "SF Mono", Menlo, "Consolas", monospace;
+  font-size: 0.85em;
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  color: var(--ink);
+}
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  padding: 0.9rem 1.1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+pre code { background: transparent; padding: 0; font-size: inherit; }
+pre[data-lang]::before {
+  content: attr(data-lang);
+  display: block;
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  margin-bottom: 0.5rem;
+}
+
+/* ---- Steps (numbered, with accent circle) ---- */
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 1.3rem 0;
+  counter-reset: step;
+}
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0.7rem 0 0.7rem 3rem;
+  border-bottom: 1px dashed var(--rule);
+}
+.steps li:last-child { border-bottom: none; }
+.steps li::marker { content: ''; }
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.7rem;
+  width: 2rem;
+  height: 2rem;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.steps h3 {
+  display: inline;
+  margin: 0;
+  font-size: 1rem;
+}
+.steps .step-body {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+/* ---- Architecture nodes (the four-model diagram) ---- */
+.arch {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+}
+@media (min-width: 700px) {
+  .arch { grid-template-columns: repeat(4, 1fr); }
+}
+.arch-node {
+  padding: 1rem 0.8rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  text-align: center;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.arch-node:hover {
+  border-color: var(--rule-strong);
+  transform: translateY(-1px);
+}
+.arch-node.orchestrator { border-top-color: var(--accent); }
+.arch-node.reasoner    { border-top-color: #d4920b; }
+.arch-node.worker      { border-top-color: var(--ok); }
+.arch-node.peer        { border-top-color: var(--info); }
+
+.arch-node .name {
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.02em;
+}
+.arch-node .role {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* ---- Tables ---- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2rem 0;
+  font-size: 0.9rem;
+}
+th, td {
+  text-align: left;
+  padding: 0.6rem 0.7rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+th {
+  border-bottom: 1.5px solid var(--rule-strong);
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+tr:hover td { background: var(--code-bg); }
+
+/* ---- Quiz ---- */
+.quiz {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.2rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+}
+.quiz-q {
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+}
+.quiz-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.quiz-opt {
+  padding: 0.55rem 0.8rem;
+  background: var(--code-bg);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: var(--ink);
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.correct { border-color: var(--ok); background: #f1f6f1; }
+.quiz-opt.incorrect { border-color: var(--accent); background: #f7eae8; }
+.quiz-opt:disabled { cursor: default; }
+.quiz-feedback {
+  margin-top: 0.7rem;
+  font-size: 0.88rem;
+  font-style: italic;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok   { color: var(--ok); }
+.quiz-feedback.bad  { color: var(--accent); }
+
+/* ---- Source / next-up footer cards ---- */
+.next-up {
+  margin-top: 2.5rem;
+  padding: 1rem 1.1rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+}
+.next-up .label {
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.next-up p { margin-bottom: 0.4rem; font-size: 0.95rem; }
+.next-up p:last-child { margin-bottom: 0; }
+
+.footer-nav {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+.footer-nav a { color: var(--accent); }
+.footer-nav a:hover { border-bottom-color: var(--accent); }
+
+/* ---- Print ---- */
+@media print {
+  body {
+    background: white;
+    color: #1a1a1a;
+    max-width: none;
+    padding: 1cm;
+    font-size: 11pt;
+  }
+  h1, h2, h3 { page-break-after: avoid; }
+  .arch-node, .steps li, .callout, pre, .quiz, .next-up { break-inside: avoid; }
+  a { color: #1a1a1a; text-decoration: underline; }
+  .footer-nav, .quiz-feedback { display: none; }
+  .arch-node { box-shadow: none; }
+}

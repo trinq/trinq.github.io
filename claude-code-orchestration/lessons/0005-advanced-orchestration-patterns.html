@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 5 — Advanced Orchestration Patterns</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Advanced Orchestration Patterns</h1>
+  <div class="lesson-meta">
+    <span class="num">L5</span>
+    Power-user techniques · ~15 min · Lesson 5 of the Multi-Model Orchestration series
+  </div>
+
+  <p>
+    <a href="0004-routing-strategy.html">Lesson 4</a> gave you the judgment:
+    which model for which task. This lesson gives you the technique that makes the
+    orchestrator genuinely more powerful in daily use. It's the pattern most orchestrator
+    users miss.
+  </p>
+
+  <h2>The pattern most users get wrong</h2>
+
+  <p>
+    The naive use of an orchestrator is <em>full delegation</em>: give the subagent the
+    whole task and wait for the result. That works, but it wastes the orchestrator's
+    context on managing the handoff, and it makes the orchestrator dependent on a single
+    subagent's output.
+  </p>
+
+  <p>
+    The power-user technique is <strong>partial delegation</strong>: keep the orchestrator
+    actively in the loop and send it targeted, specific questions. The orchestrator is
+    not a dispatcher that hands off work and waits — it's a synthesizer that uses
+    subagents as consultants for pieces of the problem.
+  </p>
+
+  <blockquote>
+    The orchestrator's job is not to delegate tasks. It's to
+    hold the problem and use subagents as consultants — not
+    contractors.
+  </blockquote>
+
+  <p>
+    The difference: a contractor gets the whole job and returns a finished product.
+    A consultant answers a specific question and hands the answer back. You decide
+    what to do with it.
+  </p>
+
+  <hr>
+
+  <h2>Pattern 1 &mdash; Partial delegation</h2>
+
+  <p>
+    <em>When:</em> Any task where you want the orchestrator to stay in control of
+    synthesis, not hand off the whole problem.
+  </p>
+
+  <p><em>The naive version:</em></p>
+
+  <pre data-lang="Claude Code · naive"><code>@deep-reasoner: Our auth system needs to handle refresh token rotation.
+The app is Next.js with a Postgres database. Design the full token
+management strategy.</code></pre>
+
+  <p>
+    The subagent returns a full design document. Fable 5's job is to implement it.
+    If the design has a flaw, Fable 5 either fixes it silently or propagates it into
+    the implementation.
+  </p>
+
+  <p><em>The partial delegation version:</em></p>
+
+  <pre data-lang="Claude Code · partial delegation"><code>@deep-reasoner: We're considering two approaches to refresh token rotation:
+(A) sliding window with one active token per user, or (B) rotation with a
+refresh token family. Our app is Next.js + Postgres. What are the security
+tradeoffs of each, specifically: which is harder to implement incorrectly?
+Which is more resistant to token theft?</code></pre>
+
+  <p>
+    The subagent returns a focused comparison. Fable 5 reads it, picks an approach,
+    and implements. Fable 5 made the decision — the subagent informed it. That's the
+    difference.
+  </p>
+
+  <div class="callout tip">
+    <div class="callall-label">When to use partial delegation</div>
+    Use it whenever the subagent's output would be a decision that Fable 5 would
+    then act on anyway. A design doc from a subagent is a decision the subagent made
+    on Fable 5's behalf. A focused comparison is a set of facts Fable 5 can use to
+    make the decision itself.
+  </div>
+
+  <h3>How to phrase the partial delegation prompt</h3>
+
+  <p>
+    The art of partial delegation is in the question, not the answer. Four types of
+    partial delegation questions that work well:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Signal phrase</th>
+        <th>Why it works</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tradeoff comparison</td>
+        <td>"What are the tradeoffs of X vs Y?"</td>
+        <td>Returns structured pros/cons, not a recommendation</td>
+      </tr>
+      <tr>
+        <td>Failure mode analysis</td>
+        <td>"If we did X, what would break first?"</td>
+        <td>Returns the most fragile assumption — useful for Fable to probe</td>
+      </tr>
+      <tr>
+        <td>Constraint extraction</td>
+        <td>"What does this require that we haven't built yet?"</td>
+        <td>Returns the dependency list — useful for sequencing</td>
+      </tr>
+      <tr>
+        <td>Analogy / precedent</td>
+        <td>"Has a pattern like this caused problems in systems like X?"</td>
+        <td>Returns hard-won knowledge without asking for a design</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>Pattern 2 &mdash; Parallel background synthesis</h2>
+
+  <p>
+    <em>When:</em> An important architectural decision where you'd normally ask a
+    teammate to review independently, but you only have one teammate and Claude Code
+    can run two in parallel.
+  </p>
+
+  <p>
+    The classic use case from <a href="0001-the-orchestrator-pattern.html">Lesson 1</a>: Fable 5
+    asks Opus and Codex to work on the same problem independently, then synthesizes the
+    best of both — without showing either the other's answer. This is the "two perspectives"
+    routing.
+  </p>
+
+  <p>
+    The difference from partial delegation: Opus and Codex are running simultaneously,
+    not sequentially. Both get the same problem statement. Neither sees the other's
+    output until Fable 5 synthesizes.
+  </p>
+
+  <pre data-lang="Claude Code · parallel synthesis"><code>/codex:rescue --background "Design the event sourcing strategy for our
+order management system. The system handles 5000 orders/day, needs
+event replay for analytics, and must support idempotent event
+handlers. Focus on the event schema design."
+
+@deep-reasoner: Design the event sourcing strategy for our order
+management system. The system handles 5000 orders/day, needs event
+replay for analytics, and must support idempotent event handlers.
+Focus on the aggregate root boundaries and consistency model.
+Do not read the Codex output.</code></pre>
+
+  <p>
+    Fable 5 now has two independent designs to synthesize. If they agree, confidence
+    is high. If they diverge on a key architectural point, Fable 5 makes the call
+    explicitly, with both perspectives in mind.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">When not to use this</div>
+    Don't parallel synthesize routine tasks. Running two expensive models simultaneously
+    defeats the purpose of orchestration if the task doesn't require two independent
+    perspectives. Reserve this pattern for architectural decisions where the cost of
+    a wrong call is high — database selection, API boundary design, consistency model.
+  </div>
+
+  <hr>
+
+  <h2>Pattern 3 &mdash; Sequential escalation</h2>
+
+  <p>
+    <em>When:</em> A task where Sonnet's first output is not quite right, but
+    sending it back to Sonnet hasn't worked either.
+  </p>
+
+  <p>
+    Sequential escalation is simple: Sonnet attempts the task, reports back. If
+    the attempt is wrong or incomplete, send the specific failure to Opus instead
+    of back to Sonnet. Opus handles the hard part. Sonnet then implements the fix.
+  </p>
+
+  <pre data-lang="Claude Code · sequential escalation"><code>@fast-worker: Add a rate-limiting middleware to our Express app using the
+existing token bucket implementation in lib/ratelimit.ts.
+
+# Sonnet returns the implementation, but the test fails with:
+# "Error: token bucket not initialized before use"
+
+@deep-reasoner: Our rate-limiting middleware has a test failure:
+"token bucket not initialized before use." The error occurs in
+the middleware when it calls getTokenCount() before the Redis
+connection is established. The token bucket implementation is
+at lib/ratelimit.ts. What's the right initialization sequence
+given that Redis is async and Express middleware is synchronous?</code></pre>
+
+  <p>
+    The key is that Sonnet's failure report goes to Opus — not back to Sonnet.
+    Sonnet already failed; a second attempt at the same task at the same model
+    level rarely succeeds. Escalating to Opus gets the architectural insight
+    Sonnet couldn't produce. Sonnet then implements the fix.
+  </p>
+
+  <hr>
+
+  <h2>Pattern 4 &mdash; Context window management</h2>
+
+  <p>
+    <em>When:</em> The orchestrator's context is filling up and you need to keep
+    a long session productive.
+  </p>
+
+  <p>
+    Long Claude Code sessions accumulate context. At some point the orchestrator
+    starts losing the thread. The orchestrator pattern has a built-in solution:
+    offload completed work to a subagent for a clean summary, then continue
+    with a lean context.
+  </p>
+
+  <pre data-lang="Claude Code · context compression"><code>@deep-reasoner: Our refactoring session has covered:
+- Component extraction (completed)
+- Hook migration (completed)
+- TypeScript conversion (completed)
+- Still in progress: test migration
+Summarize the completed work in 5 bullet points, noting any
+unresolved edge cases we need to watch for in the test migration.
+Keep it to 150 words.</code></pre>
+
+  <p>
+    The subagent produces a compact summary. Fable 5 keeps the bullet points
+    and discards the full context from the completed phases. The session stays
+    lean for the remaining work.
+  </p>
+
+  <div class="callout tip">
+    <div class="callout-label">When to compress context</div>
+    Watch the token count in the session footer. When the orchestrator has
+    been running for more than 30 minutes, or when the token count is above
+    70% of context, trigger a compression. Don't wait until it's full —
+    by then the orchestrator is already struggling to hold the thread.
+  </div>
+
+  <hr>
+
+  <h2>The partial delegation prompt builder</h2>
+
+  <p>
+    Use this template to convert any full-delegation prompt into a partial
+    delegation prompt. The structure is always the same: context, the question
+    type, the specific question, and a constraint on the output shape.
+  </p>
+
+  <pre data-lang="Partial delegation prompt template"><code>@[subagent]:
+Context: [what the orchestrator already knows about the task]
+Question type: [tradeoff / failure mode / constraint / analogy]
+Specific question: [the one thing this subagent is better at than the orchestrator]
+Output constraint: [how many words / what format the answer should take]</code></pre>
+
+  <p>
+    Examples:
+  </p>
+
+  <pre data-lang="Partial delegation examples"><code>@deep-reasoner:
+Context: We're adding a webhook delivery system to our platform.
+Question type: failure mode
+Specific question: What are the three most likely failure modes in
+  webhook delivery, and which is hardest to detect automatically?
+Output constraint: 3 bullet points, 20 words each
+
+@fast-worker:
+Context: The API schema for the user profile is at api/schemas/user.ts
+Question type: constraint
+Specific question: Which fields are optional today, and what would
+  breaking each one cost us in terms of migrations?
+Output constraint: A table with field, optional, migration cost</code></pre>
+
+  <hr>
+
+  <h2>Pattern selector &mdash; which to use</h2>
+
+  <p>
+    When in doubt, run this:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Is the output a decision the orchestrator should make?</h3>
+      <span class="step-body">Yes &rarr; Partial delegation. No &rarr; continue.</span>
+    </li>
+    <li>
+      <h3>Would two independent perspectives make this better?</h3>
+      <span class="step-body">Yes &rarr; Parallel synthesis. No &rarr; continue.</span>
+    </li>
+    <li>
+      <h3>Did the cheap model fail? Should the expensive model try?</h3>
+      <span class="step-body">Yes &rarr; Sequential escalation. No &rarr; continue.</span>
+    </li>
+    <li>
+      <h3>Is context getting tight?</h3>
+      <span class="step-body">Yes &rarr; Context compression. No &rarr; Full delegation is fine.</span>
+    </li>
+  </ol>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">What's the difference between partial delegation and full delegation?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Partial delegation uses Sonnet, full delegation uses Opus</button>
+      <button class="quiz-opt" data-correct="false">Partial delegation sends tasks faster, full delegation is slower</button>
+      <button class="quiz-opt" data-correct="true">In partial delegation, the orchestrator holds the problem and uses subagents as consultants for specific questions; in full delegation, the subagent gets the whole task and returns a finished product</button>
+      <button class="quiz-opt" data-correct="false">There is no difference &mdash; they are the same pattern with different names</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">You ask Sonnet to implement a feature. The tests fail twice. Sonnet keeps making the same kind of mistake. What's the right move?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Send the exact same failure message back to Sonnet with a firmer tone</button>
+      <button class="quiz-opt" data-correct="true">Escalate to Opus &mdash; send the specific failure to deep-reasoner rather than back to Sonnet</button>
+      <button class="quiz-opt" data-correct="false">Switch the orchestrator model to Opus and retry the whole session</button>
+      <button class="quiz-opt" data-correct="false">Abort the session &mdash; if Sonnet can't do it, the task is too hard for the codebase</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">When should you compress context?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">When the session is at 100% context capacity</button>
+      <button class="quiz-opt" data-correct="true">When the orchestrator has been running for more than 30 minutes, or when the token count is above 70% of context &mdash; don't wait until it's full</button>
+      <button class="quiz-opt" data-correct="false">Every time you finish a subagent task</button>
+      <button class="quiz-opt" data-correct="false">Never &mdash; Claude Code handles context automatically</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Where you are in the curriculum</h2>
+
+  <p>
+    The five lessons form a progression:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Lesson</th>
+        <th>What it gave you</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>L1 &mdash; The Orchestrator Pattern</td>
+        <td>The mental model: four roles, four models, the routing decision tree</td>
+      </tr>
+      <tr>
+        <td>L2 &mdash; Setup Walkthrough</td>
+        <td>The working system: Fable 5 pinned, subagents created, Codex installed</td>
+      </tr>
+      <tr>
+        <td>L3 &mdash; First Real Task</td>
+        <td>The measurement protocol: a way to turn "orchestration saves money" into a number</td>
+      </tr>
+      <tr>
+        <td>L4 &mdash; Building a Routing Strategy</td>
+        <td>The judgment heuristic: "expensive output earns expensive model"</td>
+      </tr>
+      <tr>
+        <td>L5 &mdash; Advanced Orchestration Patterns</td>
+        <td>The power-user techniques: partial delegation, parallel synthesis, sequential escalation, context management</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    These five lessons cover the curriculum's scope. The remaining success criteria
+    in the mission are habits that form through use, not through additional lessons:
+  </p>
+
+  <ul>
+    <li><em>"Can configure from memory"</em> &mdash; builds through repetition. Use the system daily.</li>
+    <li><em>"Can design custom workflows for different project types"</em> &mdash; applies the four patterns from this lesson to greenfield, debugging, and refactoring. The patterns generalize.</li>
+    <li><em>"Can measure and compare cost/quality outcomes"</em> &mdash; the Lesson 3 protocol. Run it on three different task types and log each in a learning record.</li>
+    <li><em>"Can explain to a teammate"</em> &mdash; share the reference page you built in Lesson 4.</li>
+  </ul>
+
+  <div class="next-up">
+    <div class="label">What comes next</div>
+    <p>
+      There is no Lesson 6. The curriculum ends here because the remaining work
+      is not learning &mdash; it's practice. The orchestrator becomes useful the
+      moment you start using it. The measurements from real tasks are what
+      refine it.
+    </p>
+    <p>
+      The workspace is yours. Keep logging measurements in
+      <code>learning-records/</code>. Come back to the agent when you hit a
+      specific problem: a routing decision you're unsure about, a cost result
+      that surprises you, or a workflow that isn't working. That's where the
+      next lesson would come from.
+    </p>
+    <p>&rarr; <a href="../reference/orchestration-cheatsheet.html">Reference: Orchestration Cheatsheet</a></p>
+    <p>&rarr; <a href="../index.html">Workspace Index</a></p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Multi-Model Orchestration &middot; Lesson 5</span>
+    <span><a href="./0004-routing-strategy.html">&larr; L4</a> &middot; <a href="../index.html">Index</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Questions?</div>
+    Hit a specific problem with the orchestrator? Come back and describe it.
+    I can help you figure out which pattern applies, diagnose why a routing
+    call went wrong, or walk through a measurement you're unsure about.
+    The workspace is the curriculum.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the relevant section above.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

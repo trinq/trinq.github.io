@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 1 — The Orchestrator Pattern</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>The Orchestrator Pattern</h1>
+  <div class="lesson-meta">
+    <span class="num">L1</span>
+    Mental model · ~8 min · Lesson 1 of the Multi-Model Orchestration series
+  </div>
+
+  <p>
+    Most people use one model for everything. That's like hiring a senior architect to also
+    paint walls, sweep floors, and file expense reports. The senior gets paid the same either
+    way — but the floors still get swept, and the work that needed the architect gets rushed.
+  </p>
+
+  <p>
+    This lesson teaches the <strong>orchestrator pattern</strong>: route different <em>types</em>
+    of work to different models. Quality stays high on the hard problems. Cost stays low on
+    the bulk. The orchestrator never paints the wall.
+  </p>
+
+  <h2>Four roles, four models</h2>
+
+  <p>
+    Each model has a different cost/capability profile. The trick is matching the
+    <em>kind of thinking</em> a task requires to the model that does that thinking best:
+  </p>
+
+  <div class="arch">
+    <div class="arch-node orchestrator">
+      <div class="name">FABLE 5</div>
+      <div class="role">Orchestrator · Tech Lead</div>
+    </div>
+    <div class="arch-node reasoner">
+      <div class="name">OPUS</div>
+      <div class="role">Deep Reasoner</div>
+    </div>
+    <div class="arch-node worker">
+      <div class="name">SONNET</div>
+      <div class="role">Fast Worker</div>
+    </div>
+    <div class="arch-node peer">
+      <div class="name">CODEX</div>
+      <div class="role">Peer Engineer</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Role</th>
+        <th>Best for</th>
+        <th>Cost posture</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Fable 5</strong></td>
+        <td>Orchestrator</td>
+        <td>Planning, decomposing, synthesizing</td>
+        <td>High, but lean context keeps it efficient</td>
+      </tr>
+      <tr>
+        <td><strong>Opus</strong></td>
+        <td>Deep reasoner</td>
+        <td>Architecture, hard debugging, algorithm design</td>
+        <td>Highest — use sparingly, on hard problems</td>
+      </tr>
+      <tr>
+        <td><strong>Sonnet</strong></td>
+        <td>Fast worker</td>
+        <td>Boilerplate, tests, formatting, simple edits</td>
+        <td>Low — bulk of token spend lands here</td>
+      </tr>
+      <tr>
+        <td><strong>Codex</strong></td>
+        <td>Peer engineer</td>
+        <td>Fresh perspective, parallel problem-solving</td>
+        <td>Separate bill (OpenAI) — use for high-stakes</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-label">Key insight</div>
+    The orchestrator (Fable 5) should do <strong>minimal actual work</strong>. Its job is
+    to plan, decompose, delegate, and synthesize. Think of it as a tech lead who never
+    writes code — only decides <em>who</em> writes <em>what</em>.
+  </div>
+
+  <h2>The routing decision</h2>
+
+  <p>
+    When a task comes in, the orchestrator asks one question: <em>What kind of thinking
+    does this require?</em>
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Reasoning-heavy &rarr; Opus (deep-reasoner)</h3>
+      <span class="step-body">Architecture decisions, debugging complex race conditions, designing algorithms, analyzing tradeoffs. These need deep, careful thinking.</span>
+    </li>
+    <li>
+      <h3>Mechanical work &rarr; Sonnet (fast-worker)</h3>
+      <span class="step-body">Writing tests, generating boilerplate, formatting code, making simple edits. High-volume, low-complexity tasks.</span>
+    </li>
+    <li>
+      <h3>High-stakes decision &rarr; Opus + Codex in parallel</h3>
+      <span class="step-body">When a decision really matters, get <em>two independent perspectives</em>. Task both on the same problem; synthesize. Neither sees the other's answer.</span>
+    </li>
+    <li>
+      <h3>Need a fresh take &rarr; Codex</h3>
+      <span class="step-body">Codex (OpenAI) has a different training distribution than Claude. When you suspect tunnel vision, send it to Codex for an orthogonal perspective.</span>
+    </li>
+  </ol>
+
+  <h2>The cost math</h2>
+
+  <p>
+    Here's why this matters for the wallet. Say you're building a feature that involves:
+  </p>
+
+  <ul>
+    <li>1 architecture decision (hard reasoning) &mdash; <strong>Opus</strong></li>
+    <li>10 implementation files (mechanical) &mdash; <strong>Sonnet</strong></li>
+    <li>5 test files (mechanical) &mdash; <strong>Sonnet</strong></li>
+    <li>Orchestration overhead &mdash; <strong>Fable 5</strong> (lean context)</li>
+  </ul>
+
+  <p>
+    Without orchestration, you'd run <em>everything</em> through your most expensive model.
+    With orchestration, only the hard 10% gets expensive tokens. The remaining 90% runs on
+    Sonnet at a fraction of the cost.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">Anti-pattern</div>
+    Don't let the orchestrator (Fable 5) do the work itself. If Fable starts writing
+    implementation code, you're paying orchestrator prices for worker work. Keep Fable's
+    context lean — plan, delegate, synthesize.
+  </div>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">A teammate asks you to review a complex database migration that's timing out. Which model handles this?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Sonnet — it's just a code review</button>
+      <button class="quiz-opt" data-correct="true">Opus — debugging complex performance issues needs deep reasoning</button>
+      <button class="quiz-opt" data-correct="false">Fable 5 — let the orchestrator handle it directly</button>
+      <button class="quiz-opt" data-correct="false">Codex — always get a fresh perspective on bugs</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">You need to add error handling to 12 API endpoints. Same pattern, different endpoints. Which model?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Opus — error handling is important, use the best model</button>
+      <button class="quiz-opt" data-correct="true">Sonnet — this is mechanical, repetitive work across many files</button>
+      <button class="quiz-opt" data-correct="false">Codex — get OpenAI's perspective on error patterns</button>
+      <button class="quiz-opt" data-correct="false">Fable 5 — orchestrate each endpoint as a separate task</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">You're deciding between two fundamentally different state management approaches for a new app. Which routing?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Sonnet — just pick one and start building fast</button>
+      <button class="quiz-opt" data-correct="false">Opus alone — deep reasoning is sufficient for architecture</button>
+      <button class="quiz-opt" data-correct="true">Opus + Codex in parallel — high-stakes decision, get two independent perspectives</button>
+      <button class="quiz-opt" data-correct="false">Fable 5 — the orchestrator should decide architecture</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    Read the
+    <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code official documentation</a>
+    for the authoritative reference on model selection, subagents, and plugin configuration.
+    The orchestrator pattern builds on these primitives.
+  </p>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      Now that you understand <em>why</em> we split work across models, the next lesson
+      covers the <strong>hands-on setup</strong> — configuring Fable 5 as orchestrator,
+      creating the two subagents, and installing the Codex plugin.
+    </p>
+    <p>&rarr; <a href="./0002-setup-walkthrough.html">Lesson 2: Setup Walkthrough</a></p>
+    <p>&rarr; <a href="../reference/orchestration-cheatsheet.html">Reference: Orchestration Cheatsheet</a></p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Multi-Model Orchestration · Lesson 1</span>
+    <span><a href="../index.html">Index</a> &middot; <a href="./0002-setup-walkthrough.html">L2 &rarr;</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Questions?</div>
+    Come back to the agent anytime — type <code>/teach</code> and ask about anything in this
+    lesson. I'm your teacher, and I can help clarify any concept or go deeper on what interests you.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. You matched the task type to the right model.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Think about the complexity of the task, not its importance.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

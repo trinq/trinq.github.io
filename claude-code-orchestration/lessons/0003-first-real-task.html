@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3 — First Real Task</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>First Real Task</h1>
+  <div class="lesson-meta">
+    <span class="num">L3</span>
+    Measurement · ~20 min active + a real run · Lesson 3 of the Multi-Model Orchestration series
+  </div>
+
+  <p>
+    <a href="0001-the-orchestrator-pattern.html">Lesson 1</a> gave you the pattern.
+    <a href="0002-setup-walkthrough.html">Lesson 2</a> set it up on your machine. This
+    lesson does the actual measurement: run a real task both ways, log the numbers, and
+    turn "orchestration saves money" from a claim into a data point.
+  </p>
+
+  <h2>What we're measuring</h2>
+
+  <p>
+    We are measuring the <strong>routing effect</strong> &mdash; the difference orchestration
+    makes when the orchestrator (Fable 5) is the same in both arms. We are <em>not</em>
+    measuring whether Fable 5 beats Opus, or whether Sonnet is good enough on its own.
+    Those are different experiments.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Arm</th>
+        <th>Active model</th>
+        <th>Subagents</th>
+        <th><code>CLAUDE.md</code> snippet</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>A &mdash; control</strong></td>
+        <td>Fable 5 (orchestrator, but solo)</td>
+        <td>disabled / not invoked</td>
+        <td>absent</td>
+      </tr>
+      <tr>
+        <td><strong>B &mdash; orchestrated</strong></td>
+        <td>Fable 5 (orchestrator)</td>
+        <td>deep-reasoner + fast-worker</td>
+        <td>snippet from Lesson 2 present</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Both arms use Fable 5. The only thing that changes is whether Fable 5 is allowed to
+    delegate. This isolates the effect we're claiming: that <em>routing the right work to
+    the right model</em> reduces cost while keeping quality stable.
+  </p>
+
+  <div class="callout info">
+    <div class="callout-label">Why this design</div>
+    A simpler A/B &mdash; "Fable 5 vs Opus" &mdash; confounds two effects: model capability
+    and routing strategy. We'd never know whether any cost difference came from the model
+    itself or from the delegation. By holding the model constant and varying only the
+    routing, we get a clean answer to the question the mission actually asks:
+    <em>does orchestration pay for itself?</em>
+  </div>
+
+  <h2>The protocol</h2>
+
+  <ol class="steps">
+    <li>
+      <h3>Pick a task</h3>
+      <span class="step-body">A real feature in a real codebase. Small enough to do in one Claude Code session (10&ndash;60 minutes of work). Big enough to require both reasoning and implementation. The worked example below uses a React class-to-hooks refactor; substitute your own.</span>
+    </li>
+    <li>
+      <h3>Define the quality gate</h3>
+      <span class="step-body">A binary check that says "this work is done." For the worked example it's the existing test suite passing. For a new feature it's whatever acceptance criterion you can phrase as "X passes." Without this, both arms will be judged by vibes.</span>
+    </li>
+    <li>
+      <h3>Run arm A &mdash; control</h3>
+      <span class="step-body">Temporarily rename or comment out the orchestration snippet in CLAUDE.md so Fable 5 doesn't know about the subagents. Use the same task prompt as arm B. Log: total tokens, wall-clock time, whether the quality gate passed.</span>
+    </li>
+    <li>
+      <h3>Run arm B &mdash; orchestrated</h3>
+      <span class="step-body">Restore the orchestration snippet. Revert arm A's code changes. Use the same task prompt. Log: total tokens, wall-clock time, whether the quality gate passed. Also note how many times Fable 5 routed to each subagent.</span>
+    </li>
+    <li>
+      <h3>Fill the worksheet</h3>
+      <span class="step-body">Copy the worksheet at the end of this lesson into <code>learning-records/0004-cost-experiment-first-real-task.md</code>. Fill it in. Don't skip the quality assessment.</span>
+    </li>
+  </ol>
+
+  <h2>The current Claude API pricing you'll log against</h2>
+
+  <p>
+    Costs are per million tokens. Output bills at 5&times; input. These are the
+    numbers you'll multiply your token counts by.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Input <code>$/MTok</code></th>
+        <th>Output <code>$/MTok</code></th>
+        <th>Role in this lesson</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Fable 5</strong></td>
+        <td>$10</td>
+        <td>$50</td>
+        <td>Orchestrator in both arms</td>
+      </tr>
+      <tr>
+        <td><strong>Opus 4.8</strong></td>
+        <td>$5</td>
+        <td>$25</td>
+        <td>deep-reasoner (arm B only)</td>
+      </tr>
+      <tr>
+        <td><strong>Sonnet 4.6</strong></td>
+        <td>$3</td>
+        <td>$15</td>
+        <td>fast-worker (arm B only)</td>
+      </tr>
+      <tr>
+        <td><strong>Haiku 4.5</strong></td>
+        <td>$1</td>
+        <td>$5</td>
+        <td>Cheapest worker tier &mdash; not used here</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <div class="callout-label">Pricing caveat</div>
+    Sonnet 5 (when it ships to Claude Code) has introductory pricing of $2/$10 per MTok
+    through August 31, 2026, then reverts to the standard $3/$15. If your session is
+    routed to Sonnet 5 instead of Sonnet 4.6, log the model version and use its rate.
+    The protocol is the same; only the numbers shift.
+  </div>
+
+  <p>
+    All prices verified against
+    <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noopener">Claude Platform pricing docs</a>
+    (July 2026 rates).
+  </p>
+
+  <hr>
+
+  <h2>Worked example &mdash; React class-to-hooks refactor</h2>
+
+  <p>
+    Suppose you have a React codebase with a 200-line class component
+    (<code>UserProfile</code>) that handles user data, lifecycle effects, and form
+    submission. The task: convert it to a hooks-based component with the same behavior.
+  </p>
+
+  <p>
+    Why this task fits the experiment:
+  </p>
+
+  <ul>
+    <li><strong>Real</strong> &mdash; class-to-hooks is the kind of refactor you do constantly.</li>
+    <li><strong>Multi-file</strong> &mdash; the conversion will likely produce several small helper files plus the main component.</li>
+    <li><strong>Has a quality gate</strong> &mdash; the test suite passes, or it doesn't.</li>
+    <li><strong>Splits naturally</strong> &mdash; "what's the right decomposition into hooks?" is Opus-grade reasoning; "do the mechanical conversion" is Sonnet-grade implementation; "did we lose any behavior?" is Codex-grade peer review.</li>
+  </ul>
+
+  <h3>The task prompt (use the same text for both arms)</h3>
+
+  <pre data-lang="Claude Code · paste into Fable 5, same text in both arms"><code>Goal: Convert src/components/UserProfile.jsx from a React class component
+      to a function component using hooks, preserving identical behavior.
+Context: React 18, TypeScript. The existing test suite at
+         src/components/__tests__/UserProfile.test.tsx must continue to
+         pass without modification.
+You're the lead. Plan first, then execute.</code></pre>
+
+  <h3>Running arm A (control)</h3>
+
+  <p>
+    Comment out the orchestration snippet in <code>CLAUDE.md</code> for this run:
+  </p>
+
+  <pre data-lang="CLAUDE.md · temporarily commented out"><code>&lt;!--
+## Orchestration workflow
+You (Fable) are the orchestrator. Plan, decompose, synthesize.
+Reasoning-heavy phases &rarr; deep-reasoner
+Mechanical work &rarr; fast-worker
+...
+--&gt;</code></pre>
+
+  <p>
+    Fable 5 still loads the subagent definitions (you can't fully un-register them
+    without deleting the files), but with the snippet absent, it won't think of itself
+    as an orchestrator and won't delegate. Run the task. When it finishes, capture:
+  </p>
+
+  <ul>
+    <li>Total tokens from the session footer (Claude Code shows this at the end).</li>
+    <li>Wall-clock time from when you sent the prompt to when the work was done.</li>
+    <li>Did the test suite pass? (<code>npm test -- UserProfile</code>)</li>
+  </ul>
+
+  <p>
+    Revert the changes when you're done &mdash; you want a clean repo before arm B.
+  </p>
+
+  <h3>Running arm B (orchestrated)</h3>
+
+  <p>
+    Restore the <code>CLAUDE.md</code> snippet. Send the <em>same</em> prompt. Capture
+    the same numbers, plus:
+  </p>
+
+  <ul>
+    <li>How many times did Fable 5 route to <code>deep-reasoner</code>?</li>
+    <li>How many times did it route to <code>fast-worker</code>?</li>
+    <li>Did it ever call <code>/codex:rescue</code>?</li>
+    <li>Did the test suite pass?</li>
+  </ul>
+
+  <div class="callout tip">
+    <div class="callout-label">Finding the routing counts</div>
+    The session log shows subagent invocations. In Claude Code, scroll up after the
+    session &mdash; you'll see lines like <code>[subagent: deep-reasoner]</code> or
+    <code>[tool: Agent]</code> each time Fable 5 spawned a subagent. Count them. If
+    Fable 5 didn't delegate at all, that's a finding too &mdash; either the task was
+    too simple for orchestration to add value, or the snippet isn't being read.
+  </div>
+
+  <hr>
+
+  <h2>What to look for in the numbers</h2>
+
+  <p>
+    Three findings are worth watching for. None of them is a "win" or "loss" on its own
+    &mdash; the point is to surface what orchestration actually does in your codebase.
+  </p>
+
+  <h3>1. Token cost ratio</h3>
+
+  <p>
+    Compute the dollar cost of each arm using the table above. The interesting question
+    is not "did arm B cost less?" &mdash; arm B might cost <em>more</em> if Fable 5 does a
+    lot of planning. The interesting question is <em>cost per unit of useful work</em>,
+    which is why the quality gate matters.
+  </p>
+
+  <p>
+    A clean win looks like: arm B costs 40&ndash;70% of arm A for the same passing test
+    suite. A wash looks like: arm B costs 90&ndash;110% of arm A. A loss looks like:
+    arm B costs more than arm A <em>and</em> the test suite still passes in arm A.
+  </p>
+
+  <h3>2. Where the subagents went</h3>
+
+  <p>
+    If Fable 5 routed to <code>deep-reasoner</code> for the architectural decomposition
+    (which hooks, where do state and effects live) and to <code>fast-worker</code> for
+    the per-file rewrite, you have evidence the routing rules are working. If Fable 5
+    routed to <code>deep-reasoner</code> for everything, the snippet isn't giving it
+    permission to use the cheap model for mechanical work &mdash; you'll want to revise
+    the <code>CLAUDE.md</code> snippet to be more explicit about when to use which.
+  </p>
+
+  <h3>3. Quality delta</h3>
+
+  <p>
+    If both arms pass the quality gate, orchestration's job is done &mdash; cost ratio
+    is the only metric. If arm A passes and arm B doesn't, something in the routing
+    caused the work to degrade; check whether a subagent returned a wrong conclusion
+    that Fable 5 trusted. If arm B passes and arm A doesn't, orchestration genuinely
+    improved quality and the cost question becomes "is the improvement worth the
+    extra spend?"
+  </p>
+
+  <hr>
+
+  <h2>The worksheet</h2>
+
+  <p>
+    Copy this block into <code>learning-records/0004-cost-experiment-first-real-task.md</code>
+    and fill it in. Don't edit the structure &mdash; the fields exist because you'll want
+    to compare across runs later.
+  </p>
+
+  <pre data-lang="learning-records/0004-cost-experiment-first-real-task.md"><code># Cost experiment &mdash; first real task
+
+**Date:**
+**Task:**
+**Quality gate:**
+
+## Arm A &mdash; control (Fable 5, no routing)
+- Input tokens:
+- Output tokens:
+- Wall-clock time:
+- Quality gate: pass / fail
+- Notes:
+
+## Arm B &mdash; orchestrated (Fable 5 + subagents + CLAUDE.md snippet)
+- Input tokens:
+- Output tokens:
+  - Fable 5:
+  - Opus (deep-reasoner):
+  - Sonnet (fast-worker):
+  - Codex (if invoked):
+- Wall-clock time:
+- Quality gate: pass / fail
+- Subagent invocations:
+  - deep-reasoner: N
+  - fast-worker: N
+  - /codex:rescue: N
+- Notes:
+
+## Cost (per the pricing table)
+- Arm A cost: $
+- Arm B cost: $
+- Ratio (B / A): x
+
+## Findings
+- Did arm B beat arm A on cost? On quality?
+- Did the routing land where you expected?
+- Anything you'd change in the CLAUDE.md snippet?</code></pre>
+
+  <hr>
+
+  <h2>When NOT to trust the data</h2>
+
+  <p>
+    One run is not a benchmark. Before you write a learning record that says
+    "orchestration cuts cost by 50%," watch for these confounders:
+  </p>
+
+  <ul>
+    <li><strong>One-shot variance.</strong> A single run of either arm is noisy. The right move is to run both arms twice and average, or to pick a task with enough tokens that the noise is small relative to the signal.</li>
+    <li><strong>Prompt cache effects.</strong> The second arm reuses cached context from the first. This can understate arm B's tokens. If you're using the same project, log the cache-hit ratio from the session footer.</li>
+    <li><strong>Model version drift.</strong> Sonnet 5 may be in introductory pricing until August 31, 2026, then jump to the standard rate. If you re-run the experiment across that boundary, log the price change as a footnote.</li>
+    <li><strong>Quality gate too loose.</strong> "Tests pass" is a clean gate. "Looks fine" is not. If your gate is subjective, run both arms past a teammate who doesn't know which is which.</li>
+    <li><strong>Fable 5 didn't actually orchestrate.</strong> If the routing counts are zero in arm B, your snippet isn't being read or Fable 5 decided the task was too simple to delegate. The experiment then compares "Fable 5 alone" in both arms, not "orchestrated vs un-orchestrated."</li>
+  </ul>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">Why does this experiment hold Fable 5 constant across both arms, instead of comparing Fable 5 vs Opus?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Opus is too expensive to bother measuring</button>
+      <button class="quiz-opt" data-correct="false">Fable 5 is always cheaper than Opus</button>
+      <button class="quiz-opt" data-correct="true">Holding the model constant isolates the routing effect from the model effect, so the result actually answers "does orchestration pay for itself"</button>
+      <button class="quiz-opt" data-correct="false">Claude Code can't compare two different models in one session</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">Arm B costs less than arm A, but both pass the quality gate. What's the right interpretation?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Orchestration always wins &mdash; declare victory</button>
+      <button class="quiz-opt" data-correct="false">Run again until arm B costs more, because the first run must have been a fluke</button>
+      <button class="quiz-opt" data-correct="true">This is the cleanest possible outcome: cost down, quality stable. Worth replicating across more tasks before generalizing</button>
+      <button class="quiz-opt" data-correct="false">Quality can't actually be "stable" unless you re-run both arms three times each</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">In arm B, Fable 5 routed everything to deep-reasoner (zero invocations of fast-worker). What's the most likely cause?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The deep-reasoner subagent is broken</button>
+      <button class="quiz-opt" data-correct="true">The CLAUDE.md snippet isn't explicit enough about when to use the cheap model for mechanical work</button>
+      <button class="quiz-opt" data-correct="false">Sonnet is unavailable on the account</button>
+      <button class="quiz-opt" data-correct="false">fast-worker doesn't exist as a subagent</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    The pricing data in this lesson is verified against the
+    <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noopener">Claude Platform pricing docs</a>
+    (July 2026). For model capability and the orchestration primitives themselves,
+    <a href="https://docs.anthropic.com/en/docs/claude-code/sub-agents" target="_blank" rel="noopener">the subagents docs</a>
+    and
+    <a href="https://docs.anthropic.com/en/docs/claude-code/model-config" target="_blank" rel="noopener">the model configuration docs</a>
+    are the authority.
+  </p>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      Lesson 4 generalizes from one task to a <em>workflow</em>. Once you have one
+      measurement, the question becomes: how do you build a routing strategy that holds
+      up across many tasks? The artifact from this lesson
+      (<code>learning-records/0004-cost-experiment-first-real-task.md</code>) becomes
+      the first data point in a running comparison.
+    </p>
+    <p>&rarr; <a href="./0004-routing-strategy.html">Lesson 4: Building a Routing Strategy</a></p>
+    <p>&rarr; <a href="../reference/orchestration-cheatsheet.html">Reference: Orchestration Cheatsheet</a></p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Multi-Model Orchestration · Lesson 3</span>
+    <span><a href="./0002-setup-walkthrough.html">&larr; L2</a> &middot; <a href="../index.html">Index</a> &middot; <a href="./0004-routing-strategy.html">L4 &rarr;</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Questions?</div>
+    Running the experiment and something looks wrong &mdash; zero routing in arm B,
+    costs wildly different from the prediction, quality gate flaky? Come back to the
+    agent and tell me which step. I'm your teacher.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. That\u2019s the right reading of the data.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the relevant section above.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

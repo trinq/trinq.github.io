@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 4 — Building a Routing Strategy</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Building a Routing Strategy</h1>
+  <div class="lesson-meta">
+    <span class="num">L4</span>
+    Judgment skill · ~15 min · Lesson 4 of the Multi-Model Orchestration series
+  </div>
+
+  <p>
+    <a href="0001-the-orchestrator-pattern.html">Lesson 1</a> gave you the four-model
+    map. <a href="0003-first-real-task.html">Lesson 3</a> gave you a measurement
+    protocol. This lesson gives you something harder to acquire: the ability to
+    look at a task and make a routing call in under thirty seconds &mdash; and be
+    right most of the time.
+  </p>
+
+  <p>
+    Routing is a judgment skill, not a rule you look up. The way you build judgment
+    is not by reading about it &mdash; it's by seeing it done, then doing it yourself,
+    then checking whether you were right.
+  </p>
+
+  <h2>The heuristic that replaces "reasoning vs. mechanical"</h2>
+
+  <p>
+    Lesson 1 called it "reasoning-heavy" vs. "mechanical." That's right but vague.
+    Here's a sharper frame:
+  </p>
+
+  <blockquote>
+    A task is worth routing to the expensive model (<strong>Opus</strong>) when the
+    valuable output is expensive to produce &mdash; meaning the next step is uncertain,
+    a wrong turn wastes significant effort, or the output has to be right the first time.
+    <br><br>
+    A task belongs on the cheap model (<strong>Sonnet</strong>) when the valuable output
+    is cheap to produce &mdash; meaning the pattern is clear, the quality gate is the
+    existing test suite, or you're regenerating something structurally similar to
+    code that already exists.
+  </blockquote>
+
+  <p>
+    In other words: <strong>expensive reasoning earns its cost when the output is
+    expensive to get wrong.</strong>
+  </p>
+
+  <div class="callout tip">
+    <div class="callout-label">The "expensive output" test</div>
+    Ask: <em>what's the most expensive thing this task could produce?</em>
+    If the answer is a long, detailed, high-value artifact &mdash; an architecture
+    doc, a debug trace, a novel implementation &mdash; route to Opus.
+    If the answer is 200 lines of familiar pattern &mdash; CRUD endpoints, test
+    coverage, boilerplate &mdash; route to Sonnet.
+  </p>
+  </div>
+
+  <hr>
+
+  <h2>Four worked case studies</h2>
+
+  <p>
+    Each case shows how a practitioner applies the heuristic. Read each one as
+    a decision process, not just a conclusion. Ask: would I have routed the same way?
+  </p>
+
+  <h3>Case A &mdash; Database selection</h3>
+
+  <p><em>The task:</em> "We need to store time-series sensor data. Should we use Postgres + TimescaleDB, ClickHouse, or DynamoDB?"</p>
+
+  <p><em>The routing:</em> Opus. Every time.</p>
+
+  <p><em>The reasoning:</em> The valuable output is a decision that constrains the next
+  six months of development. The downside of a wrong choice is high &mdash; a migration
+  from ClickHouse to Postgres is not a weekend project. The expensive model's
+  cost is trivial relative to the cost of a wrong database. Sonnet could generate a
+  comparison table of all three, but it would be shallow and would not hold up to
+  scrutiny from a DBA. The routing decision here is not about tokens &mdash; it's
+  about the cost of being wrong.</p>
+
+  <h3>Case B &mdash; CRUD endpoint generation</h3>
+
+  <p><em>The task:</em> "Add a POST /users endpoint and a GET /users/:id endpoint to our Express app. Use the existing User model."</p>
+
+  <p><em>The routing:</em> Sonnet. Every time.</p>
+
+  <p><em>The reasoning:</em> The valuable output is 80 lines of familiar Express
+  boilerplate. The pattern is established &mdash; the app already has three similar
+  endpoints. The quality gate is the existing test suite: if the tests pass, the
+  implementation is correct. Routing this to Opus pays for a senior engineer to
+  write the same thing a junior engineer would write. Sonnet will do it correctly
+  and cheaply. The only reason to involve Opus here is if the existing endpoints
+  have subtle inconsistencies that require deep reasoning about the codebase &mdash;
+  and if that's the case, the routing decision should have been made earlier,
+  at the "should these endpoints follow the same pattern?" question.</p>
+
+  <h3>Case C &mdash; Debugging a race condition</h3>
+
+  <p><em>The task:</em> "Our queue consumer sometimes processes the same message twice under high load. It's intermittent and only happens in production."</p>
+
+  <p><em>The routing:</em> Opus. But the session should include Codex in parallel for the high-stakes phase.</p>
+
+  <p><em>The reasoning:</em> Race conditions are high-uncertainty problems. The next step is
+  genuinely unclear &mdash; it could be the queue ack timing, the database transaction isolation level, a
+  shared mutable variable, or a misconfigured consumer group. A wrong theory leads to
+  hours of debugging in the wrong direction. The expensive model is worth it here.
+  The routing decision: Opus for the root-cause analysis phase. Sonnet for implementing
+  the fix once the root cause is known (implementing a idempotency key is not
+  architecturally hard &mdash; it just requires knowing where to put it). Codex in parallel
+  during the analysis phase: a race condition has a second, equally valid explanation
+  that the first-pass analysis might miss. The cost of Codex's time is negligible
+  relative to the cost of shipping the wrong fix.</p>
+
+  <h3>Case D &mdash; Greenfield feature design</h3>
+
+  <p><em>The task:</em> "Design the data model and API shape for a new notification system we're building from scratch."</p>
+
+  <p><em>The routing:</em> Opus for the initial design. Sonnet for implementation.</p>
+
+  <p><em>The reasoning:</em> The design phase has high output value and high cost
+  of being wrong &mdash; a bad data model requires a migration to fix; a bad API
+  shape requires a breaking change. Route to Opus for the design. Then, once the
+  design is agreed, the implementation is mechanical &mdash; translate the design doc
+  into code. Sonnet handles that. The routing decision is time-phased: the split
+  is not "which model" but "which model at which stage."</p>
+
+  <hr>
+
+  <h2>Practice cases</h2>
+
+  <p>
+    For each task below, make a routing call before reading the answer. Cover the
+    answer with your cursor. The "expensive output" test is the right tool.
+  </p>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">"Add request-level rate limiting middleware to our Express app. Use the existing token bucket implementation."</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="true">Sonnet — the pattern is clear, the existing token bucket impl is the spec, the quality gate is the test suite</button>
+      <button class="quiz-opt" data-correct="false">Opus — rate limiting is security-sensitive and wrong implementations cause outages</button>
+      <button class="quiz-opt" data-correct="false">Opus + Codex in parallel — security decisions always need two independent perspectives</button>
+      <button class="quiz-opt" data-correct="false">Fable 5 direct — let the orchestrator handle it without subagents</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">"We're choosing between three React component library options (Radix, Headless UI, shadcn/ui). Help us decide."</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Sonnet — this is a dependency decision, not a code decision</button>
+      <button class="quiz-opt" data-correct="false">Fable 5 direct — this is an opinion question, not a routing question</button>
+      <button class="quiz-opt" data-correct="true">Opus — the output is a decision that constrains the codebase for months; wrong choice means a costly migration</button>
+      <button class="quiz-opt" data-correct="false">Sonnet + Codex — Sonnet picks two, Codex validates</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">"Convert twelve Jest test files from enzyme to React Testing Library. The patterns are consistent across all files."</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="true">Sonnet — twelve files of the same known pattern; Sonnet is faster and cheaper for this</button>
+      <button class="quiz-opt" data-correct="false">Opus — test migrations are high-risk and need senior oversight</button>
+      <button class="quiz-opt" data-correct="false">Codex — OpenAI's Codex has better test migration knowledge</button>
+      <button class="quiz-opt" data-correct="false">Fable 5 direct — let the orchestrator write all twelve files</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>The routing decision tree</h2>
+
+  <p>
+    A reusable tree for the thirty-second call. Run it in order. Stop when you hit a
+    decision.
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Is the output expensive to get wrong?</h3>
+      <span class="step-body">If wrong output requires a significant rewrite, a breaking change, or a costly rollback: <strong>Opus</strong>. Otherwise, continue.</span>
+    </li>
+    <li>
+      <h3>Is the output pattern clear and familiar?</h3>
+      <span class="step-body">If there's an existing similar implementation and the quality gate is "tests pass": <strong>Sonnet</strong>. Otherwise, continue.</span>
+    </li>
+    <li>
+      <h3>Is this a high-stakes decision with a second valid perspective likely?</h3>
+      <span class="step-body">Architecture, debugging, novel implementation: <strong>Opus + Codex</strong> in parallel. Otherwise, <strong>Opus</strong>.</span>
+    </li>
+    <li>
+      <h3>Is the task multi-phase?</h3>
+      <span class="step-body">If the task has a design phase followed by an implementation phase: split across time. <strong>Opus</strong> for design, <strong>Sonnet</strong> for implementation.</span>
+    </li>
+  </ol>
+
+  <p>
+    Most tasks stop at step 2. The routing decision happens fast once you build the habit.
+  </p>
+
+  <hr>
+
+  <h2>The three signals that override the tree</h2>
+
+  <p>
+    The tree handles routine cases. These three signals override it every time:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Signal</th>
+        <th>What it means</th>
+        <th>Override</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>You're stuck</strong></td>
+        <td>You've been on the same problem for more than 30 minutes with no clear next step</td>
+        <td>Send to Codex (<code>/codex:rescue --background</code>). A different perspective is worth its cost.</td>
+      </tr>
+      <tr>
+        <td><strong>You don't know what you don't know</strong></td>
+        <td>The task touches a domain you haven't worked in (a new database, a new protocol, a new framework)</td>
+        <td>Opus. The cost of the expensive model is lower than the cost of discovering the gaps at the Sonnet level.</td>
+      </tr>
+      <tr>
+        <td><strong>The team is watching</strong></td>
+        <td>The output will be seen by stakeholders who need confidence in the work</td>
+        <td>Opus + Codex. The synthesis has to hold up to external scrutiny.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>What's next &mdash; the measurement loop</h2>
+
+  <p>
+    Lesson 3 gave you the measurement protocol. This lesson gave you the judgment
+    heuristic. Together, they form a loop: you make a routing call, you measure
+    the outcome, you update the heuristic.
+  </p>
+
+  <p>
+    The loop has three states:
+  </p>
+
+  <ul>
+    <li><strong>Confident:</strong> The routing decision felt right, the quality gate passed, the cost was what you expected. Keep routing the same way.</li>
+    <li><strong>Cost surprised:</strong> The routing felt right but the cost was much higher than expected. Look at the routing counts. Did Sonnet produce the output cheaply? If not, the task was more complex than it looked &mdash; note it for next time.</li>
+    <li><strong>Quality surprised:</strong> The routing felt right but the quality gate failed. Did Opus miss something? Did Sonnet produce something subtly wrong? This is the most valuable data point &mdash; it tells you where the heuristic is miscalibrated.</li>
+  </ul>
+
+  <p>
+    The goal is not a perfect heuristic &mdash; it's a heuristic that's calibrated
+    to your codebase. The measurements from Lesson 3 are what calibrate it.
+    Run the experiment, log the worksheet, and the routing tree starts reflecting
+    your reality, not a general principle.
+  </p>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <div class="quiz" id="quiz4">
+    <div class="quiz-q">A teammate routes "add Redis caching to our auth endpoint" to Opus. What question would you ask to verify the routing?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Is caching a security feature? (Yes, always route security to Opus)</button>
+      <button class="quiz-opt" data-correct="false">Is the cache invalidation strategy complex? (Yes, route to Opus if it is)</button>
+      <button class="quiz-opt" data-correct="true">What does the existing Redis client setup look like? (If there's an existing pattern, the output is familiar &mdash; Sonnet is probably right)</button>
+      <button class="quiz-opt" data-correct="false">Has this been benchmarked? (Always benchmark before routing)</button>
+    </div>
+    <div class="quiz-feedback" id="quiz4-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz5">
+    <div class="quiz-q">You've been debugging the same Postgres query performance issue for 45 minutes with no progress. What's the right move?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Switch to Opus &mdash; Sonnet clearly can't handle this</button>
+      <button class="quiz-opt" data-correct="false">Restart the session &mdash; you might be context-stale</button>
+      <button class="quiz-opt" data-correct="true">Send to Codex (<code>/codex:rescue --background</code>) &mdash; stuck for 30+ minutes is the "you're stuck" signal that overrides the routing tree</button>
+      <button class="quiz-opt" data-correct="false">Route to Sonnet &mdash; at this point it's just mechanical tuning anyway</button>
+    </div>
+    <div class="quiz-feedback" id="quiz5-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    This lesson is built from the judgment patterns that emerge from the four
+    case studies &mdash; not from a single authoritative doc. The routing tree is
+    a synthesis of the cost/quality reasoning that runs through Lessons 1&ndash;3.
+    For the measurement loop, see
+    <a href="0003-first-real-task.html">Lesson 3</a>. For the command reference,
+    see <a href="../reference/orchestration-cheatsheet.html">the cheatsheet</a>.
+  </p>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      Lessons 1&ndash;4 covered the foundations. The natural end-state of this
+      curriculum is a <strong>Routing Strategy Reference</strong> &mdash; a single-page
+      decision guide tuned to your codebase, built from your actual measurements.
+      Lesson 5 will introduce four power-user techniques that make the orchestrator genuinely more powerful: partial delegation, parallel synthesis, sequential escalation, and context management.
+    </p>
+    <p>&rarr; <a href="./0005-advanced-orchestration-patterns.html">Lesson 5: Advanced Orchestration Patterns</a></p>
+    <p>&rarr; <a href="../reference/orchestration-cheatsheet.html">Reference: Orchestration Cheatsheet</a></p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Multi-Model Orchestration &middot; Lesson 4</span>
+    <span><a href="./0003-first-real-task.html">&larr; L3</a> &middot; <a href="../index.html">Index</a> &middot; <a href="./0005-advanced-orchestration-patterns.html">L5 &rarr;</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Questions?</div>
+    Got a task you're unsure how to route? Come back to the agent and describe it.
+    I'll walk through the routing decision with you and explain the call. The
+    conversation is the lesson.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. That\u2019s the right reading of the heuristic.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the decision tree or the relevant case study above.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
