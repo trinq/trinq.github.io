@@ -348,6 +348,198 @@ tr:hover td { background: var(--code-bg); }
 .footer-nav a { color: var(--accent); }
 .footer-nav a:hover { border-bottom-color: var(--accent); }
 
+/* ---- Site chrome (sibling to the lesson-interior rules above) ---- */
+
+/* Header */
+.site-header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.site-header-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  height: 3.5rem;
+}
+.site-logo {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border-bottom: none;
+  white-space: nowrap;
+}
+.site-logo:hover { color: var(--accent); border-bottom-color: transparent; }
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.site-nav a {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+}
+.site-nav a:hover { color: var(--accent); background: var(--code-bg); }
+.site-nav a.active { color: var(--accent); }
+
+/* Breadcrumbs */
+.crumbs {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-bottom: 2rem;
+  font-family: Georgia, "Iowan Old Style", serif;
+}
+.crumbs a { color: var(--ink-soft); }
+.crumbs a:hover { border-bottom-color: var(--ink-soft); }
+
+/* Section label (e.g. "Lessons", "Reference" above the card grid) */
+.section-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 2.8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Lesson grid (the card container) */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Card */
+.card {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  background: #fff;
+  padding: 1.2rem 1.4rem;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.card:hover {
+  transform: translateY(-1px);
+  border-color: var(--rule-strong);
+  border-left-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(192, 57, 43, 0.06);
+}
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+.card-num {
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.card-category-badge {
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-dim);
+  background: var(--code-bg);
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+}
+.card-time {
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+  margin-left: auto;
+}
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0.3rem 0 0.5rem;
+}
+.card-title a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.card-title a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.card-desc {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Footer */
+.site-footer {
+  margin-top: 4rem;
+  padding: 2rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--rule);
+  background: var(--bg);
+}
+.site-footer-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.site-footer h4 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.7rem;
+}
+.site-footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.site-footer li { margin-bottom: 0.35rem; }
+.site-footer a {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+.site-footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.site-footer-bottom {
+  max-width: 780px;
+  margin: 2rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .site-header-inner { flex-direction: column; height: auto; padding: 0.8rem 0; gap: 0.5rem; }
+  .site-nav { gap: 0.5rem; }
+  .site-footer-inner { grid-template-columns: 1fr; }
+}
+
 /* ---- Print ---- */
 @media print {
   body {
@@ -358,8 +550,8 @@ tr:hover td { background: var(--code-bg); }
     font-size: 11pt;
   }
   h1, h2, h3 { page-break-after: avoid; }
-  .arch-node, .steps li, .callout, pre, .quiz, .next-up { break-inside: avoid; }
+  .arch-node, .steps li, .callout, pre, .quiz, .next-up, .card { break-inside: avoid; }
   a { color: #1a1a1a; text-decoration: underline; }
-  .footer-nav, .quiz-feedback { display: none; }
+  .site-header, .site-footer, .footer-nav, .quiz-feedback { display: none; }
   .arch-node { box-shadow: none; }
 }
