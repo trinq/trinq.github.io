@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0010 — Context Management: The Silent Killer</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout.insight {
+      background: #e3f2fd;
+      border-left-color: #1565c0;
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0.5rem 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0.5rem 0.4rem 0; vertical-align: top; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare > div {
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .compare .bad {
+      background: #fdecea;
+      border-left: 3px solid var(--accent);
+    }
+    .compare .good {
+      background: #e8f5e9;
+      border-left: 3px solid #4caf50;
+    }
+    .compare .label {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .summary {
+      background: var(--code-bg);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+    }
+    .summary h3 {
+      margin-top: 0;
+    }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol, details ul { margin-top: 0.75rem; }
+    .diagram {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .exercise {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .meter {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+    .meter-bar {
+      flex: 1;
+      height: 1.5rem;
+      background: var(--code-bg);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    .meter-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    .meter-fill.safe { background: #4caf50; }
+    .meter-fill.warn { background: #ff9800; }
+    .meter-fill.danger { background: var(--accent); }
+    .meter-label {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      font-size: 0.75rem;
+      min-width: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Context Management: The Silent Killer</h1>
+  <p class="subtitle">Lesson 0010 · ~15 min · The #1 failure point in production agents, and five strategies to fix it</p>
+
+  <div class="meta">
+    <span class="badge">Deepening</span>
+    <span>Source: Anthropic context engineering guide, JetBrains Research (Junie), ACON framework (arXiv 2025), Stanford "Lost in the Middle" (TACL 2024)</span>
+  </div>
+
+  <p>Lesson 0009 named 12 harness components. When I asked which component causes the most agent failures, the answer was clear: <strong>component 4, context management.</strong> This is the one that fails <em>silently</em> &mdash; the agent doesn't crash, it just gets progressively dumber as the context window fills with low-signal tokens.</p>
+
+  <p>This lesson goes deep on context management alone. By the end, you'll understand why your agent degrades in long sessions, name the five production strategies to fix it, and know which one to reach for in each situation.</p>
+
+  <h2>1. The problem: context rot</h2>
+
+  <p>Context rot is the degradation of model performance as the context window fills with low-signal content. It's not a dramatic failure &mdash; it's a slow fade. The agent starts strong, makes good decisions, calls the right tools. Twenty turns later, it's repeating itself, ignoring instructions, and making choices that contradict its own earlier reasoning.</p>
+
+  <p>Two research findings explain why:</p>
+
+  <h3>The "Lost in the Middle" effect</h3>
+
+  <blockquote>
+    LLMs perform best when relevant information is at the beginning or end of the input. Content in the middle of the context window is effectively invisible &mdash; performance degrades 30%+ on retrieval tasks when key facts fall in mid-window positions.
+    <span class="src">&mdash; Liu et al., "Lost in the Middle: How Language Models Use Long Contexts," Stanford NLP, TACL 2024</span>
+  </blockquote>
+
+  <p>This is a U-shaped attention curve. The model pays most attention to the first tokens (primacy) and the last tokens (recency). Everything in between gets proportionally less attention. Even models with million-token windows exhibit this pattern.</p>
+
+  <div class="diagram">Attention strength across a context window:
+
+  HIGH ████████░░░░░░░░░░░░░░░░░░░░░░░░░████████ HIGH
+       ↑                                          ↑
+    System prompt                          Current message
+    Tool definitions                       Recent tool results
+    CLAUDE.md                              Last few turns
+
+  LOW  ░░░░░░░░████████████████████████░░░░░░░░░░ LOW
+                         ↑
+                  Mid-window zone
+                  Old conversation turns
+                  Stale tool outputs
+                  The graveyard of useful context</div>
+
+  <p>This has a direct practical implication: <strong>the order of your <code>CLAUDE.md</code> sections matters.</strong> Critical rules should be at the top (primacy position) or reinforced at the bottom. Rules buried in the middle of a long file are in the danger zone.</p>
+
+  <h3>The instruction-following cliff</h3>
+
+  <p>Even when the model <em>can</em> retrieve facts from its context, instruction-following ability degrades as context grows. Chroma research found that instruction compliance dropped consistently as context windows filled &mdash; the model becomes harder to steer, not just harder to inform.</p>
+
+  <p>This explains a pattern you've probably seen: the agent follows your constraints perfectly in the first 5 turns, then starts violating them by turn 20. It hasn't "forgotten" the constraints. They're still in the window. But the model's ability to follow them has degraded because the constraint instructions are now in the mid-window dead zone, buried under 15 turns of conversation.</p>
+
+  <h2>2. The 80/20 rule of context windows</h2>
+
+  <p>Experienced Claude Code users treat <strong>80% context utilization as the danger zone.</strong> Beyond this point, performance degradation becomes noticeable: the model starts repeating itself, missing constraints, and making contradictory decisions.</p>
+
+  <div class="meter">
+    <span class="meter-label">0–50%</span>
+    <div class="meter-bar"><div class="meter-fill safe" style="width: 50%"></div></div>
+    <span style="font-size: 0.82rem;">Full reasoning capacity. The sweet spot.</span>
+  </div>
+  <div class="meter">
+    <span class="meter-label">50–80%</span>
+    <div class="meter-bar"><div class="meter-fill warn" style="width: 80%"></div></div>
+    <span style="font-size: 0.82rem;">Gradual degradation begins. Consider compaction.</span>
+  </div>
+  <div class="meter">
+    <span class="meter-label">80–100%</span>
+    <div class="meter-bar"><div class="meter-fill danger" style="width: 100%"></div></div>
+    <span style="font-size: 0.82rem;">Danger zone. Save state and restart, or compact aggressively.</span>
+  </div>
+
+  <p>Monitor this with <code>/context</code> in Claude Code. When you see the bar creeping toward 80%, it's decision time: compact, delegate, or restart.</p>
+
+  <h2>3. The five strategies</h2>
+
+  <p>Five production-proven strategies for managing context. They're not mutually exclusive &mdash; the best harnesses use several in combination.</p>
+
+  <h3>Strategy 1: Compaction</h3>
+
+  <p><strong>What it does:</strong> Summarizes conversation history when approaching the context limit, replacing verbose message blocks with a concise summary.</p>
+
+  <p><strong>How Claude Code does it:</strong> When compaction triggers, Claude Code preserves architectural decisions, unresolved bugs, and the current plan while discarding redundant tool outputs and repetitive exchanges. The summary is a lossy compression &mdash; you keep the signal, drop the noise.</p>
+
+  <div class="compare">
+    <div class="bad">
+      <div class="label">Before compaction (~12,000 tokens)</div>
+      <p style="margin: 0;">Turn 1: User asks for auth middleware<br>Turn 2: Agent reads 3 files (full contents)<br>Turn 3: Agent proposes approach<br>Turn 4: User says "looks good"<br>Turn 5: Agent writes middleware (full diff)<br>Turn 6: Agent runs tests (full output, 200 lines)<br>Turn 7: Tests pass, agent confirms</p>
+    </div>
+    <div class="good">
+      <div class="label">After compaction (~800 tokens)</div>
+      <p style="margin: 0;">Auth middleware implemented in <code>src/middleware/auth.ts</code>. Uses JWT validation via <code>jose</code> library. Tests pass (7/7). User approved the approach. Remaining: add rate limiting (next task).</p>
+    </div>
+  </div>
+
+  <p><strong>When to use it:</strong> Long, multi-turn tasks where you need to stay in the same session. The agent needs continuity but not the raw history.</p>
+
+  <p><strong>The risk:</strong> Lossy compression means detail loss. If a subtle constraint was discussed in an early turn, the summary might drop it. Mitigation: put durable constraints in <code>CLAUDE.md</code>, not in conversation.</p>
+
+  <h3>Strategy 2: Observation masking</h3>
+
+  <p><strong>What it does:</strong> Hides old tool outputs while keeping the record of tool <em>calls</em> visible. The agent remembers <em>what</em> it did but not the verbose output it received.</p>
+
+  <p><strong>How JetBrains' Junie does it:</strong> When the agent reads a file, the file contents are available for the current reasoning step. In the next step, the harness replaces the file contents with <code>[masked]</code>. The tool call record stays: "read_file(src/auth.ts) → [masked]". If the agent needs the file again, it re-reads it fresh.</p>
+
+  <div class="diagram">Turn 5: tool_call: read_file("src/auth.ts")
+        tool_result: [287 lines of TypeScript]     ← visible now
+
+Turn 8: tool_call: read_file("src/auth.ts")
+        tool_result: [masked]                      ← replaced
+        tool_call: edit_file("src/auth.ts", ...)
+        tool_result: "File edited successfully"    ← visible now</div>
+
+  <p><strong>Why it works:</strong> JetBrains Research found that observation masking matches or <em>exceeds</em> the solve rates of more expensive LLM-based summarization on benchmarks like SWE-bench. Zero extra compute. The agent can always re-fetch if needed.</p>
+
+  <p><strong>When to use it:</strong> Any task with heavy tool use (file reads, search results, command output). The tool outputs are the biggest context hogs &mdash; they're often hundreds of lines, and most of that is consumed once and never referenced again.</p>
+
+  <p><strong>The connection to your setup:</strong> This is why Claude Code uses <code>grep</code>, <code>glob</code>, <code>head</code>, <code>tail</code> rather than loading full files. It's observation masking by design &mdash; the agent gets just enough to make a decision, not the entire file permanently stuck in context.</p>
+
+  <h3>Strategy 3: Just-in-time (JIT) retrieval</h3>
+
+  <p><strong>What it does:</strong> Maintains lightweight identifiers (file paths, function names, line numbers) in context rather than full content. The agent fetches data dynamically when it needs to act on it.</p>
+
+  <div class="compare">
+    <div class="bad">
+      <div class="label">Eager loading</div>
+      <p style="margin: 0;">Agent reads all 15 files in <code>src/</code> upfront, loading 4,000 lines into context. Spends 40% of the window on file contents it may never reference again.</p>
+    </div>
+    <div class="good">
+      <div class="label">JIT retrieval</div>
+      <p style="margin: 0;">Agent runs <code>grep -rn "authenticate" src/</code>. Gets 12 matches with file:line references (~200 tokens). Reads only the 2 files it needs to modify. Context stays lean.</p>
+    </div>
+  </div>
+
+  <p><strong>How Claude Code does it:</strong> The tool set is designed for this. <code>grep</code> and <code>glob</code> return lightweight pointers. <code>head -n 50</code> gives a file preview without loading everything. <code>read_file</code> with line ranges loads exactly what's needed. The agent builds a mental model from summaries, then drills into specifics just before acting.</p>
+
+  <p><strong>When to use it:</strong> Codebase exploration, debugging, any task where the agent needs to survey a large surface before focusing. JIT retrieval is the difference between an agent that reads 50 files and one that reads 5.</p>
+
+  <div class="callout">
+    <strong>Anthropic's goal, stated directly:</strong> "Find the smallest possible set of high-signal tokens that maximize likelihood of the desired outcome." JIT retrieval is how you implement this. Don't load it until you need it. Don't keep it after you've used it.
+  </div>
+
+  <h3>Strategy 4: Sub-agent delegation</h3>
+
+  <p><strong>What it does:</strong> Spawns a child agent with its own context window to handle a bounded subtask. The child explores extensively (reads files, runs commands, reasons through options), then returns only a 1,000&ndash;2,000 token condensed summary to the parent.</p>
+
+  <div class="diagram">Parent agent (main context window)
+  │
+  ├── "Research the auth middleware options"
+  │     └── Sub-agent spawns with its own 200K window
+  │         Reads 12 files, 3 docs, runs 2 commands
+  │         Returns: "Use jose for JWT, passport for OAuth,
+  │                   middleware goes in src/middleware/auth.ts,
+  │                   see test pattern in src/__tests__/auth.test.ts"
+  │         (~400 tokens returned to parent)
+  │
+  ├── "Implement the auth middleware"
+  │     └── Parent acts on the summary, reads only 2 files
+  │
+  └── Context window stays at 35% utilization</div>
+
+  <p><strong>Why it works:</strong> The sub-agent does the expensive exploration in an isolated context window. The parent gets the compressed output. The parent's window never sees the 12 files the sub-agent read &mdash; it only sees the conclusion.</p>
+
+  <p><strong>When to use it:</strong> Any task that requires significant exploration or research before a focused action. "Understand the codebase" is a sub-agent task. "Write the code" stays in the parent.</p>
+
+  <p><strong>The connection to your setup:</strong> Lesson 0008's Fork and Teammate execution models are sub-agent delegation. The AFK agent itself is a sub-agent of your workflow. The pattern nests: your workflow delegates to the AFK agent, the AFK agent delegates to sub-agents for research, each returning only the compressed result.</p>
+
+  <h3>Strategy 5: Structured note-taking</h3>
+
+  <p><strong>What it does:</strong> The agent writes structured notes to files (progress files, scratchpads, decision logs), then references the files instead of keeping everything in conversation history.</p>
+
+  <p><strong>How it works in practice:</strong> Anthropic's "Ralph Loop" pattern uses this for long-running tasks that span multiple context windows. The agent writes to a progress file at the end of each session:</p>
+
+  <pre><code># Progress — Auth Feature
+## Completed
+- [x] JWT middleware (src/middleware/auth.ts)
+- [x] Tests (7/7 passing)
+
+## In Progress
+- [ ] Rate limiting (next)
+
+## Decisions
+- Using jose over jsonwebtoken (smaller bundle, ESM native)
+- Middleware runs before route handlers, not at app level
+
+## Known Issues
+- Token refresh endpoint not yet implemented
+- Error messages need i18n</code></pre>
+
+  <p>When the next session starts (or after compaction), the agent reads this file to orient itself. The file is the durable state; the conversation is the ephemeral workspace.</p>
+
+  <p><strong>When to use it:</strong> Tasks that span multiple sessions or context windows. Also useful within a single long session as a way to "checkpoint" reasoning before compaction discards the details.</p>
+
+  <p><strong>The connection to your setup:</strong> Your top-of-file context blocks (lesson 0004) are structured notes for the agent. Your <code>CLAUDE.md</code> is a structured note. The PRD (lesson 0006) is a structured note the agent reads before acting. You're already doing this &mdash; the lesson here is to do it <em>intentionally</em> as a context management strategy, not just as documentation.</p>
+
+  <h2>4. Which strategy when?</h2>
+
+  <table>
+    <thead>
+      <tr><th>Scenario</th><th>Strategy</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Long session, hitting 80%</td>
+        <td>Compaction</td>
+        <td>Preserves continuity without restarting</td>
+      </tr>
+      <tr>
+        <td>Heavy tool use (file reads, search)</td>
+        <td>Observation masking</td>
+        <td>Tool outputs are the biggest context hogs</td>
+      </tr>
+      <tr>
+        <td>Exploring a large codebase</td>
+        <td>JIT retrieval</td>
+        <td>Survey with pointers, drill into specifics</td>
+      </tr>
+      <tr>
+        <td>Complex research before coding</td>
+        <td>Sub-agent delegation</td>
+        <td>Isolate exploration from execution</td>
+      </tr>
+      <tr>
+        <td>Multi-session or multi-window task</td>
+        <td>Structured note-taking</td>
+        <td>Filesystem provides continuity across windows</td>
+      </tr>
+      <tr>
+        <td>AFK agent on a well-scoped issue</td>
+        <td>JIT + observation masking + notes</td>
+        <td>Combination: read just enough, mask old outputs, checkpoint to progress file</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Production harnesses combine strategies. Claude Code uses compaction + JIT retrieval + sub-agent delegation. Your AFK setup (lesson 0008) uses all five: the agent reads the issue and PRD (structured notes), greps the codebase (JIT retrieval), reads specific files (observation masking happens under the hood), delegates research to sub-agents, and runs compaction when the window fills.</p>
+
+  <h2>5. The ACON insight: what to keep, what to drop</h2>
+
+  <p>The ACON framework (Agent Context Optimization, arXiv 2025) ran experiments on what to preserve during compaction. Their finding:</p>
+
+  <div class="callout insight">
+    <strong>Prioritize reasoning traces over raw tool outputs.</strong> ACON achieved 26&ndash;54% token reduction while preserving 95%+ task accuracy by keeping the agent's reasoning (why it made decisions) and dropping the raw observations (file contents, command outputs) that informed those decisions.
+  </div>
+
+  <p>This is counterintuitive. You'd expect the raw data to be more important than the reasoning about it. But the reasoning is <em>already compressed</em> &mdash; the agent has already extracted the signal. The raw output is just evidence for a conclusion that's already been drawn.</p>
+
+  <p>Think of it like your own note-taking. After reading a 30-page paper, do you keep the paper in your working memory, or your notes about the paper? Your notes. They're smaller and contain the decisions, not the raw evidence.</p>
+
+  <p>When designing compaction in your own harness or reviewing Claude Code's built-in compaction: <strong>keep the "why" and "what I decided," drop the "what I read."</strong></p>
+
+  <h2>6. Practical: context hygiene for Claude Code</h2>
+
+  <p>Based on the five strategies, here's a context hygiene checklist for your daily Claude Code use:</p>
+
+  <div class="exercise">
+    <h4>Context hygiene checklist</h4>
+    <ol>
+      <li><strong>Monitor with <code>/context</code>.</strong> Check usage before complex operations. If you're above 60%, consider whether you need to compact or restart.</li>
+      <li><strong>Use <code>/clear</code> between unrelated tasks.</strong> Don't carry a debugging session's context into a feature implementation. They pollute each other.</li>
+      <li><strong>Keep <code>CLAUDE.md</code> under 200 lines.</strong> Every line competes for attention in the primacy zone. Audit regularly: does this line still earn its place?</li>
+      <li><strong>Put critical rules at the top of <code>CLAUDE.md</code>.</strong> Not in the middle. Not at the bottom. The top is the highest-attention zone.</li>
+      <li><strong>Use sub-agents for research.</strong> "Explore the codebase and tell me about the auth system" should be a sub-agent task, not a main-session task. The main session gets the summary.</li>
+      <li><strong>Don't paste large files into chat.</strong> Let the agent use <code>grep</code> and <code>read_file</code> with line ranges. Tool-based retrieval is maskable; pasted text is not.</li>
+      <li><strong>Write progress files for long tasks.</strong> Before you hit 80%, have the agent write a <code>PROGRESS.md</code> capturing decisions made and work remaining. If you need to restart, the new session reads this file instead of the old conversation.</li>
+      <li><strong>Restart aggressively.</strong> A fresh session with a good <code>PROGRESS.md</code> outperforms a degraded session with full history. Restarting is not failure &mdash; it's hygiene.</li>
+    </ol>
+  </div>
+
+  <h2>7. The meta-lesson: context is a managed resource</h2>
+
+  <p>Matt Pocock's axiom from lesson 0001 was: the harness is 50% of the work. Context management is the single biggest chunk of that 50%. It's also the component that improves the most from conscious effort.</p>
+
+  <p>The shift is from treating the context window as "just a chat history that accumulates" to treating it as <strong>a managed resource with a budget.</strong> Every token in the window either contributes to the next decision or dilutes it. There is no neutral content. Anthropic's goal &mdash; "find the smallest possible set of high-signal tokens" &mdash; is the north star.</p>
+
+  <div class="summary">
+    <h3>What this lesson taught</h3>
+    <ul>
+      <li><strong>Context rot</strong> is real, silent, and the #1 agent failure mode. It's caused by the "Lost in the Middle" effect and instruction-following degradation as context grows.</li>
+      <li><strong>Five strategies</strong> to fight it: compaction, observation masking, JIT retrieval, sub-agent delegation, and structured note-taking. Production harnesses use several in combination.</li>
+      <li><strong>The ACON insight:</strong> keep reasoning traces, drop raw tool outputs. Reasoning is already compressed signal.</li>
+      <li><strong>The 80/20 rule:</strong> treat 80% context utilization as the danger zone. Monitor, compact, or restart before you get there.</li>
+      <li><strong>Context is a managed resource,</strong> not a passive accumulation. Every token either helps or hurts.</li>
+    </ul>
+  </div>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>What is the "Lost in the Middle" effect, and where should you place your most important instructions to avoid it?</li>
+    <li>Your AFK agent is on turn 35 of a 50-turn task and starts ignoring the PRD's non-goals. The non-goals are in the PRD that was loaded at turn 1. What's happening, and what would you do?</li>
+    <li>When compacting context, should you prioritize keeping raw tool outputs or the agent's reasoning about those outputs? Why?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li>The "Lost in the Middle" effect (Liu et al., Stanford, 2024) is the finding that LLMs attend most strongly to content at the beginning and end of the context window, while content in the middle gets 30%+ less attention. Place your most important instructions at the top of <code>CLAUDE.md</code> (primacy position) and reinforce them in the current user message if needed (recency position). Never rely solely on mid-window placement.</li>
+      <li>The PRD's non-goals were loaded 34 turns ago and are now in the mid-window dead zone. The agent can still technically "see" them, but instruction-following has degraded. Three fixes: (a) have the harness re-inject non-goals into the current turn's context when they're relevant (JIT retrieval of the constraint), (b) make non-goals machine-checkable via a pre-commit hook so they're enforced by rules not memory (lesson 0009, component 9), (c) trigger compaction but explicitly preserve the non-goals in the summary.</li>
+      <li>Keep the reasoning, drop the raw outputs. ACON research showed 26&ndash;54% token reduction with 95%+ accuracy preserved using this approach. The reasoning is already compressed signal &mdash; the agent has extracted what matters from the raw data. The raw data (file contents, command outputs) can always be re-fetched via JIT retrieval if needed.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>This lesson draws from four sources: <a href="https://arxiv.org/abs/2307.03172">Liu et al., "Lost in the Middle" (Stanford, TACL 2024)</a> for the U-shaped attention finding; <a href="https://arxiv.org/abs/2502.00000">ACON framework (arXiv 2025)</a> for the compaction experiments and the reasoning-over-outputs insight; JetBrains Research (Junie) for observation masking and its SWE-bench validation; and Anthropic's context engineering guide for the production strategies used in Claude Code.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li><strong>Run the hygiene checklist</strong> on your next Claude Code session. Monitor <code>/context</code> through a real task and see where you hit 50%, 80%, and what triggers compaction.</li>
+    <li><strong>Audit your <code>CLAUDE.md</code>.</strong> Count the lines. Check if critical rules are in the top 20 lines (primacy zone). Move them if they're not.</li>
+    <li>Check the <a href="../reference/0003-context-strategies.html">Context Strategies Reference</a> for a one-page decision matrix.</li>
+    <li>Ask your teacher anything that wasn't clear. Context management is the most impactful thing you can improve in your harness. Small changes here compound across every session.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0009-anatomy-of-the-harness.html">&larr; Lesson 0009: Anatomy of the Harness</a>
+    <span>Next lesson &rarr;</span>
+  </div>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference — Verification Loops</title>
+  <style>
+    :root {
+      --bg: #faf8f5; --ink: #1a1a1a; --ink-soft: #666;
+      --rule: #e8e4df; --accent: #c0392b; --code-bg: #f4efe9;
+    }
+    @media print { body { padding: 1cm; font-size: 9pt; max-width: none; } }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif; background: var(--bg);
+      color: var(--ink); line-height: 1.6; max-width: 720px;
+      margin: 0 auto; padding: 2rem 1.5rem 4rem;
+    }
+    h1 { font-size: 1.5rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    h2 {
+      font-size: 0.9rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2rem 0 0.75rem;
+      padding-bottom: 0.4rem; border-bottom: 1px solid var(--rule);
+    }
+    table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.5rem; font-size: 0.82rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.4rem 0.5rem 0.4rem 0; font-weight: 700; }
+    td { padding: 0.35rem 0.5rem 0.35rem 0; vertical-align: top; }
+    code { font-family: "SF Mono", Menlo, monospace; font-size: 0.8rem; background: var(--code-bg); padding: 0.1rem 0.3rem; border-radius: 2px; }
+    a { color: var(--accent); }
+    .diagram {
+      background: var(--code-bg); border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 4px;
+      font-family: "SF Mono", Menlo, monospace; font-size: 0.75rem;
+      line-height: 1.8; white-space: pre; overflow-x: auto;
+    }
+    .footer {
+      margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
+      font-size: 0.8rem; color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+  <h1>Verification Loops</h1>
+  <p class="subtitle">Reference 0004 · Print-friendly cheat sheet · From <a href="../lessons/0011-verification-loops.html">Lesson 0011</a></p>
+
+  <h2>The 2×2 matrix</h2>
+
+  <table>
+    <thead>
+      <tr><th></th><th>Computational (deterministic)</th><th>Inferential (AI-driven)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Guides</strong> (before action)</td>
+        <td>Linter rules, file templates, schema validation</td>
+        <td>System prompt, coding conventions, architectural constraints</td>
+      </tr>
+      <tr>
+        <td><strong>Sensors</strong> (after action)</td>
+        <td>Unit tests, type checkers, CI pipelines, build checks</td>
+        <td>LLM-as-judge, review agent, screenshot comparison</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>The three verification types</h2>
+
+  <table>
+    <thead>
+      <tr><th>Type</th><th>Speed</th><th>Cost</th><th>Catches</th><th>Misses</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Rules-based</strong></td>
+        <td>~seconds</td>
+        <td>Free</td>
+        <td>Syntax, type, logic (if tested), style</td>
+        <td>Semantic correctness, design quality</td>
+      </tr>
+      <tr>
+        <td><strong>Visual</strong></td>
+        <td>~seconds</td>
+        <td>Low</td>
+        <td>Layout, missing elements, style regressions</td>
+        <td>Logic, data correctness</td>
+      </tr>
+      <tr>
+        <td><strong>LLM-as-judge</strong></td>
+        <td>~10s</td>
+        <td>Medium</td>
+        <td>Spec compliance, pattern consistency, semantic drift</td>
+        <td>Subtle logic bugs, performance</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Layering order</h2>
+
+  <div class="diagram">Agent makes changes
+  ↓
+Layer 1: Linter → Type checker → Tests → Build  (fast, free)
+  ↓ all pass
+Layer 2: Screenshot → Compare to spec            (if UI task)
+  ↓ visual match
+Layer 3: LLM-as-judge with rubric                 (slow, semantic)
+  ↓ pass
+DONE → commit</div>
+
+  <h2>LLM-as-judge best practices</h2>
+
+  <table>
+    <thead>
+      <tr><th>Practice</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Use different model family</td><td>Avoids self-preference bias</td></tr>
+      <tr><td>Force chain-of-thought</td><td>Improves reliability, makes failures debuggable</td></tr>
+      <tr><td>Give a rubric, not "is this good?"</td><td>Specific criteria → consistent evaluations</td></tr>
+      <tr><td>Judge cannot edit code</td><td>Prevents judge from introducing its own bugs</td></tr>
+      <tr><td>Fresh context window</td><td>No context rot from working session</td></tr>
+      <tr><td>Cap retries at 2</td><td>Prevents unbounded token burn</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Anti-patterns</h2>
+
+  <table>
+    <thead>
+      <tr><th>Anti-pattern</th><th>Fix</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Soft verification ("try to fix, proceed if you can't")</td><td>Hard gate: agent cannot proceed until checks pass</td></tr>
+      <tr><td>Vague judge prompt ("review this code")</td><td>Structured rubric with specific criteria from PRD</td></tr>
+      <tr><td>Unbounded retries</td><td>Cap at 2 retries, then escalate to human</td></tr>
+      <tr><td>Only guides, no sensors</td><td>Add at least one computational sensor (test/lint gate)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Quick wins for Claude Code</h2>
+
+  <table>
+    <thead>
+      <tr><th>Add to <code>CLAUDE.md</code></th><th>Effect</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>"Always run lint after editing code files"</td><td>Layer 1 computational sensor</td></tr>
+      <tr><td>"Run tests after each logical change"</td><td>Layer 1 computational sensor</td></tr>
+      <tr><td>"Do not proceed if tests fail after 2 fix attempts"</td><td>Retry cap + escalation</td></tr>
+      <tr><td>"Take a screenshot after UI changes and verify against spec"</td><td>Layer 2 visual sensor</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    Sources: Boris Cherny (Anthropic), Martin Fowler &amp; Birgitta Böckeler (Thoughtworks), LLM-as-judge research.
+    <br>See <a href="../lessons/0011-verification-loops.html">Lesson 0011</a> for full context.
+  </div>
+</body>
+</html>

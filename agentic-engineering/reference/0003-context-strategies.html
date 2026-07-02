@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference — Context Management Strategies</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    @media print {
+      body { padding: 1cm; font-size: 9pt; max-width: none; }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    h2 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1.5rem;
+      font-size: 0.82rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.4rem 0.5rem 0.4rem 0; font-weight: 700; }
+    td { padding: 0.35rem 0.5rem 0.35rem 0; vertical-align: top; }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.3rem;
+      border-radius: 2px;
+    }
+    a { color: var(--accent); }
+    .checklist {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+      font-size: 0.82rem;
+    }
+    .checklist li { margin-bottom: 0.4rem; }
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+  <h1>Context Management Strategies</h1>
+  <p class="subtitle">Reference 0003 · Print-friendly cheat sheet · From <a href="../lessons/0010-context-management.html">Lesson 0010</a></p>
+
+  <h2>The five strategies</h2>
+
+  <table>
+    <thead>
+      <tr><th>Strategy</th><th>What it does</th><th>Best for</th><th>Cost</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Compaction</strong></td>
+        <td>Summarizes old turns, keeps signal</td>
+        <td>Long multi-turn sessions</td>
+        <td>Detail loss (lossy)</td>
+      </tr>
+      <tr>
+        <td><strong>Observation masking</strong></td>
+        <td>Hides old tool outputs, keeps call records</td>
+        <td>Heavy tool use (file reads, search)</td>
+        <td>Zero extra compute</td>
+      </tr>
+      <tr>
+        <td><strong>JIT retrieval</strong></td>
+        <td>Loads data on demand, keeps pointers</td>
+        <td>Codebase exploration, debugging</td>
+        <td>Extra tool calls</td>
+      </tr>
+      <tr>
+        <td><strong>Sub-agent delegation</strong></td>
+        <td>Child explores, returns summary</td>
+        <td>Research before coding</td>
+        <td>Extra LLM calls</td>
+      </tr>
+      <tr>
+        <td><strong>Structured note-taking</strong></td>
+        <td>Writes state to files, reads on resume</td>
+        <td>Multi-session / multi-window tasks</td>
+        <td>File management</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Decision matrix</h2>
+
+  <table>
+    <thead>
+      <tr><th>Scenario</th><th>Primary strategy</th><th>Supporting strategy</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Context at 80%+</td><td>Compaction</td><td>Structured notes (checkpoint first)</td></tr>
+      <tr><td>Agent reading many files</td><td>JIT retrieval</td><td>Observation masking</td></tr>
+      <tr><td>"Understand the codebase"</td><td>Sub-agent delegation</td><td>JIT retrieval</td></tr>
+      <tr><td>AFK agent on scoped issue</td><td>JIT + masking + notes</td><td>Compaction (automatic)</td></tr>
+      <tr><td>Task spanning 2+ sessions</td><td>Structured notes</td><td>Compaction within each session</td></tr>
+      <tr><td>Agent ignoring old constraints</td><td>JIT re-injection</td><td>Move constraints to <code>CLAUDE.md</code> top</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Context window zones</h2>
+
+  <table>
+    <thead>
+      <tr><th>Utilization</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>0–50%</td><td>🟢 Safe</td><td>Full reasoning capacity. Work freely.</td></tr>
+      <tr><td>50–80%</td><td>🟡 Watch</td><td>Consider compaction. Avoid large file reads.</td></tr>
+      <tr><td>80–100%</td><td>🔴 Danger</td><td>Checkpoint to progress file. Compact or restart.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Compaction priorities (ACON insight)</h2>
+
+  <table>
+    <thead>
+      <tr><th>Keep</th><th>Drop</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Reasoning traces (why decisions were made)</td><td>Raw tool outputs (file contents, logs)</td></tr>
+      <tr><td>Architectural decisions</td><td>Repetitive exchanges ("looks good" / "ok")</td></tr>
+      <tr><td>Unresolved bugs / open questions</td><td>Exploration dead ends</td></tr>
+      <tr><td>Current plan / remaining work</td><td>Completed sub-tasks (record outcome only)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Daily hygiene checklist</h2>
+
+  <div class="checklist">
+    <ol>
+      <li>Monitor with <code>/context</code> before complex operations</li>
+      <li>Use <code>/clear</code> between unrelated tasks</li>
+      <li>Keep <code>CLAUDE.md</code> under 200 lines</li>
+      <li>Put critical rules at the <strong>top</strong> of <code>CLAUDE.md</code> (primacy zone)</li>
+      <li>Use sub-agents for research tasks</li>
+      <li>Don't paste large files into chat — use tool-based retrieval</li>
+      <li>Write <code>PROGRESS.md</code> before hitting 80%</li>
+      <li>Restart aggressively — fresh session + good notes &gt; degraded session</li>
+    </ol>
+  </div>
+
+  <h2>Key research</h2>
+
+  <table>
+    <thead>
+      <tr><th>Finding</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>30%+ drop for mid-window content (U-shaped attention)</td><td>Stanford "Lost in the Middle" (2024)</td></tr>
+      <tr><td>Observation masking ≥ LLM summarization on SWE-bench</td><td>JetBrains Research (Junie)</td></tr>
+      <tr><td>26–54% token reduction, 95%+ accuracy (keep reasoning, drop outputs)</td><td>ACON framework (arXiv 2025)</td></tr>
+      <tr><td>Instruction-following degrades as context grows</td><td>Chroma Research</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    Sources: Stanford NLP, JetBrains Research, ACON (arXiv), Anthropic context engineering guide, Chroma Research.
+    <br>
+    See <a href="../lessons/0010-context-management.html">Lesson 0010</a> for full context.
+  </div>
+</body>
+</html>

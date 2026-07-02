@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0009 — Anatomy of the Agent Harness</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout.insight {
+      background: #e3f2fd;
+      border-left-color: #1565c0;
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0;
+      color: var(--ink);
+      font-style: italic;
+    }
+    blockquote .src {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--ink-soft);
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; padding-right: 0.75rem; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .compare > div {
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .compare .bad {
+      background: #fdecea;
+      border-left: 3px solid var(--accent);
+    }
+    .compare .good {
+      background: #e8f5e9;
+      border-left: 3px solid #4caf50;
+    }
+    .compare .label {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .summary {
+      background: var(--code-bg);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+    }
+    .summary h3 {
+      margin-top: 0;
+    }
+    details {
+      margin: 1.5rem 0;
+      padding: 1rem 1.25rem;
+      background: var(--code-bg);
+      border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    details ol { margin-top: 0.75rem; }
+    .component-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.25rem 1rem;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .component-grid .num {
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      color: var(--accent);
+      padding: 0.3rem 0;
+    }
+    .component-grid .desc {
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .diagram {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+      white-space: pre;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Anatomy of the Agent Harness</h1>
+  <p class="subtitle">Lesson 0009 · ~18 min · The 12 components inside the box you've been calling "the harness"</p>
+
+  <div class="meta">
+    <span class="badge">Deepening</span>
+    <span>Source: <a href="https://x.com/akshay_pachaar">Akshay Pachaar's synthesis thread</a> (Apr 2026) — cross-referencing Anthropic, OpenAI, LangChain, Beren Millidge, Stanford NLP</span>
+  </div>
+
+  <p>Lesson 0001 gave you the axiom: <em>the harness is 50% of the work</em>. Lesson 0008 showed you the harness running an AFK agent end-to-end. Both treated the harness as a black box &mdash; you knew it mattered, but not what was inside.</p>
+
+  <p>This lesson opens the box. We trace the 12 components of a production agent harness, as documented across Anthropic (Claude Code), OpenAI (Agents SDK / Codex), LangChain (LangGraph / Deep Agents), and the practitioner community. By the end, you'll be able to name every part, see how they connect, and diagnose which part is failing when your agent misbehaves.</p>
+
+  <h2>The metaphor that makes it stick</h2>
+
+  <p>In 2023, Beren Millidge wrote an essay called <a href="https://www.beren.io/2023-04-11-Scaffolded-LLMs-natural-language-computers/">"Scaffolded LLMs as Natural Language Computers."</a> His argument: we have reinvented the Von Neumann architecture.</p>
+
+  <table>
+    <thead>
+      <tr><th>Computer</th><th>Agent</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>CPU</td><td>The LLM (processes tokens)</td></tr>
+      <tr><td>RAM</td><td>Context window (fast, limited)</td></tr>
+      <tr><td>Disk</td><td>External databases, files (large, slow)</td></tr>
+      <tr><td>Device drivers</td><td>Tool integrations</td></tr>
+      <tr><td>Operating system</td><td><strong>The harness</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p>A raw LLM is a CPU with no RAM, no disk, and no I/O. The harness is the operating system that makes it useful. This maps directly to what Matt Pocock said in lesson 0001: the model is the engine, the harness is the chassis. Same idea, different metaphor, different year.</p>
+
+  <blockquote>
+    "If you're not the model, you're the harness."
+    <span class="src">&mdash; Vivek Trivedy, LangChain</span>
+  </blockquote>
+
+  <h2>Three levels of engineering</h2>
+
+  <p>Before the 12 components, the framing. There are three concentric levels of engineering around the model:</p>
+
+  <ol>
+    <li><strong>Prompt engineering</strong> &mdash; crafts the instructions the model receives. The innermost ring.</li>
+    <li><strong>Context engineering</strong> &mdash; manages <em>what</em> the model sees and <em>when</em>. Wider. Includes retrieval, context window strategy, memory placement.</li>
+    <li><strong>Harness engineering</strong> &mdash; encompasses both, plus the entire application infrastructure: tool orchestration, state persistence, error recovery, verification loops, safety enforcement, lifecycle management.</li>
+  </ol>
+
+  <p>Prompt engineering is a subset of context engineering. Context engineering is a subset of harness engineering. When Matt said "the harness is the chassis," he was talking about level 3. When he said "have a codebase that's easier to make changes in," that's level 2 leaking into level 3. This lesson covers level 3 &mdash; the whole system.</p>
+
+  <h2>The 12 components</h2>
+
+  <p>Synthesized from Anthropic, OpenAI, LangChain, and the practitioner community. Every production harness has these, whether or not the authors name them explicitly.</p>
+
+  <h3>1. The Orchestration Loop</h3>
+
+  <p>The heartbeat. Implements the Thought-Action-Observation (TAO) cycle, also called the ReAct loop:</p>
+
+  <div class="diagram">assemble prompt → call LLM → parse output → execute tool calls → feed results back → repeat until done</div>
+
+  <p>Mechanically, it's often just a <code>while</code> loop. Anthropic describes their runtime as a "dumb loop" where all intelligence lives in the model. The harness just manages turns. The complexity lives in everything the loop <em>manages</em>, not the loop itself.</p>
+
+  <p>You met this in lesson 0008: the inner loop that wraps well-scoped work (sub-task → code → test → commit). That's this component.</p>
+
+  <h3>2. Tools</h3>
+
+  <p>The agent's hands. Tools are defined as schemas &mdash; name, description, parameter types &mdash; injected into the LLM's context so the model knows what's available. The tool layer handles:</p>
+  <ul>
+    <li>Registration and schema validation</li>
+    <li>Argument extraction from model output</li>
+    <li>Sandboxed execution</li>
+    <li>Result capture and formatting back into LLM-readable observations</li>
+  </ul>
+
+  <p>Claude Code provides tools across six categories: file operations, search, execution, web access, code intelligence, and subagent spawning. OpenAI's Agents SDK supports function tools (<code>@function_tool</code>), hosted tools (WebSearch, CodeInterpreter, FileSearch), and MCP server tools.</p>
+
+  <div class="callout">
+    <strong>The tool scoping trap.</strong> More tools often means worse performance. Vercel removed 80% of tools from v0 and got <em>better</em> results. Claude Code achieves 95% context reduction via lazy loading. Principle: expose the minimum tool set needed for the current step.
+  </div>
+
+  <h3>3. Memory</h3>
+
+  <p>Memory operates at multiple timescales:</p>
+
+  <table>
+    <thead>
+      <tr><th>Timescale</th><th>Mechanism</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Short-term</td><td>Conversation history within a session</td><td>The messages array</td></tr>
+      <tr><td>Long-term</td><td>Persists across sessions</td><td><code>CLAUDE.md</code>, <code>MEMORY.md</code>, LangGraph JSON Stores, OpenAI Sessions (SQLite/Redis)</td></tr>
+    </tbody>
+  </table>
+
+  <p>Claude Code implements a three-tier hierarchy: a lightweight index (~150 characters per entry, always loaded), detailed topic files pulled in on demand, and raw transcripts accessed via search only.</p>
+
+  <p>Critical design principle: <strong>the agent treats its own memory as a "hint" and verifies against actual state before acting.</strong> This is why lesson 0004's top-of-file context blocks matter &mdash; they're the ground truth that memory checks against.</p>
+
+  <h3>4. Context Management</h3>
+
+  <p>This is where many agents fail silently. The core problem is <strong>context rot</strong>: model performance degrades 30%+ when key content falls in mid-window positions.</p>
+
+  <blockquote>
+    Stanford's "Lost in the Middle" finding: LLMs perform best when relevant information is at the beginning or end of the input. Middle content is effectively invisible.
+    <span class="src">&mdash; Liu et al., "Lost in the Middle: How Language Models Use Long Contexts," TACL 2024</span>
+  </blockquote>
+
+  <p>Even million-token windows suffer from instruction-following degradation as context grows. Five production strategies:</p>
+
+  <ol>
+    <li><strong>Compaction</strong> &mdash; summarizing conversation history when approaching limits. Claude Code preserves architectural decisions and unresolved bugs while discarding redundant tool outputs.</li>
+    <li><strong>Observation masking</strong> &mdash; JetBrains' Junie hides old tool outputs while keeping tool calls visible.</li>
+    <li><strong>Just-in-time retrieval</strong> &mdash; maintaining lightweight identifiers and loading data dynamically. Claude Code uses <code>grep</code>, <code>glob</code>, <code>head</code>, <code>tail</code> rather than loading full files.</li>
+    <li><strong>Sub-agent delegation</strong> &mdash; each subagent explores extensively but returns only 1,000&ndash;2,000 token condensed summaries.</li>
+    <li><strong>Structured note-taking</strong> &mdash; the agent writes structured notes to files (progress files, scratchpads), then references them instead of re-reading conversation history.</li>
+  </ol>
+
+  <p>Anthropic's context engineering guide states the goal: <em>find the smallest possible set of high-signal tokens that maximize likelihood of the desired outcome.</em></p>
+
+  <h3>5. Prompt Construction</h3>
+
+  <p>Assembles what the model actually sees at each step. It's hierarchical:</p>
+
+  <div class="diagram">System prompt (highest priority)
+  ↓
+Tool definitions
+  ↓
+Developer instructions (AGENTS.md, 32 KiB limit)
+  ↓
+Memory files
+  ↓
+Conversation history
+  ↓
+Current user message</div>
+
+  <p>Important context is positioned at the beginning and end of the prompt (the "Lost in the Middle" finding). This is the internal assembly logic &mdash; you don't write it, but you need to know it exists because it explains why the <em>order</em> of your <code>CLAUDE.md</code> sections matters.</p>
+
+  <h3>6. Output Parsing</h3>
+
+  <p>Modern harnesses rely on <strong>native tool calling</strong> &mdash; the model returns structured <code>tool_calls</code> objects rather than free-text that must be parsed. The harness checks: are there tool calls? Execute them and loop. No tool calls? That's the final answer.</p>
+
+  <p>For structured outputs, both OpenAI and LangChain support schema-constrained responses via Pydantic models. Legacy approaches like <code>RetryWithErrorOutputParser</code> (which feeds the original prompt, the failed completion, and the parsing error back to the model) remain available for edge cases.</p>
+
+  <h3>7. State Management</h3>
+
+  <p>How the agent tracks durable state. Three approaches in the wild:</p>
+
+  <ul>
+    <li><strong>LangGraph</strong> &mdash; typed dictionaries flowing through graph nodes, with reducers merging updates. Checkpointing at super-step boundaries for resume and time-travel debugging.</li>
+    <li><strong>OpenAI</strong> &mdash; four mutually exclusive strategies: application memory, SDK sessions, server-side Conversations API, or lightweight <code>previous_response_id</code> chaining.</li>
+    <li><strong>Claude Code</strong> &mdash; <strong>git commits as checkpoints</strong> and progress files as structured scratchpads. You saw this in lesson 0008: the agent commits after each sub-task. That's state management.</li>
+  </ul>
+
+  <h3>8. Error Handling</h3>
+
+  <div class="callout warning">
+    <strong>The compounding problem.</strong> A 10-step process with 99% per-step success still has only ~90.4% end-to-end success. Errors compound fast. This is why Stripe's production harness caps retry attempts at two.
+  </div>
+
+  <p>LangGraph distinguishes four error types:</p>
+
+  <table>
+    <thead>
+      <tr><th>Type</th><th>Response</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Transient</strong></td><td>Retry with backoff</td></tr>
+      <tr><td><strong>LLM-recoverable</strong></td><td>Return error as ToolMessage so the model can adjust</td></tr>
+      <tr><td><strong>User-fixable</strong></td><td>Interrupt for human input</td></tr>
+      <tr><td><strong>Unexpected</strong></td><td>Bubble up for debugging</td></tr>
+    </tbody>
+  </table>
+
+  <p>Anthropic catches failures within tool handlers and returns them as error results to keep the loop running. The model sees the error and self-corrects. This is the same pattern your AFK agent uses when tests fail: it doesn't crash, it tries a different approach.</p>
+
+  <h3>9. Guardrails and Safety</h3>
+
+  <p>Anthropic separates <strong>permission enforcement from model reasoning architecturally.</strong> The model decides what to attempt; the tool system decides what's allowed. Claude Code gates ~40 discrete tool capabilities independently, with three stages:</p>
+
+  <ol>
+    <li><strong>Trust establishment</strong> at project load</li>
+    <li><strong>Permission check</strong> before each tool call</li>
+    <li><strong>Explicit user confirmation</strong> for high-risk operations</li>
+  </ol>
+
+  <p>OpenAI's SDK implements three levels: input guardrails (run on first agent), output guardrails (run on final output), and tool guardrails (run on every tool invocation). A "tripwire" mechanism halts the agent immediately when triggered.</p>
+
+  <h3>10. Verification Loops</h3>
+
+  <blockquote>
+    "Giving the model a way to verify its work improves quality by 2&ndash;3×."
+    <span class="src">&mdash; Boris Cherny, creator of Claude Code</span>
+  </blockquote>
+
+  <p>This is what separates toy demos from production agents. Three approaches:</p>
+
+  <ul>
+    <li><strong>Rules-based feedback</strong> &mdash; tests, linters, type checkers. Deterministic ground truth.</li>
+    <li><strong>Visual feedback</strong> &mdash; screenshots via Playwright for UI tasks.</li>
+    <li><strong>LLM-as-judge</strong> &mdash; a separate subagent evaluates output. Catches semantic issues but adds latency.</li>
+  </ul>
+
+  <p>You know this from lesson 0008: the review agent. That's an LLM-as-judge verification loop. The test suite in the inner loop is a rules-based verification loop. Production harnesses use both.</p>
+
+  <h3>11. Subagent Orchestration</h3>
+
+  <p>Claude Code supports three execution models:</p>
+
+  <ul>
+    <li><strong>Fork</strong> &mdash; byte-identical copy of parent context</li>
+    <li><strong>Teammate</strong> &mdash; separate terminal pane with file-based mailbox communication</li>
+    <li><strong>Worktree</strong> &mdash; own git worktree, isolated branch per agent</li>
+  </ul>
+
+  <p>OpenAI's SDK supports <strong>agents-as-tools</strong> (specialist handles bounded subtask) and <strong>handoffs</strong> (specialist takes full control). LangGraph implements subagents as nested state graphs.</p>
+
+  <h3>12. Prompt Engineering (yes, it's a component too)</h3>
+
+  <p>The actual instructions the model receives. This is component #12, not component #1, because in a production harness it's the <em>least</em> likely to need manual tuning. Most problems that look like "bad prompting" are actually failures in components 3&ndash;11.</p>
+
+  <p>If your agent forgets what it did three steps ago &mdash; that's component 4 (context management), not component 12. If tool calls fail silently &mdash; that's component 8 (error handling). If the agent does too much &mdash; that's component 9 (guardrails). Fix the right component.</p>
+
+  <h2>The loop in motion: one cycle, step by step</h2>
+
+  <p>Now that you know the components, trace how they work together in a single TAO cycle:</p>
+
+  <div class="diagram">Step 1 │ PROMPT ASSEMBLY (components 3, 4, 5)
+       │ System prompt + tool schemas + memory + history + user message
+       │ Important context at beginning and end ("Lost in the Middle")
+       ▼
+Step 2 │ LLM INFERENCE (the model, not the harness)
+       │ Input tokens → output tokens (text, tool calls, or both)
+       ▼
+Step 3 │ OUTPUT CLASSIFICATION (component 6)
+       │ Tool calls? → Step 4.  No tool calls? → done.  Handoff? → restart.
+       ▼
+Step 4 │ TOOL EXECUTION (components 2, 9)
+       │ Validate args → check permissions → execute in sandbox → capture results
+       │ Read-only ops run concurrently; mutating ops run serially
+       ▼
+Step 5 │ RESULT PACKAGING (component 8)
+       │ Format results as LLM-readable messages
+       │ Catch errors, return as error results for self-correction
+       ▼
+Step 6 │ CONTEXT UPDATE (component 4, 7)
+       │ Append results to history. If near limit → trigger compaction
+       ▼
+Step 7 │ LOOP (component 1)
+       │ Return to Step 1. Repeat until termination.</div>
+
+  <p>Termination conditions are layered: the model produces a response with no tool calls, maximum turn limit exceeded, token budget exhausted, a guardrail tripwire fires, the user interrupts, or a safety refusal is returned.</p>
+
+  <p>A simple question: 1&ndash;2 turns. A complex refactoring task: dozens of tool calls across many turns. The lesson 0008 AFK agent runs this cycle for each sub-task in the issue's plan.</p>
+
+  <h2>The evidence that the harness is the product</h2>
+
+  <p>Lesson 0001 gave you Matt's claim. Here's the empirical evidence from the broader community:</p>
+
+  <ul>
+    <li><strong>LangChain's TerminalBench jump</strong> &mdash; changed only the infrastructure wrapping their LLM (same model, same weights) and jumped from outside the top 30 to rank 5 on TerminalBench 2.0. Twenty ranking positions from harness changes alone.</li>
+    <li><strong>Meta-harness research</strong> &mdash; a separate project hit 76.4% pass rate by having an LLM <em>optimize the infrastructure itself</em>, surpassing hand-designed systems.</li>
+    <li><strong>ACON research</strong> &mdash; showed 26&ndash;54% token reduction while preserving 95%+ accuracy by prioritizing reasoning traces over raw tool outputs in context management.</li>
+  </ul>
+
+  <p>Two products using identical models can have wildly different performance based solely on harness design. This is what Matt meant by "have a codebase that's easier to make changes in" &mdash; the codebase is part of the harness, and improving it improves every model that touches it.</p>
+
+  <h2>The co-evolution principle</h2>
+
+  <p>Models are now post-trained <em>with specific harnesses in the loop</em>. Claude Code's model learned to use the specific harness it was trained with. Changing tool implementations can degrade performance because of this tight coupling.</p>
+
+  <div class="callout insight">
+    <strong>The "future-proofing test" for harness design:</strong> if performance scales up with more powerful models without adding harness complexity, the design is sound. If you need to add more scaffolding every time the model improves, something is wrong.
+  </div>
+
+  <p>The field is moving toward <strong>thinner harnesses</strong> as models improve. Manus was rebuilt five times in six months, each rewrite removing complexity. Complex tool definitions became general shell execution. "Management agents" became simple structured handoffs. This is the scaffolding metaphor made real: scaffolding is removed when the building is complete.</p>
+
+  <p>But the harness itself isn't going away. Even the most capable model needs something to manage its context window, execute its tool calls, persist its state, and verify its work.</p>
+
+  <h2>Seven decisions that define every harness</h2>
+
+  <p>These are the architectural choices you face when building or tuning your own harness. Each one maps back to the 12 components:</p>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>Decision</th><th>Guidance</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Single-agent vs. multi-agent</strong></td>
+        <td>Both Anthropic and OpenAI say: maximize a single agent first. Split only when tool overload exceeds ~10 overlapping tools or clearly separate task domains exist.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>ReAct vs. plan-and-execute</strong></td>
+        <td>ReAct interleaves reasoning and action (flexible, higher per-step cost). Plan-and-execute separates them (LLMCompiler reports 3.6× speedup over sequential ReAct).</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Context window strategy</strong></td>
+        <td>Time-based clearing, summarization, observation masking, structured note-taking, or sub-agent delegation. Choose based on task length.</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Verification loop design</strong></td>
+        <td>Computational (tests, linters) for deterministic ground truth. Inferential (LLM-as-judge) for semantic issues. Best harnesses use both.</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Permission architecture</strong></td>
+        <td>Permissive (fast, risky) vs. restrictive (safe, slow). Depends on deployment context. AFK agents lean permissive within the sandbox.</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Tool scoping</strong></td>
+        <td>Expose the minimum tool set needed for the current step. Fewer tools = better performance.</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Harness thickness</strong></td>
+        <td>How much logic lives in the harness vs. the model. Anthropic bets thin; graph-based frameworks bet thick. Anthropic regularly deletes planning steps as new models internalize that capability.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>For your Claude Code setup (lesson 0001&ndash;0008), decisions 1, 5, and 7 are already made: single agent, permissive-in-sandbox, thin harness. Decisions 3, 4, and 6 are where your <code>CLAUDE.md</code> and skill design do the most work. Decision 2 is implicit in the <code>/grill-me</code> → <code>/to-prd</code> → <code>/to-issues</code> → AFK pipeline: the planning is separated from execution. You're already using plan-and-execute at the workflow level, even if the agent itself uses ReAct at the step level.</p>
+
+  <h2>Connecting it back: your harness, component by component</h2>
+
+  <p>Map the 12 components to what you've built in lessons 0001&ndash;0008:</p>
+
+  <table>
+    <thead>
+      <tr><th>Component</th><th>Where it lives in your setup</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1. Orchestration Loop</td><td>Claude Code's built-in TAO loop</td></tr>
+      <tr><td>2. Tools</td><td>Claude Code's ~40 built-in tools + skills you installed</td></tr>
+      <tr><td>3. Memory</td><td><code>CLAUDE.md</code>, <code>MEMORY.md</code>, top-of-file context blocks (lesson 0004)</td></tr>
+      <tr><td>4. Context Management</td><td>Claude Code's built-in compaction + your AX practices</td></tr>
+      <tr><td>5. Prompt Construction</td><td>Handled internally by Claude Code's SDK</td></tr>
+      <tr><td>6. Output Parsing</td><td>Native tool calling (you don't touch this)</td></tr>
+      <tr><td>7. State Management</td><td>Git commits as checkpoints (lesson 0008)</td></tr>
+      <tr><td>8. Error Handling</td><td>Claude Code catches tool errors + test failures trigger retry</td></tr>
+      <tr><td>9. Guardrails</td><td>Claude Code's permission system + your non-goals sections</td></tr>
+      <tr><td>10. Verification Loops</td><td>Test suite (rules-based) + review agent (LLM-as-judge)</td></tr>
+      <tr><td>11. Subagent Orchestration</td><td>Fork/Teammate/Worktree (lesson 0008's sandbox)</td></tr>
+      <tr><td>12. Prompt Engineering</td><td>Your <code>CLAUDE.md</code> + skill files</td></tr>
+    </tbody>
+  </table>
+
+  <p>This is the payoff of lessons 0001&ndash;0008: you've been building each component without naming them. Now you can name them, and when something breaks, you know which component to fix.</p>
+
+  <h2>The diagnostic rule</h2>
+
+  <div class="callout success">
+    <strong>When your agent fails, don't blame the model. Look at the harness.</strong>
+    <br><br>
+    Agent forgets what it did three steps ago? → Component 4 (Context Management)<br>
+    Tool calls fail silently? → Component 8 (Error Handling)<br>
+    Context window fills up with garbage? → Component 4 (Context Management)<br>
+    Agent does the wrong thing despite correct instructions? → Component 5 (Prompt Construction — check where your instructions land in the window)<br>
+    Agent does too much? → Component 9 (Guardrails) or Component 2 (Tool Scoping)<br>
+    Agent produces correct code that's semantically wrong? → Component 10 (Verification Loops — add an LLM-as-judge)
+  </div>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>Name the 12 components without looking. (Hint: group them by function — brain, hands, memory, safety, team.)</li>
+    <li>Your AFK agent keeps making changes to files the PRD's non-goals section explicitly forbids. Which component is failing, and what would you change?</li>
+    <li>What does "context rot" mean, and which research finding explains it?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li>Brain: orchestration loop, prompt construction, output parsing. Hands: tools. Memory: memory, context management, state management. Safety: error handling, guardrails. Team: verification loops, subagent orchestration. Plus: prompt engineering. (Twelve total.)</li>
+      <li>Component 9 (Guardrails). The harness should enforce non-goals as a machine-checkable constraint — a file-touch allow-list, a pre-commit check, or a review-agent prompt that greps the diff against the PRD's non-goals section. If the model can attempt the action, the guardrail layer should block it. Lesson 0008 covered this exact failure mode.</li>
+      <li>Context rot is the degradation of model performance as context fills with low-signal content. Stanford's "Lost in the Middle" finding (Liu et al., 2024) showed that performance degrades 30%+ when key content falls in mid-window positions, even in million-token windows. The fix is aggressive compaction, observation masking, and just-in-time retrieval.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>This lesson draws from <a href="https://x.com/akshay_pachaar">Akshay Pachaar's synthesis thread</a> (April 2026, 2.1M views), which cross-references documentation from Anthropic (Claude Code SDK), OpenAI (Agents SDK, Codex), LangChain (LangGraph, Deep Agents), Beren Millidge's <a href="https://www.beren.io/2023-04-11-Scaffolded-LLMs-natural-language-computers/">"Scaffolded LLMs as Natural Language Computers"</a> (2023), and the Stanford NLP paper <a href="https://arxiv.org/abs/2307.03172">"Lost in the Middle"</a> (Liu et al., 2023/2024).</p>
+
+  <p>For the TerminalBench evidence, see LangChain's 2026 benchmark results. For Boris Cherny's verification claim, see his public statements as Head of Claude Code at Anthropic.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li><strong>Audit your harness.</strong> Open your <code>CLAUDE.md</code> and map each line to one of the 12 components. Lines that don't map to any component are probably noise — delete them. Lines that are doing double duty across components might need to be split.</li>
+    <li><strong>Diagnose a recent failure.</strong> Pick an AFK session that produced bad output. Walk through the diagnostic rule above. Which component failed? What would you change?</li>
+    <li>Check the <a href="../reference/0002-harness-components.html">Harness Components Reference</a> for a one-page cheat sheet you can print and stick next to your monitor.</li>
+    <li>Ask your teacher anything that wasn't clear. The 12-component model is a lens, not a law — if something in your setup doesn't fit neatly, that's worth talking through.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0008-afk-agents.html">&larr; Lesson 0008: AFK Agents</a>
+    <a href="0010-context-management-deep-dive.html">Next lesson &rarr;</a>
+  </div>
+</body>
+</html>

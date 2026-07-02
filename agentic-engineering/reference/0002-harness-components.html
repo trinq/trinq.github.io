@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference — The 12 Harness Components</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    @media print {
+      body { padding: 1cm; font-size: 9pt; max-width: none; }
+      .no-print { display: none; }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    h2 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1.5rem;
+      font-size: 0.82rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.4rem 0.5rem 0.4rem 0; font-weight: 700; }
+    td { padding: 0.35rem 0.5rem 0.35rem 0; vertical-align: top; }
+    td:first-child {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.3rem;
+      border-radius: 2px;
+    }
+    a { color: var(--accent); }
+    .diagnostic {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+      font-size: 0.82rem;
+    }
+    .diagnostic dt {
+      font-weight: 700;
+      margin-top: 0.5rem;
+    }
+    .diagnostic dt:first-child { margin-top: 0; }
+    .diagnostic dd {
+      margin-left: 1rem;
+      color: var(--ink-soft);
+    }
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+  <h1>The 12 Harness Components</h1>
+  <p class="subtitle">Reference 0002 · Print-friendly cheat sheet · From <a href="../lessons/0009-anatomy-of-the-harness.html">Lesson 0009</a></p>
+
+  <h2>Components at a glance</h2>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>Component</th><th>What it does</th><th>In Claude Code</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>01</td><td>Orchestration Loop</td><td>TAO cycle: prompt → LLM → parse → tool → loop</td><td>Built-in "dumb loop"</td></tr>
+      <tr><td>02</td><td>Tools</td><td>Schema-defined capabilities the agent can invoke</td><td>~40 built-in + MCP + skills</td></tr>
+      <tr><td>03</td><td>Memory</td><td>Short-term (session) and long-term (across sessions)</td><td><code>CLAUDE.md</code>, <code>MEMORY.md</code></td></tr>
+      <tr><td>04</td><td>Context Management</td><td>Controls what's in the window and where</td><td>Compaction, JIT retrieval</td></tr>
+      <tr><td>05</td><td>Prompt Construction</td><td>Assembles the full input at each step</td><td>SDK priority stack</td></tr>
+      <tr><td>06</td><td>Output Parsing</td><td>Classifies model output: tool call or final answer</td><td>Native tool calling</td></tr>
+      <tr><td>07</td><td>State Management</td><td>Tracks durable state across steps</td><td>Git commits + progress files</td></tr>
+      <tr><td>08</td><td>Error Handling</td><td>Catches failures, enables self-correction</td><td>Error results in ToolMessage</td></tr>
+      <tr><td>09</td><td>Guardrails</td><td>Permission enforcement, separated from reasoning</td><td>3-stage: trust → check → confirm</td></tr>
+      <tr><td>10</td><td>Verification Loops</td><td>Agent checks its own work (2–3× quality lift)</td><td>Tests + review agent</td></tr>
+      <tr><td>11</td><td>Subagent Orchestration</td><td>Spawning and coordinating child agents</td><td>Fork / Teammate / Worktree</td></tr>
+      <tr><td>12</td><td>Prompt Engineering</td><td>The actual instructions the model receives</td><td><code>CLAUDE.md</code> + skill files</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Grouped by function</h2>
+
+  <table>
+    <thead>
+      <tr><th>Group</th><th>Components</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>🧠 Brain</td><td>1 (Orchestration), 5 (Prompt Construction), 6 (Output Parsing)</td></tr>
+      <tr><td>🖐 Hands</td><td>2 (Tools)</td></tr>
+      <tr><td>💾 Memory</td><td>3 (Memory), 4 (Context Management), 7 (State Management)</td></tr>
+      <tr><td>🛡 Safety</td><td>8 (Error Handling), 9 (Guardrails)</td></tr>
+      <tr><td>👥 Team</td><td>10 (Verification Loops), 11 (Subagent Orchestration)</td></tr>
+      <tr><td>📝 Instructions</td><td>12 (Prompt Engineering)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Diagnostic quick-reference</h2>
+
+  <div class="diagnostic">
+    <dl>
+      <dt>Agent forgets what it did 3 steps ago</dt>
+      <dd>→ Component 4 (Context Management)</dd>
+
+      <dt>Tool calls fail silently</dt>
+      <dd>→ Component 8 (Error Handling)</dd>
+
+      <dt>Context fills up with garbage</dt>
+      <dd>→ Component 4 (Context Management)</dd>
+
+      <dt>Agent ignores your instructions</dt>
+      <dd>→ Component 5 (Prompt Construction — check position in context window)</dd>
+
+      <dt>Agent does too much / goes out of scope</dt>
+      <dd>→ Component 9 (Guardrails) or Component 2 (Tool Scoping)</dd>
+
+      <dt>Code is correct but semantically wrong</dt>
+      <dd>→ Component 10 (Verification Loops — add LLM-as-judge)</dd>
+
+      <dt>Agent gets stuck in retry loops</dt>
+      <dd>→ Component 8 (Error Handling — cap retries)</dd>
+
+      <dt>Quality degrades in long sessions</dt>
+      <dd>→ Component 4 (Context Management — trigger compaction earlier)</dd>
+    </dl>
+  </div>
+
+  <h2>Seven architectural decisions</h2>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>Decision</th><th>Default for solo Claude Code</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Single vs. multi-agent</td><td>Single (split at ~10 overlapping tools)</td></tr>
+      <tr><td>2</td><td>ReAct vs. plan-and-execute</td><td>Plan-and-execute at workflow, ReAct at step</td></tr>
+      <tr><td>3</td><td>Context window strategy</td><td>Compaction + JIT retrieval</td></tr>
+      <tr><td>4</td><td>Verification loop design</td><td>Tests (deterministic) + review agent (semantic)</td></tr>
+      <tr><td>5</td><td>Permission architecture</td><td>Permissive inside sandbox</td></tr>
+      <tr><td>6</td><td>Tool scoping</td><td>Lazy loading, minimum needed</td></tr>
+      <tr><td>7</td><td>Harness thickness</td><td>Thin (bet on model improvement)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Key research</h2>
+
+  <table>
+    <thead>
+      <tr><th>Finding</th><th>Source</th><th>Implication</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>30%+ performance drop for mid-window content</td><td>Stanford "Lost in the Middle" (2024)</td><td>Place key content at start/end of prompt</td></tr>
+      <tr><td>20+ ranking positions from harness changes alone</td><td>LangChain TerminalBench 2.0 (2026)</td><td>The harness is the product, not the model</td></tr>
+      <tr><td>2–3× quality from verification loops</td><td>Boris Cherny (Anthropic)</td><td>Always give the agent a way to check its work</td></tr>
+      <tr><td>26–54% token reduction, 95%+ accuracy preserved</td><td>ACON research</td><td>Prioritize reasoning traces over raw tool outputs</td></tr>
+      <tr><td>99%^10 = 90.4% end-to-end</td><td>Error compounding</td><td>Cap retries, handle errors by type</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    Sources: Akshay Pachaar synthesis (Apr 2026), Anthropic Claude Code docs, OpenAI Agents SDK docs, LangChain/LangGraph docs, Beren Millidge "Scaffolded LLMs as Natural Language Computers" (2023), Liu et al. "Lost in the Middle" (2024).
+    <br>
+    See <a href="../lessons/0009-anatomy-of-the-harness.html">Lesson 0009</a> for full context.
+  </div>
+</body>
+</html>

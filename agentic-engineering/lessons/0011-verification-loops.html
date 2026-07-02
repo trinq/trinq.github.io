@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0011 — Verification Loops: The 2–3× Quality Lever</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre {
+      background: var(--code-bg); padding: 1rem 1.25rem; margin: 1rem 0;
+      overflow-x: auto; border-radius: 4px; border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0; padding: 1.25rem; margin: 1.5rem 0;
+      border-radius: 4px; border-left: 3px solid var(--accent);
+    }
+    .callout.success { background: #e8f5e9; border-left-color: #4caf50; }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout.insight { background: #e3f2fd; border-left-color: #1565c0; }
+    .meta {
+      display: flex; gap: 1rem; margin-bottom: 2rem;
+      font-size: 0.85rem; color: var(--ink-soft); flex-wrap: wrap;
+    }
+    .meta .badge {
+      background: var(--accent); color: white; padding: 0.1rem 0.5rem;
+      border-radius: 3px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    blockquote {
+      border-left: 3px solid var(--accent); padding: 0.25rem 0 0.25rem 1rem;
+      margin: 1.25rem 0; color: var(--ink); font-style: italic;
+    }
+    blockquote .src {
+      display: block; margin-top: 0.5rem; color: var(--ink-soft);
+      font-style: normal; font-size: 0.85rem;
+    }
+    a { color: var(--accent); }
+    .nav {
+      margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule);
+      font-size: 0.9rem; color: var(--ink-soft);
+      display: flex; justify-content: space-between;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    table {
+      width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem;
+    }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0.5rem 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0.5rem 0.4rem 0; vertical-align: top; }
+    .compare {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;
+    }
+    .compare > div { padding: 1rem; border-radius: 4px; font-size: 0.85rem; }
+    .compare .bad { background: #fdecea; border-left: 3px solid var(--accent); }
+    .compare .good { background: #e8f5e9; border-left: 3px solid #4caf50; }
+    .compare .label {
+      font-family: "SF Mono", Menlo, monospace; font-weight: 700;
+      margin-bottom: 0.5rem; font-size: 0.75rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .summary { background: var(--code-bg); padding: 1.5rem; margin: 2rem 0; border-radius: 6px; }
+    .summary h3 { margin-top: 0; }
+    details {
+      margin: 1.5rem 0; padding: 1rem 1.25rem;
+      background: var(--code-bg); border-radius: 4px;
+    }
+    details summary {
+      cursor: pointer; font-weight: 700; color: var(--ink-soft);
+      font-size: 0.9rem; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    details ol, details ul { margin-top: 0.75rem; }
+    .diagram {
+      background: var(--code-bg); border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 4px;
+      font-family: "SF Mono", Menlo, monospace; font-size: 0.8rem;
+      line-height: 1.9; white-space: pre; overflow-x: auto;
+    }
+    .exercise {
+      border: 1px solid var(--rule); border-radius: 6px;
+      padding: 1.25rem; margin: 1.5rem 0; background: #fff;
+    }
+    .exercise h4 {
+      font-size: 0.8rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Verification Loops: The 2&ndash;3&times; Quality Lever</h1>
+  <p class="subtitle">Lesson 0011 · ~16 min · Give the agent a way to check its own work</p>
+
+  <div class="meta">
+    <span class="badge">Deepening</span>
+    <span>Source: Boris Cherny (Anthropic), Martin Fowler &amp; Birgitta Böckeler (Thoughtworks), LLM-as-judge research, Akshay Pachaar synthesis</span>
+  </div>
+
+  <p>Lesson 0009 named verification loops as component 10 of the harness. Lesson 0010 showed how context management prevents the agent from getting dumb. This lesson is about the opposite problem: <strong>the agent does something confidently wrong, and nothing catches it.</strong></p>
+
+  <blockquote>
+    "Giving the model a way to verify its work improves quality by 2&ndash;3&times;."
+    <span class="src">&mdash; Boris Cherny, Head of Claude Code, Anthropic</span>
+  </blockquote>
+
+  <p>That's the single highest-leverage claim in the entire harness literature. Not 10%. Not 20%. Two to three times. The reason: without verification, the agent produces output and moves on. With verification, the agent produces output, checks it, and either confirms or self-corrects. The check doesn't need to be expensive. It just needs to exist.</p>
+
+  <h2>1. The Fowler framework: guides vs. sensors</h2>
+
+  <p>Martin Fowler and Birgitta Böckeler at Thoughtworks formalized the cleanest framing for verification in early 2026. They split all harness controls into two types:</p>
+
+  <table>
+    <thead>
+      <tr><th></th><th>Guides (feedforward)</th><th>Sensors (feedback)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>When</strong></td>
+        <td>Before the agent acts</td>
+        <td>After the agent acts</td>
+      </tr>
+      <tr>
+        <td><strong>Purpose</strong></td>
+        <td>Steer toward correct behavior</td>
+        <td>Detect incorrect behavior</td>
+      </tr>
+      <tr>
+        <td><strong>Examples</strong></td>
+        <td>System prompts, coding conventions, file templates, linter rules, <code>CLAUDE.md</code> constraints</td>
+        <td>Tests, type checkers, CI pipelines, review agents, screenshots</td>
+      </tr>
+      <tr>
+        <td><strong>Failure mode</strong></td>
+        <td>Agent ignores the guide</td>
+        <td>Sensor doesn't catch the error</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Both guides and sensors can be <strong>computational</strong> (deterministic, fast, CPU-based: linters, tests, type checkers) or <strong>inferential</strong> (AI-driven, semantic: LLM-as-judge, design evaluation).</p>
+
+  <div class="diagram">                    COMPUTATIONAL          INFERENTIAL
+                    (deterministic)        (AI-driven)
+
+  GUIDES            Linter rules           System prompt
+  (feedforward)     File templates         Coding conventions
+                    Schema validation      Architectural constraints
+
+  SENSORS           Unit tests             LLM-as-judge
+  (feedback)        Type checkers          Review agent
+                    CI pipelines           Screenshot comparison</div>
+
+  <p>This 2&times;2 matrix is the mental model. Every verification mechanism in your harness fits into one of these four quadrants. Most developers over-invest in guides (writing detailed prompts) and under-invest in sensors (letting the agent check its own output). The 2&ndash;3&times; quality lift comes from adding sensors.</p>
+
+  <h2>2. Three types of verification loops</h2>
+
+  <p>From Anthropic's documentation and the practitioner community, there are three distinct types of verification. They're ordered by cost and coverage:</p>
+
+  <h3>Type 1: Rules-based (computational sensors)</h3>
+
+  <p>Deterministic checks that give ground truth. The agent runs tests, linters, or type checkers after making changes, and the harness feeds the results back into the loop.</p>
+
+  <div class="diagram">Agent edits code
+  ↓
+Harness runs: npm test
+  ↓
+Tests fail (3 of 12)
+  ↓
+Error output fed back to agent as a ToolMessage
+  ↓
+Agent reads failure, adjusts code
+  ↓
+Harness runs: npm test
+  ↓
+Tests pass (12 of 12)
+  ↓
+Agent proceeds to next sub-task</div>
+
+  <p><strong>Why it works:</strong> Tests don't hallucinate. A failing test is an unambiguous signal. The agent doesn't need to interpret &mdash; it needs to fix. This is the fastest feedback loop: run, fail, fix, run again.</p>
+
+  <p><strong>What it catches:</strong> Syntax errors, type errors, logic errors covered by tests, style violations, import errors, build failures.</p>
+
+  <p><strong>What it misses:</strong> Semantic correctness ("the code compiles but does the wrong thing"), design quality, adherence to non-goals, UI fidelity.</p>
+
+  <div class="callout">
+    <strong>The linter-as-hard-gate pattern.</strong> In Boris Cherny's loop engineering, if the linter log is not empty, the loop does not complete. The error is fed back into the agent for automated correction. The agent cannot "finish" until all deterministic checks pass. This is a computational sensor used as a gate, not just a signal.
+  </div>
+
+  <h3>Type 2: Visual (computational + inferential sensors)</h3>
+
+  <p>For UI tasks, the agent takes screenshots of its work using tools like Playwright, then evaluates whether the result matches the spec. This bridges the gap between "code compiles" and "UI looks right."</p>
+
+  <div class="diagram">Agent edits React component
+  ↓
+Harness runs: playwright screenshot → captures PNG
+  ↓
+Agent sees the screenshot in its context
+  ↓
+Agent compares against the spec: "The button should be centered with 16px padding"
+  ↓
+Agent notices: button is left-aligned
+  ↓
+Agent adjusts CSS, retakes screenshot
+  ↓
+Visual check passes → proceed</div>
+
+  <p><strong>Why it works:</strong> Seeing is believing. The model is surprisingly good at evaluating visual output when given a screenshot and a clear spec. This catches layout issues, missing elements, and style inconsistencies that no test suite would cover.</p>
+
+  <p><strong>When to use it:</strong> Any task that produces visible output &mdash; UI components, reports, charts, generated documents. If a human would check it by looking, the agent can too.</p>
+
+  <h3>Type 3: LLM-as-judge (inferential sensors)</h3>
+
+  <p>A <em>separate</em> agent evaluates the output of the working agent. The judge doesn't have the working agent's biases, assumptions, or accumulated context rot. It gets a fresh window and a focused evaluation prompt.</p>
+
+  <div class="diagram">Working agent produces: auth middleware (src/middleware/auth.ts)
+  ↓
+Harness spawns Judge agent with fresh context:
+  - The PRD (what was requested)
+  - The diff (what changed)
+  - The test results (what passed)
+  - Evaluation rubric: "Does this diff satisfy the PRD? 
+    Does it violate any non-goals? Is it consistent
+    with the existing codebase patterns?"
+  ↓
+Judge returns: "PASS — satisfies requirements. 
+  NOTE: Error messages are hardcoded in English.
+  PRD says nothing about i18n, but existing codebase
+  uses i18n keys in all other middlewares."
+  ↓
+Working agent receives judge's note, adds i18n keys
+  ↓
+Proceed</div>
+
+  <p><strong>Why it works:</strong> The judge operates in a fresh context window (no context rot from the working session), evaluates against the spec (not the agent's assumptions), and catches <em>semantic</em> issues that tests miss. The judge in the example above caught an inconsistency with codebase patterns that no test would flag.</p>
+
+  <div class="callout insight">
+    <strong>The fresh-context advantage.</strong> The working agent has been deep in the code for 20+ turns. Its context is full of implementation details. The judge starts clean, reads only the spec and the diff, and asks: "Does this actually do what was requested?" This is the same advantage a code reviewer has over the code author &mdash; distance from the implementation.
+  </div>
+
+  <p><strong>Production best practices for LLM-as-judge:</strong></p>
+  <ul>
+    <li><strong>Use a different model family if possible.</strong> Same-model judges exhibit self-preference bias.</li>
+    <li><strong>Force chain-of-thought.</strong> Make the judge explain its reasoning <em>before</em> giving a verdict. This improves reliability and makes failures debuggable.</li>
+    <li><strong>Give the judge a rubric, not a vague "is this good?"</strong> Specific criteria produce consistent evaluations. Vague prompts produce inconsistent ones.</li>
+    <li><strong>The judge cannot edit code.</strong> It can only evaluate and comment. This prevents the judge from "fixing" things and introducing its own bugs.</li>
+  </ul>
+
+  <h2>3. Layering: the production pattern</h2>
+
+  <p>Production harnesses don't pick one type. They layer all three in a specific order:</p>
+
+  <div class="diagram">Agent makes changes
+  │
+  ▼
+Layer 1: COMPUTATIONAL SENSORS (fast, free, deterministic)
+  ├── Linter (eslint, ruff, etc.)
+  ├── Type checker (tsc, mypy, etc.)
+  ├── Unit tests
+  └── Build check
+  │
+  │  If any fail → feed errors back, agent self-corrects, re-run Layer 1
+  │  If all pass ↓
+  ▼
+Layer 2: VISUAL SENSORS (if applicable)
+  ├── Playwright screenshot
+  └── Compare against spec
+  │
+  │  If visual mismatch → agent adjusts, re-run from Layer 1
+  │  If pass ↓
+  ▼
+Layer 3: INFERENTIAL SENSORS (slow, expensive, semantic)
+  ├── LLM-as-judge (fresh context)
+  └── Evaluates: spec compliance, codebase consistency, non-goal violations
+  │
+  │  If judge flags issues → agent addresses them, re-run from Layer 1
+  │  If pass ↓
+  ▼
+DONE — commit, push, open PR</div>
+
+  <p>The order matters: cheap before expensive. Every layer that catches an error saves the cost of the layers below it. A linter catching a syntax error in 100ms is infinitely cheaper than an LLM judge catching it in 10 seconds.</p>
+
+  <p><strong>This is Gather-Act-Verify.</strong> Anthropic describes Claude Code's cycle as: gather context (search files, read code), take action (edit files, run commands), verify results (run tests, check output), repeat. The verification step is not optional &mdash; it's a first-class phase of the cycle.</p>
+
+  <h2>4. Your setup, mapped to the layers</h2>
+
+  <p>Here's what you already have and what's missing, based on lessons 0001&ndash;0010:</p>
+
+  <table>
+    <thead>
+      <tr><th>Layer</th><th>What you have</th><th>What you could add</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Layer 1: Computational</strong></td>
+        <td>Test suite (lesson 0008's inner loop runs tests after each sub-task)</td>
+        <td>Linter-as-hard-gate: add <code>lint</code> to your <code>CLAUDE.md</code> as a mandatory post-edit step. Type checking if using TypeScript/Python with types.</td>
+      </tr>
+      <tr>
+        <td><strong>Layer 2: Visual</strong></td>
+        <td>Nothing (unless you manually check UI)</td>
+        <td>For UI tasks: add Playwright screenshot to the harness. The agent edits → screenshots → evaluates → adjusts. Even a simple <code>open index.html</code> + screenshot is better than nothing.</td>
+      </tr>
+      <tr>
+        <td><strong>Layer 3: Inferential</strong></td>
+        <td>Review agent in CI (lesson 0008)</td>
+        <td>Give the review agent a structured rubric based on the PRD's done-means and non-goals. Don't just say "review this" &mdash; say "evaluate against these 5 criteria."</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. The Gather-Act-Verify cycle in practice</h2>
+
+  <p>Here's what a single iteration of a well-verified AFK agent looks like, combining lessons 0008, 0010, and this lesson:</p>
+
+  <div class="exercise">
+    <h4>One sub-task, fully verified</h4>
+    <ol>
+      <li><strong>Gather:</strong> Agent reads the current sub-task from the issue plan. Uses JIT retrieval (lesson 0010) to load only the relevant files. Reads the PRD's done-means for this specific sub-task.</li>
+      <li><strong>Act:</strong> Agent edits the code. Makes the change.</li>
+      <li><strong>Verify (Layer 1):</strong> Agent runs the linter. If errors, fixes them. Runs the test suite. If failures, reads the error output, adjusts the code, re-runs. Loops until all computational checks pass.</li>
+      <li><strong>Verify (Layer 2, if UI):</strong> Agent takes a screenshot. Compares against the spec. If misaligned, adjusts and re-screenshots.</li>
+      <li><strong>Verify (Layer 3, on commit):</strong> Agent commits. The review agent in CI evaluates the diff against the PRD rubric. If flagged, the working agent receives the comments and addresses them.</li>
+      <li><strong>Proceed:</strong> Move to the next sub-task. The context management strategies from lesson 0010 keep the window clean for the next iteration.</li>
+    </ol>
+  </div>
+
+  <p>Each verification layer is a filter. Layer 1 catches 80% of errors (the ones tests and linters were written for). Layer 2 catches visual regressions. Layer 3 catches semantic drift &mdash; the code does something subtly different from what was specified. Without all three, errors leak through to the PR.</p>
+
+  <h2>6. The anti-patterns</h2>
+
+  <p>Three common mistakes that undermine verification loops:</p>
+
+  <h3>Anti-pattern 1: No hard gates</h3>
+
+  <div class="compare">
+    <div class="bad">
+      <div class="label">Soft verification</div>
+      <p style="margin: 0;">"Run the tests. If some fail, try to fix them, but proceed if you can't." The agent learns it can skip failures. Quality degrades to whatever the agent can get away with.</p>
+    </div>
+    <div class="good">
+      <div class="label">Hard gate</div>
+      <p style="margin: 0;">"Run the tests. Do not proceed until all tests pass. If you cannot fix a failure after 2 retries, stop and report the error." The agent cannot advance past a failing check.</p>
+    </div>
+  </div>
+
+  <h3>Anti-pattern 2: Vague judge prompts</h3>
+
+  <div class="compare">
+    <div class="bad">
+      <div class="label">Vague</div>
+      <p style="margin: 0;">"Review this code and check if it looks good." The judge has no criteria. Its evaluation will be inconsistent and biased toward approval.</p>
+    </div>
+    <div class="good">
+      <div class="label">Rubric-based</div>
+      <p style="margin: 0;">"Evaluate this diff against the following criteria: (1) Does it satisfy the done-means from the PRD? (2) Does it violate any non-goals? (3) Does it follow existing codebase patterns for error handling and i18n? Explain your reasoning, then give PASS or FAIL."</p>
+    </div>
+  </div>
+
+  <h3>Anti-pattern 3: Unbounded retries</h3>
+
+  <div class="callout warning">
+    <strong>Cap your retries.</strong> A verification loop without a retry limit will burn tokens endlessly on a problem the agent can't solve. Stripe's production harness caps at 2 retries. After that, the error is escalated to a human. Remember lesson 0009: 99% per-step success gives only 90.4% over 10 steps. Unlimited retries make the math worse, not better.
+  </div>
+
+  <h2>7. The meta-principle</h2>
+
+  <p>The 2&ndash;3&times; quality claim from Boris Cherny isn't about any single verification technique. It's about the <em>existence</em> of verification as a first-class phase. Without it, the agent's output is a first draft &mdash; plausible but unchecked. With it, the agent's output is a reviewed draft &mdash; the agent has caught its own mistakes before you see them.</p>
+
+  <p>This maps directly to Matt Pocock's lesson 0001 axiom. The verification loop is harness infrastructure. It uses the same model, the same weights. The quality lift comes entirely from the harness giving the model a way to check itself. You're not making the model smarter. You're making the system around it more rigorous.</p>
+
+  <div class="summary">
+    <h3>What this lesson taught</h3>
+    <ul>
+      <li><strong>Guides vs. sensors:</strong> Guides steer before action (prompts, templates). Sensors check after action (tests, judges). The 2&ndash;3&times; lift comes from sensors.</li>
+      <li><strong>Three verification types:</strong> Rules-based (tests, linters &mdash; fast, deterministic), visual (screenshots &mdash; for UI), LLM-as-judge (fresh context, semantic evaluation).</li>
+      <li><strong>Layer cheap before expensive:</strong> Linter → tests → screenshots → LLM judge. Each layer filters errors before hitting the next.</li>
+      <li><strong>Hard gates, not soft suggestions:</strong> The agent cannot proceed until verification passes. Soft verification degrades to no verification.</li>
+      <li><strong>Cap retries at 2.</strong> Unbounded retries burn tokens without progress. Escalate to human after 2 failures.</li>
+      <li><strong>Give judges rubrics, not vibes.</strong> Specific criteria produce consistent evaluations.</li>
+    </ul>
+  </div>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>What's the difference between a guide and a sensor? Give one example of each from your Claude Code setup.</li>
+    <li>Why should the LLM-as-judge operate in a fresh context window rather than the working agent's context?</li>
+    <li>Your AFK agent produces code that passes all tests but subtly violates the PRD's non-goals. Which verification layer failed, and how would you fix it?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li>A guide steers the agent <em>before</em> it acts (feedforward). Example: your <code>CLAUDE.md</code> rules, or a PRD's non-goals section. A sensor checks <em>after</em> the agent acts (feedback). Example: running <code>npm test</code> after editing code. Guides prevent errors; sensors detect them. Both are necessary &mdash; guides alone can be ignored, sensors alone catch errors too late.</li>
+      <li>The working agent's context is polluted by 20+ turns of implementation detail and its own assumptions. It's likely experiencing context rot (lesson 0010). The judge starts with a fresh window: it reads only the spec, the diff, and the test results. This gives it the same advantage a code reviewer has over the code author &mdash; distance from the implementation, no inherited biases, no mid-window attention degradation.</li>
+      <li>Layer 3 (inferential/LLM-as-judge) failed. Tests (Layer 1) passed because the code is functionally correct. But the semantic violation &mdash; touching files the non-goals forbid, or implementing behavior outside scope &mdash; is something only a judge evaluating against the PRD can catch. Fix: give the review agent a structured rubric that explicitly includes: "Does the diff modify any files or behaviors listed in the PRD's non-goals section? List them." Or make non-goals machine-checkable (a file-touch allow-list) to catch them in Layer 1.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>Boris Cherny's "2&ndash;3&times; quality" claim comes from his public statements as Head of Claude Code at Anthropic, corroborated in <a href="https://x.com/akshay_pachaar">Akshay Pachaar's synthesis thread</a> (Apr 2026). The guides-vs-sensors framework is from <a href="https://martinfowler.com">Martin Fowler and Birgitta Böckeler at Thoughtworks</a> (early 2026). LLM-as-judge best practices draw from the broader evaluation research community (MLflow, DeepEval, LangSmith) and Anthropic's agent documentation.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li><strong>Add one sensor to your setup.</strong> If you don't have linter-as-hard-gate, add it: put "always run lint after editing" in your <code>CLAUDE.md</code>. If you already lint, upgrade your review agent's prompt to use a structured rubric based on the PRD.</li>
+    <li><strong>Map your current harness</strong> into the 2&times;2 matrix (computational/inferential &times; guide/sensor). Where are the gaps?</li>
+    <li>Check the <a href="../reference/0004-verification-loops.html">Verification Loops Reference</a> for the 2&times;2 matrix and layering cheat sheet.</li>
+    <li>Ask your teacher anything that wasn't clear. Verification is the highest-leverage thing you can add to your harness. Small investments here compound across every AFK session.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0010-context-management.html">&larr; Lesson 0010: Context Management</a>
+    <span>Next lesson &rarr;</span>
+  </div>
+</body>
+</html>
