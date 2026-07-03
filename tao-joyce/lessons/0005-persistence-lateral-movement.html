@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005 — Persistence + Lateral movement: whitelisting, reputation, castle walls, assume breach</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #0e7490;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .ts {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.82rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    blockquote .attribution {
+      display: block;
+      font-style: normal;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      margin-top: 0.3rem;
+    }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.defense {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.brokerage {
+      background: #fff8e1;
+      border-left-color: #f59e0b;
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    .section-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+    }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    @media print {
+      body { background: white; color: black; font-size: 11pt; padding: 0; }
+      blockquote, .callout { background: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">tao-joyce</span></span>
+  <span>Lesson 0005</span>
+  <span>2026-07-03</span>
+</div>
+
+<h1>Persistence + Lateral movement</h1>
+<p class="subtitle">Whitelisting, reputation services, castle walls, segmentation, assume breach, IR plans. Đoạn 22:47–31:28.</p>
+
+<p>Đây là lesson dài nhất — gần 9 phút — vì Joyce gộp 2 phases liên tiếp. Attacker đã có credentials. Giờ họ cần <strong>ở lại</strong> (persistence) và <strong>di chuyển</strong> (lateral movement) đến crown jewels. Phase này quyết định attacker có lấy được gì hay chỉ nhìn từ xa.</p>
+
+<div class="callout">
+  <p><strong>Xem lại video.</strong> <a href="https://www.youtube.com/watch?v=bDJb8WOJYdA&t=1367s">22:47–31:28</a> · ⏱ 40–50 phút · 📦 Output: segmentation assessment hoặc IR plan reality check.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Part A — Persistence</h2>
+
+<!-- ============================================================ -->
+<h2>1. Dig in and hold</h2>
+<p class="section-num">Timestamp: <span class="ts">22:47–23:23</span></p>
+
+<blockquote>
+  "Somebody's cracked open the door. They're on the threshold. The next thing they've got to do is they want to establish persistence. It's not good enough just to be in a network. But if you're really there to exploit, you want to dig in and hold, right? So work happens at this point. Privilege escalate, maybe, so that you can get down some tools, finding run keys, getting into scripts, other technologies to ensure that persistence onto those computers so that you can stay."
+  <span class="attribution">— Joyce, 22:47</span>
+</blockquote>
+
+<p>Joyce liệt kê các kỹ thuật persistence:</p>
+
+<ul>
+  <li><strong>Privilege escalation:</strong> từ user thường lên admin/root</li>
+  <li><strong>Run keys:</strong> registry keys (Windows) hoặc startup scripts (Linux) đảm bảo malware chạy lại sau reboot</li>
+  <li><strong>Scripts:</strong> cài backdoor vào script tự động hóa đã có sẵn</li>
+</ul>
+
+<p>Mục tiêu: <strong>survive reboot</strong>. Nếu attacker mất access mỗi khi server restart, họ phải re-exploit lại — tốn kém, rủi ro bị phát hiện. Persistence = đầu tư một lần, ở lại vĩnh viễn.</p>
+
+<!-- ============================================================ -->
+<h2>2. Application whitelisting — "makes this world hard"</h2>
+<p class="section-num">Timestamp: <span class="ts">23:23–24:11</span></p>
+
+<blockquote>
+  "Things that have implemented application whitelisting makes this world hard. Application whitelisting, it is difficult for generic users in a large network to know exactly what applications you're gonna run, what should be permitted. There's some good work going on to make this a little more generic and understand what's routine and what's not inside an organization."
+  <span class="attribution">— Joyce, 23:23</span>
+</blockquote>
+
+<p>Application whitelisting = chỉ cho phép chạy phần mềm trong danh sách approved. Mọi thứ khác bị block. Joyce thừa nhận nó khó triển khai toàn network — nhưng:</p>
+
+<blockquote>
+  "Figure out early what you need to protect, segment that off. And that's the place you maybe want to think about whitelisting. Make sure that in that space they can't run a piece of malware, something new or unusual. Your goal needs to be to restrain that malicious behavior, keep it from launching in the interim."
+  <span class="attribution">— Joyce, 23:50</span>
+</blockquote>
+
+<p>Insight chiến lược: <strong>không cần whitelist toàn bộ network — chỉ cần whitelist trên các hệ thống crown jewels</strong>. Joyce kết nối lại Lesson 0002: biết crown jewels → segment → whitelist ở đó.</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Whitelisting trên trading server, core banking system, hoặc DC controller thì feasible và high-impact. Whitelisting trên laptop nhân viên thì low feasibility. Chọn đúng chỗ.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>3. Attacker tooling — beachhead rồi mới nặng</h2>
+<p class="section-num">Timestamp: <span class="ts">24:11–24:53</span></p>
+
+<blockquote>
+  "After you've gotten into the network, install some tools, right? Usually, the first tools down are lightweight, small beaconing things. Their intent is to establish that beachhead and then bring down the tools that are actually gonna do the work."
+  <span class="attribution">— Joyce, 24:11</span>
+</blockquote>
+
+<p>Two-stage deployment:</p>
+<ol>
+  <li><strong>Stage 1:</strong> tiny beacon — chỉ gọi về C2, nhỏ, tránh detection</li>
+  <li><strong>Stage 2:</strong> heavy tools — download sau khi beachhead ổn định</li>
+</ol>
+
+<p>Rồi Joyce nói về AV:</p>
+
+<blockquote>
+  "The AV industry, at times, gets a bad rap for their ability or inability to keep things off. If your AV is a list of bad things that shouldn't run on your computer, that's not a great technique because that just means the unique thing you need to run on that computer needs to be unique, and it will never be in that list."
+  <span class="attribution">— Joyce, 24:30</span>
+</blockquote>
+
+<p><strong>Blacklist AV = danh sách "cái đã biết xấu".</strong> Nation-state malware được viết custom cho từng target → nó unique → <em>nó sẽ không bao giờ nằm trong blacklist</em>. Đó là tại sao signature-based AV thất bại trước nation-state.</p>
+
+<!-- ============================================================ -->
+<h2>4. Reputation services — "be afraid, be very afraid"</h2>
+<p class="section-num">Timestamp: <span class="ts">24:53–26:52</span></p>
+
+<blockquote>
+  "Reputation services are more the norm. Every piece of software that wants to execute on your machine gets hashed, pushed up into the cloud. Let me tell you, if you've got a reputation service, and it says that interesting executable that you think you want to run in the entire history of the Internet has been run one time, and it's on your machine, be afraid, right, be very afraid."
+  <span class="attribution">— Joyce, 24:53</span>
+</blockquote>
+
+<p><strong>"In the entire history of the Internet has been run one time, and it's on your machine."</strong> Đây là cách detect custom malware: không cần biết nó xấu hay tốt — chỉ cần biết <em>nó chưa từng tồn tại ở đâu khác</em>.</p>
+
+<p>Joyce tiếp tục với domain reputation:</p>
+
+<blockquote>
+  "Reputation services work probably even better in the domain name world. It's not enough to block known bad domains. That'll get you the crimeware. But you've got to block the things that are not known good. It's really hard for an exploiter to get a website created and established that has good reputation. But if something is evaluating that reputation, and nobody else is going to it, or the content's stale, it's not updated, it will have neutral or negative reputation."
+  <span class="attribution">— Joyce, 25:50</span>
+</blockquote>
+
+<p>Logic đảo ngược: thay vì block "known bad" → <strong>chỉ cho phép "known good"</strong>. Domain mới, ít traffic, content stale = suspicious. Attacker rất khó build domain có reputation tốt.</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Hai lớp reputation: <strong>(1) executable reputation</strong> — file chưa từng thấy trên Internet + chạy trên máy bạn = red flag; <strong>(2) domain reputation</strong> — máy bạn gọi về domain mà không ai khác biết = red flag. Cả hai đều là signals mà không cần biết content xấu hay tốt.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Part B — Lateral Movement</h2>
+
+<!-- ============================================================ -->
+<h2>5. Castle walls — "hard crunchy outer shell, soft gooey center"</h2>
+<p class="section-num">Timestamp: <span class="ts">26:52–27:53</span></p>
+
+<blockquote>
+  "After you're in a network, rarely do you land where you need to be. At this point, it's important to move laterally and find the things you need to find. The big question you need to think about is if you have an intrusion somewhere in your network, can you then defend against this lateral movement?"
+  <span class="attribution">— Joyce, 26:52</span>
+</blockquote>
+
+<blockquote>
+  "If you think about it, most networks, big castle walls, hard, crunchy outer shell, soft, gooey center. How do you get to the point where you know you have an intrusion, and you're gonna keep somebody and make it difficult for them to move from the place they landed to the place they need to be?"
+  <span class="attribution">— Joyce, 27:10</span>
+</blockquote>
+
+<p><strong>"Hard, crunchy outer shell, soft, gooey center."</strong> Đây là mô tả chính xác của hầu hết network: firewall mạnh ở perimeter, nhưng bên trong — <em>flat network, không segmentation, không monitoring, mọi thứ trust lẫn nhau</em>.</p>
+
+<p>Khi attacker đã vượt qua perimeter (Lesson 0003), phần "soft gooey center" là playground. Không ai chặn. Không ai thấy.</p>
+
+<!-- ============================================================ -->
+<h2>6. "Nothing is really more frustrating"</h2>
+<p class="section-num">Timestamp: <span class="ts">27:53–28:18</span></p>
+
+<blockquote>
+  "You really need to limit the administrator privileges, segment the accesses, enforce two-factor authentication. Nothing is really more frustrating to us than to be inside a network, know where the thing is you need to go get to and not have a path to get over to find that."
+  <span class="attribution">— Joyce, 27:53</span>
+</blockquote>
+
+<p>Joyce tiết lộ frustration thực sự của TAO: <strong>đã ở trong network, đã biết target ở đâu, nhưng không có path đến đó</strong>. Segmentation + limited privileges = dead end cho attacker.</p>
+
+<p>Ba controls ông recommend:</p>
+<ol>
+  <li><strong>Limit admin privileges</strong> — ít account nào có quyền di chuyển tự do</li>
+  <li><strong>Segment accesses</strong> — tách network thành zones, kiểm soát traffic giữa zones</li>
+  <li><strong>2FA everywhere</strong> — mỗi hop cần authenticate lại</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2>7. Trust relationships + dynamic privileges</h2>
+<p class="section-num">Timestamp: <span class="ts">28:18–29:11</span></p>
+
+<blockquote>
+  "Poorly considered trust relationships. Allowing any user or any computer with valid credentials to access the network from anywhere. That's a poor idea, a huge risk."
+  <span class="attribution">— Joyce, 28:18</span>
+</blockquote>
+
+<blockquote>
+  "Better networks employ things like comply to connect for remote access. They assure the security of the remote connections, maybe even figuring out physical locations. Seeing some really interesting things with dynamic privileges, thinking about you can access pieces of information from inside your network but not from out, inside the state but not out."
+  <span class="attribution">— Joyce, 28:40</span>
+</blockquote>
+
+<p><strong>Dynamic privileges:</strong> quyền truy cập thay đổi dựa trên context — bạn ở trong văn phòng thì có quyền A, ở ngoài thì chỉ có quyền B. Đây là concept mà ngày nay gọi là <strong>Zero Trust</strong> (bài giảng 2016, trước khi Zero Trust trở thành buzzword).</p>
+
+<p>Ví dụ cho brokerage: trader ở văn phòng → full access trading system. Trader ở nhà → chỉ xem, không đặt lệnh. Trader ở nước ngoài → blocked hoàn toàn.</p>
+
+<!-- ============================================================ -->
+<h2>8. Assume breach — "consider that you're already penetrated"</h2>
+<p class="section-num">Timestamp: <span class="ts">29:11–30:01</span></p>
+
+<blockquote>
+  "I think another key thought that people don't have is consider that you're already penetrated, right? Do you have the means and methods to understand if somebody's inside your network? If you read statistics, Verizon does a great intrusion report every year. Look at the statistics for how long intrusions go undetected, months or years, right, after people are inside."
+  <span class="attribution">— Joyce, 29:22</span>
+</blockquote>
+
+<p><strong>"Consider that you're already penetrated."</strong></p>
+
+<p>Đây là mindset shift lớn nhất trong bài giảng. Hầu hết organization hoạt động với giả định "chúng ta chưa bị hack." Joyce nói: <strong>giả định ngược lại</strong>.</p>
+
+<p>Verizon DBIR statistics (pattern vẫn đúng năm 2026): median dwell time (thời gian attacker ở trong network trước khi bị phát hiện) thường là <strong>hàng tháng</strong>. Nghĩa là: ngay bây giờ, có thể có ai đó trong network bạn và bạn không biết.</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> "Assume breach" không phải bi quan — nó là <strong>defensive posture</strong>. Nếu bạn giả định đã bị penetrate, bạn sẽ: (1) monitor internal traffic, không chỉ perimeter; (2) segment để limit blast radius; (3) có detection cho lateral movement; (4) có IR plan sẵn. Nếu bạn giả định chưa bị penetrate, bạn sẽ không làm gì cả — cho đến khi quá muộn.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>9. IR plans — "rarely exercise them"</h2>
+<p class="section-num">Timestamp: <span class="ts">30:01–30:30</span></p>
+
+<blockquote>
+  "Monitoring and detection inside the networks is just as important as that network boundary. And many networks, they don't have incident response plans. And if they do, they rarely exercise them, right? Have you ever seen incident response plan exercised inside your network?"
+  <span class="attribution">— Joyce, 30:01</span>
+</blockquote>
+
+<p>Joyce hỏi trực tiếp khán giả: <strong>"Have you ever seen incident response plan exercised?"</strong> — câu hỏi rhetorical vì ông biết câu trả lời: hầu hết chưa bao giờ.</p>
+
+<p>Ba level của IR maturity:</p>
+<ol>
+  <li><strong>Không có IR plan</strong> — nhiều tổ chức</li>
+  <li><strong>Có IR plan nhưng không exercise</strong> — hầu hết tổ chức</li>
+  <li><strong>Có IR plan và exercise định kỳ</strong> — rất ít</li>
+</ol>
+
+<p>IR plan không exercise = IR plan không hoạt động. Giống fire drill: nếu chưa bao giờ chạy thử, khi cháy thật, không ai biết làm gì.</p>
+
+<!-- ============================================================ -->
+<h2>10. IoT / BYOD / SCADA — "why go after the enterprise?"</h2>
+<p class="section-num">Timestamp: <span class="ts">30:30–31:28</span></p>
+
+<blockquote>
+  "Why go after the professionally administered enterprise network when people are bringing their home laptops that their kids were going out and downloading Steam games the night before, right, inside your network and trust unit. What's that trust boundary?"
+  <span class="attribution">— Joyce, 30:42</span>
+</blockquote>
+
+<p>Joyce dùng hình ảnh rất cụ thể: con nhỏ download game đêm trước → sáng bố mẹ mang laptop đó vào công ty → nối vào enterprise network → trusted. Attacker nhìn vào và thấy: <strong>tại sao phải tấn công enterprise khi có con đường dễ hơn?</strong></p>
+
+<blockquote>
+  "The Internet of things, there is now getting to be a whole SCADA network running in parallel, sometimes interconnected, to your whole corporate network. Have we thought about those security elements? Do we need to invest more in those technologies to secure and defend there? Absolutely."
+  <span class="attribution">— Joyce, 31:00</span>
+</blockquote>
+
+<p>SCADA (Supervisory Control and Data Acquisition) — hệ thống điều khiển công nghiệp, thường chạy song song với corporate network. Nếu interconnected và không được bảo vệ = backdoor vào enterprise.</p>
+
+<!-- ============================================================ -->
+<h2>11. Anchor — Điều này nghĩa gì cho brokerage</h2>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 1 — Flat network?</strong> Network brokerage có segmentation không? Hay sau firewall perimeter, mọi thứ trong cùng VLAN? Nếu attacker compromise workstation của nhân viên sales, họ có path trực tiếp đến trading server không?</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 2 — Crown jewels isolation.</strong> Từ Lesson 0002 bạn đã xác định crown jewels. Giờ hỏi: chúng nằm trong segment riêng chưa? Có application whitelisting trên chúng không? Ai có quyền truy cập và access đó có được monitor?</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 3 — Dynamic privileges.</strong> Trader ở văn phòng vs trader remote — quyền khác nhau hay giống nhau? Nếu giống nhau, attacker steal VPN credential = full access từ bất kỳ đâu trên thế giới.</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 4 — IR reality check.</strong> Brokerage có IR plan không? Nếu có, lần cuối exercise là khi nào? Nếu phát hiện breach bây giờ, <strong>ai gọi ai, trong bao lâu, làm gì đầu tiên?</strong> Nếu không trả lời được trong 60 giây, IR plan chưa sẵn sàng.</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 5 — Assume breach test.</strong> Nếu giả định attacker đã ở trong network 30 ngày, bạn có cách nào phát hiện? Internal monitoring? Network anomaly detection? Hay hoàn toàn phụ thuộc vào perimeter?</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>12. Deliverable</h2>
+
+<p>Chọn <strong>một trong hai</strong>:</p>
+
+<h3>Option A — Segmentation assessment</h3>
+
+<p>Vẽ sơ đồ network đơn giản với các zones. Đánh dấu:</p>
+
+<ul>
+  <li>Zones hiện có (nếu có segmentation)</li>
+  <li>Đường nào attacker có thể đi từ workstation nhân viên → trading server</li>
+  <li>Đâu là chỗ nên thêm segmentation nhưng chưa có</li>
+</ul>
+
+<h3>Option B — IR plan reality check (1 trang)</h3>
+
+<p>Trả lời 5 câu hỏi, viết ra giấy hoặc file:</p>
+
+<ol>
+  <li>Chúng ta có IR plan không? Ở đâu? Ai biết nó tồn tại?</li>
+  <li>Lần cuối exercise là khi nào?</li>
+  <li>Nếu phát hiện breach lúc 2 giờ sáng thứ Bảy, ai được gọi đầu tiên? Số điện thoại ở đâu?</li>
+  <li>Trong 15 phút đầu, team làm gì? Có checklist không?</li>
+  <li>Ai quyết định disclose cho regulator? Trong bao lâu? (UBCKNN yêu cầu gì?)</li>
+</ol>
+
+<!-- ============================================================ -->
+<div class="lesson-nav">
+  <div>
+    <div class="nav-label">Previous</div>
+    <a href="0004-credentials.html">← 0004: Credentials</a>
+  </div>
+  <div>
+    <div class="nav-label">Next</div>
+    <a href="0006-exfil-nation-state.html">0006: Exfil + Nation-state →</a>
+  </div>
+</div>
+
+</body>
+</html>

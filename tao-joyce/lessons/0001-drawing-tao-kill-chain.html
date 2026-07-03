@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001 — Know your network: Core thesis + Intent vs Reality + Red team</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #0e7490;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+
+    /* Meta bar */
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Timestamp badge */
+    .ts {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.82rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+
+    /* Blockquotes — Joyce quotes */
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    blockquote .attribution {
+      display: block;
+      font-style: normal;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      margin-top: 0.3rem;
+    }
+
+    /* Callouts */
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.defense {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.brokerage {
+      background: #fff8e1;
+      border-left-color: #f59e0b;
+    }
+
+    /* Code */
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; }
+    td { padding: 0.4rem 0; }
+
+    /* Section num label */
+    .section-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+    }
+
+    /* Navigation */
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+
+    /* Print */
+    @media print {
+      body { background: white; color: black; font-size: 11pt; padding: 0; }
+      blockquote, .callout { background: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">tao-joyce</span></span>
+  <span>Lesson 0001</span>
+  <span>2026-07-03</span>
+</div>
+
+<h1>"Know your network"</h1>
+<p class="subtitle">Core thesis, Intent vs Reality, Red team. Đoạn 0:00–6:45 của bài giảng.</p>
+
+<p>Joyce mở đầu bằng luận điểm trung tâm và dành gần 7 phút cho recon — nhưng đây không chỉ là "biết network". Ông nói về khoảng cách giữa ý định và thực tế, và tại sao red team mà không act on results là vô nghĩa.</p>
+
+<div class="callout">
+  <p><strong>Xem lại video.</strong> <a href="https://www.youtube.com/watch?v=bDJb8WOJYdA&t=0s">0:00–6:45</a> · ⏱ 30–40 phút · 📦 Output: memo hoặc 1 mục trong reference card.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>1. Core thesis</h2>
+<p class="section-num">Timestamp: <span class="ts">1:10–1:54</span></p>
+
+<blockquote>
+  "The theme I want you to take away is if you really want to protect your network, you really have to know your network. You have to know the devices, the security, technologies and the things inside it."
+  <span class="attribution">— Joyce, 1:21</span>
+</blockquote>
+
+<blockquote>
+  "Why are we successful? We put the time in to know that network. We put the time in to know it better than the people who designed it and the people who are securing it. And that's the bottom line."
+  <span class="attribution">— Joyce, 1:35</span>
+</blockquote>
+
+<p>Đây là <strong>thesis của toàn bộ bài giảng</strong>. Joyce lặp lại ít nhất 4 lần trong 34 phút. Ông không nói "bạn cần tool X" hay "bạn phải dùng framework Y". Ông nói: <strong>bạn phải biết network của bạn — và bạn phải biết nó tốt hơn chúng tôi</strong>.</p>
+
+<p>Tại sao điều này quan trọng cho Head of Security? Vì nó đặt <strong>tiêu chuẩn đo lường</strong>: không phải "mình có SIEM chưa?" mà là "mình có biết network mình tốt hơn một attacker đã recon 3 tháng chưa?"</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Câu hỏi đúng không phải "mình có gì?" mà là "mình biết gì về cái mình có — và cái mình <em>không biết mình có</em>?"</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>2. Recon — scanning, people, OSINT</h2>
+<p class="section-num">Timestamp: <span class="ts">1:54–3:05</span></p>
+
+<blockquote>
+  "Really the first phase during a targeted intrusion is a reconnaissance phase. Somebody's got to go out and understand the target. It starts with simple things like scanning. Go out and physically scan the actual target. There's understanding important people or e-mail addresses from that activity. Going out and looking at the open-source information about that target."
+  <span class="attribution">— Joyce, 2:21</span>
+</blockquote>
+
+<p>Joyce liệt kê 3 hoạt động recon:</p>
+
+<ol>
+  <li><strong>Scanning</strong> — quét network từ bên ngoài (port scan, service detection)</li>
+  <li><strong>People + email</strong> — tìm hiểu ai làm gì, email structure (firstname.lastname@company.vn?)</li>
+  <li><strong>Open-source information</strong> — LinkedIn, website công ty, tender documents, regulatory filings</li>
+</ol>
+
+<p>Chú ý: Joyce không nhắc tool nào. Ông nhắc <strong>activities</strong>. Recon là quá trình tìm hiểu, không phải chạy Nmap.</p>
+
+<!-- ============================================================ -->
+<h2>3. Intent vs Reality</h2>
+<p class="section-num">Timestamp: <span class="ts">3:13–4:06</span></p>
+
+<p>Đây là luận điểm quan trọng nhất trong phần recon:</p>
+
+<blockquote>
+  "You know the technologies you intended to use in that network. We know the technologies that are actually in use in that network. Subtle difference. Did you catch that? You know what you intended to use. We know what's actually in use inside there."
+  <span class="attribution">— Joyce, 3:13</span>
+</blockquote>
+
+<p>Joyce nhấn mạnh bằng cách <strong>lặp lại 2 lần</strong> và hỏi "Did you catch that?" — ông biết đây là insight mà hầu hết mọi người sẽ bỏ qua.</p>
+
+<p><strong>Ý nghĩa:</strong> Defender biết cái mình <em>dự định</em> có trên network (theo thiết kế, theo tài liệu, theo inventory). Attacker biết cái <em>thực sự</em> đang chạy — bao gồm:</p>
+
+<ul>
+  <li>Shadow IT: phần mềm nhân viên tự cài</li>
+  <li>Legacy services: service cũ "tạm thời" mà không ai tắt</li>
+  <li>Misconfigured defaults: cấu hình mặc định chưa harden</li>
+  <li>Vendor-installed backdoors: VPN, remote access tools vendor để lại</li>
+  <li>Test environments: môi trường test kết nối production</li>
+</ul>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Khoảng cách giữa "intended" và "actual" chính là attack surface thực. Nếu bạn chỉ biết intended, bạn đang để attacker biết network tốt hơn bạn.</p>
+</div>
+
+<blockquote>
+  "We will learn the security functionality of the devices inside that network. We'll study them, understand them, find the vulnerabilities. In fact, we've got people who will know the security functionalities of those devices better than the people who developed the actual device."
+  <span class="attribution">— Joyce, 3:33</span>
+</blockquote>
+
+<blockquote>
+  "They won't know the whole product. They won't know every feature. But they'll understand the security technologies, and they'll bring that expertise at a very, very deep level."
+  <span class="attribution">— Joyce, 3:53</span>
+</blockquote>
+
+<p>TAO không cần hiểu toàn bộ sản phẩm — họ chỉ cần hiểu <strong>security layer</strong> sâu hơn người phát triển nó. Đây là chuyên môn hóa cực độ.</p>
+
+<!-- ============================================================ -->
+<h2>4. Detail and rigor</h2>
+<p class="section-num">Timestamp: <span class="ts">4:06–4:41</span></p>
+
+<blockquote>
+  "It's minute attention to detail inside that security layer. [...] We apply the focus and energy to look at those details. Will you, as people who have important things to protect, will you put in the energy to understand the network, understand the devices and configure and use them in the proper way that would prevent exploitation?"
+  <span class="attribution">— Joyce, 4:06</span>
+</blockquote>
+
+<p>Joyce đặt câu hỏi thẳng: <strong>"Will you put in the energy?"</strong> — đây không phải lời khuyên. Đây là thách thức. TAO đầu tư thời gian để hiểu security devices ở mức chi tiết từng dòng. Bạn có đầu tư tương đương cho defense không?</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Security không phải mua sản phẩm. Security là <em>đầu tư thời gian và kỷ luật</em> để hiểu sản phẩm đó ở mức cấu hình chi tiết. Một firewall mua về mà chưa harden thì là false sense of security.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>5. Reduce attack surface + Red team</h2>
+<p class="section-num">Timestamp: <span class="ts">4:41–5:31</span></p>
+
+<blockquote>
+  "You've got to have procedures to evaluate what you'll use, what you'll install. You've got to lock down and disable those things that you're not using, right? Reduce the attack surface."
+  <span class="attribution">— Joyce, 4:41</span>
+</blockquote>
+
+<p>Joyce tự nhận: <em>"It's not a new or amazingly insightful piece of advice."</em> — nhưng:</p>
+
+<blockquote>
+  "You'd be surprised about the things that are running on a network versus the things that you think are supposed to be there."
+  <span class="attribution">— Joyce, 5:06</span>
+</blockquote>
+
+<p>Quay lại intent vs reality. Rồi ông đưa ra lời khuyên cụ thể:</p>
+
+<blockquote>
+  "What can you do to understand that exposure surface? Red team that network. Bring in pen testers. Poke and prod it, just like an adversary will do, to find out what's inside that space."
+  <span class="attribution">— Joyce, 5:14</span>
+</blockquote>
+
+<p>Chú ý: Joyce dùng chính xác ngôn ngữ attacker — <em>"poke and prod it, just like an adversary will do."</em> Red team không phải compliance exercise. Red team là <strong>mô phỏng attacker behavior</strong>.</p>
+
+<!-- ============================================================ -->
+<h2>6. "Well-run networks" + Act on results</h2>
+<p class="section-num">Timestamp: <span class="ts">5:31–6:45</span></p>
+
+<p>Đây là đoạn ít được quote nhưng <strong>có giá trị thực tiễn cao nhất</strong> cho Head of Security:</p>
+
+<blockquote>
+  "Well-run networks really do make our job hard."
+  <span class="attribution">— Joyce, 5:31</span>
+</blockquote>
+
+<p>Một câu ngắn. Nhưng đây là <strong>đánh giá trực tiếp từ attacker</strong>: network được vận hành tốt thực sự làm TAO khó. Không phải network có nhiều tool. Network <em>được vận hành tốt</em>.</p>
+
+<blockquote>
+  "NSA, in our information assurance side, will do red team testing against government networks. So we'll inevitably find things that are misconfigured, things that shouldn't be set up, holes and flaws, and we'll produce reports telling the network owner things they need to fix. Cycle comes around to the point where we've got to get back and redo a red team against that same network. It is not uncommon for us to find the same security flaws that were in that original report. That's the first place we go is to the original report. Did the things we pointed out previously get fixed?"
+  <span class="attribution">— Joyce, 5:44</span>
+</blockquote>
+
+<blockquote>
+  "Inexcusable, inconceivable, but returning a couple years later, the same holes and vulnerabilities exist. I've seen it in the corporate sector, too. I've seen it in our targets."
+  <span class="attribution">— Joyce, 6:23</span>
+</blockquote>
+
+<p><strong>3 điểm chính:</strong></p>
+
+<ol>
+  <li><strong>Red team report mà không fix = vô nghĩa.</strong> Joyce dùng từ "inexcusable, inconceivable".</li>
+  <li><strong>Attacker quay lại report cũ trước.</strong> Nơi đầu tiên họ xem là "cái report cũ đã fix chưa?" — nếu chưa, đó là entry point miễn phí.</li>
+  <li><strong>Đúng cho cả government, corporate, và targets.</strong> Joyce nói ông thấy pattern này ở mọi nơi.</li>
+</ol>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Giá trị của red team nằm ở <strong>follow-through</strong>, không phải report. Nếu brokerage đã pen test mà chưa fix hết findings, đó là nơi attacker sẽ nhìn đầu tiên.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>7. Anchor — Điều này nghĩa gì cho brokerage</h2>
+
+<p>Từ 6 luận điểm Joyce nêu trong 6:45 đầu, đặt 4 câu hỏi cho chính brokerage của bạn:</p>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 1 — Intent vs Reality.</strong> Bạn có danh sách "intended" (thiết kế, inventory) của tất cả hệ thống trên network không? Nếu có, bạn <em>tin tưởng</em> nó phản ánh reality ở mức nào — 50%? 80%? 95%? Khoảng cách đó là attack surface thực.</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 2 — Deep expertise.</strong> TAO hiểu security layer của device sâu hơn vendor. Bạn có ai trong team hiểu security configuration của firewall / WAF / SIEM ở mức sâu hơn default settings không? Hay đang chạy default?</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 3 — Red team follow-through.</strong> Brokerage đã pen test bao giờ chưa? Nếu có, bao nhiêu % findings đã fix? Có bao giờ pen test lần 2 kiểm tra lại không?</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 4 — "Well-run".</strong> Joyce nói <em>"well-run networks make our job hard"</em> — không phải well-equipped, không phải well-funded. Well-<em>run</em>. Bạn đánh giá network mình "well-run" ở đâu trên thang 1–10? Điều gì cản trở nó lên level tiếp theo?</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>8. Deliverable</h2>
+
+<p>Chọn <strong>một trong hai</strong>:</p>
+
+<h3>Option A — Memo "Intent vs Reality" (1 trang)</h3>
+
+<p>Viết memo gửi team IT/Security với tiêu đề: <strong>"Chúng ta biết gì vs. Thực tế network có gì?"</strong></p>
+
+<p>Trong memo, liệt kê:</p>
+
+<ul>
+  <li>3 hệ thống bạn <em>biết chắc</em> đang chạy trên network (intended = actual)</li>
+  <li>3 thứ bạn <em>nghi</em> đang chạy nhưng không chắc (shadow IT, legacy, vendor tools)</li>
+  <li>1 hành động cụ thể để thu hẹp khoảng cách (ví dụ: chạy asset discovery scan)</li>
+</ul>
+
+<h3>Option B — Reference card entry</h3>
+
+<p>Mở <code>reference/kill-chain-brokerage.md</code>, phần <strong>1. Recon</strong>, điền:</p>
+
+<ul>
+  <li>Joyce quote (đã có sẵn)</li>
+  <li>Trả lời 4 câu hỏi anchor ở trên — viết bằng ngôn ngữ của mình, không copy</li>
+</ul>
+
+<p>Cả hai option đều mất khoảng 15 phút. Chọn cái nào bạn sẽ <em>thực sự làm</em>.</p>
+
+<!-- ============================================================ -->
+<div class="lesson-nav">
+  <div>
+    <div class="nav-label">First lesson</div>
+  </div>
+  <div>
+    <div class="nav-label">Next</div>
+    <a href="0002-small-cracks-boundaries-crown-jewels.html">0002: Small cracks →</a>
+  </div>
+</div>
+
+</body>
+</html>

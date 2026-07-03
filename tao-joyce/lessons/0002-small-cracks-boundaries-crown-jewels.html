@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002 — Small cracks, trust boundaries, crown jewels</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #0e7490;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .ts {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.82rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    blockquote .attribution {
+      display: block;
+      font-style: normal;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      margin-top: 0.3rem;
+    }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.defense {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.brokerage {
+      background: #fff8e1;
+      border-left-color: #f59e0b;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    .section-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+    }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    @media print {
+      body { background: white; color: black; font-size: 11pt; padding: 0; }
+      blockquote, .callout { background: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">tao-joyce</span></span>
+  <span>Lesson 0002</span>
+  <span>2026-07-03</span>
+</div>
+
+<h1>Small cracks, trust boundaries, crown jewels</h1>
+<p class="subtitle">Đoạn 6:45–11:20. Joyce tiếp tục recon với 3 luận điểm mà Head of Security cần nghe: đừng coi thường lỗ nhỏ, trust boundary đang mờ dần, và bạn phải biết đâu là crown jewels.</p>
+
+<div class="callout">
+  <p><strong>Xem lại video.</strong> <a href="https://www.youtube.com/watch?v=bDJb8WOJYdA&t=405s">6:45–11:20</a> · ⏱ 30–40 phút · 📦 Output: trust boundary sketch hoặc crown jewels list.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>1. "Don't assume a crack is too small"</h2>
+<p class="section-num">Timestamp: <span class="ts">6:59–7:30</span></p>
+
+<blockquote>
+  "Don't assume a crack is too small to be noticed or too small to be exploited. So if you go through and do that pen test, and you say, 'We look great on these 97 things, but these three things over here, they're kind of esoteric. They probably don't matter much. We'll probably ignore them,' right? That's what we need. We need that toe hold. We need that first crack, that first seam, and we're gonna look and look and look for that esoteric kind of edge case to break open and crack in."
+  <span class="attribution">— Joyce, 6:59</span>
+</blockquote>
+
+<p>Joyce dùng 3 từ đồng nghĩa: <strong>toe hold, crack, seam</strong> — tất cả đều là khe hở nhỏ mà defender thường dismiss.</p>
+
+<p>Logic của attacker: trong 100 findings của pen test, defender fix 97 cái quan trọng và để 3 cái "esoteric" lại. Attacker nhìn đúng 3 cái đó — vì đó là con đường duy nhất còn mở.</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Pen test report nào cũng có mục "Low severity" hoặc "Informational". Attacker đọc mục đó trước, vì đó là nơi defender sẽ không fix. Nếu bạn để 3 low-severity findings tồn tại 2 năm, đó có thể là initial access vector.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>2. Temporary vulnerabilities + APT patience</h2>
+<p class="section-num">Timestamp: <span class="ts">7:30–8:35</span></p>
+
+<blockquote>
+  "If you own a network, and you got trouble with an appliance inside your trust zone, and you're talking to the vendor and just can't quite make it work. And they say, 'Well, open it up for me. I'll come in. We'll poke around. We'll take some logs. We'll fix it for you. We'll do it over the weekend. Don't worry,' right? Are you gonna open that door for that 24, 36 hours?"
+  <span class="attribution">— Joyce, 7:30</span>
+</blockquote>
+
+<p>Joyce mô tả tình huống <strong>xảy ra hàng ngày</strong> ở mọi công ty: vendor xin mở firewall "tạm thời" để troubleshoot. 24–36 giờ. "Don't worry."</p>
+
+<blockquote>
+  "The nation-state attackers, there's a reason it's called advanced persistent threats because we'll poke and we'll poke. And we'll wait and we'll wait and we'll wait, right? We're looking for that opportunity, that opening, and that opportunity to finish the mission."
+  <span class="attribution">— Joyce, 8:07</span>
+</blockquote>
+
+<p><strong>"We'll wait and we'll wait and we'll wait."</strong> Joyce nói chậm, nhấn từng từ. APT không phải advanced <em>attack</em> — nó là advanced <em>patience</em>. Họ chờ đến khi bạn mở cửa 24 giờ cho vendor, rồi bước vào.</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Mỗi lần mở firewall rule "tạm thời", mỗi lần cho vendor remote access "cuối tuần xong đóng", đó là cửa sổ mà APT đang chờ. <strong>Temporary = permanent</strong> nếu bạn không có process đóng lại.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>3. Network boundaries đang mờ</h2>
+<p class="section-num">Timestamp: <span class="ts">8:35–9:49</span></p>
+
+<blockquote>
+  "The network boundary gets more amorphous, gets more porous or gets more inclusive of other things. Think about trends like bring your own devices, Internet of things, work from home access. These have really created situations where interconnected network elements are under varying administration control."
+  <span class="attribution">— Joyce, 8:58</span>
+</blockquote>
+
+<p>Joyce dùng 3 từ cho network boundary: <strong>amorphous</strong> (vô hình), <strong>porous</strong> (có lỗ), <strong>inclusive</strong> (bao gồm thêm).</p>
+
+<blockquote>
+  "I even see the case where leased facilities come with a leased network that is under the control of that physical location and trusted in... interconnected to your domain."
+  <span class="attribution">— Joyce, 9:29</span>
+</blockquote>
+
+<p>Ví dụ rất cụ thể: thuê văn phòng → mạng của tòa nhà → kết nối vào domain → <strong>trusted by default</strong>. Bạn không kiểm soát network đó, nhưng nó trust vào mạng bạn.</p>
+
+<p>Bài giảng năm 2016. Bây giờ 2026, vấn đề này <strong>nghiêm trọng gấp bội</strong> — VPN, cloud SaaS, API integrations, 3rd-party trading platforms, remote brokers.</p>
+
+<!-- ============================================================ -->
+<h2>4. "Cloud = somebody else's computer"</h2>
+<p class="section-num">Timestamp: <span class="ts">9:49–10:25</span></p>
+
+<blockquote>
+  "Cloud computing is really a fancy name for somebody else's computer. If you have your data in the cloud, you're trusting the security protocols, the physical security, all of the other elements of trust in an outside entity, maybe done right. It may not. You may have varying degrees of understanding about what's inside that cloud. But they are now part of your risk and liability."
+  <span class="attribution">— Joyce, 9:54</span>
+</blockquote>
+
+<p>Câu <em>"Cloud computing is really a fancy name for somebody else's computer"</em> nổi tiếng. Nhưng phần quan trọng hơn là câu sau: <strong>"they are now part of your risk and liability."</strong></p>
+
+<p>Joyce không nói "đừng dùng cloud." Ông nói: <strong>bạn phải hiểu rằng cloud provider là một phần của risk profile của bạn</strong> — dù bạn không kiểm soát nó.</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Khi brokerage dùng cloud (trading platform SaaS, KYC provider, email hosting), mỗi provider đó mở rộng attack surface của bạn. Câu hỏi không phải "họ có SOC 2 không?" mà là "nếu họ bị compromise, attacker có path vào network mình không?"</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>5. Crown jewels — "keys to the kingdom"</h2>
+<p class="section-num">Timestamp: <span class="ts">10:25–11:20</span></p>
+
+<blockquote>
+  "Trust boundaries now extended to partners, personal devices, right? All of us love to have our iPhones, Androids, tablets, devices come and go, right? You're trusting those onto the network. There's even the heating and cooling systems, right? Other elements of building infrastructure and more."
+  <span class="attribution">— Joyce, 10:25</span>
+</blockquote>
+
+<p>Joyce liệt kê một chuỗi ngày càng absurd: partners → personal devices → <strong>heating and cooling systems</strong>. Ông dùng HVAC như punchline — nhưng đó là thực tế (nhớ vụ Target 2013: attacker vào qua HVAC vendor).</p>
+
+<blockquote>
+  "So what are you doing to really shore up the trust boundary around the things you absolutely must defend? And that, for me, is what it comes down to. Do you really know what the keys to the kingdom are that you must defend, right? Instrument, defend, pay attention to those crown jewels, because that attention and rigor really makes our job hard."
+  <span class="attribution">— Joyce, 10:52</span>
+</blockquote>
+
+<p>Đây là đoạn kết thúc phần recon. Joyce chuyển từ "biết network" sang <strong>"biết cái gì quan trọng nhất"</strong> — crown jewels. Nếu bạn không thể bảo vệ mọi thứ (và bạn không thể), bạn phải biết <em>cái nào không được mất</em>.</p>
+
+<div class="callout defense">
+  <p><strong>Defense insight.</strong> Câu hỏi chiến lược cho Head of Security: <strong>"Nếu attacker đã ở trong network mình, 3 thứ nào mà họ lấy được sẽ gây thiệt hại lớn nhất?"</strong> Nếu bạn không trả lời được trong 30 giây, bạn chưa xác định crown jewels.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>6. Anchor — Điều này nghĩa gì cho brokerage</h2>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 1 — Small cracks.</strong> Lần pen test gần nhất, có bao nhiêu findings severity Low/Informational? Chúng còn tồn tại không? Liệt kê 3 cái — đó có thể là toe hold của attacker.</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 2 — Temporary vulnerabilities.</strong> Trong 6 tháng qua, bao nhiêu lần mở firewall rule hoặc remote access "tạm thời" cho vendor? Có process tự động đóng lại không, hay rely vào ai đó nhớ đóng?</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 3 — Trust boundary.</strong> Vẽ ra tất cả những gì "trusted" vào network brokerage: văn phòng, cloud providers, vendor VPNs, broker personal devices, trading platform APIs, KYC providers. Boundary nằm ở đâu? Có chỗ nào bạn <em>không kiểm soát</em> nhưng vẫn trust?</p>
+</div>
+
+<div class="callout brokerage">
+  <p><strong>Câu hỏi 4 — Crown jewels.</strong> Trả lời trong 30 giây: <strong>3 thứ nào mà attacker lấy được sẽ gây thiệt hại lớn nhất cho brokerage?</strong> (customer PII, trading system credentials, custody account access, regulatory filing data...) Nếu không trả lời được, đó là vấn đề.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>7. Deliverable</h2>
+
+<p>Chọn <strong>một trong hai</strong>:</p>
+
+<h3>Option A — Trust boundary sketch</h3>
+
+<p>Vẽ sơ đồ (giấy, Excalidraw, hoặc bất kỳ tool nào) với brokerage ở trung tâm. Xung quanh, vẽ tất cả entities có trust relationship: cloud providers, vendors, personal devices, leased network, HVAC, API partners. Đánh dấu entity nào bạn <em>kiểm soát</em> và entity nào bạn <em>không kiểm soát nhưng vẫn trust</em>.</p>
+
+<h3>Option B — Crown jewels list</h3>
+
+<p>Viết danh sách 5 crown jewels của brokerage. Với mỗi item, ghi:</p>
+
+<ul>
+  <li>Tên / mô tả (ví dụ: "Customer PII database", "Trading system admin credentials")</li>
+  <li>Nằm ở đâu (on-prem? cloud? vendor?)</li>
+  <li>Ai có access? Access được monitor không?</li>
+</ul>
+
+<p>Cả hai deliverables đều feed vào <code>reference/kill-chain-brokerage.md</code> — bạn sẽ điền dần qua các lessons.</p>
+
+<!-- ============================================================ -->
+<div class="lesson-nav">
+  <div>
+    <div class="nav-label">Previous</div>
+    <a href="0001-drawing-tao-kill-chain.html">← 0001: Know your network</a>
+  </div>
+  <div>
+    <div class="nav-label">Next</div>
+    <a href="0003-initial-exploitation.html">0003: Initial exploitation →</a>
+  </div>
+</div>
+
+</body>
+</html>
