@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: Evaluation-Driven Development — Measure Before You Build, Improve What You Measure</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-soft: #ede9fe;
+      --code-bg: #f4efe9;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --blue: #1d4ed8;
+      --blue-light: #eff6ff;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: var(--accent-soft);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.success { background: var(--green-light); border-left-color: var(--green); }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout.info { background: var(--blue-light); border-left-color: var(--blue); }
+    .callout.quote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0.3rem 0.5rem 0; }
+    td { padding: 0.4rem 0.3rem 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .metric-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+    }
+    .metric-card h4 { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.3rem; }
+    .metric-card p { margin-bottom: 0; font-size: 0.85rem; color: var(--ink-soft); }
+    .eval-table { margin: 1rem 0; }
+    .eval-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.82rem;
+      align-items: start;
+    }
+    .eval-header {
+      font-weight: 700;
+      border-bottom: 2px solid var(--rule);
+      padding-bottom: 0.5rem;
+    }
+    .eval-cell { }
+    .eval-cell strong { font-size: 0.78rem; display: block; margin-bottom: 0.2rem; color: var(--accent); font-family: "SF Mono", Menlo, monospace; }
+    .exercise-box {
+      background: #fef9c3;
+      border: 1px solid #eab308;
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .exercise-box h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #92400e;
+      margin-bottom: 0.75rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .flow-diagram {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+      font-size: 0.88rem;
+    }
+    .flow-box {
+      border: 1px solid var(--accent);
+      background: var(--accent-soft);
+      border-radius: 4px;
+      padding: 0.4rem 0.75rem;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .flow-arrow { color: var(--ink-soft); }
+    .tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-family: "SF Mono", Menlo, monospace;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.05rem 0.35rem;
+      border-radius: 2px;
+      margin-right: 0.2rem;
+      font-weight: 700;
+    }
+    .tag.green { background: var(--green-light); color: var(--green); }
+    .tag.orange { background: var(--orange-light); color: var(--orange); }
+    .tag.blue { background: var(--blue-light); color: var(--blue); }
+    .tag.red { background: var(--red-light); color: var(--red); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">multi-agent-systems</span></span>
+  <span><span class="badge-outline">Lesson 0003</span></span>
+  <span>2026-07-03</span>
+  <span>30–45 min</span>
+</div>
+
+<h1>Evaluation-Driven Development — Measure Before You Build, Improve What You Measure</h1>
+<p class="subtitle">"Once you start doing evaluation, you will have review. Once you start doing review, you will accumulate more of the ground truth examples." — Zheng Xue, JP Morgan</p>
+
+<p>Prerequisites: <a href="0001-ask-david-architecture.html">Lesson 0001</a> (Ask David architecture) and <a href="0002-supervisor-pattern.html">Lesson 0002</a> (supervisor + sub-agent patterns). You should understand the three sub-agent types and the evaluation data from Ask David before starting.</p>
+
+<div class="callout">
+  <p><strong>What this lesson teaches.</strong> By the end of this lesson you will be able to design an evaluation plan for any sub-agent — choosing the right metric, the right ground truth source, and the right evaluation method. You will also understand why evaluation should start on day one, even before ground truth exists.</p>
+</div>
+
+<h2>1. The Inversion — Evaluation Doesn't Follow Development</h2>
+
+<p>In traditional software development, the instinct is: build first, measure later. Write the code, ship it, see if it works. This is fine for deterministic systems — a function either returns the right output or it doesn't. But multi-agent systems are probabilistic. A supervisor that routes 80% of questions correctly today might route 60% correctly next week after a model update or a data drift event. You need to know before it matters, not after.</p>
+
+<p>The Ask David team's key insight is an inversion of the conventional sequence:</p>
+
+<div class="flow-diagram">
+  <div class="flow-row">
+    <span class="flow-box">Evaluate early</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box">Find weak links</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box">Improve iteratively</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box">Accumulate ground truth</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box">Better evaluation</span>
+  </div>
+  <p style="font-size:0.8rem; color:var(--ink-soft); margin-top:0.5rem; margin-bottom:0;">This is a flywheel — evaluation drives ground truth, which drives better evaluation, which drives better systems.</p>
+</div>
+
+<p>The critical reversal: you do not wait for ground truth to start evaluation. Ground truth accumulates <em>from</em> evaluation, not the other way around. You start with imperfect proxies — LLM-as-judge, trajectory evaluation, human spot-checks — and those generate examples that become your ground truth over time.</p>
+
+<blockquote>
+  "There are so many metrics beyond just accuracy and each one of them will provide you some insight and you know what once you start doing evaluation you will have review once you start doing review you're actually going to accumulate more of the ground truth examples."
+  <br>— Zheng Xue, JP Morgan Chase Private Bank
+</blockquote>
+
+<h2>2. The Three Dimensions of Evaluation</h2>
+
+<p>Every evaluation plan must specify three things. Vague any of them and you'll end up measuring the wrong thing:</p>
+
+<div class="eval-table">
+  <div class="eval-row eval-header">
+    <div class="eval-cell"><strong>Dimension</strong></div>
+    <div class="eval-cell"><strong>Question it answers</strong></div>
+    <div class="eval-cell"><strong>Must specify</strong></div>
+    <div class="eval-cell"><strong>Ask David's choice</strong></div>
+  </div>
+  <div class="eval-row">
+    <div class="eval-cell"><strong>Metric</strong></div>
+    <div class="eval-cell">What does "good" look like?</div>
+    <div class="eval-cell">One clear, measurable definition per sub-agent</div>
+    <div class="eval-cell">Per sub-agent: query accuracy, retrieval precision, trajectory correctness</div>
+  </div>
+  <div class="eval-row">
+    <div class="eval-cell"><strong>Ground truth</strong></div>
+    <div class="eval-cell">What is the correct answer?</div>
+    <div class="eval-cell">Source of truth + curation process</div>
+    <div class="eval-cell">Accumulated from review cycles over time</div>
+  </div>
+  <div class="eval-row">
+    <div class="eval-cell"><strong>Method</strong></div>
+    <div class="eval-cell">How do you compare against ground truth?</div>
+    <div class="eval-cell">Automated vs. LLM-as-judge vs. human review</div>
+    <div class="eval-cell">LLM-as-judge at scale + human for edge cases</div>
+  </div>
+</div>
+
+<h2>3. Choosing the Right Metric — Per Task, Not Per System</h2>
+
+<p>The most common mistake in evaluating multi-agent systems: using one metric (accuracy) for the whole system, when different sub-agents need different metrics entirely. Ask David makes this explicit — each sub-agent has its own evaluation dataset and metrics.</p>
+
+<div class="metric-card">
+  <h4>Structured Data Agent — SQL / API Queries</h4>
+  <p><strong>Metric:</strong> Query correctness (exact match for SQL) or semantic match for API responses.<br>
+  <strong>Ground truth:</strong> SQL queries written by a data analyst + verified results. Can be generated from existing query logs.<br>
+  <strong>Method:</strong> Automated — execute the query against a test database, compare results. No LLM needed for structured data.</p>
+</div>
+
+<div class="metric-card">
+  <h4>Unstructured Doc Agent — RAG Retrieval</h4>
+  <p><strong>Metric:</strong> Precision@K (are relevant documents in the top K results?) + Recall@K (are all relevant documents in the top K?)<br>
+  <strong>Ground truth:</strong> A human annotator marks which documents are relevant to each question. Starts small (20 questions), grows over time.<br>
+  <strong>Method:</strong> Automated embedding similarity first pass → human spot-check on edge cases. Can also use LLM-as-judge to evaluate whether retrieved chunks actually support the generated answer.</p>
+</div>
+
+<div class="metric-card">
+  <h4>Analytics Agent — Tool Use (ReAct)</h4>
+  <p><strong>Metric:</strong> Trajectory accuracy — did the agent call the right tools in the right order?<br>
+  <strong>Ground truth:</strong> Expert traces: a data scientist works through 20 example queries and writes the ideal tool-call sequence.<br>
+  <strong>Method:</strong> Automated comparison of the agent's tool-call sequence against the expert trace. Partial credit for partially correct trajectories.</p>
+</div>
+
+<div class="metric-card">
+  <h4>Analytics Agent — Code Generation</h4>
+  <p><strong>Metric:</strong> Code correctness (does it execute without error?) + result accuracy (does the output match the expected answer?)<br>
+  <strong>Ground truth:</strong> The expected computational result, computed independently by a data scientist.<br>
+  <strong>Method:</strong> Automated execution in a sandbox — run the generated code, compare output. This is the only case where you can get near-perfect evaluation with zero human involvement.</p>
+</div>
+
+<div class="metric-card">
+  <h4>Personalization Node — Role-Tailored Answer</h4>
+  <p><strong>Metric:</strong> Role-appropriate depth — does the answer match what the role expects?<br>
+  <strong>Ground truth:</strong> SMEs for each role (advisor, due diligence specialist) rate whether the answer is appropriately detailed.<br>
+  <strong>Method:</strong> Human review from SME panels. LLM-as-judge can approximate but cannot fully replace domain expertise for nuanced role-based judgments.</p>
+</div>
+
+<div class="metric-card">
+  <h4>Reflection Node — Answer Quality Gate</h4>
+  <p><strong>Metric:</strong> Pass rate (what % of answers pass the reflection check?) + downstream accuracy (do answers that pass the check actually hold up to human review?)<br>
+  <strong>Ground truth:</strong> Human review of a sample of passed answers.<br>
+  <strong>Method:</strong> LLM-as-judge for pass/fail → human spot-check to calibrate. The goal is a reflection node that rarely passes bad answers and rarely fails good ones.</p>
+</div>
+
+<div class="callout warning">
+  <p><strong>The calibration trap:</strong> LLM-as-judge can give consistent scores, but consistent scores aren't necessarily accurate scores. You must periodically calibrate: show the judge answers that humans have scored, and adjust the judge's prompt or threshold until its scores match human scores. Without calibration, you're measuring a proxy of a proxy.</p>
+</div>
+
+<h2>4. The Evaluation Flywheel — From Zero to Robust</h2>
+
+<p>Zheng Xue's framing of the flywheel is the most practically useful insight from the entire Ask David talk. Here's how it works in practice:</p>
+
+<div class="flow-diagram">
+  <p style="font-size:0.82rem; margin-bottom:0.75rem;">Stage 1: Day 1 — No ground truth</p>
+  <div class="flow-row">
+    <span class="flow-box" style="background:#fdecea; border-color:var(--orange);">LLM-as-judge</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box" style="background:#fdecea; border-color:var(--orange);">Auto-eval</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box">Catches regressions</span>
+  </div>
+  <p style="font-size:0.75rem; color:var(--ink-soft); margin-top:0.3rem; margin-bottom:0.75rem;">Use LLM-as-judge from day one. Imperfect, but gives signal. Catch obvious regressions immediately.</p>
+
+  <p style="font-size:0.82rem; margin-bottom:0.75rem;">Stage 2: Month 1 — Human spot-checks begin</p>
+  <div class="flow-row">
+    <span class="flow-box">Human review</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box">Ground truth seeds</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box">Better auto-eval</span>
+  </div>
+  <p style="font-size:0.75rem; color:var(--ink-soft); margin-top:0.3rem; margin-bottom:0.75rem;">10–20 human-reviewed examples per sub-agent per week. These become the ground truth seeds.</p>
+
+  <p style="font-size:0.82rem; margin-bottom:0.75rem;">Stage 3: Month 3+ — Ground truth drives evaluation</p>
+  <div class="flow-row">
+    <span class="flow-box" style="background:var(--green-light); border-color:var(--green);">Labeled dataset</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box" style="background:var(--green-light); border-color:var(--green);">Automated eval</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-box" style="background:var(--green-light); border-color:var(--green);">CI-grade checks</span>
+  </div>
+  <p style="font-size:0.75rem; color:var(--ink-soft); margin-top:0.3rem; margin-bottom:0;">50+ ground truth examples per sub-agent. Automated eval runs on every change. LLM-as-judge calibrated against ground truth.</p>
+</div>
+
+<p>The key discipline: <strong>evaluation runs on every change</strong>. A model update, a prompt change, a new tool added to a sub-agent — all of these trigger the evaluation suite. Without continuous evaluation, you can't distinguish improvement from regression.</p>
+
+<h2>5. Evaluating Sub-Agents Independently</h2>
+
+<p>Ask David makes one recommendation that most teams skip: <strong>evaluate each sub-agent independently before evaluating the full system</strong>.</p>
+
+<p>Why? Because system-level accuracy hides weak links. If the full system gets 75% of answers right, you don't know if that's because the supervisor is routing well (90%) but one sub-agent is failing (40%) — or because everything is mediocre (75%). Identifying the 40% sub-agent and improving it from 40% to 70% moves the system score more than tuning a 75% component to 80%.</p>
+
+<div class="callout info">
+  <p><strong>The weak-link principle:</strong> System accuracy is bottlenecked by the weakest sub-agent. Independent evaluation reveals the bottleneck. You improve the bottleneck, then remeasure. Repeat.</p>
+</div>
+
+<p>The practical workflow:</p>
+<ol>
+  <li>Build and evaluate Sub-agent A independently. Get it to 80%+.</li>
+  <li>Build and evaluate Sub-agent B independently. Get it to 80%+.</li>
+  <li>Wire them under a supervisor.</li>
+  <li>Evaluate the supervisor's routing accuracy separately.</li>
+  <li>Evaluate the full system end-to-end.</li>
+  <li>When system accuracy plateaus, go back to independent sub-agent eval to find the new bottleneck.</li>
+</ol>
+
+<h2>6. Retrieval Practice — Close the Tab, Recall from Memory</h2>
+
+<div class="callout warning">
+  <p><strong>Close the transcript tab.</strong> Answer from memory before checking below.</p>
+</div>
+
+<ol>
+  <li>What are the three dimensions of every evaluation plan?</li>
+  <li>Why should evaluation start before ground truth exists? What takes its place?</li>
+  <li>Name the evaluation metric and method for: (a) the RAG doc agent, (b) the structured data agent, (c) the analytics code-generation agent.</li>
+  <li>Why is it important to evaluate sub-agents independently before evaluating the full system?</li>
+  <li>What is the "calibration trap" with LLM-as-judge, and how do you avoid it?</li>
+</ol>
+
+<details>
+  <summary>Check your answers</summary>
+  <ol>
+    <li><strong>Metric</strong> (what does good look like), <strong>ground truth</strong> (what is the correct answer), <strong>method</strong> (how do you compare). Vague any one of these and evaluation becomes meaningless.</li>
+    <li><strong>Because ground truth accumulates from evaluation, not before it.</strong> Start with LLM-as-judge and trajectory evaluation as proxies. Human reviews generate ground truth examples. You don't wait — you start imperfect and improve.</li>
+    <li>
+      (a) <strong>RAG doc agent</strong>: Precision@K + Recall@K; human annotation of relevant documents or LLM-as-judge on retrieved chunks.<br>
+      (b) <strong>Structured data agent</strong>: Query correctness (SQL execution); automated comparison of query results against expected output.<br>
+      (c) <strong>Analytics code-gen agent</strong>: Code correctness + result accuracy; automated execution in a sandbox, compare output against expected result.
+    </li>
+    <li><strong>Because system accuracy hides weak links.</strong> If the system scores 75%, it could be everything at 75% or one component at 40% and others at 90%. Independent evaluation reveals the bottleneck so you know where to invest improvement effort.</li>
+    <li><strong>The calibration trap:</strong> LLM-as-judge gives consistent scores but not necessarily accurate ones. You avoid it by periodically showing the judge examples that humans have scored, and adjusting the judge's prompt or threshold until its scores match human scores.</li>
+  </ol>
+</details>
+
+<h2>7. Your Deliverable — Design an Evaluation Plan</h2>
+
+<div class="exercise-box">
+  <h4>Exercise</h4>
+  <p>Design an evaluation plan for the system you designed in lesson 0002. Complete this table for each sub-agent:</p>
+</div>
+
+<table style="margin: 1rem 0;">
+  <thead>
+    <tr>
+      <th>Sub-agent</th>
+      <th>Metric</th>
+      <th>Ground truth source</th>
+      <th>Evaluation method</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sub-agent A</td>
+      <td>What does good look like?</td>
+      <td>Where does ground truth come from?</td>
+      <td>Automated / LLM-as-judge / Human?</td>
+    </tr>
+    <tr>
+      <td>Sub-agent B</td>
+      <td>What does good look like?</td>
+      <td>Where does ground truth come from?</td>
+      <td>Automated / LLM-as-judge / Human?</td>
+    </tr>
+    <tr>
+      <td>Supervisor (routing)</td>
+      <td>What does good routing look like?</td>
+      <td>Where does ground truth come from?</td>
+      <td>Automated / LLM-as-judge / Human?</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Save as <code>learning-records/0004-eval-plan-[dash-case-name].md</code>.</p>
+
+<div class="callout">
+  <p><strong>Tip:</strong> Start with the metric first. If you can't define "good" clearly and measurably, you can't evaluate. The ground truth source and method follow from the metric, not the other way around.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0002-supervisor-pattern.html">← Lesson 0002: Supervisor + Sub-agent Patterns</a>
+  <a href="0004-hitl-design.html">Lesson 0004: Human-in-the-Loop Design →</a>
+</div>
+<div class="lesson-nav" style="margin-top:0.5rem;">
+  <a href="glossary.html">Glossary →</a>
+</div>
+
+<div class="callout">
+  <p><strong>Questions?</strong> Ask me about specific metrics for your domain, how to set up LLM-as-judge prompts, or how to bootstrap ground truth from existing data. I can also help you design the evaluation CI — how to run your eval suite automatically on every model update or prompt change.</p>
+</div>
+
+</body>
+</html>

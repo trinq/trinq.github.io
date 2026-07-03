@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: The Supervisor + Sub-Agent Pattern — How to Split Work Across Agents</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-soft: #ede9fe;
+      --code-bg: #f4efe9;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --blue: #1d4ed8;
+      --blue-light: #eff6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: var(--accent-soft);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.success { background: var(--green-light); border-left-color: var(--green); }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout.info { background: var(--blue-light); border-left-color: var(--blue); }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+
+    /* Diagram styles */
+    .diagram-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .diagram-card h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin-bottom: 0.75rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .agent-box {
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      background: var(--accent-soft);
+    }
+    .agent-box.sub {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+    .agent-box.supervisor {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .agent-box pre {
+      border-left-color: var(--accent);
+      margin: 0.5rem 0 0;
+      font-size: 0.78rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .agent-box.sub pre { border-left-color: var(--green); }
+    .agent-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .agent-desc { font-size: 0.82rem; color: var(--ink-soft); }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.3rem 0;
+      font-size: 0.85rem;
+    }
+    .flow-arrow { color: var(--ink-soft); }
+    .role-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-family: "SF Mono", Menlo, monospace;
+      background: var(--code-bg);
+      color: var(--ink-soft);
+      padding: 0.05rem 0.3rem;
+      border-radius: 2px;
+      border: 1px solid var(--rule);
+    }
+    .pattern-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+    }
+    .pattern-card.green { border-left-color: var(--green); }
+    .pattern-card.orange { border-left-color: var(--orange); }
+    .pattern-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .pattern-body { font-size: 0.85rem; color: var(--ink-soft); }
+    .exercise-box {
+      background: #fef9c3;
+      border: 1px solid #eab308;
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .exercise-box h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #92400e;
+      margin-bottom: 0.75rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">multi-agent-systems</span></span>
+  <span><span class="badge-outline">Lesson 0002</span></span>
+  <span>2026-07-03</span>
+  <span>30–45 min</span>
+</div>
+
+<h1>The Supervisor + Sub-Agent Pattern — How to Split Work Across Agents</h1>
+<p class="subtitle">Lesson 0001 showed you the architecture. This lesson shows you how to design it — where to draw agent boundaries, what each sub-agent actually does, and how the supervisor delegates without becoming a bottleneck.</p>
+
+<p>Prerequisites: <a href="0001-ask-david-architecture.html">Lesson 0001</a> — you should be able to name the six components of Ask David before starting.</p>
+
+<h2>1. The Core Problem — One Agent Can't Do Everything</h2>
+
+<p>A single agent answering investment research questions would fail for a simple reason: "Why was fund XYZ terminated?" requires three different capabilities simultaneously — querying a structured database of fund records, retrieving documents about past performance, and running an analytics model — and a single agent that tries to do all three ends up doing all three poorly.</p>
+
+<p>The supervisor + sub-agent pattern solves this by <em>splitting the problem along capability boundaries</em>:</p>
+
+<ul>
+  <li>Each sub-agent is an expert in one thing — one agent talks to SQL, another talks to a vector database, another talks to an API.</li>
+  <li>The supervisor's job is not to do the work, but to route the work to the right expert, aggregate the results, and decide when to escalate.</li>
+  <li>Each sub-agent can be built, tested, and improved independently.</li>
+</ul>
+
+<p>The key insight from Ask David: the supervisor is not a "super agent" that knows everything. It is a <em>routing layer</em> with memory. It delegates; it doesn't execute.</p>
+
+<h2>2. The Supervisor — Routing, Not Doing</h2>
+
+<p>The supervisor in Ask David has four jobs:</p>
+
+<ol>
+  <li><strong>Understand intent.</strong> Classify the user's question: general QA or specific fund question?</li>
+  <li><strong>Route to sub-agents.</strong> Send the task to one or more specialized agents. Optionally wait for responses before routing to the next.</li>
+  <li><strong>Manage memory.</strong> Short-term (session context) and long-term (user preferences, past queries).</li>
+  <li><strong>Decide escalation.</strong> Know when to invoke human-in-the-loop.</li>
+</ol>
+
+<p>In LangGraph terms, the supervisor is a <em>graph node</em>, not an agent in the traditional sense. It decides which edges to traverse next. Here's the pseudo-logic:</p>
+
+<div class="diagram-card">
+  <h4>Supervisor Decision Logic (Pseudo-code)</h4>
+  <pre><code>state = { question, intent, memory, answer }
+
+# Step 1: Classify intent
+intent = classify_intent(state.question)
+# → "general_qa" or "specific_fund"
+
+# Step 2: Route to correct sub-graph
+if intent == "specific_fund":
+    # Enter the specific fund sub-graph
+    fund_data = structured_data_agent(query=state.question, memory=state.memory)
+    doc_data = doc_agent(query=state.question, fund_context=fund_data)
+    analytics_data = analytics_agent(query=state.question, fund_id=extract_fund_id(fund_data))
+    raw_answer = synthesize(
+        structured=fund_data,
+        docs=doc_data,
+        analytics=analytics_data
+    )
+else:
+    # Enter the general QA sub-graph
+    raw_answer = general_qa_agent(query=state.question, memory=state.memory)
+
+# Step 3: Quality gate
+if not reflection_judge(raw_answer):
+    # Retry — send back to sub-agents
+    raw_answer = retry(...)
+
+# Step 4: Personalize and return
+final_answer = personalize(raw_answer, role=state.memory.user_role)
+return { answer: final_answer, memory: update_memory(state.memory, session) }</code></pre>
+</div>
+
+<div class="callout warning">
+  <p><strong>Common mistake:</strong> Building a supervisor that tries to answer questions itself, only calling sub-agents as "tools." This creates a bottleneck — the supervisor becomes the limiting factor. The supervisor should route, not answer.</p>
+</div>
+
+<h2>3. Sub-Agent Types — What Goes Inside Each Box</h2>
+
+<h3>3a. Structured Data Agent</h3>
+
+<p>Handles: relational databases, APIs with structured responses, anything with a schema.</p>
+
+<p>How it works:</p>
+<ol>
+  <li>Receives a natural language question.</li>
+  <li>Translates it into a SQL query or API call using an LLM with a schema prompt.</li>
+  <li>Executes the query against the database or API.</li>
+  <li>Uses an LLM to summarize the structured result into natural language.</li>
+</ol>
+
+<p>In Ask David: "Why was fund XYZ terminated?" → <code>SELECT status, termination_date, reason FROM funds WHERE id = 'XYZ'</code> → summarized as "The fund was terminated due to performance issues on 2024-03-15."</p>
+
+<div class="pattern-card">
+  <div class="pattern-title">Key pattern: Schema-supplied prompting</div>
+  <div class="pattern-body">The LLM that generates SQL needs to know the database schema. In practice, this means injecting the schema into the system prompt — table names, column names, types, relationships. This is a fixed cost: you build it once, the agent uses it forever.</div>
+</div>
+
+<h3>3b. Unstructured Doc Agent (RAG)</h3>
+
+<p>Handles: PDFs, emails, meeting notes, video/audio transcripts, any text that isn't in a database.</p>
+
+<p>How it works:</p>
+<ol>
+  <li><strong>Pre-processing (upfront):</strong> Documents are ingested, chunked, embedded, and stored in a vector database.</li>
+  <li><strong>Query time:</strong> User question → embedded → similarity search against vector DB → top-k chunks retrieved → LLM synthesizes a response from the chunks.</li>
+</ol>
+
+<div class="callout info">
+  <p><strong>Critical:</strong> Pre-processing is the hidden work. Ask David mentions this explicitly — the RAG agent only works because someone already ingested, chunked, and vectorized years of documents. This is a data engineering problem, not an AI problem. Don't underestimate the upfront cost.</p>
+</div>
+
+<p>Key decisions for a RAG agent:</p>
+<ul>
+  <li><strong>Chunking strategy.</strong> How big are the chunks? Overlapping or not? Fixed size or semantic (paragraph, section)? The answer depends on the query type — broad questions need larger chunks; specific questions need smaller, targeted chunks.</li>
+  <li><strong>Embedding model.</strong> Which model creates the vector representation? Different models encode different semantics.</li>
+  <li><strong>Retrieval strategy.</strong> Pure similarity search? Hybrid (keyword + vector)? Re-ranking? Parent-document retrieval?</li>
+  <li><strong>Synthesis prompt.</strong> How does the LLM use the retrieved chunks to answer? This is separate from the retrieval step.</li>
+</ul>
+
+<h3>3c. Analytics Agent</h3>
+
+<p>Handles: proprietary models, internal APIs, complex computations that don't fit SQL or RAG.</p>
+
+<p>Ask David uses two approaches:</p>
+
+<ul>
+  <li><strong>ReAct agent</strong> for simple queries: the agent reasons about which API to call, calls it, observes the result, and continues until it has an answer. Think tool-use in a loop.</li>
+  <li><strong>Text-to-code generation</strong> for complex queries: the agent writes Python or R code to run the analytics, but a human reviews before execution. This is where human-in-the-loop is explicit and appropriate.</li>
+</ul>
+
+<div class="pattern-card green">
+  <div class="pattern-title">Pattern: Two-tier analytics</div>
+  <div class="pattern-body">Simple queries use fully autonomous ReAct agents. Complex queries use human-supervised code generation. The threshold between "simple" and "complex" is a configuration decision — you can tune it based on how much risk each query type carries.</div>
+</div>
+
+<h2>4. Designing Agent Boundaries — Where to Split</h2>
+
+<p>The hardest design decision: where do you split the work? Get this wrong and you end up with either:</p>
+
+<ul>
+  <li><strong>Too few agents:</strong> One agent that tries to do everything, leading to mediocre performance across the board.</li>
+  <li><strong>Too many agents:</strong> An explosion of agents that are hard to coordinate, hard to evaluate, and introduce latency at every hop.</li>
+</ul>
+
+<p>Use these three heuristics from Ask David:</p>
+
+<div class="pattern-card">
+  <div class="pattern-title">Heuristic 1: Split by data type</div>
+  <div class="pattern-body">If two sub-tasks require fundamentally different data sources (structured DB vs. document corpus vs. API), they belong to different agents. Each agent gets exactly one data source as its primary input.</div>
+</div>
+
+<div class="pattern-card green">
+  <div class="pattern-title">Heuristic 2: Split by output type</div>
+  <div class="pattern-body">If two sub-tasks produce outputs that can't be meaningfully merged by a simple concatenation, they belong to different agents. A SQL result and a document excerpt need a synthesis step — put that in the supervisor or a dedicated synthesis node.</div>
+</div>
+
+<div class="pattern-card orange">
+  <div class="pattern-title">Heuristic 3: Split by evaluation metric</div>
+  <div class="pattern-body">If you can't define a separate evaluation metric for a sub-task, it's not a separate agent. "The SQL agent is good if its queries are correct." "The RAG agent is good if it retrieves relevant documents." If you can't name the metric, the split isn't justified yet.</div>
+</div>
+
+<h2>5. Memory — The Supervisor's Second Job</h2>
+
+<p>Ask David uses two types of memory in the supervisor:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Scope</th>
+      <th>Content</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Short-term</strong></td>
+      <td>Session</td>
+      <td>Current conversation, recent queries, pending context</td>
+      <td>"In this conversation, the user asked about fund XYZ, then asked a follow-up about its performance history."</td>
+    </tr>
+    <tr>
+      <td><strong>Long-term</strong></td>
+      <td>Persistent</td>
+      <td>User preferences, role, past interactions</td>
+      <td>"This user is a financial advisor. They prefer concise summaries. They've asked about terminated funds twice this month."</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The practical implementation: short-term memory is the conversation history in the LLM context window. Long-term memory is a separate retrieval step — before answering, the supervisor retrieves relevant facts from persistent storage. This is often called a <em>RAG-for-memory</em> pattern: embed the user's known facts, retrieve relevant ones at query time.</p>
+
+<h2>6. Retrieval — Close the Tab, Recall from Memory</h2>
+
+<div class="callout warning">
+  <p><strong>Close the transcript tab.</strong> Answer from memory before checking below.</p>
+</div>
+
+<ol>
+  <li>What are the four jobs of the supervisor agent?</li>
+  <li>Name the three decisions a RAG agent builder must make before query time.</li>
+  <li>What is the difference between the ReAct agent approach and the text-to-code approach in the analytics agent?</li>
+  <li>What are the three heuristics for deciding where to split work across agents?</li>
+  <li>What is "RAG-for-memory" and why is it needed?</li>
+</ol>
+
+<details>
+  <summary>Check your answers</summary>
+  <ol>
+    <li><strong>Understand intent (classify), route to sub-agents, manage memory (short-term + long-term), decide escalation (human-in-the-loop).</strong></li>
+    <li><strong>Chunking strategy, embedding model, and retrieval strategy</strong> (plus synthesis prompt — four decisions, three are pre-processing). The pre-processing decisions (chunking, embedding) must be made before the agent can query.</li>
+    <li><strong>ReAct agent</strong>: fully autonomous, uses API tools in a reasoning loop. <strong>Text-to-code</strong>: generates code for complex analytics, requires human review before execution. The former is fast and autonomous; the latter is powerful but slower.</li>
+    <li><strong>Split by data type</strong> (different sources → different agents), <strong>split by output type</strong> (outputs that can't be simply merged → different agents), <strong>split by evaluation metric</strong> (if you can't name the metric, don't split).</li>
+    <li><strong>RAG-for-memory is using a retrieval step to populate the supervisor's long-term memory.</strong> Before answering, the supervisor retrieves relevant facts about the user from persistent storage (using embeddings + similarity search), so it can personalize without fitting everything in the context window.</li>
+  </ol>
+</details>
+
+<h2>7. Your Deliverable — Design a System with Supervisor + 2 Sub-Agents</h2>
+
+<div class="exercise-box">
+  <h4>Exercise</h4>
+  <p>Design a multi-agent system for <strong>one</strong> of the following domains (or propose your own). For your chosen domain, specify:</p>
+  <ol>
+    <li><strong>Supervisor</strong> — what is the intent classification? What are the sub-graphs?</li>
+    <li><strong>Sub-agent A</strong> — what data does it handle? What is its output?</li>
+    <li><strong>Sub-agent B</strong> — what data does it handle? What is its output?</li>
+    <li><strong>Memory</strong> — what goes in short-term? What goes in long-term?</li>
+    <li><strong>Escalation trigger</strong> — when does human-in-the-loop activate?</li>
+  </ol>
+</div>
+
+<p><strong>Domain options:</strong></p>
+
+<p><strong>A. Legal document review.</strong> A law firm's associate asks: "Has our client been named in any litigation in the last 12 months?" or "What does section 4.2 of the vendor contract say about liability caps?"</p>
+
+<p><strong>B. Customer support triage.</strong> A support ticket arrives: "My order never arrived" or "I was charged twice for the same item."</p>
+
+<p><strong>C. Healthcare prior authorization.</strong> A physician requests: "Is this MRI covered for this patient?" or "What is the formulary status of drug X?"</p>
+
+<p><strong>D. Your domain.</strong> Propose a domain you care about.</p>
+
+<div class="callout">
+  <p>Save your answer as <code>learning-records/0003-[dash-case-name].md</code> using this format:</p>
+  <pre><code>## System: [Name]
+
+## Supervisor
+[Intent classification + routing logic]
+
+## Sub-agent A: [Name]
+[Data type, output]
+
+## Sub-agent B: [Name]
+[Data type, output]
+
+## Memory
+[Short-term + long-term]
+
+## Escalation Trigger
+[When does human-in-the-loop activate?]
+</code></pre>
+</div>
+
+<div class="lesson-nav">
+  <a href="0001-ask-david-architecture.html">← Lesson 0001: Ask David Architecture</a>
+  <a href="0003-eval-driven-dev.html">Lesson 0003: Evaluation-Driven Development →</a>
+</div>
+<div class="lesson-nav" style="margin-top:0.5rem;">
+  <a href="glossary.html">Glossary →</a>
+</div>
+
+<div class="callout">
+  <p><strong>Questions?</strong> Ask me about sub-agent boundaries, memory design, or which domain makes the most sense to prototype first. I can also help you map the patterns to a specific tool (LangGraph, CrewAI, AutoGen) if you're ready to start building.</p>
+</div>
+
+</body>
+</html>

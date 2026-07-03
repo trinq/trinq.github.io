@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: Human-in-the-Loop Design — When and How to Keep Humans in the Decision</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-soft: #ede9fe;
+      --code-bg: #f4efe9;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --blue: #1d4ed8;
+      --blue-light: #eff6ff;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: var(--accent-soft);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.success { background: var(--green-light); border-left-color: var(--green); }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout.info { background: var(--blue-light); border-left-color: var(--blue); }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0.3rem 0.5rem 0; }
+    td { padding: 0.4rem 0.3rem 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .pattern-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+    }
+    .pattern-card.green { border-left-color: var(--green); }
+    .pattern-card.orange { border-left-color: var(--orange); }
+    .pattern-card.red { border-left-color: var(--red); }
+    .pattern-card.blue { border-left-color: var(--blue); }
+    .pattern-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .pattern-body { font-size: 0.85rem; color: var(--ink-soft); }
+    .decision-tree {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .tree-node {
+      padding: 0.4rem 0;
+    }
+    .tree-q {
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+    .tree-yes {
+      color: var(--green);
+      margin-left: 1.5rem;
+      border-left: 2px solid var(--green);
+      padding-left: 0.5rem;
+      margin-top: 0.2rem;
+    }
+    .tree-no {
+      color: var(--red);
+      margin-left: 1.5rem;
+      border-left: 2px solid var(--red);
+      padding-left: 0.5rem;
+      margin-top: 0.2rem;
+    }
+    .tree-action {
+      display: inline-block;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 3px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.78rem;
+      font-family: "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .exercise-box {
+      background: #fef9c3;
+      border: 1px solid #eab308;
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .exercise-box h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #92400e;
+      margin-bottom: 0.75rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-family: "SF Mono", Menlo, monospace;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.05rem 0.35rem;
+      border-radius: 2px;
+      margin-right: 0.2rem;
+      font-weight: 700;
+    }
+    .tag.green { background: var(--green-light); color: var(--green); }
+    .tag.orange { background: var(--orange-light); color: var(--orange); }
+    .tag.red { background: var(--red-light); color: var(--red); }
+    .tag.blue { background: var(--blue-light); color: var(--blue); }
+    .spectrum {
+      display: flex;
+      gap: 0;
+      margin: 1.5rem 0;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .spectrum-seg {
+      flex: 1;
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.78rem;
+    }
+    .spectrum-seg.seg1 { background: var(--green-light); border-right: 1px solid var(--rule); }
+    .spectrum-seg.seg2 { background: #fffbeb; border-right: 1px solid var(--rule); }
+    .spectrum-seg.seg3 { background: var(--orange-light); border-right: 1px solid var(--rule); }
+    .spectrum-seg.seg4 { background: var(--red-light); }
+    .seg-label { font-weight: 700; margin-bottom: 0.2rem; font-family: "SF Mono", Menlo, monospace; }
+    .seg-desc { font-size: 0.72rem; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">multi-agent-systems</span></span>
+  <span><span class="badge-outline">Lesson 0004</span></span>
+  <span>2026-07-03</span>
+  <span>30–45 min</span>
+</div>
+
+<h1>Human-in-the-Loop Design — When and How to Keep Humans in the Decision</h1>
+<p class="subtitle">"The last mile is always the hardest mile." HITL is not a workaround for unreliable AI — it is a deliberate architectural decision that says: some decisions carry stakes that justify a human's time.</p>
+
+<p>Prerequisites: <a href="0001-ask-david-architecture.html">Lesson 0001</a> (architecture), <a href="0002-supervisor-pattern.html">Lesson 0002</a> (supervisor), <a href="0003-eval-driven-dev.html">Lesson 0003</a> (evaluation). You should understand the accuracy trajectory (0–50% → 80% → 90% → 100%) before starting.</p>
+
+<div class="callout">
+  <p><strong>What this lesson teaches.</strong> By the end of this lesson you will be able to decide where in a multi-agent system human involvement is architecturally appropriate, how to implement three distinct HITL patterns, and how to calibrate the cost of human involvement against the cost of error.</p>
+</div>
+
+<h2>1. The Reframe — HITL is a Design Choice, Not a Failure Mode</h2>
+
+<p>The dominant mental model for human-in-the-loop is compensatory: the AI isn't good enough yet, so humans fill the gap until the AI improves. This framing is backwards for high-stakes domains. The right framing is: <strong>some decisions carry stakes that permanently justify a human's time</strong>, regardless of how good the AI gets.</p>
+
+<p>Ask David makes this explicit. The system operates in a financial context with billions of dollars of assets. Even if the AI reaches 99% accuracy, the 1% of errors — applied to a billion-dollar portfolio — can be catastrophic. The cost of a human reviewing that 1% is trivially small compared to the cost of the errors going unchecked. HITL is not a sign of weakness; it is risk management made architectural.</p>
+
+<blockquote>
+  "When you apply a general model to a specific domain, usually you will get less than 50% of accuracy... Between 90 and 100 — that's what we call the last mile, and the last mile is always the hardest mile... Ask David still consults with real David whenever needed."
+  <br>— Zheng Xue &amp; David Odomirok, JP Morgan Chase Private Bank
+</blockquote>
+
+<p>The practical implication: you design HITL into the system from the beginning, not as a patch when things go wrong. The supervisor knows — from the moment it classifies the user's intent — whether this query type requires human review.</p>
+
+<h2>2. The HITL Spectrum — Four Levels of Human Involvement</h2>
+
+<p>Human-in-the-loop is not binary — full autonomy or full manual. There is a spectrum of involvement, and the right level depends on the stakes of the specific decision type:</p>
+
+<div class="spectrum">
+  <div class="spectrum-seg seg1">
+    <div class="seg-label">Level 1</div>
+    <div class="seg-desc">Fully autonomous. AI decides and acts. No human involved. Example: routing a general FAQ question.</div>
+  </div>
+  <div class="spectrum-seg seg2">
+    <div class="seg-label">Level 2</div>
+    <div class="seg-desc">AI decides, human reviews asynchronously. Example: code suggestion in a PR, reviewed before merge.</div>
+  </div>
+  <div class="spectrum-seg seg3">
+    <div class="seg-label">Level 3</div>
+    <div class="seg-desc">Human approves before AI acts. Example: high-value trade flagged for manager sign-off.</div>
+  </div>
+  <div class="spectrum-seg seg4">
+    <div class="seg-label">Level 4</div>
+    <div class="seg-desc">Human decides, AI assists. Example: compliance officer reviews flagged transactions.</div>
+  </div>
+</div>
+
+<p>Most multi-agent systems use all four levels, applied to different parts of the workflow:</p>
+
+<ul>
+  <li><strong>Level 1 (autonomous)</strong>: routine queries with low stakes — "What is the current price of fund XYZ?"</li>
+  <li><strong>Level 2 (async review)</strong>: answers that look correct but need a spot-check — the reflection node catches obvious failures; a human reviews a sample.</li>
+  <li><strong>Level 3 (approval gate)</strong>: high-stakes actions — the analytics agent generates code for a complex model; a human reviews and approves execution.</li>
+  <li><strong>Level 4 (human-led)</strong>: novel or ambiguous cases that fall outside the system's training distribution — escalated to a specialist.</li>
+</ul>
+
+<div class="callout info">
+  <p><strong>The key design question is not "how much human?" but "which decisions get which level?"</strong> Most teams get this wrong by applying a blanket human review to everything (too expensive, human becomes a bottleneck) or nothing (too risky for high-stakes domains). The art is calibrated routing — matching decision stakes to human involvement level.</p>
+</div>
+
+<h2>3. Three HITL Patterns — Where and How Humans Enter</h2>
+
+<h3>Pattern 1: Approval Gate (Human Checks Before Action)</h3>
+
+<p><strong>Where it goes:</strong> Between the analytics agent's code generation and its execution. Complex analytics queries in Ask David generate Python code before running — and a human reviews that code before it executes against live financial models.</p>
+
+<p><strong>How it works:</strong></p>
+<ol>
+  <li>Analytics agent generates code to answer the complex query.</li>
+  <li>System pauses and surfaces the code to a human reviewer with the original question.</li>
+  <li>Human approves, rejects, or modifies.</li>
+  <li>Approved code executes; results flow back into the answer.</li>
+</ol>
+
+<div class="pattern-card orange">
+  <div class="pattern-title">Approval Gate — When to use</div>
+  <div class="pattern-body">The action being approved carries irreversible consequences or significant cost. Code that moves money, sends communications, or triggers downstream processes should almost always go through an approval gate. The question is the threshold — not whether to gate, but what triggers the gate.</div>
+</div>
+
+<h3>Pattern 2: Escalation Trigger (Supervisor Routes to Human)</h3>
+
+<p><strong>Where it goes:</strong> In the supervisor's routing logic. The supervisor evaluates confidence signals and routes to a human when signals indicate the AI shouldn't handle this alone.</p>
+
+<p><strong>Common triggers:</strong></p>
+
+<div class="decision-tree">
+  <div class="tree-node">
+    <div class="tree-q">Does the query match a known pattern in the evaluation dataset?</div>
+    <div class="tree-yes"><span class="tree-action">Autonomous</span> — proceed to sub-agents</div>
+    <div class="tree-no">
+      <div class="tree-q">Is confidence below threshold (reflection node failed)?</div>
+      <div class="tree-yes"><span class="tree-action">Escalate</span> — flag for human review</div>
+      <div class="tree-no">
+        <div class="tree-q">Is the query above the financial threshold (e.g., &gt;$1M implied)?</div>
+        <div class="tree-yes"><span class="tree-action">Approval</span> — human approves answer before delivery</div>
+        <div class="tree-no">
+          <div class="tree-q">Does the query fall in a flagged category (litigation, compliance, exception)?</div>
+          <div class="tree-yes"><span class="tree-action">Escalate</span> — specialist review</div>
+          <div class="tree-no"><span class="tree-action">Autonomous</span> — proceed with confidence</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Pattern 3: Async Review Loop (Human Reviews After)</h3>
+
+<p><strong>Where it goes:</strong> As a sampling mechanism on top of Level 1 autonomous answers. Not every answer gets reviewed — a representative sample does, and that sample feeds back into the ground truth dataset.</p>
+
+<p><strong>How it works:</strong></p>
+<ol>
+  <li>System delivers answer to user autonomously.</li>
+  <li>A sampling engine selects ~10% of answers for human review based on: edge cases, high-stakes topics, low-confidence queries, or random sampling.</li>
+  <li>Human SME reviews the answer and provides feedback.</li>
+  <li>Feedback becomes a new ground truth example in the evaluation dataset.</li>
+  <li>Periodically: evaluate the reflection node's pass/fail decisions against the human review results — does the LLM-as-judge agree with the human?</li>
+</ol>
+
+<div class="pattern-card green">
+  <div class="pattern-title">Async Review Loop — The evaluation flywheel in practice</div>
+  <div class="pattern-body">This is where Zheng Xue's "once you start doing review, you will accumulate ground truth examples" actually happens. Every async review is a seed for the evaluation dataset. The loop is: review → ground truth → better eval → better system → fewer reviews needed for the same quality. At scale, this dramatically reduces human review burden while maintaining quality.</div>
+</div>
+
+<h2>4. Designing Escalation Triggers — The Core Design Decision</h2>
+
+<p>The escalation trigger is the most important HITL design decision. Get it wrong in one direction and you get expensive human bottlenecks. Get it wrong in the other and you miss high-stakes cases. The right trigger is specific to your domain, but the framework is universal:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Trigger dimension</th>
+      <th>What it measures</th>
+      <th>Example signal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Confidence score</strong></td>
+      <td>How certain is the AI?</td>
+      <td>Reflection node failed; RAG retrieved no high-similarity chunks; structured query returned null</td>
+    </tr>
+    <tr>
+      <td><strong>Financial threshold</strong></td>
+      <td>What's the dollar magnitude?</td>
+      <td>Fund value &gt; $1M; transaction size &gt; $500K; portfolio change &gt; 5%</td>
+    </tr>
+    <tr>
+      <td><strong>Query category</strong></td>
+      <td>Does this fall in a flagged domain?</td>
+      <td>Litigation, compliance, regulatory, exception — anything requiring specialist knowledge</td>
+    </tr>
+    <tr>
+      <td><strong>Novelty</strong></td>
+      <td>Is this out-of-distribution?</td>
+      <td>Query doesn't match any pattern in training data; new product type; new regulation</td>
+    </tr>
+    <tr>
+      <td><strong>User signal</strong></td>
+      <td>Does the user want human involvement?</td>
+      <td>User explicitly requests human review; user rejected prior AI answer</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout warning">
+  <p><strong>Start broad, narrow over time.</strong> On day one, err on the side of more human review. You can always reduce escalation as you accumulate evidence that the AI handles certain query types well. It is much harder to add escalation after an incident. Each escalation you skip because "the AI handles this fine" is a potential risk event — track those decisions.</p>
+</div>
+
+<h2>5. The Cost of HITL — And How to Minimize It</h2>
+
+<p>The cost of HITL is real: human reviewers are expensive, slow, and become a bottleneck. The goal is not to minimize human involvement — it is to get the <em>right</em> human involvement at the <em>right</em> time. Here's how:</p>
+
+<div class="pattern-card blue">
+  <div class="pattern-title">Cost 1: Human becomes a bottleneck</div>
+  <div class="pattern-body"><strong>Problem:</strong> Every query above the escalation threshold waits in a human review queue. Long queues mean slow answers — defeating the purpose of automation.
+  <br><br><strong>Solution:</strong> Build a triage layer before the human reviewer. The system pre-classifies: "high confidence, low stakes" (proceed autonomously), "medium confidence" (flag for priority queue), "low confidence" (urgent queue). This ensures the human reviewer always sees the cases that genuinely need them.</div>
+</div>
+
+<div class="pattern-card green">
+  <div class="pattern-title">Cost 2: Human review burden doesn't scale</div>
+  <div class="pattern-body"><strong>Problem:</strong> As the system handles more queries, the human review queue grows faster than you can review it.
+  <br><br><strong>Solution:</strong> The async review loop (Pattern 3) — sample intelligently, don't review everything. Target the 10–20% of cases that are most informative (edge cases, low-confidence, novel). As the evaluation dataset grows, use LLM-as-judge as a pre-filter: if the judge is calibrated and confident, it handles the pass/fail; human reviews only the cases where the judge is uncertain.</div>
+</div>
+
+<div class="pattern-card orange">
+  <div class="pattern-title">Cost 3: Human reviewer fatigue</div>
+  <div class="pattern-body"><strong>Problem:</strong> Reviewing AI-generated answers for hours is cognitively draining. Fatigue leads to inconsistent review quality — the exact problem you're trying to solve.
+  <br><br><strong>Solution:</strong> Design the review interface for speed. Show the human: the original question, the AI's answer, and the specific flagged reason (not a raw transcript). Make the action a single click: "Approve / Revise / Escalate." Add variance randomization — show cases in random order, not grouped by topic, to maintain attention. Track reviewer accuracy over time.</div>
+</div>
+
+<h2>6. Retrieval Practice — Close the Tab, Recall from Memory</h2>
+
+<div class="callout warning">
+  <p><strong>Close the transcript tab.</strong> Answer from memory before checking below.</p>
+</div>
+
+<ol>
+  <li>Name the four levels of the HITL spectrum, from most autonomous to most human-led.</li>
+  <li>Describe the three HITL patterns: approval gate, escalation trigger, and async review loop. In which part of the Ask David architecture does each appear?</li>
+  <li>What are the five dimensions for designing escalation triggers?</li>
+  <li>What is the most common mistake teams make when designing HITL for the first time?</li>
+  <li>Why does the async review loop reduce human burden over time, rather than increasing it?</li>
+</ol>
+
+<details>
+  <summary>Check your answers</summary>
+  <ol>
+    <li><strong>Level 1:</strong> Fully autonomous (AI decides and acts). <strong>Level 2:</strong> AI decides, human reviews asynchronously. <strong>Level 3:</strong> Human approves before AI acts. <strong>Level 4:</strong> Human decides, AI assists.</li>
+    <li>
+      <strong>Approval gate:</strong> Between the analytics agent's code generation and execution — complex queries go to a human for code review before running. <strong>Escalation trigger:</strong> In the supervisor's routing logic — the supervisor evaluates confidence signals and routes to a human when signals indicate the AI shouldn't handle the query alone. <strong>Async review loop:</strong> On top of Level 1 autonomous answers — a sample of answers is reviewed by humans, and that feedback accumulates into ground truth examples.
+    </li>
+    <li><strong>Confidence score</strong> (reflection node failed, low retrieval similarity), <strong>financial threshold</strong> (dollar magnitude), <strong>query category</strong> (litigation, compliance, exceptions), <strong>novelty</strong> (out-of-distribution), <strong>user signal</strong> (explicit request or prior rejection).</li>
+    <li><strong>Applying HITL uniformly</strong> — either reviewing everything (expensive bottleneck) or nothing (risky). The right answer is calibrated routing: match decision stakes to human involvement level, using confidence, threshold, category, novelty, and user signal to decide.</li>
+    <li><strong>Because the ground truth accumulated from review feeds back into better evaluation, which feeds back into better AI.</strong> As the dataset grows, the reflection node's LLM-as-judge becomes calibrated enough to handle routine pass/fail decisions autonomously — humans review only edge cases where the judge is uncertain. The async review loop is the mechanism that makes this possible.</li>
+  </ol>
+</details>
+
+<h2>7. Your Deliverable — Design the HITL Layer for Your System</h2>
+
+<div class="exercise-box">
+  <h4>Exercise</h4>
+  <p>Design the human-in-the-loop layer for the system you designed in lesson 0002. Specify:</p>
+  <ol>
+    <li><strong>Level assignment</strong> — which query types get which level of HITL? (Use the four levels.)</li>
+    <li><strong>Escalation triggers</strong> — what three signals cause a query to escalate to human review?</li>
+    <li><strong>Review interface</strong> — in one sentence, what does the human reviewer see and what is the fastest possible action they can take?</li>
+    <li><strong>Async review loop</strong> — what proportion of autonomous answers do you sample for review? What is the sampling strategy?</li>
+  </ol>
+</div>
+
+<p>Save as <code>learning-records/0005-hitl-design-[dash-case-name].md</code>.</p>
+
+<div class="lesson-nav">
+  <a href="0003-eval-driven-dev.html">← Lesson 0003: Evaluation-Driven Development</a>
+  <a href="0005-accuracy-trajectory.html">Lesson 0005: The 0-to-90-to-100 Accuracy Trajectory →</a>
+</div>
+<div class="lesson-nav" style="margin-top:0.5rem;">
+  <a href="glossary.html">Glossary →</a>
+</div>
+
+<div class="callout">
+  <p><strong>Questions?</strong> Ask me about how to implement these patterns in a specific framework (LangGraph interrupt, CrewAI human-in-loop, custom), how to calibrate escalation thresholds, or how to measure the ROI of HITL — the ratio of human review time saved versus error cost avoided.</p>
+</div>
+
+</body>
+</html>

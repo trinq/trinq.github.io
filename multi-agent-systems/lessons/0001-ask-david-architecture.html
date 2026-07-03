@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: Ask David — The Architecture of an Enterprise Multi-Agent System</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-soft: #ede9fe;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    .callout {
+      background: var(--accent-soft);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      overflow-x: auto;
+    }
+    .arch-diagram .node {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 0.4rem 0.75rem;
+      display: inline-block;
+      margin: 0.2rem;
+      white-space: nowrap;
+    }
+    .arch-diagram .sub-agent {
+      background: #f0fdf4;
+      border-color: #22c55e;
+    }
+    .arch-diagram .supervisor {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+    .arch-diagram .node-start {
+      background: #fef9c3;
+      border-color: #eab308;
+    }
+    .arch-diagram .node-end {
+      background: #fce7f3;
+      border-color: #ec4899;
+    }
+    .arch-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .arch-flow-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .arch-arrow {
+      color: var(--ink-soft);
+      font-size: 1rem;
+    }
+    .arch-label {
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+      text-align: center;
+      margin: 0.2rem 0;
+    }
+    .lesson-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+    .lesson-card h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .lesson-card p { margin-bottom: 0; font-size: 0.92rem; }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .metric-bar {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .metric-bar .pct {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: "SF Mono", Menlo, monospace;
+      color: var(--accent);
+    }
+    .metric-bar .label {
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+      margin-top: 0.2rem;
+    }
+    .metric-bar .desc {
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+      margin-top: 0.3rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">multi-agent-systems</span></span>
+  <span><span class="badge-outline">Lesson 0001</span></span>
+  <span>2026-07-03</span>
+  <span>30–45 min</span>
+</div>
+
+<h1>Ask David: The Architecture of an Enterprise Multi-Agent System</h1>
+<p class="subtitle">"D.A.V.I.D. — Data Analytics Visualization Insights and Decision Making Assistant." When a financial advisor asks "Why was this fund terminated?", a multi-agent system answers — with human oversight, personalized for the audience, and evaluated at every step.</p>
+
+<p>Source: <em>David Odomirok &amp; Zheng Xue (JP Morgan Chase Private Bank) — "How JP Morgan Built An AI Agent for Investment Research with LangGraph"</em>, LangChain Interrupt, YouTube, 14:11, 2025-05-29. <a href="https://www.youtube.com/watch?v=yMalr0jiOAc">Watch it</a> before or after this lesson.</p>
+
+<div class="callout">
+  <p><strong>What this lesson teaches.</strong> By the end of this lesson you will be able to draw the Ask David architecture from memory, explain why each component exists, and name the three lesson learned. You will also produce a one-paragraph description of a multi-agent system you could build in your own domain.</p>
+</div>
+
+<h2>1. The Problem — Thousands of Products, One Research Team</h2>
+
+<p>JP Morgan Chase Private Bank's investment research team manages lists of <em>thousands</em> of financial products — each backed by decades of data. When an advisor has a question ("Why was this fund terminated?"), the process is manual: reach out to a human researcher, dig through databases and documents, piece together an answer, and build a presentation — all while the client is waiting.</p>
+
+<p>This doesn't scale. A team of researchers can't answer thousands of questions per day. The business case for automation is obvious: not to replace the researchers, but to give every advisor the research capability of a specialist — in real time, in a client meeting.</p>
+
+<p>The solution is not a single chatbot. It's a multi-agent system — a team of specialized AI agents, orchestrated by a supervisor, with access to different data types, memory, reflection, and human oversight. This is Ask David.</p>
+
+<h2>2. The Architecture — A System, Not a Script</h2>
+
+<p>Most AI demos show a single agent that takes a question and returns an answer. Ask David has <em>six</em> distinct components that must work together. Here is the full picture:</p>
+
+<div class="arch-diagram">
+  <div class="arch-flow">
+    <div class="arch-flow-row">
+      <span class="node node-start">User Question</span>
+    </div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-flow-row">
+      <span class="node supervisor">Planning Node</span>
+    </div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-flow-row">
+      <span class="arch-label">Routes to general or specific flow</span>
+    </div>
+    <div class="arch-flow-row">
+      <span class="node">General QA Flow</span>
+      <span class="node">Specific Fund Flow</span>
+    </div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-flow-row">
+      <span class="node supervisor">Supervisor Agent</span>
+    </div>
+    <div class="arch-label">Orchestrates sub-agents. Short-term + long-term memory.</div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-flow-row">
+      <span class="node sub-agent">Structured Data Agent</span>
+      <span class="node sub-agent">Unstructured Doc Agent</span>
+      <span class="node sub-agent">Analytics Agent</span>
+    </div>
+    <div class="arch-label">SQL / API &nbsp;|&nbsp; RAG &nbsp;|&nbsp; ReAct / code gen</div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-flow-row">
+      <span class="node">Personalization Node</span>
+      <span class="node">Reflection Node</span>
+    </div>
+    <div class="arch-label">Tailor by role &nbsp;|&nbsp; LLM-as-judge</div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-flow-row">
+      <span class="node node-end">Summarization → Answer</span>
+    </div>
+  </div>
+</div>
+
+<h3>Why each component exists</h3>
+
+<p><strong>Planning node.</strong> Every user question is first classified: is this a <em>general</em> question ("how do I invest in gold?") or a <em>specific fund</em> question ("why was fund XYZ terminated?"). These route to different sub-graphs with different agents. Without routing, a general model answers fund-specific questions badly.</p>
+
+<p><strong>Supervisor agent.</strong> The single entry point that understands user intent, delegates to sub-agents, and manages both short-term memory (session context) and long-term memory (persistent preferences). It also knows when to invoke human-in-the-loop — this is not a fully autonomous system.</p>
+
+<p><strong>Structured Data Agent.</strong> Translates natural language into SQL queries or API calls against structured databases. The LLM summarizes the tabular result. This handles the backbone of production financial data.</p>
+
+<p><strong>Unstructured Doc Agent (RAG).</strong> Handles the vast library of documents — PDFs, emails, meeting notes, video/audio transcripts. Documents are pre-processed, vectorized, and stored. The RAG agent retrieves and synthesizes. Without pre-processing, unstructured data is inaccessible at query time.</p>
+
+<p><strong>Analytics Agent.</strong> Runs proprietary models and analytics APIs. For simple queries, uses a ReAct agent with API tools. For complex queries, uses text-to-code generation with human supervision before execution. This is where the "white glove" expert analysis gets democratized.</p>
+
+<p><strong>Personalization node.</strong> The same underlying data gets presented differently depending on who's asking. A due diligence specialist needs full detail. A financial advisor needs a concise summary. The personalization layer tailors depth and framing without changing the underlying answer.</p>
+
+<p><strong>Reflection node (LLM-as-judge).</strong> Before the answer is returned, an LLM evaluates whether the answer makes sense. If it fails the check, the system retries. This is automated quality control — catching errors before the user sees them.</p>
+
+<p><strong>Summarization node.</strong> Wraps up: summarizes the conversation, updates memory, returns the final answer.</p>
+
+<h2>3. Three Lesson Learned — Iterate, Evaluate, Keep Humans In</h2>
+
+<div class="lesson-card">
+  <h4>Lesson 1: Start Simple, Refactor Often</h4>
+  <p>The Ask David team did not build the full architecture on day one. They started with a vanilla ReAct agent, validated it, added a RAG agent, then integrated both under a supervisor, then added sub-graphs for specific intents. Each iteration built confidence before adding complexity. The lesson: resist the temptation to architect the complete system upfront. Ship a working agent, get it into production, refactor.</p>
+</div>
+
+<div class="lesson-card">
+  <h4>Lesson 2: Evaluate Early, Evaluate Continuously</h4>
+  <p>Enterprise AI projects have short development phases but long evaluation phases. The Ask David team started evaluation <em>before</em> they had ground truth — using LLM-as-judge and trajectory evaluation from day one. The key insight: "once you start doing evaluation, you will have review; once you start doing review, you will accumulate ground truth examples." The evaluation drives the ground truth, not the other way around. Each sub-agent is also evaluated independently — the evaluation data for the structured data agent is different from the doc agent's evaluation data.</p>
+</div>
+
+<div class="lesson-card">
+  <h4>Lesson 3: Human-in-the-Loop is a Design Choice, Not a Failure Mode</h4>
+  <p>The financial stakes are real: billions of dollars of assets. The team acknowledges that 90–100% accuracy is "the last mile, and the last mile is always the hardest mile." For high-stakes domains, human-in-the-loop is not a workaround for unreliable AI — it's a deliberate architectural decision. Ask David still consults with real David whenever needed. The system knows when to escalate.</p>
+</div>
+
+<h2>4. The Accuracy Trajectory — 0 to 100</h2>
+
+<p>The speakers described the journey from a general-purpose model to a production-grade system as a predictable trajectory:</p>
+
+<div class="metric-grid">
+  <div class="metric-bar">
+    <div class="pct">&lt;50%</div>
+    <div class="label">Base model</div>
+    <div class="desc">General LLM, no domain tuning</div>
+  </div>
+  <div class="metric-bar">
+    <div class="pct">~80%</div>
+    <div class="label">Quick wins</div>
+    <div class="desc">Chunking, search, engineering</div>
+  </div>
+  <div class="metric-bar">
+    <div class="pct">~90%</div>
+    <div class="label">Workflow chains</div>
+    <div class="desc">Sub-graphs, intent routing</div>
+  </div>
+  <div class="metric-bar">
+    <div class="pct">~100%</div>
+    <div class="label">Last mile</div>
+    <div class="desc">Human-in-the-loop</div>
+  </div>
+</div>
+
+<p>The 0–50% step is using a general model off the shelf. The 50–80% step is proper engineering: chunking strategies, retrieval algorithms, prompt engineering. The 80–90% step is architectural: splitting into sub-graphs so you can tune specific question types without breaking others. The 90–100% step is human judgment — and you never fully close that gap in high-stakes domains.</p>
+
+<div class="callout warning">
+  <p><strong>Do not skip the 0–80% engineering.</strong> The temptation is to jump straight to multi-agent orchestration before getting the fundamentals right. A supervisor agent over three bad sub-agents is still a bad system. Get each sub-agent to 80%+ before wiring them together.</p>
+</div>
+
+<h2>5. Retrieval — Close the Tab, Recall from Memory</h2>
+
+<div class="callout warning">
+  <p><strong>Close the transcript tab.</strong> Answer these questions from memory before checking the reference below. This forces storage strength.</p>
+</div>
+
+<ol>
+  <li>What does D.A.V.I.D. stand for? (Hint: it's not the person's name.)</li>
+  <li>Name the three specialized sub-agents in Ask David.</li>
+  <li>What does the Reflection node do, and what tool does it use?</li>
+  <li>What is the difference between the Personalization node and the Summarization node?</li>
+  <li>What are the three lesson learned the speakers left the audience with?</li>
+</ol>
+
+<details>
+  <summary>Check your answers</summary>
+  <ol>
+    <li><strong>Data Analytics Visualization Insights and Decision Making Assistant.</strong> The acronym was a happy coincidence — David the person is not replaced; David the system amplifies him.</li>
+    <li><strong>Structured Data Agent, Unstructured Doc Agent (RAG), Analytics Agent.</strong> Each handles a distinct data type: tabular/SQL, documents, and proprietary models/APIs respectively.</li>
+    <li><strong>The Reflection node validates that the generated answer makes sense before returning it.</strong> It uses an LLM-as-judge — another LLM evaluates the answer's quality automatically.</li>
+    <li><strong>Personalization tailors the answer's depth and framing based on the user's role</strong> (advisor vs. due diligence specialist). <strong>Summarization wraps up the conversation, updates memory, and returns the final answer.</strong> They serve different purposes: one shapes the content, the other shapes the handoff.</li>
+    <li><strong>Iterate fast. Evaluate early. Keep humans in the loop.</strong></li>
+  </ol>
+</details>
+
+<h2>6. Your Deliverable — A Multi-Agent System for Your Domain</h2>
+
+<p>Before lesson 0002, produce <strong>one of</strong> the following. This is the concrete artifact that anchors your learning.</p>
+
+<div class="callout success">
+  <p><strong>Option A (preferred):</strong> Write one paragraph describing a multi-agent system you could build in your domain. Name:</p>
+  <ul>
+    <li>The <strong>supervisor agent</strong> — what question does it route?</li>
+    <li>At least <strong>two specialized sub-agents</strong> — what data does each handle?</li>
+    <li>The <strong>human-in-the-loop trigger</strong> — when does it escalate?</li>
+  </ul>
+  <p>Example: "In customer support, a supervisor routes billing questions to a Structured Data Agent and product questions to a Doc Agent. Complex refund requests escalate to a human."</p>
+</div>
+
+<div class="callout">
+  <p><strong>Option B:</strong> Write a 5-question evaluation plan for one sub-agent in your proposed system. For each question, name: the <em>metric</em>, the <em>ground truth source</em>, and the <em>evaluation method</em> (human review vs. LLM-as-judge vs. automated).</p>
+</div>
+
+<p>Drop your deliverable in a <code>.md</code> file in <code>learning-records/</code>, title it <code>0001-[dash-case-name].md</code>, and I'll review it before lesson 0002.</p>
+
+<div class="lesson-nav">
+  <span class="nav-label">Course Resources</span>
+  <a href="glossary.html">Glossary →</a>
+</div>
+<div class="lesson-nav" style="margin-top:0.5rem;">
+  <span class="nav-label">Next</span>
+  <a href="0002-supervisor-pattern.html">Lesson 0002: The Supervisor + Sub-Agent Pattern →</a>
+</div>
+
+<div class="callout">
+  <p><strong>Questions?</strong> Ask me anything about the Ask David architecture, the accuracy trajectory, or your deliverable. I can also help you map these patterns to a specific domain you're working in.</p>
+</div>
+
+</body>
+</html>

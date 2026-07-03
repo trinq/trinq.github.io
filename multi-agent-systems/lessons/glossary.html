@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossary — Multi-Agent Systems Course</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-soft: #ede9fe;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .glossary-section-intro {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      margin-bottom: 1.5rem;
+    }
+    .term {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .term:last-child {
+      border-bottom: none;
+    }
+    .term-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .term-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-family: "SF Mono", Menlo, monospace;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.05rem 0.35rem;
+      border-radius: 2px;
+      margin-left: 0.4rem;
+      font-weight: 700;
+      vertical-align: middle;
+    }
+    .term-abbr {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      font-weight: 400;
+    }
+    .term-definition {
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+    .term-used-in {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+    .term-used-in strong {
+      color: var(--accent);
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .term-see-also {
+      font-size: 0.78rem;
+      color: var(--accent);
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.82rem;
+      background: var(--code-bg);
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.88rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .back-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .back-nav a { color: var(--accent); text-decoration: none; }
+    .back-nav a:hover { text-decoration: underline; }
+    .term-lesson-ref {
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+      margin-left: 0.4rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    #search {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: white;
+      margin-bottom: 2rem;
+      font-family: Georgia, serif;
+      color: var(--ink);
+    }
+    #search::placeholder { color: var(--ink-soft); }
+    #search:focus { outline: none; border-color: var(--accent); }
+    .no-results {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin: 2rem 0;
+      display: none;
+    }
+    .toc {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .toc-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin-bottom: 0.75rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .toc-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .toc-item {
+      font-size: 0.75rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      text-decoration: none;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .toc-item:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<h1>Glossary</h1>
+<p class="subtitle">Terms and concepts from the Multi-Agent Systems course, cross-referenced by lesson.</p>
+
+<input type="text" id="search" placeholder="Search terms…" oninput="filterTerms()">
+
+<div class="toc" id="toc">
+  <div class="toc-title">Jump to section</div>
+  <div class="toc-items">
+    <a href="#architecture" class="toc-item">Architecture</a>
+    <a href="#agents" class="toc-item">Agents</a>
+    <a href="#evaluation" class="toc-item">Evaluation</a>
+    <a href="#hitl" class="toc-item">HITL</a>
+    <a href="#accuracy" class="toc-item">Accuracy</a>
+  </div>
+</div>
+
+<div id="glossary">
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ARCHITECTURE                               -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <h2 id="architecture">Architecture</h2>
+  <p class="glossary-section-intro">Terms related to the structural design of multi-agent systems, from Ask David.</p>
+
+  <div class="term" data-term="supervisor agent">
+    <div class="term-name">Supervisor Agent <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">The central orchestrating agent in a multi-agent system. Responsible for four jobs: understanding user intent, routing to the correct sub-agent(s), managing memory (both short-term and long-term), and composing the final answer from sub-agent outputs. The supervisor is the single entry point — no sub-agent is called directly by the user.</div>
+    <div class="term-see-also">See also: <a href="#routing">routing</a>, <a href="#sub-agent">sub-agent</a></div>
+  </div>
+
+  <div class="term" data-term="sub-agent">
+    <div class="term-name">Sub-agent <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">A specialized, narrowly-scoped agent that handles one type of task (e.g., SQL queries, RAG document retrieval, code generation). Sub-agents are never called directly by the user — always through the supervisor. Each sub-agent has its own evaluation dataset and metrics. Three canonical types: structured data agent, unstructured doc agent, and analytics agent.</div>
+    <div class="term-see-also">See also: <a href="#structured-data-agent">structured data agent</a>, <a href="#rag">RAG</a>, <a href="#analytics-agent">analytics agent</a></div>
+  </div>
+
+  <div class="term" data-term="planning node">
+    <div class="term-name">Planning Node <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">A processing step that interprets the user's intent and decides which workflow path to follow. In Ask David: routes between the General QA Flow and the Specific Fund Flow. A pre-processing step before the supervisor handles the actual work.</div>
+    <div class="term-see-also">See also: <a href="#routing">routing</a>, <a href="#intent-classification">intent classification</a></div>
+  </div>
+
+  <div class="term" data-term="reflection node">
+    <div class="term-name">Reflection Node <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">An LLM-as-judge quality gate that evaluates whether the assembled answer is good enough before delivery. The reflection node checks: does the answer address the user's question? Is it accurate? Is it appropriately detailed? If the answer fails the check, the workflow loops back to the relevant sub-agent for revision. Also called the reflection layer.</div>
+    <div class="term-see-also">See also: <a href="#llm-as-judge">LLM-as-judge</a>, <a href="#pass-rate">pass rate</a></div>
+  </div>
+
+  <div class="term" data-term="personalization node">
+    <div class="term-name">Personalization Node <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">A processing step that tailors the final answer to the user's role. The same underlying information is presented differently depending on who is asking: a due diligence specialist gets detailed technical answers; an advisor gets a concise summary. The supervisor determines the user's role from context or explicit profile data.</div>
+    <div class="term-see-also">See also: <a href="#role-tailored">role-tailored answer</a></div>
+  </div>
+
+  <div class="term" data-term="general-qa-flow">
+    <div class="term-name">General QA Flow <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">One of two workflow subgraphs in Ask David. Handles general, non-fund-specific questions (e.g., "What are the top-performing funds this quarter?"). Kept separate from the specific fund flow so that changes to one don't risk degrading the other.</div>
+    <div class="term-see-also">See also: <a href="#subgraph">subgraph</a>, <a href="#specific-fund-flow">specific fund flow</a></div>
+  </div>
+
+  <div class="term" data-term="specific-fund-flow">
+    <div class="term-name">Specific Fund Flow <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">One of two workflow subgraphs in Ask David. Handles questions about specific funds (e.g., "Why was fund XYZ terminated?"). Kept separate from the general QA flow so that each can be independently tuned, evaluated, and deployed.</div>
+    <div class="term-see-also">See also: <a href="#subgraph">subgraph</a>, <a href="#general-qa-flow">general QA flow</a></div>
+  </div>
+
+  <div class="term" data-term="memory">
+    <div class="term-name">Memory <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">State that the supervisor manages across interactions. Short-term memory: session context, the current conversation history, what sub-agents have already been called. Long-term memory: persistent facts about the user's preferences, past queries, and role. Together, they allow the system to maintain context and provide personalized responses over time.</div>
+    <div class="term-see-also">See also: <a href="#supervisor-agent">supervisor agent</a></div>
+  </div>
+
+  <div class="term" data-term="subgraph">
+    <div class="term-name">Subgraph <span class="term-lesson-ref">L0001, L0005</span></div>
+    <div class="term-definition">A self-contained workflow graph within a larger multi-agent system. Each subgraph handles a distinct query type and can be independently tuned, evaluated, and deployed. In Ask David: the General QA subgraph and the Specific Fund subgraph. Subgraph isolation prevents changes in one area from causing regressions in another.</div>
+    <div class="term-see-also">See also: <a href="#general-qa-flow">general QA flow</a>, <a href="#specific-fund-flow">specific fund flow</a></div>
+  </div>
+
+  <div class="term" data-term="rag">
+    <div class="term-name">RAG <span class="term-tag">abbr</span> <span class="term-abbr">Retrieval-Augmented Generation</span> <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">A pattern where the system retrieves relevant documents from a knowledge base (vector database) and includes them in the LLM's context window before generating an answer. For unstructured document agents: documents are vectorized and stored before queries arrive. RAG enables the system to answer questions about information that isn't in the model's training data.</div>
+    <div class="term-see-also">See also: <a href="#precision-at-k">Precision@K</a>, <a href="#recall-at-k">Recall@K</a>, <a href="#chunking-strategy">chunking strategy</a></div>
+  </div>
+
+  <div class="term" data-term="react">
+    <div class="term-name">ReAct <span class="term-tag">abbr</span> <span class="term-abbr">Reasoning + Acting</span> <span class="term-lesson-ref">L0001, L0003</span></div>
+    <div class="term-definition">A reasoning pattern where the agent alternates between thinking about the next step and taking an action (typically calling a tool). The agent sees the result of each action and uses it to decide the next action. Used in Ask David's analytics agent for multi-step data analysis tasks. Also called the ReAct loop.</div>
+    <div class="term-see-also">See also: <a href="#analytics-agent">analytics agent</a>, <a href="#trajectory">trajectory</a>, <a href="#tool-calling">tool-calling agent</a></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- AGENTS                                     -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <h2 id="agents">Agents</h2>
+  <p class="glossary-section-intro">The three canonical sub-agent types and related agent concepts.</p>
+
+  <div class="term" data-term="structured-data-agent">
+    <div class="term-name">Structured Data Agent <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">A sub-agent that answers questions by querying structured data sources (databases, APIs). Converts the user's natural language question into a query (typically SQL or an API call), executes it, and returns the structured result. Example in Ask David: "What is the current AUM of fund XYZ?"</div>
+    <div class="term-see-also">See also: <a href="#sub-agent">sub-agent</a>, <a href="#query-correctness">query correctness</a></div>
+  </div>
+
+  <div class="term" data-term="unstructured-doc-agent">
+    <div class="term-name">Unstructured Doc Agent <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">A sub-agent that answers questions by retrieving relevant documents from a knowledge base using RAG. Converts the user's question into a vector search query, retrieves the top-K relevant chunks, and synthesizes an answer from the retrieved content. Example in Ask David: "What does the fund's risk disclosure say about derivatives?"</div>
+    <div class="term-see-also">See also: <a href="#rag">RAG</a>, <a href="#precision-at-k">Precision@K</a>, <a href="#recall-at-k">Recall@K</a></div>
+  </div>
+
+  <div class="term" data-term="analytics-agent">
+    <div class="term-name">Analytics Agent <span class="term-lesson-ref">L0001</span></div>
+    <div class="term-definition">A sub-agent that performs multi-step data analysis using the ReAct pattern. Uses reasoning + tool-calling to execute a sequence of operations (query database, compute metrics, generate chart specs) to answer complex analytical questions. Often generates Python code that a human reviews before execution (approval gate).</div>
+    <div class="term-see-also">See also: <a href="#react">ReAct</a>, <a href="#trajectory">trajectory</a>, <a href="#approval-gate">approval gate</a></div>
+  </div>
+
+  <div class="term" data-term="tool-calling-agent">
+    <div class="term-name">Tool-calling Agent <span class="term-lesson-ref">L0002</span></div>
+    <div class="term-definition">An agent that reasons about which tools to call and in what order to accomplish a task. The agent receives a list of available tools (with descriptions) and decides which to invoke based on the user's goal. Differs from simple prompt-based routing in that the agent can adapt its tool sequence dynamically based on intermediate results.</div>
+    <div class="term-see-also">See also: <a href="#react">ReAct</a>, <a href="#analytics-agent">analytics agent</a></div>
+  </div>
+
+  <div class="term" data-term="routing">
+    <div class="term-name">Routing <span class="term-lesson-ref">L0001, L0002</span></div>
+    <div class="term-definition">The supervisor's decision about which sub-agent(s) to invoke for a given user question. Ask David routes at two levels: (1) which subgraph (general QA vs. specific fund), and (2) which sub-agent(s) within that subgraph. Routing accuracy is a key metric — a wrong route means the best sub-agent never gets called.</div>
+    <div class="term-see-also">See also: <a href="#supervisor-agent">supervisor agent</a>, <a href="#intent-classification">intent classification</a></div>
+  </div>
+
+  <div class="term" data-term="intent-classification">
+    <div class="term-name">Intent Classification <span class="term-lesson-ref">L0002</span></div>
+    <div class="term-definition">The task of determining what the user is asking for — which subgraph, which sub-agent type, which workflow path. Can be done with an LLM, a classifier, or rules. The quality of intent classification directly affects routing accuracy.</div>
+    <div class="term-see-also">See also: <a href="#routing">routing</a>, <a href="#planning-node">planning node</a></div>
+  </div>
+
+  <div class="term" data-term="role-tailored-answer">
+    <div class="term-name">Role-tailored Answer <span class="term-lesson-ref">L0001, L0003</span></div>
+    <div class="term-definition">The same underlying information, presented differently based on the recipient's role and expertise level. A due diligence specialist gets detailed technical analysis; an advisor gets a concise summary with key takeaways. The personalization node applies role-appropriate depth, vocabulary, and formatting.</div>
+    <div class="term-see-also">See also: <a href="#personalization-node">personalization node</a></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- EVALUATION                                 -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <h2 id="evaluation">Evaluation</h2>
+  <p class="glossary-section-intro">Terms related to measuring, comparing, and improving agent quality.</p>
+
+  <div class="term" data-term="ground-truth">
+    <div class="term-name">Ground Truth <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">The correct answer or expected behavior for a given input, established by a domain expert or authoritative source. Ground truth is the reference point against which agent outputs are measured. In Ask David: accumulated from human review cycles over time, not present on day one. The evaluation flywheel generates ground truth through review, not the other way around.</div>
+    <div class="term-see-also">See also: <a href="#eval-flywheel">evaluation flywheel</a>, <a href="#llm-as-judge">LLM-as-judge</a></div>
+  </div>
+
+  <div class="term" data-term="eval-flywheel">
+    <div class="term-name">Evaluation Flywheel <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">A self-reinforcing cycle: evaluation generates ground truth examples → ground truth improves evaluation accuracy → better evaluation reveals more weak links → weak links are fixed → system improves → fewer errors → less human review needed for the same quality. The flywheel is the mechanism that makes evaluation sustainable and makes human effort increasingly leveraged over time.</div>
+    <div class="term-see-also">See also: <a href="#ground-truth">ground truth</a>, <a href="#async-review-loop">async review loop</a></div>
+  </div>
+
+  <div class="term" data-term="llm-as-judge">
+    <div class="term-name">LLM-as-judge <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">Using an LLM to evaluate whether an agent's output is correct or good, by comparing it against ground truth or a rubric. The judge LLM scores the output (pass/fail, rating, or critique). Used at scale when human review is too expensive. Must be calibrated against human-scored examples to avoid the calibration trap.</div>
+    <div class="term-see-also">See also: <a href="#calibration-trap">calibration trap</a>, <a href="#ground-truth">ground truth</a></div>
+  </div>
+
+  <div class="term" data-term="calibration-trap">
+    <div class="term-name">Calibration Trap <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">The risk that LLM-as-judge gives consistent scores without giving accurate scores. Consistent means the judge gives the same score for the same quality every time. Accurate means that score matches what a human would give. The trap: a judge can be perfectly consistent but systematically biased. Avoided by periodically calibrating: showing the judge examples humans have scored and adjusting the judge's prompt or threshold until its scores match human scores.</div>
+    <div class="term-see-also">See also: <a href="#llm-as-judge">LLM-as-judge</a></div>
+  </div>
+
+  <div class="term" data-term="trajectory-evaluation">
+    <div class="term-name">Trajectory Evaluation <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">Evaluating whether the agent took the right sequence of steps, not just whether the final answer is correct. For ReAct agents: did the agent call the right tools in the right order? For routing: did the supervisor send the query to the right sub-agent? Trajectory evaluation catches errors that look correct in the output but came from the wrong process.</div>
+    <div class="term-see-also">See also: <a href="#trajectory">trajectory</a>, <a href="#react">ReAct</a></div>
+  </div>
+
+  <div class="term" data-term="trajectory">
+    <div class="term-name">Trajectory <span class="term-lesson-ref">L0002, L0003</span></div>
+    <div class="term-definition">The sequence of steps (tool calls, sub-agent calls, reasoning outputs) an agent takes to complete a task. A trajectory is the process, not just the output. Trajectory accuracy measures whether the agent's process matches an expert-defined ideal process. Trajectory evaluation is critical for analytics agents using the ReAct pattern.</div>
+    <div class="term-see-also">See also: <a href="#trajectory-evaluation">trajectory evaluation</a>, <a href="#react">ReAct</a></div>
+  </div>
+
+  <div class="term" data-term="precision-at-k">
+    <div class="term-name">Precision@K <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">A retrieval metric: of the top K documents retrieved, what proportion are actually relevant to the query? Precision@K = (relevant documents in top K) / K. Used to evaluate RAG agents. High precision means the retrieval system isn't flooding the context with irrelevant documents.</div>
+    <div class="term-see-also">See also: <a href="#recall-at-k">Recall@K</a>, <a href="#unstructured-doc-agent">unstructured doc agent</a></div>
+  </div>
+
+  <div class="term" data-term="recall-at-k">
+    <div class="term-name">Recall@K <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">A retrieval metric: of all documents relevant to the query, what proportion appear in the top K results? Recall@K = (relevant documents retrieved in top K) / (total relevant documents). Used to evaluate RAG agents. High recall means the retrieval system isn't missing important documents, even if it also returns some irrelevant ones.</div>
+    <div class="term-see-also">See also: <a href="#precision-at-k">Precision@K</a></div>
+  </div>
+
+  <div class="term" data-term="query-correctness">
+    <div class="term-name">Query Correctness <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">An evaluation metric for structured data agents: does the generated SQL or API query return the correct result? For SQL: exact match of the query text, or semantic match of the query results against the expected results. For API calls: whether the response matches the expected data for the given question.</div>
+    <div class="term-see-also">See also: <a href="#structured-data-agent">structured data agent</a></div>
+  </div>
+
+  <div class="term" data-term="code-correctness">
+    <div class="term-name">Code Correctness <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">An evaluation metric for analytics code-generation agents: does the generated code execute without error? Separate from result accuracy — code can be syntactically correct and still produce wrong answers. Evaluated by running the code in a sandbox and checking for errors.</div>
+    <div class="term-see-also">See also: <a href="#analytics-agent">analytics agent</a>, <a href="#result-accuracy">result accuracy</a></div>
+  </div>
+
+  <div class="term" data-term="result-accuracy">
+    <div class="term-name">Result Accuracy <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">An evaluation metric for analytics code-generation agents: does the output of the generated code match the expected computational result? Requires a pre-computed expected answer (ground truth). Evaluated by running the code and comparing its output to the expected result.</div>
+    <div class="term-see-also">See also: <a href="#code-correctness">code correctness</a>, <a href="#analytics-agent">analytics agent</a></div>
+  </div>
+
+  <div class="term" data-term="pass-rate">
+    <div class="term-name">Pass Rate <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">A metric for the reflection node: what proportion of answers pass the LLM-as-judge quality check? Tracked over time to detect quality drift. Also used as a proxy for system quality — if the reflection node is well-calibrated, a high pass rate means the system is generating good answers consistently.</div>
+    <div class="term-see-also">See also: <a href="#reflection-node">reflection node</a>, <a href="#llm-as-judge">LLM-as-judge</a></div>
+  </div>
+
+  <div class="term" data-term="routing-accuracy">
+    <div class="term-name">Routing Accuracy <span class="term-lesson-ref">L0002</span></div>
+    <div class="term-definition">The proportion of user queries that the supervisor routes to the correct sub-agent(s). A key metric for evaluating the supervisor independently from the sub-agents. Poor routing accuracy means the best sub-agent is never called, regardless of how good individual sub-agents are.</div>
+    <div class="term-see-also">See also: <a href="#supervisor-agent">supervisor agent</a>, <a href="#routing">routing</a></div>
+  </div>
+
+  <div class="term" data-term="few-shot-examples">
+    <div class="term-name">Few-shot Examples <span class="term-lesson-ref">L0002</span></div>
+    <div class="term-definition">Examples included in an LLM's prompt to demonstrate the expected input/output behavior for a specific task. Unlike zero-shot prompting (no examples), few-shot prompting gives the model concrete instances to imitate. Used to improve SQL generation, routing classification, and synthesis quality. The quality and representativeness of the examples directly affects performance.</div>
+    <div class="term-see-also">See also: <a href="#structured-data-agent">structured data agent</a></div>
+  </div>
+
+  <div class="term" data-term="hallucination">
+    <div class="term-name">Hallucination <span class="term-lesson-ref">L0002, L0005</span></div>
+    <div class="term-definition">An LLM generating content that sounds plausible but is factually incorrect or not supported by the provided context. In RAG systems: the model answers based on knowledge from its training data rather than from the retrieved documents. The primary failure mode that the reflection node is designed to catch. More common when retrieved documents are irrelevant or insufficient.</div>
+    <div class="term-see-also">See also: <a href="#reflection-node">reflection node</a>, <a href="#precision-at-k">Precision@K</a></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- HITL                                       -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <h2 id="hitl">Human-in-the-Loop</h2>
+  <p class="glossary-section-intro">Terms related to keeping humans in the decision loop within automated systems.</p>
+
+  <div class="term" data-term="hitl">
+    <div class="term-name">HITL <span class="term-tag">abbr</span> <span class="term-abbr">Human-in-the-Loop</span> <span class="term-lesson-ref">L0004</span></div>
+    <div class="term-definition">A design approach where humans participate in AI workflows at defined points. Not binary — HITL exists on a spectrum from fully autonomous (Level 1) to human-led (Level 4). In high-stakes domains, HITL is permanent risk management, not a workaround for bad AI. The cost of reviewing errors is trivially small compared to the cost of errors going unchecked.</div>
+    <div class="term-see-also">See also: <a href="#approval-gate">approval gate</a>, <a href="#escalation-trigger">escalation trigger</a>, <a href="#async-review-loop">async review loop</a></div>
+  </div>
+
+  <div class="term" data-term="approval-gate">
+    <div class="term-name">Approval Gate <span class="term-lesson-ref">L0004</span></div>
+    <div class="term-definition">A HITL pattern where the system pauses before executing a high-stakes action and requires human approval. The human reviews the proposed action (e.g., generated code, computed trade) before it takes effect. In Ask David: between the analytics agent's code generation and its execution against live financial models. Appropriate for actions with irreversible consequences.</div>
+    <div class="term-see-also">See also: <a href="#hitl">HITL</a>, <a href="#analytics-agent">analytics agent</a></div>
+  </div>
+
+  <div class="term" data-term="escalation-trigger">
+    <div class="term-name">Escalation Trigger <span class="term-lesson-ref">L0004</span></div>
+    <div class="term-definition">A condition in the supervisor's routing logic that causes a query to be routed to a human reviewer instead of proceeding autonomously. Five canonical dimensions: confidence score (is the AI uncertain?), financial threshold (is the stakes above a dollar limit?), query category (is it in a flagged domain?), novelty (is it out-of-distribution?), and user signal (did the user request human review?).</div>
+    <div class="term-see-also">See also: <a href="#confidence-score">confidence score</a>, <a href="#financial-threshold">financial threshold</a>, <a href="#hitl">HITL</a></div>
+  </div>
+
+  <div class="term" data-term="async-review-loop">
+    <div class="term-name">Async Review Loop <span class="term-lesson-ref">L0004</span></div>
+    <div class="term-definition">A HITL pattern where a sample of autonomous answers are reviewed by humans after delivery. Not every answer — a representative sample. Review feedback becomes ground truth examples for the evaluation dataset. This is the primary mechanism by which the evaluation flywheel generates labeled data. As the dataset grows, LLM-as-judge handles more cases, reducing human burden over time.</div>
+    <div class="term-see-also">See also: <a href="#eval-flywheel">evaluation flywheel</a>, <a href="#ground-truth">ground truth</a>, <a href="#llm-as-judge">LLM-as-judge</a></div>
+  </div>
+
+  <div class="term" data-term="confidence-score">
+    <div class="term-name">Confidence Score <span class="term-lesson-ref">L0004</span></div>
+    <div class="term-definition">A signal used to trigger escalation. Measures how certain the AI system is about its answer. Sources: reflection node pass/fail, retrieval similarity scores (low similarity = low confidence), null query results, or explicit probability outputs from the model. A threshold is set; queries below the threshold escalate to human review.</div>
+    <div class="term-see-also">See also: <a href="#escalation-trigger">escalation trigger</a>, <a href="#reflection-node">reflection node</a></div>
+  </div>
+
+  <div class="term" data-term="financial-threshold">
+    <div class="term-name">Financial Threshold <span class="term-lesson-ref">L0004</span></div>
+    <div class="term-definition">A signal used to trigger escalation: if the implied dollar value of the query exceeds a set limit, human review is required. Examples: fund value &gt; $1M, transaction size &gt; $500K, portfolio change &gt; 5%. The threshold is domain-specific and should be calibrated against the cost of error versus the cost of review.</div>
+    <div class="term-see-also">See also: <a href="#escalation-trigger">escalation trigger</a></div>
+  </div>
+
+  <div class="term" data-term="reviewer-fatigue">
+    <div class="term-name">Reviewer Fatigue <span class="term-lesson-ref">L0004</span></div>
+    <div class="term-definition">The degradation of human review quality over time as the reviewer grows tired from evaluating AI-generated content for extended periods. Fatigue leads to inconsistent decisions — the exact problem HITL is meant to solve. Mitigated by: designing fast review interfaces (show question + answer + flagged reason; approve/revise/escalate in one click), randomizing case order, and tracking reviewer accuracy over time.</div>
+    <div class="term-see-also">See also: <a href="#async-review-loop">async review loop</a></div>
+  </div>
+
+  <div class="term" data-term="triage-layer">
+    <div class="term-name">Triage Layer <span class="term-lesson-ref">L0004</span></div>
+    <div class="term-definition">A pre-classification step in the review queue that separates incoming escalation requests by urgency and complexity before sending them to a human reviewer. High-confidence/low-stakes cases are fast-tracked; low-confidence/high-stakes cases get priority. Prevents the human reviewer from becoming a bottleneck on routine escalations.</div>
+    <div class="term-see-also">See also: <a href="#approval-gate">approval gate</a>, <a href="#escalation-trigger">escalation trigger</a></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ACCURACY TRAJECTORY                        -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <h2 id="accuracy">Accuracy Trajectory</h2>
+  <p class="glossary-section-intro">Terms related to the phased improvement of AI system accuracy from 0% to 100%.</p>
+
+  <div class="term" data-term="accuracy-trajectory">
+    <div class="term-name">Accuracy Trajectory <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">The empirically observed path that production AI systems follow as they improve. The trajectory has four phases with distinct accuracy ranges and requiring distinct techniques: Phase 1 (0–50%, base model baseline), Phase 2 (50–80%, engineering wins), Phase 3 (80–90%, subgraph isolation and fine-tuning), Phase 4 (90–100%, last-mile targeted fixes). Each phase requires different techniques and yields diminishing returns — phase order matters.</div>
+    <div class="term-see-also">See also: <a href="#chunking-strategy">chunking strategy</a>, <a href="#subgraph">subgraph</a>, <a href="#last-mile">last mile</a></div>
+  </div>
+
+  <div class="term" data-term="chunking-strategy">
+    <div class="term-name">Chunking Strategy <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">How documents are split into retrievable chunks for RAG. Fixed-size chunking (e.g., 512 tokens) cuts across semantic boundaries. Semantic chunking (split on paragraphs or sections) preserves meaning. The optimal strategy is document-type-specific: annual reports chunked by section, emails by thread, compliance docs by regulatory reference. Chunking is the single highest-leverage engineering change for RAG agents — a pure engineering improvement, no model change required.</div>
+    <div class="term-see-also">See also: <a href="#rag">RAG</a>, <a href="#precision-at-k">Precision@K</a></div>
+  </div>
+
+  <div class="term" data-term="subgraph-isolation">
+    <div class="term-name">Subgraph Isolation <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">The practice of creating separate workflow subgraphs for different query types, so that each can be independently tuned, evaluated, and deployed. Prevents the most expensive type of regression: fixing one query type and accidentally degrading another. Each subgraph has its own evaluation dataset and can be improved without affecting other subgraphs.</div>
+    <div class="term-see-also">See also: <a href="#subgraph">subgraph</a>, <a href="#routing-accuracy">routing accuracy</a></div>
+  </div>
+
+  <div class="term" data-term="last-mile">
+    <div class="term-name">Last Mile <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">The final phase of accuracy improvement, from 90% to 100%. Called "the hardest mile" because the remaining errors are rare edge cases — unusual fund structures, novel regulatory situations, atypical query phrasings. Requires per-error-category analysis and targeted ground truth expansion. No general technique applies; only relentless per-case analysis. HITL remains necessary even at 95%+ accuracy.</div>
+    <div class="term-see-also">See also: <a href="#accuracy-trajectory">accuracy trajectory</a>, <a href="#ground-truth">ground truth</a></div>
+  </div>
+
+  <div class="term" data-term="error-category-analysis">
+    <div class="term-name">Error Category Analysis <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">A last-mile technique: classify each remaining error into one of four categories. (1) Retrieval failure: wrong chunks retrieved — fix chunking or embedding. (2) Synthesis failure: right chunks, wrong answer — fix synthesis prompt or add few-shot examples. (3) Routing failure: sent to wrong subgraph — improve supervisor's intent classification. (4) Personalization failure: right answer, wrong format for role — expand role-specific examples. Each category has a specific fix; trying to address all errors without categorization is inefficient.</div>
+    <div class="term-see-also">See also: <a href="#last-mile">last mile</a></div>
+  </div>
+
+  <div class="term" data-term="fine-tuning">
+    <div class="term-name">Fine-tuning <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">Training a pre-trained model further on a domain-specific dataset to improve its performance on a specific task. In Phase 3: fine-tuning a smaller model for a specific subgraph's query distribution. More targeted and cheaper than fine-tuning a single model for everything. Only appropriate after engineering foundations (chunking, search) are optimized — a model fine-tuned on poorly chunked data learns chunking artifacts, not domain knowledge.</div>
+    <div class="term-see-also">See also: <a href="#subgraph-isolation">subgraph isolation</a>, <a href="#chunking-strategy">chunking strategy</a></div>
+  </div>
+
+  <div class="term" data-term="semantic-chunking">
+    <div class="term-name">Semantic Chunking <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">A document chunking approach that splits on semantic boundaries (paragraphs, sections, topic shifts) rather than fixed token counts. Preserves complete thoughts and arguments within chunks. For financial documents: chunks naturally align with sections (executive summary, risk disclosures, fund performance), making retrieval more precise. Preferred over fixed-size chunking for most document types.</div>
+    <div class="term-see-also">See also: <a href="#chunking-strategy">chunking strategy</a>, <a href="#rag">RAG</a></div>
+  </div>
+
+  <div class="term" data-term="weak-link-principle">
+    <div class="term-name">Weak-link Principle <span class="term-lesson-ref">L0003</span></div>
+    <div class="term-definition">The observation that system accuracy is bottlenecked by the weakest sub-agent, not the average. Independent sub-agent evaluation reveals which component is dragging down the overall score. Improving a 40% sub-agent to 70% moves the system score more than improving a 90% sub-agent to 95%. Identified bottlenecks are fixed in order; after fixing one, re-evaluate to find the new bottleneck.</div>
+    <div class="term-see-also">See also: <a href="#routing-accuracy">routing accuracy</a>, <a href="#eval-flywheel">evaluation flywheel</a></div>
+  </div>
+
+  <div class="term" data-term="hybrid-search">
+    <div class="term-name">Hybrid Search <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">A retrieval approach that combines dense vector search (semantic similarity) with sparse keyword search (BM25 or TF-IDF). Captures both semantic meaning and exact keyword matches. Often combined with a re-ranker that uses a cross-encoder to reorder the initial retrieval results by relevance to the specific query. A Phase 2 engineering improvement for RAG agents.</div>
+    <div class="term-see-also">See also: <a href="#precision-at-k">Precision@K</a>, <a href="#recall-at-k">Recall@K</a></div>
+  </div>
+
+  <div class="term" data-term="re-ranker">
+    <div class="term-name">Re-ranker <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">A cross-encoder model that takes a query and a document and outputs a relevance score. Used after an initial retrieval pass to reorder the results. More accurate than vector similarity alone because it considers the full query-document interaction, not just embedding distance. Typically added as a post-processing step in Phase 2 retrieval improvements.</div>
+    <div class="term-see-also">See also: <a href="#hybrid-search">hybrid search</a>, <a href="#precision-at-k">Precision@K</a></div>
+  </div>
+
+  <div class="term" data-term="ground-truth-expansion">
+    <div class="term-name">Ground Truth Expansion <span class="term-lesson-ref">L0005</span></div>
+    <div class="term-definition">The process of growing the evaluation dataset by adding new labeled examples, particularly edge cases and rare events. Required in the last mile — the remaining errors are rare events that aren't covered by the initial dataset. Expensive (requires domain expert labeling) but necessary for continued improvement above 90% accuracy. Each new labeled example is a potential fix for one error category.</div>
+    <div class="term-see-also">See also: <a href="#ground-truth">ground truth</a>, <a href="#last-mile">last mile</a></div>
+  </div>
+
+</div>
+
+<div class="back-nav">
+  <a href="0005-accuracy-trajectory.html">← Lesson 0005: The 0-to-90-to-100 Accuracy Trajectory</a>
+</div>
+
+<script>
+  function filterTerms() {
+    const query = document.getElementById('search').value.toLowerCase().trim();
+    const terms = document.querySelectorAll('.term');
+    const h2s = document.querySelectorAll('h2[id]');
+    let visibleSections = new Set();
+
+    terms.forEach(term => {
+      const name = term.querySelector('.term-name').textContent.toLowerCase();
+      const def = term.querySelector('.term-definition').textContent.toLowerCase();
+      const dataTerm = (term.getAttribute('data-term') || '').toLowerCase();
+      const matches = !query ||
+        name.includes(query) ||
+        def.includes(query) ||
+        dataTerm.includes(query);
+
+      term.style.display = matches ? '' : 'none';
+      if (matches && query) {
+        visibleSections.add(term.previousElementSibling.id ||
+          term.previousElementSibling.previousElementSibling?.id);
+      }
+    });
+
+    // Show all sections if no search query
+    if (!query) {
+      h2s.forEach(h => h.style.display = '');
+      document.getElementById('no-results').style.display = 'none';
+      return;
+    }
+
+    // Hide sections with no visible terms
+    h2s.forEach(h => {
+      h.style.display = '';
+    });
+
+    const noResults = document.getElementById('no-results');
+    const anyVisible = Array.from(terms).some(t => t.style.display !== 'none');
+    noResults.style.display = anyVisible ? 'none' : 'block';
+  }
+</script>
+
+</body>
+</html>

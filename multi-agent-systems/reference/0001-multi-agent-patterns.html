@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Agent System Patterns — Quick Reference</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-light: #ede9fe;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+      --code-bg: #f4efe9;
+      --blue: #1d4ed8;
+      --blue-light: #eff6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    @page {
+      size: A4 landscape;
+      margin: 10mm 12mm;
+    }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+    }
+    h1 {
+      font-size: 1.3rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 0.3rem;
+      margin-bottom: 0.6rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    h1 .subtitle {
+      font-size: 0.75rem;
+      font-style: italic;
+      color: var(--ink-soft);
+      font-weight: 400;
+    }
+    h2 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0.6rem 0 0.35rem;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid var(--rule);
+      color: var(--accent);
+    }
+    p { margin-bottom: 0.4rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.6rem;
+    }
+    .col { }
+    .card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 0.5rem 0.65rem;
+      margin-bottom: 0.5rem;
+    }
+    .card-title {
+      font-weight: 700;
+      font-size: 0.78rem;
+      margin-bottom: 0.25rem;
+      color: var(--ink);
+    }
+    .card-body { font-size: 0.78rem; color: var(--ink-soft); }
+    .card-body ul { margin: 0.2rem 0 0.3rem 1rem; }
+    .card-body li { margin-bottom: 0.1rem; }
+    .tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-family: "SF Mono", Menlo, monospace;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 0.05rem 0.35rem;
+      border-radius: 2px;
+      margin-right: 0.2rem;
+      font-weight: 700;
+    }
+    .tag.green { background: var(--green-light); color: var(--green); }
+    .tag.orange { background: var(--orange-light); color: var(--orange); }
+    .tag.blue { background: var(--blue-light); color: var(--blue); }
+    .tag.red { background: var(--red-light); color: var(--red); }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.72rem;
+      background: var(--code-bg);
+      padding: 0.05rem 0.3rem;
+      border-radius: 2px;
+    }
+    .quote-box {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.4rem 0.6rem;
+      margin: 0.4rem 0;
+      font-style: italic;
+      font-size: 0.75rem;
+    }
+    .quote-box .attr { font-style: normal; font-weight: 700; margin-top: 0.2rem; font-size: 0.7rem; }
+    table { width: 100%; border-collapse: collapse; margin: 0.3rem 0; font-size: 0.78rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.2rem 0.3rem 0.2rem 0; font-weight: 700; }
+    td { padding: 0.2rem 0.3rem 0.2rem 0; vertical-align: top; }
+    .spacer { height: 0.5rem; }
+    .footer {
+      margin-top: 0.5rem;
+      padding-top: 0.3rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+    .wide { grid-column: span 1; }
+  </style>
+</head>
+<body>
+
+<h1>
+  Multi-Agent System Patterns
+  <span class="subtitle">From JP Morgan's Ask David — LangChain Interrupt 2025</span>
+</h1>
+
+<div class="grid">
+  <div class="col">
+
+    <h2>Core Architecture</h2>
+
+    <div class="card">
+      <div class="card-title">Supervisor Orchestrator</div>
+      <div class="card-body">
+        Single entry point. Routes to sub-agents. Manages both short-term (session) and long-term (persistent) memory.
+        <ul>
+          <li>Classifies user intent → routes to correct sub-graph</li>
+          <li>Knows when to invoke human-in-the-loop</li>
+          <li>Aggregates sub-agent responses</li>
+        </ul>
+        <span class="tag green">always</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Sub-Agent Types</div>
+      <div class="card-body">
+        <strong>Structured Data Agent</strong> — NL → SQL/API → summarize tabular result.
+        <br><span class="tag">structured</span><span class="tag green">common</span>
+        <br><br>
+        <strong>Unstructured Doc Agent (RAG)</strong> — vectorized docs → retrieve → synthesize.
+        <br><span class="tag">unstructured</span><span class="tag green">common</span>
+        <br><br>
+        <strong>Analytics Agent</strong> — ReAct + API tools for simple; text-to-code + human review for complex.
+        <br><span class="tag">analytics</span><span class="tag orange">complex</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Intent-Based Sub-Graphs</div>
+      <div class="card-body">
+        Separate workflow graphs per intent category (e.g., general QA vs. specific fund questions). Each subgraph is tunable independently.
+        <br><br>
+        <em>Changes to the general QA flow don't risk breaking the fund-specific flow.</em>
+        <br><span class="tag orange">scale</span>
+      </div>
+    </div>
+
+    <h2>Quality Nodes</h2>
+
+    <div class="card">
+      <div class="card-title">Personalization Node</div>
+      <div class="card-body">
+        Same data, different presentation. Tailors depth and framing based on user role (e.g., advisor needs summary, specialist needs detail).
+        <br><span class="tag blue">post-retrieval</span><span class="tag green">high-value</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Reflection Node</div>
+      <div class="card-body">
+        LLM-as-judge validates answer quality before return. Retry on failure.
+        <br><span class="tag blue">gate</span><span class="tag green">always</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Summarization Node</div>
+      <div class="card-body">
+        Wraps conversation. Updates memory. Returns final answer.
+        <br><span class="tag blue">terminal</span><span class="tag green">always</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="col">
+
+    <h2>Evaluation Patterns</h2>
+
+    <div class="card">
+      <div class="card-title">Start Evaluation Before Ground Truth</div>
+      <div class="card-body">
+        Use LLM-as-judge and trajectory evaluation from day one. Ground truth accumulates from review cycles, not the other way around.
+        <div class="quote-box">
+          "Once you start doing evaluation, you will have review. Once you start doing review, you will accumulate more of the ground truth examples."
+          <div class="attr">— Zheng Xue, JP Morgan</div>
+        </div>
+        <span class="tag red">key</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Evaluate Sub-Agents Independently</div>
+      <div class="card-body">
+        Each sub-agent has its own evaluation dataset and metrics. The structured data agent is evaluated on query accuracy; the doc agent on retrieval precision.
+        <br><span class="tag red">key</span><span class="tag green">independent</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Pick the Right Metric</div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Task</th><th>Metric</th></tr></thead>
+          <tbody>
+            <tr><td>Summarization</td><td>Conciseness, faithfulness</td></tr>
+            <tr><td>Tool use (ReAct)</td><td>Trajectory accuracy</td></tr>
+            <tr><td>RAG retrieval</td><td>Precision @ k, recall</td></tr>
+            <tr><td>SQL generation</td><td>Query correctness</td></tr>
+            <tr><td>Role-tailored answer</td><td>Role-appropriate depth</td></tr>
+          </tbody>
+        </table>
+        <span class="tag orange">metric-per-task</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">LLM-as-Judge at Scale</div>
+      <div class="card-body">
+        Automates quality review without overloading human SMEs. Human review reserved for edge cases. Best when combined with accumulating ground truth from prior reviews.
+        <br><span class="tag green">production</span>
+      </div>
+    </div>
+
+    <h2>Accuracy Trajectory</h2>
+
+    <div class="card">
+      <div class="card-title">The 0–100 Journey</div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Accuracy</th><th>Stage</th><th>What moves you</th></tr></thead>
+          <tbody>
+            <tr><td><strong>&lt;50%</strong></td><td>Base model</td><td>—</td></tr>
+            <tr><td><strong>~80%</strong></td><td>Engineering</td><td>Chunking, search algo, prompt engineering</td></tr>
+            <tr><td><strong>~90%</strong></td><td>Architecture</td><td>Sub-graphs, intent routing, workflow chains</td></tr>
+            <tr><td><strong>~100%</strong></td><td>Last mile</td><td>Human-in-the-loop</td></tr>
+          </tbody>
+        </table>
+        <br>
+        <em>"The last mile is always the hardest mile."</em>
+      </div>
+    </div>
+
+  </div>
+  <div class="col">
+
+    <h2>Build Philosophy</h2>
+
+    <div class="card">
+      <div class="card-title">Start Simple, Refactor Often</div>
+      <div class="card-body">
+        Day 1: vanilla ReAct agent. Day 2: add RAG agent. Day 3: supervisor + 2 sub-agents. Day 4+: add sub-graphs per intent. Each iteration builds confidence before adding complexity.
+        <br><span class="tag red">key</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Human-in-the-Loop is a Design Choice</div>
+      <div class="card-body">
+        Not a workaround for unreliable AI. A deliberate architectural decision for high-stakes domains. The system knows when to escalate.
+        <br><br>
+        Triggers: ambiguous answers, high financial stakes, out-of-distribution queries, configurable confidence thresholds.
+        <br><span class="tag red">key</span><span class="tag orange">high-stakes</span>
+      </div>
+    </div>
+
+    <h2>Data Pre-Processing</h2>
+
+    <div class="card">
+      <div class="card-title">Structured Data</div>
+      <div class="card-body">
+        Already in databases. Agent translates NL → SQL/API. LLM summarizes result.
+        <br><span class="tag green">low-friction</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Unstructured Data</div>
+      <div class="card-body">
+        Documents must be pre-processed: ingest → chunk → vectorize → store in vector DB. Only then can RAG agents query at runtime.
+        <br><span class="tag orange">upfront cost</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Audio / Video</div>
+      <div class="card-body">
+        Transcription → treated as unstructured data → same RAG pipeline.
+        <br><span class="tag orange">pre-process</span>
+      </div>
+    </div>
+
+    <h2>Memory Types</h2>
+
+    <table>
+      <thead><tr><th>Type</th><th>Scope</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Short-term</strong></td><td>Session</td><td>Current conversation context, pending tasks</td></tr>
+        <tr><td><strong>Long-term</strong></td><td>Persistent</td><td>User preferences, past queries, learned patterns</td></tr>
+      </tbody>
+    </table>
+    <br>
+    Both live in the supervisor agent.
+
+  </div>
+</div>
+
+<div class="footer">
+  <span>Source: JP Morgan Chase Private Bank — "Ask David", LangChain Interrupt 2025. <a href="https://www.youtube.com/watch?v=yMalr0jiOAc">youtube.com</a></span>
+  <span>multi-agent-systems workspace · Lesson 0001</span>
+</div>
+
+</body>
+</html>

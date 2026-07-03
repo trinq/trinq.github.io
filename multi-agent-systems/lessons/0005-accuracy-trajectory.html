@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005: The 0-to-90-to-100 Accuracy Trajectory — How Real AI Systems Actually Improve</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-soft: #ede9fe;
+      --code-bg: #f4efe9;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --blue: #1d4ed8;
+      --blue-light: #eff6ff;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: var(--accent-soft);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.success { background: var(--green-light); border-left-color: var(--green); }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout.info { background: var(--blue-light); border-left-color: var(--blue); }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0.3rem 0.5rem 0; }
+    td { padding: 0.4rem 0.3rem 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .phase-bar {
+      display: flex;
+      align-items: stretch;
+      margin: 2rem 0;
+      gap: 3px;
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 0.82rem;
+    }
+    .phase-seg {
+      flex: 1;
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+    }
+    .phase-seg.seg-red { background: #fef2f2; }
+    .phase-seg.seg-orange { background: #fff7ed; }
+    .phase-seg.seg-blue { background: #eff6ff; }
+    .phase-seg.seg-purple { background: #ede9fe; }
+    .phase-label { font-weight: 700; font-family: "SF Mono", Menlo, monospace; font-size: 0.78rem; margin-bottom: 0.25rem; }
+    .phase-range { font-size: 0.72rem; color: var(--ink-soft); margin-bottom: 0.25rem; }
+    .phase-desc { font-size: 0.75rem; color: var(--ink-soft); }
+    .technique-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+    }
+    .technique-card.green { border-left-color: var(--green); }
+    .technique-card.orange { border-left-color: var(--orange); }
+    .technique-card.blue { border-left-color: var(--blue); }
+    .technique-card.purple { border-left-color: var(--accent); }
+    .technique-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .technique-body { font-size: 0.85rem; color: var(--ink-soft); }
+    .exercise-box {
+      background: #fef9c3;
+      border: 1px solid #eab308;
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .exercise-box h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #92400e;
+      margin-bottom: 0.75rem;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-family: "SF Mono", Menlo, monospace;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.05rem 0.35rem;
+      border-radius: 2px;
+      margin-right: 0.2rem;
+      font-weight: 700;
+    }
+    .tag.green { background: var(--green-light); color: var(--green); }
+    .tag.orange { background: var(--orange-light); color: var(--orange); }
+    .tag.blue { background: var(--blue-light); color: var(--blue); }
+    .tag.red { background: var(--red-light); color: var(--red); }
+    .summary-box {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin: 2rem 0;
+    }
+    .summary-box h3 {
+      margin-top: 0;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">multi-agent-systems</span></span>
+  <span><span class="badge-outline">Lesson 0005</span></span>
+  <span>2026-07-03</span>
+  <span>30–45 min</span>
+</div>
+
+<h1>The 0-to-90-to-100 Accuracy Trajectory — How Real AI Systems Actually Improve</h1>
+<p class="subtitle">"The last mile is always the hardest mile." — Zheng Xue, JP Morgan Chase Private Bank</p>
+
+<p>Prerequisites: All four prior lessons. You should be able to name the six Ask David components, explain the supervisor's four jobs, design a sub-agent evaluation plan, and specify HITL triggers before starting. This lesson synthesizes everything.</p>
+
+<div class="callout">
+  <p><strong>What this lesson teaches.</strong> By the end of this lesson you will understand the empirical accuracy trajectory of production AI systems — from raw model output through three distinct improvement phases, each requiring different techniques and yielding diminishing returns. You will also know the three meta-learnings that govern the entire course.</p>
+</div>
+
+<h2>1. The Empirical Reality — 0 to 50% is the Starting Point</h2>
+
+<p>Ask David opens with a number that surprises most engineers: when a general-purpose model is applied to a specific financial domain, accuracy typically starts below 50%. This is not a failure of the model — it is the nature of the problem. A model trained on the entire internet does not know the difference between a fund termination for underperformance versus regulatory action versus voluntary wind-down. It has never seen your specific database schema, your document format, or your domain's conventions for answering "Why was this fund terminated?"</p>
+
+<p>The trajectory that follows is not linear. Each phase of improvement requires different techniques, and the effort to move from 90% to 95% is categorically different from the effort to move from 50% to 80%. Treating them the same way wastes enormous effort.</p>
+
+<h2>2. The Four-Phase Trajectory</h2>
+
+<div class="phase-bar">
+  <div class="phase-seg seg-red">
+    <div class="phase-label">Phase 1</div>
+    <div class="phase-range">0–50%</div>
+    <div class="phase-desc">Base model on domain task</div>
+  </div>
+  <div class="phase-seg seg-orange">
+    <div class="phase-label">Phase 2</div>
+    <div class="phase-range">50–80%</div>
+    <div class="phase-desc">Engineering + chunking + search</div>
+  </div>
+  <div class="phase-seg seg-blue">
+    <div class="phase-label">Phase 3</div>
+    <div class="phase-range">80–90%</div>
+    <div class="phase-desc">Workflow subgraphs + fine-tuning</div>
+  </div>
+  <div class="phase-seg seg-purple">
+    <div class="phase-label">Phase 4</div>
+    <div class="phase-range">90–100%</div>
+    <div class="phase-desc">Last-mile: targeted fixes</div>
+  </div>
+</div>
+
+<h3>Phase 1: 0 to 50% — The Baseline (No Special Techniques)</h3>
+
+<p>The model is doing its best with general knowledge. The gap between its training data and your domain is large. Examples of failure modes at this stage:</p>
+<ul>
+  <li>Confusing fund termination reasons (performance vs. regulatory vs. voluntary)</li>
+  <li>Answering based on publicly available information rather than internal records</li>
+  <li>Using wrong field names when attempting structured queries</li>
+  <li>Hallucinating compliance details that don't exist in your documents</li>
+</ul>
+<p>This phase is expected. Don't try to engineer your way out of it — that's Phase 2 work.</p>
+
+<h3>Phase 2: 50 to 80% — Quick Engineering Wins</h3>
+
+<p>This is where most teams spend too little time. The gains in this phase come from engineering, not model changes. Ask David identifies two primary levers:</p>
+
+<div class="technique-card orange">
+  <div class="technique-title">Chunking strategy</div>
+  <div class="technique-body">How you split documents into retrievable chunks is the single highest-leverage change for RAG agents. Fixed-size chunking (e.g., 512 tokens) misses semantic boundaries — a sentence that completes a thought at token 510 gets cut off. Semantic chunking (split on paragraphs or sections) preserves meaning. For a financial corpus: annual reports chunked by section, emails chunked by thread, compliance documents chunked by regulatory reference. Each document type has an optimal chunking strategy. <strong>This is pure engineering — no model change required.</strong></div>
+</div>
+
+<div class="technique-card orange">
+  <div class="technique-title">Search algorithm improvements</div>
+  <div class="technique-body">Moving from pure vector similarity to hybrid search (dense + sparse), adding re-ranking, or tuning the similarity threshold. For structured data: better schema prompts, few-shot examples in the SQL agent's context. These are all engineering improvements. The model stays the same — you're just giving it better inputs and better retrieval.</div>
+</div>
+
+<div class="callout info">
+  <p><strong>The Phase 2 mindset shift:</strong> Stop asking "which model should I use?" and start asking "how is my retrieval pipeline structured?" In Phase 2, the bottleneck is almost never the model — it's the engineering between the user and the model.</p>
+</div>
+
+<h3>Phase 3: 80 to 90% — Subgraph Isolation</h3>
+
+<p>Once engineering is exhausted, the remaining errors are structural. Ask David's insight: create separate workflow subgraphs for different query types, so that improvements to one subgraph don't accidentally degrade another.</p>
+
+<p>In Ask David: general QA queries go through a different subgraph than specific fund queries. Why? Because optimizing the general QA flow to improve "What are the top-performing funds this quarter?" should not risk degrading the specific fund flow for "Why was fund XYZ terminated?" Each subgraph can be independently tuned, evaluated, and deployed.</p>
+
+<div class="technique-card blue">
+  <div class="technique-title">Subgraph isolation</div>
+  <div class="technique-body">Each subgraph is a self-contained LangGraph (or equivalent) with its own sub-agents, prompts, and evaluation dataset. When you improve the RAG chunking for fund documents, you run the fund subgraph eval suite. The general QA subgraph isn't affected. This prevents the most expensive type of regression: fixing one thing and breaking another.</div>
+</div>
+
+<div class="technique-card blue">
+  <div class="technique-title">Fine-tuning for specific question types</div>
+  <div class="technique-body">Once subgraphs are isolated, you can fine-tune a smaller model for a specific subgraph's query distribution. Ask David fine-tunes models for the analytics agent (ReAct tool calling) separately from the RAG agent (document synthesis). Fine-tuning at the subgraph level is cheaper and more targeted than fine-tuning a single model for everything.</div>
+</div>
+
+<h3>Phase 4: 90 to 100% — The Last Mile</h3>
+
+<p>Ask David is explicit: this is where the work becomes categorically different. The last 10% requires targeting specific error categories one at a time. There is no general technique — only relentless per-case analysis.</p>
+
+<div class="technique-card purple">
+  <div class="technique-title">Error category analysis</div>
+  <div class="technique-body">Run your evaluation results through a classification: which errors are retrieval failures (wrong chunks retrieved), which are synthesis failures (right chunks, wrong answer), which are routing failures (sent to wrong subgraph), which are personalization failures (right answer, wrong format for role)? Each category has a different fix. Retrieval failures → improve chunking or embedding. Synthesis failures → improve synthesis prompt or add few-shot examples. Routing failures → improve supervisor's intent classification. Personalization failures → expand role-specific examples in the personalization node.</div>
+</div>
+
+<div class="technique-card purple">
+  <div class="technique-title">Ground truth expansion</div>
+  <div class="technique-body">At 90%+ accuracy, the remaining errors are rare events — edge cases, unusual fund structures, novel regulatory situations. The evaluation dataset must expand to cover these. This is expensive: you need domain experts to label each new edge case. But it is the only path to the last mile. Every new labeled example in the evaluation dataset is a potential fix for one more error category.</div>
+</div>
+
+<div class="callout warning">
+  <p><strong>The temptation to skip phases:</strong> Teams that skip Phase 2 (engineering) and jump straight to fine-tuning (Phase 3) waste significant resources. A model fine-tuned on poorly chunked data learns the chunking artifacts, not the domain. Fix the engineering foundations first. The phase order is not a suggestion — it reflects what actually moves the needle at each accuracy level.</p>
+</div>
+
+<h2>3. The Three Meta-Learnings — What Ask David Teaches About AI Development</h2>
+
+<p>Zheng Xue closes with three principles that apply far beyond the Ask David system. These are the meta-learnings of the entire course:</p>
+
+<div class="summary-box">
+  <h3>The three lesson learned</h3>
+
+  <p><strong>1. Start simple and refactor often.</strong></p>
+  <p>The biggest wasted effort in AI system development is premature complexity. Building a sophisticated multi-agent architecture before you understand which queries fail and why is backwards. Start with one agent that handles the happy path. Evaluate. Find the failure modes. Then split — and split only where evaluation shows the split is justified.</p>
+  <p>Ask David's architecture is not what it started as. The planning node, the separate subgraphs, the reflection node — these are all refactors that emerged from evaluation results, not initial designs. The initial design was much simpler.</p>
+
+  <p><strong>2. Evaluation-driven development.</strong></p>
+  <p>Every technique in every phase is justified by measurement. Chunking strategy changes are justified by Precision@K improvements. Subgraph isolation is justified by routing accuracy improvements. Last-mile fixes are justified by per-error-category analysis. Without measurement, you are guessing — and in probabilistic systems, guessing is expensive.</p>
+  <p>The evaluation flywheel from lesson 0003 is what makes this sustainable: evaluation generates ground truth, ground truth makes evaluation better, better evaluation makes the system better.</p>
+
+  <p><strong>3. Human in the loop.</strong></p>
+  <p>Some decisions permanently justify human involvement regardless of AI accuracy. The 90–100% journey doesn't eliminate the need for HITL — it refines the triggers. As the AI improves, fewer queries need human review. But the architecture for human involvement never goes away. The goal is not to remove humans; it is to make human time increasingly precious — reserved for cases that genuinely need it.</p>
+</div>
+
+<blockquote>
+  "Number one: start simple and refactor often. Number two: evaluation-driven development. Number three: human in the loop."
+  <br>— Zheng Xue, JP Morgan Chase Private Bank
+</blockquote>
+
+<h2>4. The Course in Review — Connecting the Five Lessons</h2>
+
+<p>Here's how the five lessons fit together as a coherent system development methodology:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Lesson</th>
+      <th>Answers the question</th>
+      <th>Drives which phase?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>0001</strong> — Architecture</td>
+      <td>What are the components and how do they connect?</td>
+      <td>All phases — defines what you're building</td>
+    </tr>
+    <tr>
+      <td><strong>0002</strong> — Supervisor + Sub-agents</td>
+      <td>Where do you split work and how do agents communicate?</td>
+      <td>Phase 3 — subgraph isolation</td>
+    </tr>
+    <tr>
+      <td><strong>0003</strong> — Evaluation</td>
+      <td>How do you know if you're improving?</td>
+      <td>All phases — the engine of improvement</td>
+    </tr>
+    <tr>
+      <td><strong>0004</strong> — Human in the Loop</td>
+      <td>Where do humans belong in the workflow?</td>
+      <td>Phase 4 — last-mile fixes</td>
+    </tr>
+    <tr>
+      <td><strong>0005</strong> — Accuracy Trajectory</td>
+      <td>In what order do you apply techniques?</td>
+      <td>All phases — the roadmap</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>5. Retrieval Practice — Close the Tab, Recall from Memory</h2>
+
+<div class="callout warning">
+  <p><strong>Close the transcript tab.</strong> Answer from memory before checking below.</p>
+</div>
+
+<ol>
+  <li>What accuracy range does a general-purpose model typically achieve when first applied to a specific financial domain? Why?</li>
+  <li>Name the four techniques used in Phase 2 (50–80%) to improve accuracy.</li>
+  <li>Why does Phase 3 (80–90%) require subgraph isolation rather than fine-tuning a single model?</li>
+  <li>What are the four error categories in Phase 4 (last mile), and what is the fix for each?</li>
+  <li>Name and explain the three meta-learnings that Zheng Xue identifies as the most important lessons from building Ask David.</li>
+</ol>
+
+<details>
+  <summary>Check your answers</summary>
+  <ol>
+    <li><strong>Less than 50%.</strong> The model has never seen your specific database schema, document format, or domain conventions. It has general knowledge but lacks domain-specific grounding — that's not a model failure, it's the nature of applying a general model to a specific domain.</li>
+    <li><strong>Chunking strategy</strong> (semantic vs. fixed-size document splitting) and <strong>search algorithm improvements</strong> (hybrid search, re-ranking, similarity threshold tuning) — both for RAG. For structured data: <strong>better schema prompts</strong> and <strong>few-shot examples</strong> in the SQL agent's context. All engineering changes, no model changes.</li>
+    <li><strong>Because optimizing one query type risks degrading another.</strong> Subgraph isolation lets you improve the general QA flow without risking the specific fund flow. Fine-tuning a single model for everything means a fix to one query type can introduce regressions in another. Isolated subgraphs each have their own evaluation suite, so regressions are caught immediately.</li>
+    <li>
+      <strong>Retrieval failures</strong> → improve chunking or embedding model.<br>
+      <strong>Synthesis failures</strong> → improve synthesis prompt or add few-shot examples to the synthesis LLM.<br>
+      <strong>Routing failures</strong> → improve the supervisor's intent classification (better prompts, better examples).<br>
+      <strong>Personalization failures</strong> → expand role-specific examples in the personalization node.
+    </li>
+    <li>
+      <strong>Start simple and refactor often.</strong> Don't build sophisticated multi-agent architectures before you understand failure modes. Start with one agent on the happy path, evaluate, find failures, then split — and split only where evaluation justifies it. Ask David's current architecture is the result of many refactors, not the initial design.<br><br>
+      <strong>Evaluation-driven development.</strong> Every technique in every phase is justified by measurement. Chunking changes → Precision@K. Subgraph isolation → routing accuracy. Last-mile fixes → per-error-category analysis. Without measurement, you're guessing in a probabilistic system — and guessing is expensive.<br><br>
+      <strong>Human in the loop.</strong> Some decisions permanently justify human involvement regardless of AI accuracy. The goal is not to remove humans but to make their time increasingly precious — reserved for cases that genuinely need them. As the AI improves, fewer queries need review; HITL becomes more targeted, not less.
+    </li>
+  </ol>
+</details>
+
+<h2>6. Your Final Deliverable — The System Improvement Roadmap</h2>
+
+<div class="exercise-box">
+  <h4>Exercise</h4>
+  <p>For the system you designed across lessons 0002–0004, write a Phase-by-phase improvement roadmap. For each phase, specify:</p>
+  <ol>
+    <li><strong>Current state</strong> — what is your baseline accuracy target for this phase?</li>
+    <li><strong>Techniques</strong> — which of the Phase 2–4 techniques apply to your system?</li>
+    <li><strong>Evaluation</strong> — what is your eval metric and ground truth source for this phase?</li>
+    <li><strong>HITL</strong> — at what accuracy does your HITL burden become acceptably low?</li>
+    <li><strong>Exit criterion</strong> — how do you know you've successfully completed this phase?</li>
+  </ol>
+</div>
+
+<p>Save as <code>learning-records/0006-trajectory-[dash-case-name].md</code>.</p>
+
+<div class="callout success">
+  <p><strong>Course complete.</strong> You have designed a multi-agent system (lessons 0001–0002), specified its evaluation plan (lesson 0003), designed its human-in-the-loop layer (lesson 0004), and planned its improvement roadmap (this lesson). The system you described is a first iteration — start building it, evaluate it, and refactor. That's the only way it becomes real.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0004-hitl-design.html">← Lesson 0004: Human-in-the-Loop Design</a>
+  <span>End of course</span>
+</div>
+<div class="lesson-nav" style="margin-top:0.5rem;">
+  <a href="glossary.html">Glossary →</a>
+</div>
+
+<div class="callout">
+  <p><strong>Questions?</strong> Ask me about applying these phases to a specific domain, how to prototype quickly before investing in evaluation infrastructure, or how to present the accuracy trajectory to stakeholders who want to know "when will it be done?"</p>
+</div>
+
+</body>
+</html>
