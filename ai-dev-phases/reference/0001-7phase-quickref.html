@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7-Phase Quick Reference</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-light: #ede9fe;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+      --code-bg: #f4efe9;
+      --l1: #b91c1c;
+      --l2: #c2410c;
+      --l3: #d97706;
+      --l4: #0891b2;
+      --l5: #16a34a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    @page {
+      size: A4 landscape;
+      margin: 12mm;
+    }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem;
+      font-size: 11px;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
+    }
+    .header h1 {
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+    .header .subtitle { color: var(--ink-soft); font-style: italic; }
+    .header .meta { color: var(--ink-soft); font-size: 0.85rem; white-space: nowrap; }
+
+    /* ─── Phase grid ─── */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .phase-card {
+      border: 1.5px solid var(--rule);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .phase-card.idea   { border-top: 3px solid #1d4ed8; }
+    .phase-card.research { border-top: 3px solid #b45309; }
+    .phase-card.proto  { border-top: 3px solid #7c3aed; }
+    .phase-card.prd    { border-top: 3px solid #9d174d; }
+    .phase-card.impl   { border-top: 3px solid #166534; }
+    .phase-card.exec   { border-top: 3px solid #c2410c; }
+    .phase-card.qa     { border-top: 3px solid #475569; }
+
+    .phase-card-head {
+      padding: 0.35rem 0.5rem;
+      background: var(--code-bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+    }
+    .phase-num {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.7rem;
+      background: var(--ink);
+      color: white;
+      padding: 0.05rem 0.3rem;
+      border-radius: 2px;
+    }
+    .phase-name {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.01em;
+    }
+    .phase-card-body {
+      padding: 0.35rem 0.5rem;
+      font-size: 0.82rem;
+    }
+    .phase-row {
+      display: flex;
+      gap: 0.3rem;
+      margin: 0.15rem 0;
+      align-items: baseline;
+    }
+    .phase-row-label {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      width: 40px;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+    .phase-row-label.artifact { color: #166534; }
+    .phase-row-label.gate { color: #1d4ed8; }
+    .phase-row-label.fail { color: var(--red); }
+    .phase-row-label.owner { color: var(--accent); }
+    .phase-row-label.anti { color: var(--orange); }
+
+    .phase-card-foot {
+      padding: 0.3rem 0.5rem;
+      background: var(--accent-light);
+      font-style: italic;
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+      border-top: 1px solid var(--rule);
+    }
+
+    /* ─── Bottom two columns ─── */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .section-box {
+      border: 1.5px solid var(--rule);
+      border-radius: 4px;
+      padding: 0.5rem 0.6rem;
+    }
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 0.25rem;
+      margin-bottom: 0.4rem;
+    }
+
+    /* HFM table */
+    .hfm-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .hfm-table th { text-align: left; padding: 0.15rem 0.3rem; font-size: 0.68rem; color: var(--ink-soft); border-bottom: 1px solid var(--rule); }
+    .hfm-table td { padding: 0.15rem 0.3rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    .hfm-table tr:last-child td { border-bottom: none; }
+    .hfm-table .id { font-family: "SF Mono", Menlo, monospace; font-weight: 700; width: 32px; }
+    .hfm-table .sev { font-size: 0.65rem; font-weight: 700; padding: 0.05rem 0.2rem; border-radius: 2px; white-space: nowrap; }
+    .hfm-table .sev-c { background: var(--red-light); color: var(--red); }
+    .hfm-table .sev-m { background: var(--orange-light); color: var(--orange); }
+
+    /* Loopback table */
+    .loopback-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .loopback-table th { text-align: left; padding: 0.15rem 0.3rem; font-size: 0.68rem; color: var(--ink-soft); border-bottom: 1px solid var(--rule); }
+    .loopback-table td { padding: 0.15rem 0.3rem; border-bottom: 1px solid var(--rule); }
+    .loopback-table tr:last-child td { border-bottom: none; }
+    .loopback-table .tier { font-family: "SF Mono", Menlo, monospace; font-weight: 700; font-size: 0.65rem; padding: 0.05rem 0.25rem; border-radius: 2px; white-space: nowrap; }
+    .loopback-table .tier-e { background: var(--red-light); color: var(--red); }
+    .loopback-table .tier-m { background: var(--orange-light); color: var(--orange); }
+    .loopback-table .tier-l { background: #fef9c3; color: #92400e; }
+    .loopback-table .cost { font-family: "SF Mono", Menlo, monospace; font-size: 0.72rem; color: var(--ink-soft); }
+
+    /* Verdict chips */
+    .verdict-row { display: flex; gap: 0.4rem; margin: 0.25rem 0; align-items: center; }
+    .verdict-chip {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .verdict-chip.ship { background: var(--green-light); color: var(--green); border: 1px solid var(--green); }
+    .verdict-chip.fix  { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange); }
+    .verdict-chip.rollback { background: var(--red-light); color: var(--red); border: 1px solid var(--red); }
+    .verdict-desc { font-size: 0.78rem; color: var(--ink-soft); }
+
+    /* Maturity */
+    .maturity-row { display: flex; align-items: center; gap: 0.4rem; margin: 0.2rem 0; font-size: 0.78rem; }
+    .maturity-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .maturity-label { font-family: "SF Mono", Menlo, monospace; font-size: 0.72rem; font-weight: 700; width: 28px; text-align: center; flex-shrink: 0; }
+    .maturity-name { font-weight: 700; width: 90px; }
+    .maturity-score { font-size: 0.72rem; color: var(--ink-soft); }
+
+    /* Instruction protocols */
+    .ip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.1rem 0.4rem; font-size: 0.78rem; }
+    .ip-item { display: flex; gap: 0.3rem; align-items: baseline; }
+    .ip-id { font-family: "SF Mono", Menlo, monospace; font-size: 0.68rem; font-weight: 700; color: var(--accent); flex-shrink: 0; width: 22px; }
+    .ip-desc { color: var(--ink-soft); }
+
+    /* Supervision tiers */
+    .tier-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem; margin-top: 0.25rem; }
+    .tier-box {
+      background: var(--code-bg);
+      border-radius: 3px;
+      padding: 0.3rem 0.4rem;
+      font-size: 0.72rem;
+    }
+    .tier-box h5 { font-weight: 700; font-family: "SF Mono", Menlo, monospace; font-size: 0.72rem; margin-bottom: 0.15rem; }
+    .tier-box.t1 { border-left: 3px solid var(--red); }
+    .tier-box.t2 { border-left: 3px solid var(--orange); }
+    .tier-box.t3 { border-left: 3px solid var(--green); }
+
+    /* Anti-pattern mini */
+    .ap-mini { font-size: 0.72rem; margin: 0.1rem 0; }
+    .ap-mini .ap-id { font-family: "SF Mono", Menlo, monospace; font-weight: 700; color: var(--red); }
+
+    /* Footer */
+    .footer {
+      margin-top: 0.5rem;
+      border-top: 1px solid var(--rule);
+      padding-top: 0.3rem;
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>7-Phase AI Development — Quick Reference</h1>
+    <span class="subtitle">Manager's desk card · ai-dev-phases curriculum</span>
+  </div>
+  <span class="meta">v1.0 · 2026-07-03</span>
+</div>
+
+<!-- Phase cards: 4 per row -->
+<div class="phase-grid">
+
+  <!-- P1: Idea -->
+  <div class="phase-card idea">
+    <div class="phase-card-head">
+      <span class="phase-num">P1</span>
+      <span class="phase-name">Idea</span>
+    </div>
+    <div class="phase-card-body">
+      <div class="phase-row">
+        <span class="phase-row-label owner">Owner</span>
+        <span>Manager</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label artifact">Output</span>
+        <span>1-sentence idea with user + measurable baseline</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label gate">Gate</span>
+        <span>User named · Problem stated · Baseline measurable</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label fail">Primary FM</span>
+        <span>Vague ambition — no user, no baseline</span>
+      </div>
+    </div>
+    <div class="phase-card-foot">"An idea without a measurable baseline is not an idea."</div>
+  </div>
+
+  <!-- P2: Research -->
+  <div class="phase-card research">
+    <div class="phase-card-head">
+      <span class="phase-num">P2</span>
+      <span class="phase-name">Research</span>
+    </div>
+    <div class="phase-card-body">
+      <div class="phase-row">
+        <span class="phase-row-label owner">Owner</span>
+        <span>Manager + Engineer</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label artifact">Output</span>
+        <span>research.md with evidence, sources, freshness date</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label gate">Gate</span>
+        <span>Hard questions from P1 answered · Evidence cited</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label fail">Primary FM</span>
+        <span>Confirmation search — finds evidence for the answer it wants</span>
+      </div>
+    </div>
+    <div class="phase-card-foot">"Cache it in a research.md asset."</div>
+  </div>
+
+  <!-- P3: Prototype -->
+  <div class="phase-card proto">
+    <div class="phase-card-head">
+      <span class="phase-num">P3</span>
+      <span class="phase-name">Prototype</span>
+    </div>
+    <div class="phase-card-body">
+      <div class="phase-row">
+        <span class="phase-row-label owner">Owner</span>
+        <span>Engineer</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label artifact">Output</span>
+        <span>Throwaway artifact · One question answered</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label gate">Gate</span>
+        <span>Question answered · Artifact deleted or isolated</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label fail">Primary FM</span>
+        <span>Production prototype — never gets thrown away</span>
+      </div>
+    </div>
+    <div class="phase-card-foot">"You can actually commit the prototype."</div>
+  </div>
+
+  <!-- P4: PRD -->
+  <div class="phase-card prd">
+    <div class="phase-card-head">
+      <span class="phase-num">P4</span>
+      <span class="phase-name">PRD</span>
+    </div>
+    <div class="phase-card-body">
+      <div class="phase-row">
+        <span class="phase-row-label owner">Owner</span>
+        <span>Manager</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label artifact">Output</span>
+        <span>PRD doc: outcomes (not solutions) + non-goals + testable requirements</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label gate">Gate</span>
+        <span>All requirements testable · Non-goals stated · Owner signed</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label fail">Primary FM</span>
+        <span>Missing non-goals — scope creep has no defense</span>
+      </div>
+    </div>
+    <div class="phase-card-foot">"A requirement without a test is not a requirement."</div>
+  </div>
+
+  <!-- P5: Impl Plan -->
+  <div class="phase-card impl">
+    <div class="phase-card-head">
+      <span class="phase-num">P5</span>
+      <span class="phase-name">Impl Plan</span>
+    </div>
+    <div class="phase-card-body">
+      <div class="phase-row">
+        <span class="phase-row-label owner">Owner</span>
+        <span>Engineer</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label artifact">Output</span>
+        <span>M-sized steps (2–4 hrs each), each mapped to a PRD requirement</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label gate">Gate</span>
+        <span>Every step ≤ 4 hrs · Every step traces to a PRD req</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label fail">Primary FM</span>
+        <span>L-sized steps — too large to supervise, too late to fix</span>
+      </div>
+    </div>
+    <div class="phase-card-foot">"If you can't write the plan, you can't run the execution."</div>
+  </div>
+
+  <!-- P6: Execution -->
+  <div class="phase-card exec">
+    <div class="phase-card-head">
+      <span class="phase-num">P6</span>
+      <span class="phase-name">Execution</span>
+    </div>
+    <div class="phase-card-body">
+      <div class="phase-row">
+        <span class="phase-row-label owner">Owner</span>
+        <span>Engineer + Agent</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label artifact">Output</span>
+        <span>Merged PRs · Execution log · Deviation reports</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label gate">Gate</span>
+        <span>All steps complete · Deviations logged · Loopback detector clear</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label fail">Primary FM</span>
+        <span>Agent runs without supervision tier — deviations hidden</span>
+      </div>
+    </div>
+    <div class="phase-card-foot">"Run AFK — with the right protocols in place."</div>
+  </div>
+
+  <!-- P7: QA -->
+  <div class="phase-card qa">
+    <div class="phase-card-head">
+      <span class="phase-num">P7</span>
+      <span class="phase-name">QA</span>
+    </div>
+    <div class="phase-card-body">
+      <div class="phase-row">
+        <span class="phase-row-label owner">Owner</span>
+        <span>QA + Manager</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label artifact">Output</span>
+        <span>QA report: verdict (ship / fix / rollback) + issue log</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label gate">Gate</span>
+        <span>Binary verdict only · No "ship with known issues"</span>
+      </div>
+      <div class="phase-row">
+        <span class="phase-row-label fail">Primary FM</span>
+        <span>Happy-path only — edge cases ship to production</span>
+      </div>
+    </div>
+    <div class="phase-card-foot">"Verify — do not trust."</div>
+  </div>
+
+  <!-- Loopback Arrow -->
+  <div class="phase-card" style="border-top: 3px solid var(--ink-soft); display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <div class="phase-card-head" style="width:100%; justify-content:center;">
+      <span class="phase-num" style="background:var(--ink-soft);">↺</span>
+      <span class="phase-name">Loopback</span>
+    </div>
+    <div class="phase-card-body" style="font-size:0.78rem; text-align:center;">
+      <p style="margin-bottom:0.3rem;">When a phase receives evidence that contradicts its assumptions:</p>
+      <p><strong>Early (2x cost) →</strong> Loop to phase it came from</p>
+      <p><strong>Mid (5x cost) →</strong> Loop to P5 — revise impl plan</p>
+      <p><strong>Late (10x cost) →</strong> Loop to P4 — revise PRD</p>
+      <p style="margin-top:0.3rem; font-size:0.72rem; color:var(--ink-soft);">Rule: detect early, loop to the nearest valid phase, update artifact before continuing</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom 3-column grid -->
+<div class="bottom-grid">
+
+  <!-- Col 1: Handoffs + Verdict -->
+  <div>
+    <div class="section-box">
+      <div class="section-title">Handoff Failure Modes (HF-01 to HF-07)</div>
+      <table class="hfm-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Sev</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="id">HF-01</td><td>Artifact Drop</td><td><span class="sev sev-c">Crit</span></td></tr>
+          <tr><td class="id">HF-02</td><td>Assumption Inheritance</td><td><span class="sev sev-c">Crit</span></td></tr>
+          <tr><td class="id">HF-03</td><td>Phase Order Violation</td><td><span class="sev sev-m">Maj</span></td></tr>
+          <tr><td class="id">HF-04</td><td>Unowned Handoff</td><td><span class="sev sev-m">Maj</span></td></tr>
+          <tr><td class="id">HF-05</td><td>Evidence Decay</td><td><span class="sev sev-m">Maj</span></td></tr>
+          <tr><td class="id">HF-06</td><td>Scope Creep in Transit</td><td><span class="sev sev-m">Maj</span></td></tr>
+          <tr><td class="id">HF-07</td><td>Gatekeeper Absent</td><td><span class="sev sev-m">Maj</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="section-box" style="margin-top:0.4rem;">
+      <div class="section-title">QA Verdicts (P7)</div>
+      <div class="verdict-row"><span class="verdict-chip ship">SHIP</span><span class="verdict-desc">All A-tests pass · Non-goals confirmed · Ready</span></div>
+      <div class="verdict-row"><span class="verdict-chip fix">FIX</span><span class="verdict-desc">Issues found · Not shipped until fixed · Re-QA required</span></div>
+      <div class="verdict-row"><span class="verdict-chip rollback">ROLLBACK</span><span class="verdict-desc">Fundamental flaw · PRD or Idea needs revision</span></div>
+    </div>
+  </div>
+
+  <!-- Col 2: Supervision Tiers + Instruction Protocols -->
+  <div>
+    <div class="section-box">
+      <div class="section-title">Supervision Tiers (P6 Execution)</div>
+      <div class="tier-grid">
+        <div class="tier-box t1">
+          <h5>Tier 1 — Supervised</h5>
+          <p style="font-size:0.7rem; color:var(--ink-soft);">Agent shows all output before committing. Human reviews every step. Used for unfamiliar patterns, new codebases, risky changes.</p>
+        </div>
+        <div class="tier-box t2">
+          <h5>Tier 2 — AFK-able</h5>
+          <p style="font-size:0.7rem; color:var(--ink-soft);">Agent runs unsupervised. Checkpoint at each impl plan step. Deviation report on any approach change. Used for familiar patterns.</p>
+        </div>
+        <div class="tier-box t3">
+          <h5>Tier 3 — Delegated</h5>
+          <p style="font-size:0.7rem; color:var(--ink-soft);">Full delegation. Agent runs full feature. Trust elevation requires 5 clean Tier 2 checkpoints on that pattern. Context &lt;60% full.</p>
+        </div>
+      </div>
+    </div>
+    <div class="section-box" style="margin-top:0.4rem;">
+      <div class="section-title">Instruction Protocols (IP-01 to IP-08)</div>
+      <div class="ip-grid">
+        <div class="ip-item"><span class="ip-id">IP-01</span><span class="ip-desc">Step Brief</span></div>
+        <div class="ip-item"><span class="ip-id">IP-02</span><span class="ip-desc">Boundary Call</span></div>
+        <div class="ip-item"><span class="ip-id">IP-03</span><span class="ip-desc">Deviation Report</span></div>
+        <div class="ip-item"><span class="ip-id">IP-04</span><span class="ip-desc">Termination Check</span></div>
+        <div class="ip-item"><span class="ip-id">IP-05</span><span class="ip-desc">Context Alert</span></div>
+        <div class="ip-item"><span class="ip-id">IP-06</span><span class="ip-desc">Refactor Gate</span></div>
+        <div class="ip-item"><span class="ip-id">IP-07</span><span class="ip-desc">Review Request</span></div>
+        <div class="ip-item"><span class="ip-id">IP-08</span><span class="ip-desc">Session Close</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Col 3: Maturity + Top Anti-patterns -->
+  <div>
+    <div class="section-box">
+      <div class="section-title">Team Maturity Scale</div>
+      <div class="maturity-row">
+        <span class="maturity-label" style="color:var(--l1)">L1</span>
+        <div class="maturity-dot" style="background:var(--l1)"></div>
+        <span class="maturity-name">Ad-hoc</span>
+        <span class="maturity-score">0–12 pts</span>
+      </div>
+      <div class="maturity-row">
+        <span class="maturity-label" style="color:var(--l2)">L2</span>
+        <div class="maturity-dot" style="background:var(--l2)"></div>
+        <span class="maturity-name">Phases exist</span>
+        <span class="maturity-score">13–20 pts</span>
+      </div>
+      <div class="maturity-row">
+        <span class="maturity-label" style="color:var(--l3)">L3</span>
+        <div class="maturity-dot" style="background:var(--l3)"></div>
+        <span class="maturity-name">Formalized</span>
+        <span class="maturity-score">21–27 pts</span>
+      </div>
+      <div class="maturity-row">
+        <span class="maturity-label" style="color:var(--l4)">L4</span>
+        <div class="maturity-dot" style="background:var(--l4)"></div>
+        <span class="maturity-name">Optimized</span>
+        <span class="maturity-score">28–33 pts</span>
+      </div>
+      <div class="maturity-row">
+        <span class="maturity-label" style="color:var(--l5)">L5</span>
+        <div class="maturity-dot" style="background:var(--l5)"></div>
+        <span class="maturity-name">Self-correcting</span>
+        <span class="maturity-score">34–36 pts</span>
+      </div>
+    </div>
+    <div class="section-box" style="margin-top:0.4rem;">
+      <div class="section-title">Top Critical Anti-patterns</div>
+      <div class="ap-mini"><span class="ap-id">AP-01</span> Vague Ambition (Idea)</div>
+      <div class="ap-mini"><span class="ap-id">AP-04</span> Confirmation Search (Research)</div>
+      <div class="ap-mini"><span class="ap-id">AP-07</span> Production Prototype (Prototype)</div>
+      <div class="ap-mini"><span class="ap-id">AP-13</span> L-Sized Step (Impl Plan)</div>
+      <div class="ap-mini"><span class="ap-id">AP-15</span> Architecture Without Evidence (Impl Plan)</div>
+      <div class="ap-mini"><span class="ap-id">AP-19</span> Happy-Path Only (QA)</div>
+      <div class="ap-mini"><span class="ap-id">AP-22</span> Phase Skip Without Documentation (Cross)</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>ai-dev-phases · curriculum lessons 0001–0013 · Based on Pocock's 7-phase framework</span>
+  <span>Desk reference · Print or pin · Update when process changes</span>
+</div>
+
+</body>
+</html>

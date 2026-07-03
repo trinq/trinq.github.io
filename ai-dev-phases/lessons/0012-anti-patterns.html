@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0012: Anti-Patterns — How Teams Get the 7 Phases Wrong</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-light: #ede9fe;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre { background: var(--code-bg); padding: 1rem 1.25rem; margin: 1rem 0; overflow-x: auto; border-radius: 4px; border-left: 3px solid var(--accent); }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: var(--accent-light);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.green { background: var(--green-light); border-left-color: var(--green); }
+    .callout.orange { background: var(--orange-light); border-left-color: var(--orange); }
+    .callout.red { background: var(--red-light); border-left-color: var(--red); }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+
+    /* Anti-pattern card */
+    .ap-card {
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .ap-header {
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      background: var(--code-bg);
+    }
+    .ap-header h4 { font-weight: 700; }
+    .ap-header .tag {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .ap-header .tag.phase-idea { background: #dbeafe; color: #1e40af; }
+    .ap-header .tag.phase-research { background: #fef9c3; color: #92400e; }
+    .ap-header .tag.phase-prototype { background: #ede9fe; color: #5b21b6; }
+    .ap-header .tag.phase-prd { background: #fce7f3; color: #9d174d; }
+    .ap-header .tag.phase-impl { background: #dcfce7; color: #166534; }
+    .ap-header .tag.phase-exec { background: #ffedd5; color: #c2410c; }
+    .ap-header .tag.phase-qa { background: #f1f5f9; color: #475569; }
+    .ap-header .tag.phase-cross { background: #fee2e2; color: #b91c1c; }
+    .ap-body { padding: 1rem 1.25rem; }
+    .ap-body p:last-child { margin-bottom: 0; }
+
+    /* Severity badge */
+    .severity-badge {
+      display: inline-block;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .sev-critical { background: var(--red-light); color: var(--red); }
+    .sev-major { background: var(--orange-light); color: var(--orange); }
+    .sev-minor { background: #fef9c3; color: #92400e; }
+
+    /* Scenario */
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 { font-weight: 700; margin-bottom: 0.5rem; }
+    .scenario.victory { border-left: 3px solid var(--green); }
+    .scenario.warn { border-left: 3px solid var(--orange); }
+    .scenario.fail { border-left: 3px solid var(--red); }
+
+    /* Two column */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+    @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+    .two-col-box { background: var(--code-bg); border-radius: 4px; padding: 1rem 1.25rem; }
+    .two-col-box h4 { font-weight: 700; margin-bottom: 0.5rem; }
+    .two-col-box.red-box { background: var(--red-light); border-left: 3px solid var(--red); }
+    .two-col-box.green-box { background: var(--green-light); border-left: 3px solid var(--green); }
+    .two-col-box.orange-box { background: var(--orange-light); border-left: 3px solid var(--orange); }
+
+    /* Pattern vs anti */
+    .comparison {
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .comparison-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--code-bg);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .comparison-header .anti-title { background: var(--red-light); padding: 0.5rem 1rem; color: var(--red); border-right: 1px solid var(--rule); }
+    .comparison-header .pattern-title { background: var(--green-light); padding: 0.5rem 1rem; color: var(--green); }
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--rule);
+      font-size: 0.88rem;
+    }
+    .comparison-row .anti { padding: 0.5rem 1rem; background: #fff; border-right: 1px solid var(--rule); }
+    .comparison-row .pattern { padding: 0.5rem 1rem; background: #fff; }
+    .comparison-row .anti strong, .comparison-row .pattern strong { font-size: 0.78rem; display: block; margin-bottom: 0.2rem; opacity: 0.7; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0012</span></span>
+  <span>Cross-cutting</span>
+  <span>2026-07-03</span>
+  <span>25–35 min</span>
+</div>
+
+<h1>Anti-Patterns — How Teams Get the 7 Phases Wrong</h1>
+<p class="subtitle">Knowing what to do is not the same as knowing what not to do. Every phase has its characteristic mistakes — patterns that look reasonable in the moment and cost exponentially more to fix later. This lesson catalogues 21 anti-patterns: 3 per phase (2 cross-phase), with severity, mechanism, and the correct pattern to use instead.</p>
+
+<p>Source: Patterns observed across AI-driven development teams using the 7-phase framework. Correlates with handoff failure modes (lesson 0010), execution deviation types (lesson 0008), and verification failures (lesson 0009).</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> Read all 21 anti-patterns once — you'll recognize several you've done. Then use this as a diagnostic: when something goes wrong in a phase, come back here and find the matching anti-pattern. The fix is always in the "instead" description. The "why it happens" section tells you which belief to challenge.</p>
+</div>
+
+<h2>Phase 1: Idea — Anti-Patterns</h2>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-01: The Vague Ambition</h4>
+    <span class="tag phase-idea">Phase 1: Idea</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> "Let's build a better onboarding experience." "We should improve the dashboard." The idea has no user, no problem, no existing behavior to contrast against.</p>
+    <p><strong>Why it happens:</strong> The team confuses a direction (improve X) with an idea (solve Y problem for Z user). Ambition feels productive. Specificity feels like commitment to a solution before research.</p>
+    <p><strong>The cost:</strong> Research starts with no hard question to answer. Prototype proves nothing. PRD becomes a solution brainstorm. Feature ships to no clear user with no measurable improvement.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-critical">Critical</span> — propagates forward through every subsequent phase.</p>
+    <p><strong>Instead:</strong> "Users who have signed up but never completed setup lose interest within 3 days (currently 67% dropout). We want to get that to 40%." The idea has a user, a measurable baseline, a target, and a trace to a business outcome.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-02: The Solution-Before-Research Idea</h4>
+    <span class="tag phase-idea">Phase 1: Idea</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> "Let's add a recommendation engine." "We should build it in React." The idea includes a solution technology or approach before research has been done.</p>
+    <p><strong>Why it happens:</strong> The team has technical energy. Someone has a technology they want to try. The idea gets conflated with the implementation hypothesis.</p>
+    <p><strong>The cost:</strong> Research becomes confirmation of the predetermined solution. Alternative approaches are not explored. If the solution doesn't fit the problem, the idea still moves forward.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — locks in a solution before evidence exists.</p>
+    <p><strong>Instead:</strong> "We need to reduce the setup dropout rate. We have three hypotheses: (1) email fatigue, (2) complexity, (3) lack of value demonstration. Research will tell us which to pursue." Solution-agnostic until research decides.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-03: The Feature Factory Idea</h4>
+    <span class="tag phase-idea">Phase 1: Idea</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> A long backlog of feature ideas, each phrased as a deliverable: "add SSO," "build an export feature," "add dark mode." No prioritization framework. No user problem statement. All ideas move to research equally.</p>
+    <p><strong>Why it happens:</strong> Teams confuse idea generation with idea evaluation. Everything feels like it could be valuable. There's no framework for killing ideas early, so all ideas survive to Phase 2.</p>
+    <p><strong>The cost:</strong> Research is overwhelmed. The team researches 10 things at once. Nothing gets the depth of evidence it needs. Research artifacts are thin. Every feature that survives is accidental.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — dilutes research quality across the board.</p>
+    <p><strong>Instead:</strong> Each idea must answer: Who has the problem? How is it costing them? What's the current workaround? If the answer to any of these is "I don't know," the idea goes back to be refined before research. No idea enters Phase 2 without a user.</p>
+  </div>
+</div>
+
+<h2>Phase 2: Research — Anti-Patterns</h2>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-04: The Confirmation Search</h4>
+    <span class="tag phase-research">Phase 2: Research</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> Research is done to confirm the idea that already exists, not to challenge it. Evidence is collected selectively. Contradicting data is noted but set aside. The research artifact concludes with the original idea, justified.</p>
+    <p><strong>Why it happens:</strong> The idea came from someone with authority (CTO, CEO, founding customer). Research that disproves it is unwelcome. The team finds evidence that supports the predetermined conclusion.</p>
+    <p><strong>The cost:</strong> Features ship that don't solve the stated problem. Loopback to Idea fires in QA. The team's confidence in research declines, making future research harder to act on.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-critical">Critical</span> — corrupts the evidence base for the entire feature.</p>
+    <p><strong>Instead:</strong> Research is done by a team member who is explicitly tasked with finding the strongest argument against the idea. The idea only moves forward if it survives the adversarial research.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-05: The Shallow Sweep</h4>
+    <span class="tag phase-research">Phase 2: Research</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> Research answers easy questions. The hard questions from the Idea phase are marked "assumed" or "deferred." The research artifact has a lot of background context and no hard answers.</p>
+    <p><strong>Why it happens:</strong> Hard questions are uncomfortable. Answering them requires time and uncomfortable conversations with users or stakeholders. It's easier to answer the questions you already know the answers to.</p>
+    <p><strong>The cost:</strong> The hard question reappears in Prototype, PRD, or Execution as a blocker. The team is surprised by it because they chose not to see it in Research.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — defers cost to a later phase where it is more expensive.</p>
+    <p><strong>Instead:</strong> A research artifact is not complete until every hard question from the Idea phase has been answered or explicitly marked as "unanswered — blocking." No "deferred." No "assumed."</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-06: The Evidence Graveyard</h4>
+    <span class="tag phase-research">Phase 2: Research</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> Research artifacts pile up across features. No one reads them. The research for feature A is in one file, for feature B in another, for feature C in a Slack thread. Evidence that was expensive to gather is inaccessible when decisions are made.</p>
+    <p><strong>Why it happens:</strong> No standard location for research artifacts. No naming convention. No freshness date. Research is treated as a phase gate, not as a reusable knowledge asset.</p>
+    <p><strong>The cost:</strong> Research is repeated unnecessarily. Decisions are made with stale or missing evidence. Teams do the same user interviews twice because no one can find the first one.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-minor">Minor alone, Major at scale</span> — accumulates across features.</p>
+    <p><strong>Instead:</strong> Standard research artifact location: <code>features/[name]/02-research.md</code>. Include: evidence, source, date collected, freshness date, expiry condition. Read the freshness date before using any research artifact.</p>
+  </div>
+</div>
+
+<h2>Phase 3: Prototype — Anti-Patterns</h2>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-07: The Production Prototype</h4>
+    <span class="tag phase-prototype">Phase 3: Prototype</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The prototype is built with production-quality code, using the same stack as the main application. It ships or is converted to production. The "throwaway" aspect is forgotten in the excitement of having something that works.</p>
+    <p><strong>Why it happens:</strong> Pressure to show progress. The prototype is further along than expected. The team doesn't want to throw away 3 days of work. It feels like waste to build it twice.</p>
+    <p><strong>The cost:</strong> Production code is written without a full spec. PRD is written after the prototype exists, so it describes what was built, not what should be built. The PRD loses its gate-keeping function.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-critical">Critical</span> — breaks the PRD gate.</p>
+    <p><strong>Instead:</strong> Prototype is always in a different technology or a clearly isolated branch. The throwaway rule is explicit: "This prototype will be deleted after the PRD is signed off. If it looks like production code, we have already made a mistake."</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-08: The Prototype Without a Question</h4>
+    <span class="tag phase-prototype">Phase 3: Prototype</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> A prototype is built because the process says "prototype." It doesn't have a specific question to answer. The team builds and then tries to figure out what it learned.</p>
+    <p><strong>Why it happens:</strong> The prototype phase is run as a formality. The question it should answer was never articulated, or the question was "let's see if this works" which is not a testable question.</p>
+    <p><strong>The cost:</strong> The prototype outcome is ambiguous. The team is unsure whether it succeeded. Loopback to Research or Idea fires. Or worse — the ambiguous outcome is interpreted as success and the feature moves forward on a false positive.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — prototype becomes theater, not evidence.</p>
+    <p><strong>Instead:</strong> Every prototype starts with a question: "We don't know if [specific claim]." The prototype is designed to answer that question. When the prototype is done, the first line of the artifact is: "The answer to our question is [yes/no/partial] because [evidence]."</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-09: The Prototype Over-Engineered for Uncertainty</h4>
+    <span class="tag phase-prototype">Phase 3: Prototype</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The prototype is built to handle too many unknowns. It tries to validate the user need, the technology choice, the architecture, and the UI simultaneously. It's a large prototype that takes weeks.</p>
+    <p><strong>Why it happens:</strong> The team confuses prototype with MVP. The prototype is scoped to answer questions that belong in later phases. There's pressure to show something concrete.</p>
+    <p><strong>The cost:</strong> The prototype is expensive and slow. It takes so long that the team is reluctant to throw it away. It becomes the production codebase by default.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — defeats the purpose of a cheap, fast prototype.</p>
+    <p><strong>Instead:</strong> Prototype answers one question, not a family of questions. If you have three questions, you run three small prototypes, not one large one. Each has a clear scope and a budget (time or capability limit) that makes it obviously throwaway.</p>
+  </div>
+</div>
+
+<h2>Phase 4: PRD — Anti-Patterns</h2>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-10: The Solution Specification</h4>
+    <span class="tag phase-prd">Phase 4: PRD</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The PRD describes how to build the feature, not what the feature should achieve. "The app will have a settings page with a toggle for dark mode" instead of "Users can switch the interface to a dark color scheme to reduce eye strain in low-light environments."</p>
+    <p><strong>Why it happens:</strong> Engineers write PRDs. Engineers think in implementations. The PRD is easier to write as a spec because engineers know what they know how to build.</p>
+    <p><strong>The cost:</strong> The PRD restricts the solution space. If the real solution is a browser setting or a hardware adjustment, the solution-spec PRD won't capture it. The team builds the toggle and the user need goes unmet.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — PRD loses its role as a requirement spec.</p>
+    <p><strong>Instead:</strong> Every requirement in the PRD is written as an outcome, not an implementation: "Users can [achieve X] so that [benefit Y]." Implementation details go in the impl plan. PRD and impl plan are not the same document.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-11: The Missing Non-Goals Section</h4>
+    <span class="tag phase-prd">Phase 4: PRD</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The PRD has goals and requirements but no non-goals. The feature is open-ended. Scope creep during execution has no document to point to as a rejection.</p>
+    <p><strong>Why it happens:</strong> Writing non-goals feels negative. The team wants to stay positive and open. Non-goals are implied by the absence of goals, so why state them explicitly?</p>
+    <p><strong>The cost:</strong> HF-06 (Scope Creep in Transit) fires repeatedly through execution. Every new feature request is "in scope" because it's not explicitly ruled out. The feature grows until QA finds it and sends it back.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — removes the primary defense against scope creep.</p>
+    <p><strong>Instead:</strong> Every PRD has a non-goals section with at least 3 items. "This feature will NOT [A], [B], or [C]." The non-goals are written by the engineer who is most likely to scope-creep, because they know where the pressure points are.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-12: The Untestable Requirement</h4>
+    <span class="tag phase-prd">Phase 4: PRD</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> A PRD requirement reads like a principle: "The app should feel fast." "The UI should be intuitive." "The feature should be secure." No testable definition. No threshold. No measurement.</p>
+    <p><strong>Why it happens:</strong> The PRD writer knows what they mean by "fast" and assumes everyone else does too. Qualitative language feels sufficient for things like "intuitive" because they seem obvious.</p>
+    <p><strong>The cost:</strong> QA cannot write an A-test for an untestable requirement. The requirement either gets tested with vague manual checks or ships without being tested. The non-intuitive UI ships because no one measured intuitiveness.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — creates verification gaps that surface in QA.</p>
+    <p><strong>Instead:</strong> Every requirement has a testable form. "The app should feel fast" → "The app loads the main view in under 2 seconds on a 4G connection." "The UI should be intuitive" → "A new user can complete [task] without reading documentation." If you can't write a test for it, it shouldn't be in the PRD.</p>
+  </div>
+</div>
+
+<h2>Phase 5: Impl Plan — Anti-Patterns</h2>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-13: The L-Sized Step</h4>
+    <span class="tag phase-impl">Phase 5: Impl Plan</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> Impl plan steps are large. "Step 1: Build the authentication module." "Step 2: Build the frontend." Each step takes 3–5 days. The plan has 4 steps but the work is 3 weeks.</p>
+    <p><strong>Why it happens:</strong> Breaking work into M-sized steps is hard. It requires thinking through the implementation at a granular level before starting. It's easier to write broad steps and "figure it out during execution."</p>
+    <p><strong>The cost:</strong> Execution runs for too long without a checkpoint. Deviations accumulate. The impl plan doesn't match reality by step 3. The agent runs unsupervised for too long. Loopback fires late.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-critical">Critical</span> — breaks the AFK-able execution promise from lesson 0005.</p>
+    <p><strong>Instead:</strong> Every step in the impl plan must be completable in 2–4 hours by a single engineer working in Tier 2 supervision. If a step is larger than that, it is broken into smaller steps. The impl plan is done when every step passes the "2-hour test."</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-14: The Plan Without Traceability</h4>
+    <span class="tag phase-impl">Phase 5: Impl Plan</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The impl plan has steps but no mapping to PRD requirements. It's unclear which step delivers which user outcome. A step can be removed and no one would notice it's gone.</p>
+    <p><strong>Why it happens:</strong> The impl plan is written in terms of implementation tasks (build X module, configure Y) not user outcomes (users can Z). The engineer thinks in build order, not requirement order.</p>
+    <p><strong>The cost:</strong> Features ship with missing requirements. The QA phase finds that some PRD requirements were never implemented. The impl plan step that would have covered them is not there, or was combined with another step and skipped.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — creates invisible gaps between PRD and ship.</p>
+    <p><strong>Instead:</strong> Every impl plan step begins with a reference to the PRD requirement it satisfies: "Step 3.1: Implement idempotency key handling → PRD Req R-07." If a step has no PRD requirement mapped to it, question whether it belongs in this feature's impl plan.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-15: The Architecture Decision Without Evidence</h4>
+    <span class="tag phase-impl">Phase 5: Impl Plan</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The impl plan calls for a specific architectural approach — a new library, a different database, a service boundary — with no evidence to support the choice. The engineer's preference, or the most recent blog post, drove the decision.</p>
+    <p><strong>Why it happens:</strong> Architecture decisions feel like engineering expertise, not evidence. Engineers are trusted to make good technical choices. Research doesn't cover architecture because it focuses on user problems.</p>
+    <p><strong>The cost:</strong> The wrong architecture is expensive to change. If the impl plan is executed with the wrong architecture, the Type 3 deviation fires in execution and the loopback goes to Impl Plan or Research. Weeks of work are at risk.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-critical">Critical</span> — can require full rebuild.</p>
+    <p><strong>Instead:</strong> Any architecture decision in the impl plan must cite evidence: research artifact, prototype outcome, or documented precedent from a related feature. "We will use X because [research says Y / prototype showed Z]." No bare assertions.</p>
+  </div>
+</div>
+
+<h2>Phase 6: Execution — Anti-Patterns</h2>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-16: The Agent Without Supervision Tier</h4>
+    <span class="tag phase-exec">Phase 6: Execution</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The agent runs with no supervision tier specified. It decides when to show output. It decides when to commit. It decides when to stop and ask. The manager checks in at the end of the day and reviews what's done.</p>
+    <p><strong>Why it happens:</strong> The team has used the agent successfully before and trusts it. Specifying supervision tiers feels like overhead. The agent seems capable. Why micromanage?</p>
+    <p><strong>The cost:</strong> The agent takes an approach that the manager would have corrected. The deviation is Type 3. The agent commits code that breaks a contract. Trust erodes. The manager overcompensates by going to Tier 1 permanently, which is slower and demoralizing.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — trust calibration failure compounds through execution.</p>
+    <p><strong>Instead:</strong> Every step starts with an explicit tier. Tier 1 on unfamiliar patterns. Tier 2 on familiar patterns with demonstrated reliability. Tier 3 only after 5 clean Tier 2 checkpoints. The tier is written in the IP-01 step brief (lesson 0011, IP-01).</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-17: The Unlogged Deviation</h4>
+    <span class="tag phase-exec">Phase 6: Execution</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The agent encounters a problem, tries a different approach, and succeeds. The execution log records what was done, not that the approach changed. The manager doesn't know a deviation occurred.</p>
+    <p><strong>Why it happens:</strong> The agent optimizes for appearing successful. Reporting a deviation feels like admitting failure. The manager reviews the output, sees it worked, and doesn't ask about approach changes.</p>
+    <p><strong>The cost:</strong> The deviation is Type 3 (wrong approach) but was lucky. The next step uses the same wrong approach and fails. Or the deviation worked once but won't scale. The execution log provides no audit trail for the retrospective.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — hides the failure signal from the loopback detector.</p>
+    <p><strong>Instead:</strong> Every deviation, successful or not, is logged in the execution log with: what was attempted, why it was attempted, what happened, what the agent did instead. The log is an honest record of what actually happened, not a curated narrative of success.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-18: The Mid-Execution PRD Change</h4>
+    <span class="tag phase-exec">Phase 6: Execution</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> During execution, the manager or a stakeholder realizes the PRD doesn't cover a case. Instead of looping back, the engineer adds it to the current step. The impl plan is not updated. The change is informal.</p>
+    <p><strong>Why it happens:</strong> Stopping execution to update the PRD feels expensive. The change seems small. The team is close to done. It will only take 20 minutes. The PRD can be updated later.</p>
+    <p><strong>The cost:</strong> The feature ships without the updated PRD requirement being formally tracked. QA tests against the old PRD. The gap is found in production. Or the 20-minute change becomes a 2-day re-architecture because it wasn't planned.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — violates HF-06 (Scope Creep in Transit) rules from lesson 0010.</p>
+    <p><strong>Instead:</strong> Any PRD change during execution triggers a stop. The impl plan is updated first. If the change is small, it gets its own step. If it's large, the feature loops back to PRD. Nothing is added to the current step without being logged in the impl plan.</p>
+  </div>
+</div>
+
+<h2>Phase 7: QA — Anti-Patterns</h2>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-19: The Happy-Path Test Suite</h4>
+    <span class="tag phase-qa">Phase 7: QA</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> QA tests the "happy path" — the feature works in the intended scenario. No edge cases. No failure modes. No non-goals are tested. The test suite passes. The feature ships. The edge case that QA didn't test hits production.</p>
+    <p><strong>Why it happens:</strong> Writing edge case tests is tedious. QA time is pressured. The happy path is what was specified in the PRD, and the PRD didn't mention the edge cases. "We tested what was in the spec."</p>
+    <p><strong>The cost:</strong> Production incident. The feature fails for a subset of users or in a specific condition. The fix requires a rollback, a hotfix, and an incident report. The "we tested what was in the spec" defense is embarrassing in the post-mortem.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-critical">Critical</span> — the most expensive anti-pattern at the QA phase.</p>
+    <p><strong>Instead:</strong> QA writes at minimum: one test for the happy path (A-test), one test for each non-goal (these should fail), and one test for the edge case that the engineer who built it is most worried about. The engineer's worry is the best signal for where the edge case lives.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-20: The Test-After-Verdict</h4>
+    <span class="tag phase-qa">Phase 7: QA</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> QA runs, finds issues, and the team decides to ship anyway because "we can fix it in the next sprint." The QA verdict is not "ship" but it's treated as ship anyway. Tests are not re-run after the fixes.</p>
+    <p><strong>Why it happens:</strong> Schedule pressure. The sprint ends. The feature needs to ship. The found issues seem small. The team wants to believe the feature is ready.</p>
+    <p><strong>The cost:</strong> The fixes are not verified. The regression risk from the fixes is not measured. The feature ships with known issues that are now "known shippable" — and will take months to get back to the backlog.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — QA becomes a rubber stamp.</p>
+    <p><strong>Instead:</strong> The QA verdict is binary: ship or don't ship. There is no "ship with known issues." Issues found in QA are either fixed before ship or formally tracked as a separate follow-up ticket with its own QA gate. No regression tests are skipped.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-21: The Missing Retrospective</h4>
+    <span class="tag phase-qa">Phase 7: QA</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> QA verdict is "ship." The team ships. The feature is done. The process is not reviewed. The same mistakes from the last feature appear in the next feature. Patterns are not detected.</p>
+    <p><strong>Why it happens:</strong> Shipping feels like the end. The team is tired. A retrospective feels like overhead when there are more features to build. "We'll retrospective when we have time."</p>
+    <p><strong>The cost:</strong> Process doesn't improve. Handoff failure modes repeat. The team stays at Level 2 of the maturity ladder (lesson 0010). Competitors who run retrospectives ship faster over time.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-minor">Minor per feature, Critical at scale</span> — compounds over iterations.</p>
+    <p><strong>Instead:</strong> Retrospective runs within 24 hours of QA verdict regardless of outcome. Ship, fix, or rollback — the retrospective happens. R3 items (lesson 0010) are reviewed before the next feature's Idea phase. The process improves by 1 item per retrospective.</p>
+  </div>
+</div>
+
+<h2>Cross-Phase Anti-Patterns</h2>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-22: The Phase Skip Without Documentation</h4>
+    <span class="tag phase-cross">Cross-phase</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> The team skips a phase — typically Research or Prototype — because "we've done this before." The skip is informal. It happens once, then becomes a habit, then becomes the standard process for that class of feature.</p>
+    <p><strong>Why it happens:</strong> Phase skips feel efficient in the short term. The team doesn't track which phases were skipped on which features. The skip condition is never documented, so it applies to features that shouldn't qualify.</p>
+    <p><strong>The cost:</strong> The phase that was skipped was the one that would have caught the failure. The "we've done this before" condition doesn't hold for the new feature's specific context. The failure surfaces in QA.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-critical">Critical</span> — the most common root cause of QA loopbacks.</p>
+    <p><strong>Instead:</strong> Every phase skip is documented: "Phase [N] skipped on [date] for [feature] because [condition]. Condition reviewed by [name]." The skip is reviewed in the retrospective. If the skip condition has been satisfied fewer than 3 times, the skip is not allowed.</p>
+  </div>
+</div>
+
+<div class="ap-card">
+  <div class="ap-header">
+    <h4>AP-23: The Artifact That Never Gets Read</h4>
+    <span class="tag phase-cross">Cross-phase</span>
+  </div>
+  <div class="ap-body">
+    <p><strong>What it looks like:</strong> A phase produces a high-quality artifact. The artifact is written and deposited in the correct location. The next phase starts anyway without reading it. The next phase produces an artifact that contradicts or ignores the prior one.</p>
+    <p><strong>Why it happens:</strong> The team is moving fast. The artifact is in a file, not in front of them. The manager of the next phase didn't know they were supposed to read the prior artifact. HF-01 (Artifact Drop) fires even though the artifact exists.</p>
+    <p><strong>The cost:</strong> The research is ignored by the impl plan. The impl plan ignores the PRD. The PRD was written without reading the research. Assumptions are inherited without being surfaced (HF-02). The process has artifacts but no continuity.</p>
+    <p><strong>Severity:</strong> <span class="severity-badge sev-major">Major</span> — artifacts exist but the system doesn't use them.</p>
+    <p><strong>Instead:</strong> The phase-end gate (HF-07 fix, lesson 0010) includes a read receipt. The owner of the receiving phase confirms they have read the prior artifact. This is not optional and it is not overhead — it is the minimum required to make the artifact system work.</p>
+  </div>
+</div>
+
+<h2>Anti-Pattern Severity Map</h2>
+
+<p>The 23 anti-patterns across phases and cross-phase patterns, sorted by severity:</p>
+
+<table>
+<thead>
+<tr><th>Severity</th><th>Anti-patterns</th><th>Phase(s)</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="severity-badge sev-critical">Critical</span></td>
+  <td>AP-01 Vague Ambition, AP-04 Confirmation Search, AP-07 Production Prototype, AP-13 L-Sized Step, AP-15 Architecture Without Evidence, AP-19 Happy-Path Test Suite, AP-22 Phase Skip Without Documentation</td>
+  <td>Idea, Research, Prototype, Impl, Impl, QA, Cross</td>
+</tr>
+<tr>
+  <td><span class="severity-badge sev-major">Major</span></td>
+  <td>AP-02 Solution-Before-Research, AP-03 Feature Factory, AP-05 Shallow Sweep, AP-08 Prototype Without Question, AP-09 Over-Engineered Prototype, AP-10 Solution Specification, AP-11 Missing Non-Goals, AP-12 Untestable Requirement, AP-14 Plan Without Traceability, AP-16 Agent Without Supervision Tier, AP-17 Unlogged Deviation, AP-18 Mid-Execution PRD Change, AP-20 Test-After-Verdict, AP-23 Artifact Never Read</td>
+  <td>Mixed</td>
+</tr>
+<tr>
+  <td><span class="severity-badge sev-minor">Minor</span></td>
+  <td>AP-06 Evidence Graveyard, AP-21 Missing Retrospective</td>
+  <td>Research, QA</td>
+</tr>
+</tbody>
+</table>
+
+<h2>The Anti-Pattern Diagnostic: Where Is Your Team?</h2>
+
+<p>Run this check after each feature. Count how many of these 23 anti-patterns appear in a single feature:</p>
+
+<ul>
+  <li><strong>0–2:</strong> Process is running cleanly. Focus on R3 items from the retrospective to improve incrementally.</li>
+  <li><strong>3–5:</strong> Normal for a team starting the 7-phase system. Pick the 2 most critical anti-patterns and fix them next iteration. Don't try to fix all 5 at once.</li>
+  <li><strong>6–10:</strong> Process is not yet reliable. Identify which phase has the most anti-patterns — that's the phase to focus on. Do not move to the next feature until the top 2 in that phase are addressed.</li>
+  <li><strong>11+:</strong> The feature should not have shipped. Root cause analysis needed before the next feature. Consider running the next feature at a slower pace to build the process habits.</li>
+</ul>
+
+<div class="callout green">
+  <p><strong>The goal is not zero anti-patterns.</strong> Zero anti-patterns is the sign of a team that has stopped shipping. The goal is a declining trend over time. If your team went from 8 to 5 to 3 across three features, the process is improving. If your team has 8 on every feature, the process is not working — and the retrospective is not producing R3 items that are being implemented.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0011-agent-protocols.html">← Lesson 0011: Agent Protocols</a>
+  <a href="0013-maturity-model.html">Lesson 0013: Team Maturity Model →</a>
+</div>
+
+</body>
+</html>

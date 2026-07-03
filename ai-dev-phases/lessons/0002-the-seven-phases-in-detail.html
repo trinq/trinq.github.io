@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002: The 7 Phases in Detail — What Each One Actually Does</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    .phase-section {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .phase-section h2 {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin: 0 0 0.5rem;
+      font-size: 1.3rem;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .phase-num-large {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      margin-bottom: 0.5rem;
+    }
+    .phase-section h3 {
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 1rem 0 0.5rem;
+      font-weight: 700;
+    }
+    .check-item {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin-top: 1rem;
+      font-size: 0.92rem;
+      border-radius: 0 4px 4px 0;
+    }
+    .check-q { font-weight: 700; margin-bottom: 0.4rem; }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .compare-table th { font-weight: 700; }
+    .diagram {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0002</span></span>
+  <span>2026-07-03</span>
+  <span>45–60 min</span>
+</div>
+
+<h1>The 7 Phases in Detail — What Each One Actually Does</h1>
+<p class="subtitle">You know the names. Now learn the verbs. Each phase has an action, an artifact, a team scenario, and a failure mode. By the end you can brief your team on what each phase is responsible for — without paraphrasing Pocock.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03. Builds on lesson 0001.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> Read each phase in order. After each one, close the tab and explain the phase out loud in one sentence — action, artifact, failure mode. If you can't, the phase isn't learned yet. The 7 recall questions at the end of each section force the loop.</p>
+</div>
+
+<h2>The 7 Phases at a Glance</h2>
+
+<table class="compare-table" style="width:100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid var(--rule);">
+      <th style="text-align:left; padding: 0.5rem 0;">#</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Phase</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Action (one verb)</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Artifact produced</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>01</strong></td>
+      <td style="padding: 0.4rem 0;">Idea</td>
+      <td style="padding: 0.4rem 0;">Name</td>
+      <td style="padding: 0.4rem 0;">A written one-liner</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>02</strong></td>
+      <td style="padding: 0.4rem 0;">Research</td>
+      <td style="padding: 0.4rem 0;">Cache</td>
+      <td style="padding: 0.4rem 0;"><code>research.md</code> (or scoped doc)</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>03</strong></td>
+      <td style="padding: 0.4rem 0;">Prototype</td>
+      <td style="padding: 0.4rem 0;">Impose</td>
+      <td style="padding: 0.4rem 0;">Throwaway code, committed</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>04</strong></td>
+      <td style="padding: 0.4rem 0;">PRD</td>
+      <td style="padding: 0.4rem 0;">Specify</td>
+      <td style="padding: 0.4rem 0;">End-state PRD doc</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>05</strong></td>
+      <td style="padding: 0.4rem 0;">Impl planning</td>
+      <td style="padding: 0.4rem 0;">Decompose</td>
+      <td style="padding: 0.4rem 0;">Kanban board with dependencies</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>06</strong></td>
+      <td style="padding: 0.4rem 0;">Execution</td>
+      <td style="padding: 0.4rem 0;">Loop</td>
+      <td style="padding: 0.4rem 0;">Merged PRs</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.4rem 0;"><strong>07</strong></td>
+      <td style="padding: 0.4rem 0;">QA</td>
+      <td style="padding: 0.4rem 0;">Verify + feed back</td>
+      <td style="padding: 0.4rem 0;">QA plan + new tickets</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Memorize this table before going deeper. The rest of the lesson expands each row.</p>
+
+<!-- ============== PHASE 01 ============== -->
+
+<div class="phase-section">
+  <span class="phase-num-large">01</span>
+  <h2>Idea — name the work</h2>
+
+  <h3>The action</h3>
+  <p><strong>Name the work.</strong> Before any code, you need a one-sentence description of what you're trying to ship. Not the implementation — the intent.</p>
+
+  <p>Pocock: <em>"This idea can be as small and as big as you like."</em> A bug fix, a feature, a refactor, a whole app — all are ideas. The size doesn't matter. The naming does.</p>
+
+  <h3>The artifact</h3>
+  <p>A written sentence (or two) somewhere durable. The medium doesn't matter — Notion, GitHub issue, Slack pin, a sticky note. What matters is that the work has been <em>named in writing</em>, not left in someone's head. If the team can't quote the idea back to you, the phase didn't run.</p>
+
+  <h3>Anchor — team scenario</h3>
+  <p>Your senior engineer says: <em>"I'll add caching to the API."</em> You ask: <em>"What is the user-visible problem this fixes?"</em> They say: <em>"It's slow sometimes."</em></p>
+  <p>That's a half-formed idea. The phase exists to force the answer: <em>"Users on the dashboard page wait 3+ seconds for the first chart to render. Adding Redis caching to the data layer brings p95 to under 800ms."</em> Now the team has a target.</p>
+
+  <h3>Failure mode</h3>
+  <p>The team starts coding from a vague description. Six days in, you discover three engineers have three different ideas of what "caching" means. Sunk cost: you either re-scope the work or ship the wrong thing. Both are bad.</p>
+
+  <div class="check-item">
+    <div class="check-q">Recall: True or false — <em>"The idea phase exists to pick the right tool (Redis, Memcached, etc.) before writing any code."</em></div>
+    <details>
+      <summary>Reveal answer</summary>
+      <p style="margin-top: 0.5rem;"><strong>False.</strong> The idea phase picks the user-visible outcome, not the tool. Tools get picked later — in prototype or implementation planning. The idea phase is "what does the user see / do / feel that they don't see / do / feel today?"</p>
+    </details>
+  </div>
+</div>
+
+<!-- ============== PHASE 02 ============== -->
+
+<div class="phase-section">
+  <span class="phase-num-large">02</span>
+  <h2>Research — cache hard explorations</h2>
+
+  <h3>The action</h3>
+  <p><strong>Identify the hard explorations the agent will need to do, do them once, write the result down.</strong> Things like: an external API's quirks, a new dependency's gotchas, the existing code's hidden assumptions, the production data's shape.</p>
+
+  <p>Pocock: <em>"Every time your agent is doing work, it might need to explore the repo in a fresh context window. And if that exploration is difficult … you'll want to cache it in a research.md asset."</em></p>
+
+  <h3>The artifact</h3>
+  <p>A <code>research.md</code> (or scoped equivalent — <code>docs/research/stripe-webhooks.md</code>, a Notion page, a pinned GitHub issue) sitting somewhere the agent and team can find it. Aim for 1–3 pages. Longer than that and nobody reads it. Shorter than that and you haven't actually done the research.</p>
+
+  <h3>Anchor — team scenario</h3>
+  <p>Your team needs to integrate with a Vietnamese payment gateway. Nobody on the team has used it before. The agent will discover the quirks (signing algorithm, retry behavior, test-mode flag behavior, callback URL handling) every session, in a fresh context window. Caching this once into <code>docs/research/vn-pay.md</code> saves 20 minutes per session and prevents the same bug being re-introduced by a different engineer.</p>
+
+  <h3>Failure mode</h3>
+  <p>Each engineer — and the agent, every session — re-discovers the same external API quirk. They fix it locally. Next week, a different engineer hits the same wall. Knowledge lives in heads, not in the repo. The cost compounds: 6 engineers × 20 minutes × same discovery = 2 hours of duplicated work per session.</p>
+
+  <div class="check-item">
+    <div class="check-q">Recall: <em>"If the exploration is easy (the agent can do it in 5 minutes), do you still need a research.md?"</em></div>
+    <details>
+      <summary>Reveal answer</summary>
+      <p style="margin-top: 0.5rem;"><strong>No.</strong> The research phase is only valuable when the exploration is <em>expensive</em> — i.e., hard enough that re-doing it costs more than writing it down. Reserve <code>research.md</code> for the truly hard stuff. If a junior engineer can answer it in 10 minutes, it's not research — it's a Slack thread.</p>
+    </details>
+  </div>
+</div>
+
+<!-- ============== PHASE 03 ============== -->
+
+<div class="phase-section">
+  <span class="phase-num-large">03</span>
+  <h2>Prototype — impose taste</h2>
+
+  <h3>The action</h3>
+  <p><strong>Write throwaway code to find the <em>shape</em> of the solution.</strong> Not to ship. To answer: when I build this for real, what does the user actually see? What does the data look like? What are the rough edges?</p>
+
+  <p>Pocock: <em>"Doing this early is absolutely essential because then you can actually commit the prototype."</em> The key word is <em>commit</em>. You don't lose it. You tag it as throwaway, but it stays in the repo as evidence of the design space.</p>
+
+  <h3>The artifact</h3>
+  <p>A prototype — usually a separate branch or folder, deliberately not polished. Often exploratory: a fake data layer, a stub of the UI, a sanity check on the API contract, a 50-line script that proves the hard part is possible. The output is a screenshot, a demo, or a 5-minute conversation with the PM — not production code.</p>
+
+  <h3>Anchor — team scenario</h3>
+  <p>You're building a new dashboard widget. Before writing the PRD, the engineer spends 2 hours building a fake version using mocked data. They show the PM: <em>"Here's what it could look like."</em> PM says: <em>"No, the chart should be at the top, not the side. And the date range picker should be inline, not in a modal."</em> That feedback goes into the PRD. Without the prototype, the PRD is abstract, and the engineer re-decides layout during implementation. Two weeks later: re-work cycle.</p>
+
+  <h3>Failure mode</h3>
+  <p>PRD is written before any code exists. Engineer reads it, makes their own taste call on layout, naming, structure. PM sees the result, says <em>"No, I wanted X."</em> Re-work. This is one of the most expensive failure modes in the entire framework — because the cost is paid in code, not in docs.</p>
+
+  <div class="check-item">
+    <div class="check-q">Recall: <em>"Should the prototype use production-quality code?"</em></div>
+    <details>
+      <summary>Reveal answer</summary>
+      <p style="margin-top: 0.5rem;"><strong>No.</strong> Throwaway means throwaway. The artifact of this phase is <em>taste validation</em>, not working software. If you find yourself polishing the prototype — adding tests, refactoring names, chasing edge cases — you're building the wrong thing. The prototype's job is to provoke feedback, not to ship.</p>
+    </details>
+  </div>
+</div>
+
+<!-- ============== PHASE 04 ============== -->
+
+<div class="phase-section">
+  <span class="phase-num-large">04</span>
+  <h2>PRD — specify the end state</h2>
+
+  <h3>The action</h3>
+  <p><strong>Write down the end state</strong> — what the user will see, do, and feel, and what "done" looks like — <em>without</em> specifying how the code works. Implementation-agnostic. Use <code>grill-me</code> / the interview pattern to expand the decision tree.</p>
+
+  <p>Pocock: <em>"We should now feel confident in ourselves that we can kind of like understand the end state … we won't know all of the implementation decisions yet."</em></p>
+
+  <h3>The artifact</h3>
+  <p>A PRD doc (Markdown, Notion, even a long GitHub issue) that another engineer could read and build a <em>different implementation</em> from, and you'd still get the same product. If the PRD says <em>"use Redis"</em> it's implementation-locked. If it says <em>"p95 dashboard load under 800ms"</em> it's outcome-locked. Only the second survives a tech-stack change.</p>
+
+  <h3>Anchor — team scenario</h3>
+  <p>Your team's PRD for the new feature reads: <em>"Use the React Query library to fetch chart data and cache it client-side. Display a loading skeleton during fetches."</em> That's an implementation decision masquerading as a spec. When the React Query upgrade goes badly in 6 months, the team is stuck — they have to rewrite the PRD. A good PRD says: <em>"On dashboard load, the user sees their data within 800ms. Refreshes don't require a full page reload. While data is loading, the user sees a skeleton, not a blank page."</em> Both are valid specs. Only one survives tech-stack changes.</p>
+
+  <h3>Failure mode</h3>
+  <p>PRD reads like a tech spec. The team implements the spec literally. When business needs change, the spec changes, and the code has to be rewritten. The PRD is supposed to be the <em>stable</em> doc across implementation changes. If it's not stable, the framework collapses — every phase downstream rebuilds from scratch every time.</p>
+
+  <div class="check-item">
+    <div class="check-q">Recall: <em>"The PRD should describe: (A) the implementation, or (B) the end state."</em></div>
+    <details>
+      <summary>Reveal answer</summary>
+      <p style="margin-top: 0.5rem;"><strong>B — always the end state.</strong> If your PRD contains class names, library choices, framework decisions, or "use X for Y," you're writing the wrong doc. Push those into prototype or impl planning. The PRD is for non-engineers to read and recognize <em>"yes, that's what we wanted."</em></p>
+    </details>
+  </div>
+</div>
+
+<!-- ============== PHASE 05 ============== -->
+
+<div class="phase-section">
+  <span class="phase-num-large">05</span>
+  <h2>Implementation planning — decompose into tickets</h2>
+
+  <h3>The action</h3>
+  <p><strong>Break the PRD into small, independently-scoped tickets. Identify dependencies between them.</strong> Some tickets block others; some can run in parallel. The point is to convert a doc into a queue.</p>
+
+  <p>Pocock: <em>"A Kanban board is just a list of tickets that have blocking relationships between them."</em></p>
+
+  <h3>The artifact</h3>
+  <p>A Kanban board (Linear, GitHub Projects, Jira, Notion) where each ticket has:</p>
+  <ul>
+    <li>One sentence title</li>
+    <li>2–3 sentence description</li>
+    <li>Acceptance criteria (a checklist of "done" conditions)</li>
+    <li>Explicit "blocked by" / "blocks" relationships</li>
+  </ul>
+  <p>A ticket without acceptance criteria is a wish, not a ticket.</p>
+
+  <h3>Anchor — team scenario</h3>
+  <p>Your team is building the new dashboard. Tickets include: <em>"API endpoint for chart data,"</em> <em>"Frontend chart component,"</em> <em>"Cache layer for chart data,"</em> <em>"E2E test for dashboard load."</em></p>
+  <p>Without dependencies: the frontend engineer picks up the chart component ticket first, realizes the API doesn't exist, asks the backend engineer, who is busy on a different ticket. Stalled.</p>
+  <p>With dependencies: API first → cache layer in parallel → frontend waits for API → E2E waits for both. Sequential where needed, parallel where possible. Predictable throughput.</p>
+
+  <h3>Failure mode</h3>
+  <p>Tickets exist but without dependency order. Engineers grab tickets randomly. Either they block each other, or they build things that don't fit together. <em>Integration hell</em> at the end: three components, none of which composes, two days of "why doesn't this work" debugging.</p>
+
+  <div class="check-item">
+    <div class="check-q">Recall: <em>"Can tickets ever be parallelized across multiple AFK agents?"</em></div>
+    <details>
+      <summary>Reveal answer</summary>
+      <p style="margin-top: 0.5rem;"><strong>Yes — but only if the dependencies are explicit and the dependencies are met.</strong> Two agents on two independent tickets = good. Two agents on two tickets where one's output is the other's input = chaos. The Kanban board is not a free-for-all; it's a directed graph, and the dependencies are the edges.</p>
+    </details>
+  </div>
+</div>
+
+<!-- ============== PHASE 06 ============== -->
+
+<div class="phase-section">
+  <span class="phase-num-large">06</span>
+  <h2>Execution — loop the agent through tickets</h2>
+
+  <h3>The action</h3>
+  <p><strong>Loop the coding agent (or the team) through each ticket.</strong> The agent picks up a ticket, reads the description and acceptance criteria, does the work, opens a PR, moves on. Repeat until the Kanban board is empty.</p>
+
+  <p>Pocock: <em>"You can totally run this execution loop AFK, and the results will be really good."</em> The conditional: with research, prototype, PRD, and Kanban board in place.</p>
+
+  <h3>The artifact</h3>
+  <p>Merged PRs. Each ticket → one PR → review → merge. Or: an agent working through a queue, producing commits per ticket. The output is in version control, reviewable, deployable.</p>
+
+  <h3>Anchor — team scenario</h3>
+  <p>Your team has 8 well-scoped tickets from the planning phase. One engineer + one AFK agent pair: the engineer reviews PRs and handles scope questions, the agent picks up tickets one at a time. After 2 days, 6 of 8 are merged.</p>
+  <p>Without the upstream phases, the same engineer spends 2 days on a single ticket, blocked by ambiguity. <em>The bottleneck is rarely the agent. It's the ticket.</em></p>
+
+  <h3>Failure mode</h3>
+  <p>Tickets are vague (no acceptance criteria, no description). The agent asks a clarifying question, gets an answer, asks another, gets another answer, and after 30 minutes of back-and-forth, has produced nothing. The engineer ends up writing the code by hand. The AFK promise breaks down — not because the agent is bad, but because the ticket was bad.</p>
+
+  <div class="check-item">
+    <div class="check-q">Recall: <em>"Execution can run AFK if: (A) the agent is good enough, (B) the upstream phases are done well, (C) the tickets are well-scoped, or (D) both B and C."</em></div>
+    <details>
+      <summary>Reveal answer</summary>
+      <p style="margin-top: 0.5rem;"><strong>D — both B and C.</strong> A is almost always a non-issue (modern agents are good enough for scoped work). B and C are the levers. If the AFK agent keeps asking questions or producing garbage, the fix is upstream — better research, better prototype, better PRD, better tickets. Not a better model.</p>
+    </details>
+  </div>
+</div>
+
+<!-- ============== PHASE 07 ============== -->
+
+<div class="phase-section">
+  <span class="phase-num-large">07</span>
+  <h2>QA — verify, then feed back</h2>
+
+  <h3>The action</h3>
+  <p><strong>The agent writes a QA plan (a list of scenarios to test, edge cases, user flows). The human executes the plan against the merged code. Anything that fails becomes a new ticket. Loop back into execution.</strong></p>
+
+  <p>Pocock: <em>"A human actually walks through and QAs the completed work and then produces more tickets for the Kanban board, which then goes and executed."</em></p>
+
+  <h3>The artifact</h3>
+  <p>Two things:</p>
+  <ul>
+    <li>A QA plan doc — reusable for regression, scoped to the feature</li>
+    <li>A set of follow-up tickets on the Kanban board — the actual findings</li>
+  </ul>
+  <p>The QA plan lives; the tickets drive the next loop.</p>
+
+  <h3>Anchor — team scenario</h3>
+  <p>Your team has shipped the new dashboard. The agent generates a QA plan: <em>"Test with empty data, test with 1k records, test with 10k records, test slow network, test concurrent users, test the error state, test mobile viewport, test with expired session."</em> Your QA engineer runs through these. The slow-network test reveals the dashboard doesn't show a loading state — it shows a blank page for 4 seconds. That's a new ticket. The agent fixes it. The dashboard gets re-tested. The loop continues.</p>
+
+  <h3>Failure mode</h3>
+  <p>QA = <em>"engineer tests their own code."</em> No separate lens. The engineer is too close to the implementation to spot user-experience issues. Bugs that a fresh tester would catch in 30 seconds ship to production. Worse: there is no feedback loop back into execution, so the same class of bug gets re-introduced next sprint.</p>
+
+  <div class="check-item">
+    <div class="check-q">Recall: True or false — <em>"The QA phase is only for finding bugs."</em></div>
+    <details>
+      <summary>Reveal answer</summary>
+      <p style="margin-top: 0.5rem;"><strong>False.</strong> The QA phase is a <em>loop</em> that produces new tickets. Some are bugs, some are <em>"this is fine but I noticed X while testing,"</em> some are documentation gaps, some are refactoring opportunities. The output is not a binary pass/fail — it's a queue of improvements that feeds back into phase 06.</p>
+    </details>
+  </div>
+</div>
+
+<!-- ============== SYNTHESIS ============== -->
+
+<h2>Synthesis — The Order, the Loop, the Cost of Skipping</h2>
+
+<p>Phases 01–05 are linear. Phases 06–07 are a loop, not a sequence. The loop is the point.</p>
+
+<div class="diagram">01 Idea
+   ↓
+02 Research
+   ↓
+03 Prototype
+   ↓
+04 PRD
+   ↓
+05 Implementation planning
+   ↓
+06 Execution ──────┐
+   ↓               │
+07 QA ─────────────┤
+   ↓               │
+(new tickets) ─────┘</div>
+
+<p>Expect to iterate phases 05–07 two to four times per feature. A good team runs the loop, not the waterfall. The first pass through 01–05 might take a sprint. The loop on 05–07 might run twice in the next sprint.</p>
+
+<h3>The cost of skipping each phase</h3>
+
+<table style="width:100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid var(--rule);">
+      <th style="text-align:left; padding: 0.5rem 0;">Skip</th>
+      <th style="text-align:left; padding: 0.5rem 0;">What breaks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>01 Idea</strong></td>
+      <td style="padding: 0.4rem 0;">Team builds the wrong thing. Re-scope or re-ship, both expensive.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>02 Research</strong></td>
+      <td style="padding: 0.4rem 0;">Agent and team re-discover the same hard exploration 10+ times. Token cost compounds.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>03 Prototype</strong></td>
+      <td style="padding: 0.4rem 0;">PRD is abstract. Engineer re-decides taste during implementation. Re-work cycle.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>04 PRD</strong></td>
+      <td style="padding: 0.4rem 0;">Spec is implementation-locked. Brittle to tech-stack changes. Rewrite every 6 months.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>05 Impl plan</strong></td>
+      <td style="padding: 0.4rem 0;">Engineers grab tickets randomly. Integration hell at the end.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>06 Execution</strong></td>
+      <td style="padding: 0.4rem 0;">No harness. Engineer writes code without the framework. AFK promise breaks.</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.4rem 0;"><strong>07 QA</strong></td>
+      <td style="padding: 0.4rem 0;">Bugs ship. No regression catching. Same class of bug re-introduced each sprint.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <p><strong>Manager heuristic.</strong> When your team is producing low-quality work, don't ask <em>"how do we work harder?"</em> Walk the table above. Find the phase they're skipping. That's where the fix is — not in the execution phase. The execution phase is where the leak becomes visible. The cause is upstream.</p>
+</div>
+
+<h2>How to Brief Your Team</h2>
+
+<p>When you sit down with the team to introduce this framework, use this exact 3-sentence brief:</p>
+
+<blockquote>
+  <em>"We're adopting Matt Pocock's 7-phase AI-engineering framework. Every feature, from now on, traverses all seven phases: idea, research, prototype, PRD, impl planning, execution, QA. Execution is the loop, not the goal — the goal is that the team can run phases 5–7 without me in the room. I'll score you against the framework in retro. If I find a phase is being skipped, we fix the upstream phase, not the execution phase."</em>
+</blockquote>
+
+<p>That's the brief. Anything longer loses the team. Anything shorter is unmoored from the framework.</p>
+
+<div class="callout success">
+  <p><strong>Manager commitment.</strong> If you brief this and don't follow through, you've made the framework worse than not having it. The team will learn that phrases don't have consequences. Pick one feature next sprint, walk all seven phases with them end-to-end, and score the result publicly. One real run is worth ten slides.</p>
+</div>
+
+<!-- ============== ASK BACK ============== -->
+
+<h2>Ask Back — 4 Questions That Drive Lesson 0003</h2>
+
+<p>I asked these at the end of lesson 0001. You didn't answer them yet. They still drive where lesson 0003 goes. Re-asking them now that you have a deeper grip on the framework.</p>
+
+<ol>
+  <li>
+    <strong>Which phase is your team currently strongest at?</strong>
+    <em>Signal: the place where you already have a real ritual. Treat it as a temporary asset — and as a reference example for the lesson on that phase.</em>
+  </li>
+  <li>
+    <strong>Which phase is your team currently weakest at?</strong>
+    <em>Signal: the phase where we will focus lesson 0003. Pick from research, prototype, PRD, impl plan, execution, or QA.</em>
+  </li>
+  <li>
+    <strong>Is there a phase your team is entirely skipping?</strong>
+    <em>Signal: a place where a new ritual needs to be designed. I can draft a <code>research.md</code> template, a Kanban template, or a QA plan template for whichever phase you name.</em>
+  </li>
+  <li>
+    <strong>Does your PM / CTO know these 7 phases?</strong>
+    <em>Signal: do we need to prioritize a leadership memo this week, or defer it? The answer also tells me whether you have an ally in leadership, or whether you are pushing this alone.</em>
+  </li>
+</ol>
+
+<div class="callout">
+  <p><strong>Reminder.</strong> You don't have to answer all four. Answer whichever ones feel true. The ones you skip, I'll ask again in lesson 0003.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0001-team-workflow-diagnostic.html">← Lesson 0001: Diagnose Your Team's Workflow</a>
+  <a href="../MISSION.md">Mission →</a>
+</div>
+
+</body>
+</html>

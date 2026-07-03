@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: Diagnose Your Team's Workflow Against Pocock's 7 Phases</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .nav-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    .phases-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+      margin: 1.5rem 0;
+    }
+    .phase-card {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+    }
+    .phase-num {
+      background: var(--accent);
+      color: white;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .phase-card strong { display: block; margin-bottom: 0.1rem; font-family: Georgia, serif; }
+    .phase-card em { color: var(--ink-soft); font-size: 0.9rem; }
+    .check-item {
+      background: white;
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 0.6rem 0;
+      font-size: 0.92rem;
+    }
+    .check-q { font-weight: 700; margin-bottom: 0.4rem; }
+    .check-opt { display: block; padding: 0.3rem 0; font-size: 0.92rem; }
+    .check-opt.hint { color: var(--ink-soft); font-style: italic; font-size: 0.85rem; }
+    .check-ans {
+      margin-top: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--code-bg);
+      border-radius: 3px;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0001</span></span>
+  <span>2026-07-03</span>
+  <span>30–45 min</span>
+</div>
+
+<h1>Diagnose Your Team's Workflow Against Pocock's 7 Phases</h1>
+<p class="subtitle">Close the tab. Recall the seven phases from memory. Then map your team's actual workflow against them. The gap you find is your lesson 0002 anchor.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03.</p>
+
+<div class="callout">
+  <p><strong>Manager link.</strong> This lesson assumes you are an engineering manager / team lead setting up a reproducible AI-driven workflow for your team. Every exercise is filtered through that lens: not "what's interesting in the video," but "what does my team actually do today, and where does it leak?"</p>
+</div>
+
+<h2>1. Hook — The 7 Phases as a Diagnostic Lens, Not a Checklist</h2>
+
+<p>Matt Pocock opens with a claim that sounds simple: <em>"These are the seven phases you should be thinking about for shipping great work."</em> But his point is not "follow seven sequential steps." His point is that <strong>any serious AI-engineering workflow traverses all seven phases</strong> — whether the implementation is Ralph, GSD, Spec Kit, or a raw loop.</p>
+
+<p>In eight minutes and twenty-six seconds, Pocock names the seven phases every AI-driven development loop passes through. The names are implementation-agnostic — he pins them to no tool. These are the seven phases you need to know cold, and which you need to score your team against:</p>
+
+<div class="phases-grid">
+  <div class="phase-card">
+    <span class="phase-num">01</span>
+    <div>
+      <strong>Idea</strong>
+      <em>App idea, bug fix, feature, refactor. Any size.</em>
+    </div>
+  </div>
+  <div class="phase-card">
+    <span class="phase-num">02</span>
+    <div>
+      <strong>Research</strong>
+      <em>Cache hard explorations into <code>research.md</code> (external APIs, new dependencies).</em>
+    </div>
+  </div>
+  <div class="phase-card">
+    <span class="phase-num">03</span>
+    <div>
+      <strong>Prototype</strong>
+      <em>Throwaway code to impose <em>taste</em>. Commit it before writing the PRD.</em>
+    </div>
+  </div>
+  <div class="phase-card">
+    <span class="phase-num">04</span>
+    <div>
+      <strong>PRD</strong>
+      <em>Describe the end state — not the implementation. Prompt the agent to grill your decision tree.</em>
+    </div>
+  </div>
+  <div class="phase-card">
+    <span class="phase-num">05</span>
+    <div>
+      <strong>Implementation planning</strong>
+      <em>PRD → Kanban board. Blocking relationships between tickets. Sequential or parallel.</em>
+    </div>
+  </div>
+  <div class="phase-card">
+    <span class="phase-num">06</span>
+    <div>
+      <strong>Execution</strong>
+      <em>Loop a coding agent through each ticket. Ralph loop or human-in-loop. Can run AFK.</em>
+    </div>
+  </div>
+  <div class="phase-card">
+    <span class="phase-num">07</span>
+    <div>
+      <strong>QA</strong>
+      <em>Agent writes a QA plan → human executes → new tickets → loop back into execution.</em>
+    </div>
+  </div>
+</div>
+
+<div class="callout warning">
+  <p><strong>Important:</strong> After reading this section, <em>close the video tab</em>. Do not open the transcript when answering the retrieval questions below.</p>
+</div>
+
+<h2>2. Retrieval — Close the Tab, Recall the 7 Phases</h2>
+
+<p>The goal is to <strong>force working memory</strong>. When you recall the seven phases without the video open, your ability to wield them in next week's retro will be much higher than if you read them five times. That's <em>storage strength</em>, not <em>fluency strength</em>.</p>
+
+<h3>Steps</h3>
+
+<ol>
+  <li>Open paper / Notion / Excalidraw / a whiteboard. Turn the video off.</li>
+  <li>Draw a left-to-right (or top-to-bottom) flow with seven boxes.</li>
+  <li>Name each box. Don't peek. Don't search.</li>
+  <li>Under each box, write one line: <em>"What artifact appears at this phase?"</em> — PR file? Research doc? Throwaway repo? Merged code? QA plan?</li>
+  <li>Set a timer for 10 minutes.</li>
+</ol>
+
+<h3>Check yourself (after drawing)</h3>
+
+<p>For each question, write your answer first, then reveal the discussion below.</p>
+
+<div class="check-item">
+  <div class="check-q">1. What is the <strong>first</strong> phase?</div>
+  <div class="check-opt">A. Idea</div>
+  <div class="check-opt">B. Research</div>
+  <div class="check-opt">C. PRD</div>
+  <div class="check-opt">D. Execution</div>
+  <details>
+    <summary>Reveal answer</summary>
+    <div class="check-ans"><strong>A. Idea.</strong> Pocock: "This idea can be as small and as big as you like." A bug fix, a feature, a refactor, a whole app — all are ideas.</div>
+  </details>
+</div>
+
+<div class="check-item">
+  <div class="check-q">2. If your team is integrating with a poorly-documented external API (Stripe, an obscure VN vendor), which phase must run before the PRD?</div>
+  <div class="check-opt">A. Prototype</div>
+  <div class="check-opt">B. Research</div>
+  <div class="check-opt">C. Implementation planning</div>
+  <div class="check-opt">D. Execution</div>
+  <details>
+    <summary>Reveal answer</summary>
+    <div class="check-ans"><strong>B. Research.</strong> Pocock: "If that exploration is difficult … you'll want to cache it in a research.md asset." Cache the hard exploration so every fresh context window can reuse it.</div>
+  </details>
+</div>
+
+<div class="check-item">
+  <div class="check-q">3. Which order is <strong>correct</strong> per Pocock?</div>
+  <div class="check-opt">A. PRD → Prototype → Research → Implementation planning → Execution</div>
+  <div class="check-opt">B. Idea → Research → Prototype → PRD → Implementation planning → Execution → QA</div>
+  <div class="check-opt">C. Idea → PRD → Prototype → Research → Execution → QA</div>
+  <div class="check-opt">D. Idea → Research → PRD → Prototype → Implementation planning → Execution</div>
+  <details>
+    <summary>Reveal answer</summary>
+    <div class="check-ans"><strong>B.</strong> Pocock is explicit: prototype must happen <em>before</em> PRD so you have concrete feedback to ground the spec. PRD without a prototype is abstract; you end up refining the PRD in code.</div>
+  </details>
+</div>
+
+<div class="check-item">
+  <div class="check-q">4. According to Pocock, the <strong>execution</strong> phase can run AFK (no human in the loop) when…?</div>
+  <div class="check-opt">A. Always — agents are good enough now</div>
+  <div class="check-opt">B. Only when using Ralph, not GSD or Spec Kit</div>
+  <div class="check-opt">C. Only for bug fixes, never for new features</div>
+  <div class="check-opt">D. When research + prototype + PRD + Kanban board are already prepared</div>
+  <details>
+    <summary>Reveal answer</summary>
+    <div class="check-ans"><strong>D.</strong> Pocock: "With all this setup… you can totally run this execution loop AFK, and the results will be really good." The setup is the precondition; without it, execution is hand-holding.</div>
+  </details>
+</div>
+
+<div class="check-item">
+  <div class="check-q">5. How is Pocock's <strong>QA</strong> phase different from a normal automated test run?</div>
+  <div class="check-opt">A. QA is just running unit tests in CI</div>
+  <div class="check-opt">B. QA is reserved for security review</div>
+  <div class="check-opt">C. Agent writes a QA plan, human executes it, results generate new tickets that loop back into execution</div>
+  <div class="check-opt">D. QA is owned by PM, not engineers</div>
+  <details>
+    <summary>Reveal answer</summary>
+    <div class="check-ans"><strong>C.</strong> QA is a <em>loop</em>, not a one-shot gate. Each QA pass produces new Kanban tickets that flow back into execution. Expect to iterate the last three phases several times before the product converges.</div>
+  </details>
+</div>
+
+<details>
+  <summary>Open the source transcript to cross-check — only after answering all five</summary>
+  <p>
+    <a href="https://www.youtube.com/watch?v=Ah9p7v7nJWg">Video on YouTube</a> ·
+    Transcript is saved in this workspace. Some anchor quotes:
+  </p>
+  <ul>
+    <li><em>Idea:</em> "This idea can be as small and as big as you like."</li>
+    <li><em>Research:</em> "Every time your agent is doing work, it might need to explore the repo in a fresh context window. And if that exploration is difficult … you'll want to cache it in a research.md asset."</li>
+    <li><em>Prototype:</em> "Doing this early is absolutely essential because then you can actually commit the prototype."</li>
+    <li><em>PRD:</em> "We should now feel confident in ourselves that we can kind of like understand the end state … we won't know all of the implementation decisions yet."</li>
+    <li><em>Implementation planning:</em> "A Kanban board is just a list of tickets that have blocking relationships between them."</li>
+    <li><em>Execution:</em> "You can totally run this execution loop AFK, and the results will be really good."</li>
+    <li><em>QA:</em> "A human actually walks through and QAs the completed work and then produces more tickets for the Kanban board, which then goes and executed."</li>
+  </ul>
+</details>
+
+<h2>3. Anchor — Map Your Team's Workflow Onto the 7 Phases</h2>
+
+<p>This is the most important part of the lesson. Don't let the file stop at "Idea → understand the brief." Anchor it to your actual team:</p>
+
+<h3>For each phase, answer four questions</h3>
+
+<ol>
+  <li><strong>Does this phase exist</strong> in your team's current workflow? (A real ritual, artifact, or process — or is it happening informally / not at all?)</li>
+  <li><strong>Who owns it</strong> at this phase? (Which engineer? PM? You?)</li>
+  <li><strong>What artifact gets produced</strong>? (Name it specifically: <code>research.md</code>, a prototype repo, a PRD doc, a Kanban ticket, a merged PR, a QA plan.)</li>
+  <li><strong>Leak point</strong>: is this phase running well, running half-heartedly, or being skipped / jumped over?</li>
+</ol>
+
+<h3>Example (illustrative only — don't copy)</h3>
+
+<table style="width:100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem;">
+  <thead>
+    <tr style="border-bottom: 2px solid var(--rule);">
+      <th style="text-align:left; padding: 0.5rem 0;">Phase</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Exists?</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Owner</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Artifact</th>
+      <th style="text-align:left; padding: 0.5rem 0;">Leak</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>Idea</strong></td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>Research</strong></td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>Prototype</strong></td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>PRD</strong></td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>Impl plan</strong></td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+    </tr>
+    <tr style="border-bottom: 1px solid var(--rule);">
+      <td style="padding: 0.4rem 0;"><strong>Execution</strong></td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.4rem 0;"><strong>QA</strong></td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+      <td style="padding: 0.4rem 0;">…</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <p><strong>Heuristic to spot leaks fast:</strong> if an engineer says "I just start coding from the ticket," phases 2, 3, and 4 are being skipped. If a PM says "QA is whatever the engineer does," phase 7 does not exist as a separate ritual. If nobody can name the owner of a phase, it doesn't exist.</p>
+</div>
+
+<h2>4. Output — File <code>reference/team-workflow-diagnostic.md</code></h2>
+
+<p>After 30 minutes, write your artifact to <code>reference/team-workflow-diagnostic.md</code>. Suggested format:</p>
+
+<pre><code># Workflow diagnostic — where is my team on Pocock's 7 phases?
+
+&gt; Adapted from Matt Pocock, "The 7 phases of AI-driven development" (2026-03-03).
+&gt; Created: 2026-07-03 — Engineering Manager, [team name / product].
+
+## Phase 01 — Idea
+- Pocock: "..."
+- Our team today:
+  - Exists: ...
+  - Owner: ...
+  - Artifact: ...
+  - Leak: ...
+
+## Phase 02 — Research
+...
+
+(all seven phases)
+
+## One-sentence summary
+Strongest phase: ...
+Weakest phase: ...
+Skipped phase: ...
+Action item for next sprint: ...</code></pre>
+
+<div class="callout success">
+  <p>This file is a living document. After each future lesson, come back and update it as your team's rituals evolve.</p>
+</div>
+
+<h2>5. Ask Back — 4 Questions That Drive Lesson 0002</h2>
+
+<p>When you send the file back, include short answers to these four questions. They decide the direction of the entire next batch of lessons.</p>
+
+<ol>
+  <li>
+    <strong>Which phase is your team currently strongest at?</strong>
+    <em>Signal: a place where you already have a real ritual — treat it as a temporary asset, and as a reference example for the lesson on that phase.</em>
+  </li>
+  <li>
+    <strong>Which phase is your team currently weakest at?</strong>
+    <em>Signal: the phase where we will focus lesson 0002 — research, prototype, PRD, impl plan, execution, or QA.</em>
+  </li>
+  <li>
+    <strong>Is there a phase your team is entirely skipping?</strong>
+    <em>Signal: a place where a new ritual needs to be designed — I can help you draft a research.md template, a Kanban template, or a QA plan template.</em>
+  </li>
+  <li>
+    <strong>Does your PM / CTO know these 7 phases?</strong>
+    <em>Signal: do we need to prioritize a leadership memo this week, or defer it? The answer also tells me whether you have an ally in leadership, or whether you are pushing this alone.</em>
+  </li>
+</ol>
+
+<div class="callout">
+  <p><strong>Reminder:</strong> After drawing the workflow, ask me anything. I will review the file and push back.</p>
+</div>
+
+<div class="lesson-nav">
+  <span class="nav-label">First lesson</span>
+  <a href="../MISSION.md">Mission →</a>
+</div>
+
+</body>
+</html>

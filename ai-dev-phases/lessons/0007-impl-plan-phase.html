@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0007: The Impl Plan Phase — Decomposable, Not Perfect</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success { background: #e8f5e9; border-left-color: #4caf50; }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .plan-template {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .plan-template h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .plan-template ul { margin: 0.5rem 0 0.5rem 1.5rem; }
+    .step-block {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-left: 3px solid var(--accent);
+    }
+    .step-block .step-label {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .step-block .step-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .step-block .step-prd-link {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    .step-block ul { margin: 0.4rem 0 0.4rem 1.25rem; }
+    .step-block li { margin-bottom: 0.3rem; }
+    .checkpoint {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+      font-size: 0.9rem;
+    }
+    .checkpoint .checkpoint-label {
+      font-weight: 700;
+      color: #16a34a;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 { font-weight: 700; margin-bottom: 0.5rem; }
+    .scenario.victory { border-left: 3px solid #4caf50; }
+    .scenario.medium { border-left: 3px solid #ff9800; }
+    .scenario.fail { border-left: 3px solid #b71c1c; }
+    .compare-matrix {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(4, 1fr);
+      gap: 0;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .compare-cell {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-cell:last-child { border-right: none; }
+    .compare-cell:first-child { font-weight: 700; background: var(--code-bg); }
+    .compare-header {
+      padding: 0.6rem 0.8rem;
+      background: #ede9fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-header:last-child { border-right: none; }
+    .compare-header:first-child { background: var(--code-bg); }
+    .compare-matrix-3 {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr;
+      gap: 0;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .compare-cell-3 {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-cell-3:last-child { border-right: none; }
+    .compare-cell-3:first-child { font-weight: 700; background: var(--code-bg); }
+    .compare-header-3 {
+      padding: 0.6rem 0.8rem;
+      background: #ede9fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-header-3:last-child { border-right: none; }
+    .compare-header-3:first-child { background: var(--code-bg); }
+    .ladder {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr 1fr;
+      gap: 0;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .ladder-cell {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .ladder-cell:last-child { border-right: none; }
+    .ladder-header {
+      padding: 0.7rem 1rem;
+      background: #ede9fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .ladder-header:last-child { border-right: none; }
+    .ladder-cell.level { font-weight: 700; background: var(--code-bg); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0007</span></span>
+  <span>Phase 05: Impl Plan</span>
+  <span>2026-07-03</span>
+  <span>20–30 min</span>
+</div>
+
+<h1>The Impl Plan Phase — Decomposable, Not Perfect</h1>
+<p class="subtitle">A plan is not a blueprint. It's a series of bets on where complexity will appear. The decomposable contract makes each step independently auditable. This lesson covers step granularity, the checkpoint model, and why over-planning is as dangerous as under-planning.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03. Builds on lessons 0001–0006.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> The Impl Plan is the phase most teams skip when they're excited about building. Read the "decomposable contract" section first — it's the core idea. Then read the step-granularity decision tree, because getting the step size right is the hardest part of writing an impl plan. The 7 failure modes at the end are what your team will hit if the plan isn't decomposable.</p>
+</div>
+
+<h2>What Pocock Actually Said</h2>
+
+<p>The full quote, in context:</p>
+
+<blockquote>
+  <em>"So the fifth phase is the implementation plan. So this is where you break the thing into steps. Now, this is something that I think is really underrated as a phase, because a lot of people think they can just skip to the implementation. But the thing is, if you break things into steps, you get to iterate at the step level."</em> — Matt Pocock
+</blockquote>
+
+<p>The key phrase: <em>"you get to iterate at the step level."</em> That's what a decomposable plan enables. When the agent hits a wall in step 3, you don't have to re-plan the whole feature — you replan step 3. The rest of the plan holds. Without decomposition, a failure in step 3 means redoing the whole plan.</p>
+
+<h2>The Core Idea: Decomposable Contract</h2>
+
+<p>An impl plan is a <strong>decomposable contract</strong>: each step is independently auditable. The manager can check step 1 without reading step 2. The agent can execute step 1 without knowing step 3. When a step fails, only that step needs replanning.</p>
+
+<p>Contrast with a <strong>monolithic plan</strong>: all steps are coupled. Changing step 1 ripples through step 7. The agent can't start until the entire plan is complete. A failure in step 3 means re-reading the whole plan. Most teams write monolithic plans.</p>
+
+<h3>The decomposability test</h3>
+<p>Read any step in the plan. Ask: <em>"If this step changes, does it break any other step?"</em></p>
+
+<ul>
+  <li>If yes — the steps are coupled; the plan is monolithic.</li>
+  <li>If no — the steps are independent; the plan is decomposable.</li>
+</ul>
+
+<div class="callout warning">
+  <p><strong>Real-world analogy: IKEA furniture instructions.</strong> Each step is a card with a picture. You can do step 3 before step 2 if you want. Each step has a checkpoint: "did the panel click in?" If it didn't, you stop and fix step 3. You don't undo all the screws you've put in. An impl plan should work the same way.</p>
+</div>
+
+<h2>Step Granularity</h2>
+
+<p>The hardest part of writing an impl plan is getting the step size right. Too big: the step has too much uncertainty, and the agent gets stuck. Too small: the plan is a todo list, and the agent spends more time tracking the plan than executing it.</p>
+
+<div class="ladder">
+  <div class="ladder-header">Step size</div>
+  <div class="ladder-header">Lines of code</div>
+  <div class="ladder-header">Risk</div>
+  <div class="ladder-header">When to use</div>
+  <div class="ladder-cell level">XS</div>
+  <div class="ladder-cell">&lt; 50 lines</div>
+  <div class="ladder-cell">Very low</div>
+  <div class="ladder-cell">Well-understood, low-risk tasks</div>
+  <div class="ladder-cell level">S</div>
+  <div class="ladder-cell">50–200 lines</div>
+  <div class="ladder-cell">Low</div>
+  <div class="ladder-cell">Single file, known pattern</div>
+  <div class="ladder-cell level">M</div>
+  <div class="ladder-cell">200–800 lines</div>
+  <div class="ladder-cell">Medium</div>
+  <div class="ladder-cell">One component, multiple files</div>
+  <div class="ladder-cell level">L</div>
+  <div class="ladder-cell">800–2000 lines</div>
+  <div class="ladder-cell">High</div>
+  <div class="ladder-cell">Multiple components, novel pattern</div>
+  <div class="ladder-cell level">XL</div>
+  <div class="ladder-cell">&gt; 2000 lines</div>
+  <div class="ladder-cell">Very high</div>
+  <div class="ladder-cell">Requires decomposition — split it</div>
+</div>
+
+<div class="callout">
+  <p><strong>Default to M-size steps.</strong> 200–800 lines, one component, multiple files. This is the sweet spot: the agent has enough room to make meaningful progress, and the manager has enough checkpoints to audit. XS and S are for maintenance tasks; L and XL should be decomposed.</p>
+</div>
+
+<h3>The XL test: when to split</h3>
+<p>When a step has more than one answer to the question <em>"what could go wrong here?"</em>, it's XL. Split it. Example: <em>"Build the export API endpoint"</em> — what's the answer to what could go wrong? <em>"The database query is slow"</em> and <em>"The file size is too large for the response buffer."</em> Two distinct failure modes. Split into two M-steps.</p>
+
+<h2>Anatomy of an Impl Plan</h2>
+
+<p>The artifact is <code>plan-[feature].md</code> in the feature folder. It lives alongside the PRD:</p>
+
+<div class="plan-template">
+  <h4>plan-[feature].md — minimum viable template</h4>
+  <ul>
+    <li><strong>Feature:</strong> Name. Link to <code>prd-[feature].md</code>.</li>
+    <li><strong>Dependencies:</strong> Which steps must complete before this step can start? (Most should be "none" — if a step has more than 2 dependencies, it may be XL.)</li>
+    <li><strong>Step 1: [name]</strong>
+      <ul>
+        <li>PRD link: which requirement does this step satisfy?</li>
+        <li>Files touched: new + existing</li>
+        <li>Checkpoints: how does the manager verify this step is done?</li>
+        <li>If blocked: what's the unblock path?</li>
+      </ul>
+    </li>
+    <li><strong>Step 2–N:</strong> Same structure.</li>
+    <li><strong>Step N+1: QA integration</strong> — link to the QA plan from phase 07.</li>
+    <li><strong>Unknowns:</strong> What we're discovering as we go. This section grows.</li>
+  </ul>
+</div>
+
+<h3>Full step block example</h3>
+
+<div class="step-block">
+  <div class="step-label">Step 3 — M-size</div>
+  <div class="step-name">Build CSV export background job</div>
+  <div class="step-prd-link">PRD: §4 Edge Cases — "Projects &gt; 100K rows must use background job"</div>
+  <ul>
+    <li><strong>Files touched:</strong> <code>src/jobs/export-job.ts</code>, <code>src/db/queries.ts</code> (add <code>export_status</code> enum)</li>
+    <li><strong>What to do:</strong>
+      <ul>
+        <li>Add <code>job_status</code> enum: <code>pending | processing | done | failed</code></li>
+        <li>Create <code>ExportJob</code> class with <code>enqueue()</code> and <code>process()</code></li>
+        <li><code>process()</code> queries in batches of 1K rows, writes to temp file</li>
+        <li>On completion, writes file to <code>/exports/[jobId].csv</code>, updates DB to <code>done</code></li>
+        <li>On failure, updates DB to <code>failed</code>, emits error event</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="checkpoint">
+    <div class="checkpoint-label">Checkpoint</div>
+    Run with a 5K-row project. Job enters <code>processing</code>, then <code>done</code>. File exists at <code>/exports/[jobId].csv</code>. Row count matches DB.
+  </div>
+</div>
+
+<div class="callout warning">
+  <p><strong>The checkpoint is not optional.</strong> Every step needs a checkpoint — a specific, observable outcome the manager can verify. Without a checkpoint, the step is complete when the agent says it's complete. With a checkpoint, the step is complete when the observable matches the description. The checkpoint is the decomposable part of the plan.</p>
+</div>
+
+<h2>Step Dependencies: The Coupling Map</h2>
+
+<p>Most impl plans have too many dependencies. Each dependency is a coupling point — if the upstream step changes, the downstream step breaks. The rule:</p>
+
+<div class="compare-matrix-3">
+  <div class="compare-header-3">Dependency type</div>
+  <div class="compare-header-3">Coupling</div>
+  <div class="compare-header-3">Action</div>
+  <div class="compare-cell-3">Data dependency ("step B needs step A's output")</div>
+  <div class="compare-cell-3">High — real coupling</div>
+  <div class="compare-cell-3">Keep it</div>
+  <div class="compare-cell-3">Contract dependency ("step B assumes step A's interface")</div>
+  <div class="compare-cell-3">Medium — define the interface upfront</div>
+  <div class="compare-cell-3">Keep, but write interface in PRD</div>
+  <div class="compare-cell-3">Sequential assumption ("we'll do A before B")</div>
+  <div class="compare-cell-3">Low — optional</div>
+  <div class="compare-cell-3">Remove; let agent decide order</div>
+</div>
+
+<p>A well-decomposed plan has most steps with <strong>zero dependencies</strong>. The only real dependencies are data dependencies: step B reads what step A wrote.</p>
+
+<h2>Impl Plan vs. PRD</h2>
+
+<p>Where does the PRD end and the impl plan begin? The precision test applies differently to each:</p>
+
+<div class="compare-matrix">
+  <div class="compare-header">Question</div>
+  <div class="compare-header">In PRD</div>
+  <div class="compare-header">In Impl Plan</div>
+  <div class="compare-header">Nowhere</div>
+  <div class="compare-cell">"What does the user get?"</div>
+  <div class="compare-cell">Yes — user outcomes</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">"What does the system surface?"</div>
+  <div class="compare-cell">Yes — interface contracts</div>
+  <div class="compare-cell">Yes — files and functions</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">"What could go wrong?"</div>
+  <div class="compare-cell">Only architectural edge cases</div>
+  <div class="compare-cell">Yes — all failure modes</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">"How do we verify it works?"</div>
+  <div class="compare-cell">Yes — success metrics</div>
+  <div class="compare-cell">Yes — step checkpoints</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">"What code style to use?"</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">Yes — in .editorconfig / tsconfig</div>
+  <div class="compare-cell">"How to structure the database?"</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">Yes — schema migrations</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">"What exact class names?"</div>
+  <div class="compare-cell">—</div>
+  <div class="compare-cell">Agent decides</div>
+  <div class="compare-cell">—</div>
+</div>
+
+<h2>Impl Plan and the Phases Around It</h2>
+
+<h3>Impl Plan ← PRD</h3>
+<p>The impl plan is a decomposition of the PRD. Each step in the plan maps to one or more requirements in the PRD. If a step can't map to a PRD requirement, it's either out of scope or missing from the PRD. The impl plan is what the PRD looks like when it's been decomposed for execution.</p>
+
+<h3>Impl Plan → Execution</h3>
+<p>The impl plan is what the agent reads during execution. Each step is a ticket. The agent executes step 1, verifies the checkpoint, then moves to step 2. The plan is the queue. The agent manages the queue; the manager audits the checkpoints.</p>
+
+<h3>Impl Plan → QA</h3>
+<p>Each step checkpoint becomes a QA test. Step 3's checkpoint (<em>"Job enters processing, then done. File exists at /exports/[jobId].csv. Row count matches DB."</em>) becomes three QA assertions. The impl plan is the QA test plan's ancestor.</p>
+
+<h2>Three Team Scenarios</h2>
+
+<h3>Scenario A — The monolithic plan</h3>
+
+<p>The team writes a plan for a "CSV Export" feature:</p>
+
+<ol>
+  <li>Set up the export API endpoint</li>
+  <li>Query the database for project rows</li>
+  <li>Format rows as CSV</li>
+  <li>Return the CSV file</li>
+  <li>Handle large projects with a background job</li>
+</ol>
+
+<p>Steps 1–4 assume synchronous export. Step 5 says "handle large projects" but doesn't change steps 1–4. The agent builds steps 1–4 synchronously. When it gets to step 5, it realizes the endpoint from step 1 needs to be changed. Steps 1–4 need rewrites. The plan was monolithic.</p>
+
+<p><strong>What went wrong:</strong> Step 5 was a "handle large projects" wrapper around steps that assumed synchronous. The dependencies were sequential assumptions, not data dependencies. When the plan revealed that step 5 needed async, the whole plan broke.</p>
+
+<p><strong>Diagnostic:</strong> Sequential assumption dependency between steps 1–4 and step 5. Plan was not decomposable.</p>
+
+<h3>Scenario B — The over-engineered plan</h3>
+
+<p>Engineer U writes a 47-step impl plan for a 5-page feature. Each step is 20 lines. The plan includes: <em>"Step 12: Create the type for the export job status enum."</em> <em>"Step 13: Create the database schema migration for export_jobs table."</em> <em>"Step 14: Add the database index for export_jobs.job_status."</em></p>
+
+<p>The agent spends the first hour reading the plan before starting. The plan has more steps than the feature has files. When the team realizes the export needs a different job queue, 30 of the 47 steps need editing.</p>
+
+<p><strong>What went wrong:</strong> The plan was S-size for what should have been M-size steps. The plan was a todo list, not a decomposable contract. The agent couldn't see the forest for the trees.</p>
+
+<p><strong>Diagnostic:</strong> Step size too small. Steps are coupled by sequential assumption rather than by data dependency.</p>
+
+<h3>Scenario C — The plan that held</h3>
+
+<p>Engineer V writes a 7-step plan for the same CSV export feature. Following the template:</p>
+
+<ul>
+  <li><strong>Step 1:</strong> Schema migration — add <code>export_jobs</code> table. <em>Checkpoint: migration runs, table exists with correct columns.</em></li>
+  <li><strong>Step 2:</strong> Job queue — create <code>ExportJob</code> class with <code>enqueue</code>. <em>Checkpoint: calling <code>enqueue</code> creates a row in <code>export_jobs</code> with status <code>pending</code>.</em></li>
+  <li><strong>Step 3:</strong> Sync export for &lt; 10K rows — build <code>POST /api/export/:id</code> that calls the job synchronously. <em>Checkpoint: curl the endpoint, receive CSV in 30 seconds for 5K rows.</em></li>
+  <li><strong>Step 4:</strong> Batch query — paginate project rows in batches of 1K. <em>Checkpoint: 10K rows exported with correct row count.</em></li>
+  <li><strong>Step 5:</strong> Async worker for &gt; 10K rows — move step 4 to background job. <em>Checkpoint: 50K-row project returns job ID immediately; job reaches <code>done</code> in &lt; 2 min; file exists.</em></li>
+  <li><strong>Step 6:</strong> Email notification — on job done, email user with download link. <em>Checkpoint: email received within 5 sec of job done.</em></li>
+  <li><strong>Step 7:</strong> QA integration — write assertions for all checkpoints above.</li>
+</ul>
+
+<p>Step 4 hits a snag: the pagination query is slow for projects with soft-deleted rows. Engineer V replans step 4 only. Steps 1–3 and 5–7 hold. The plan is decomposable.</p>
+
+<p><strong>Why it works:</strong> Each step has a specific checkpoint. Steps are independent by data dependency only. When step 4 failed, the rest of the plan held. Replanning was a one-step operation.</p>
+
+<h2>7 Failure Modes</h2>
+
+<table>
+<thead>
+<tr><th>Symptom</th><th>What you actually missed</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Changing step 3 breaks step 7</td>
+<td>Steps are coupled by sequential assumption; plan is monolithic</td>
+</tr>
+<tr>
+<td>Agent asks "what order should I do these in?"</td>
+<td>Sequential assumptions encoded as dependencies; remove them</td>
+</tr>
+<tr>
+<td>Plan has 30+ steps for a 5-page feature</td>
+<td>Step size too small; plan is a todo list, not a contract</td>
+</tr>
+<tr>
+<td>Agent gets stuck mid-step with no unblock path</td>
+<td>Step has no "if blocked" section; step is too big (XL)</td>
+</tr>
+<tr>
+<td>Manager can't tell if a step is done</td>
+<td>Step has no checkpoint; manager relies on agent's word</td>
+</tr>
+<tr>
+<td>Plan is out of date after step 2</td>
+<td>Steps aren't decomposable; one failure broke the whole plan</td>
+</tr>
+<tr>
+<td>Plan is written by the manager, not the agent</td>
+<td>Manager planning for the agent; impl plan should be co-authored</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout success">
+  <p><strong>The co-authorship insight.</strong> The impl plan is the one phase where the agent should be involved in planning. The manager decomposes the PRD into steps; the agent reviews the decomposition and flags XL steps, suggests reordering, or identifies missing steps. The manager writes the plan; the agent approves it. Both sign off. This prevents the most common failure: a manager's plan that an agent can't execute.</p>
+</div>
+
+<h2>The Manager Ritual for Impl Plan</h2>
+
+<div class="plan-template">
+  <h4>Impl Plan ritual — 3 checks before execution</h4>
+  <ol>
+    <li><strong>"Is each step decomposable?"</strong> — read each step. Ask: "if this changes, does it break any other step?" If yes, the steps are coupled. Remove the coupling.</li>
+    <li><strong>"Does each step have a checkpoint?"</strong> — no checkpoint means no audit trail. The manager can't verify completion without one.</li>
+    <li><strong>"Did the agent review the plan?"</strong> — the agent who executes the plan should approve it. Manager plans; agent reviews. Co-authorship prevents re-planning mid-execution.</li>
+  </ol>
+</div>
+
+<div class="callout warning">
+  <p><strong>The manager's hardest moment after an impl plan.</strong> The moment the agent says "step 3 is harder than I thought." The manager's instinct is to re-plan everything. The manager's job is to ask: "is step 3 still decomposable? Can we split step 3 into 3a and 3b?" If the answer is yes, the plan holds — only step 3 needs replanning. If the answer is no, the plan is monolithic. That's the real failure.</p>
+</div>
+
+<h2>Decision Tree for Lesson 0008</h2>
+
+<p>Three phases remain in Pocock's sequence:</p>
+
+<table>
+<thead>
+<tr><th>Phase</th><th>Pocock's description</th><th>Key manager question</th></tr>
+</thead>
+<tbody>
+<tr><td>06 Execution</td><td>"implement the thing"</td><td>When does the manager step in vs. let the agent run?</td>
+</tr>
+<tr><td>07 QA</td><td>"test the thing"</td><td>What does "done" look like when an agent built it?</td>
+</tr>
+<tr><td>(loopback)</td><td>Back to Idea when a phase proves the original idea is wrong</td><td>When should we kill a feature vs. keep patching it?</td>
+</tr>
+</tbody>
+</table>
+
+<p>The natural next is <strong>Execution (06)</strong> — Pocock's order places it after Impl Plan. The Execution deep-dive will introduce the <em>supervision model</em>: when to let the agent run and when to step in. Most managers either micromanage (step in too early) or disappear (step in too late). The supervision model gives the manager a calibration framework for intervention decisions.</p>
+
+<div class="callout success">
+  <p><strong>Final note on this lesson.</strong> The impl plan is a decomposable contract between manager and agent. Each step is independently auditable. Each checkpoint is a verifiable outcome. When a step fails, only that step needs replanning — the rest of the plan holds. The test of a good impl plan is not whether it predicted the future perfectly, but whether it held when reality turned out differently than predicted. A plan that survives reality is better than a plan that predicted everything. The first is possible; the second is not.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0006-prd-phase.html">← Lesson 0006: PRD Phase</a>
+  <a href="0008-execution-phase.html">Lesson 0008: Execution Phase →</a>
+</div>
+
+</body>
+</html>

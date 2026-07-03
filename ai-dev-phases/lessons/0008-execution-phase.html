@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0008: The Execution Phase — Calibrated Trust</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success { background: #e8f5e9; border-left-color: #4caf50; }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .decision-tree {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .decision-tree h4 {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--accent);
+    }
+    .decision-node {
+      padding-left: 1.5rem;
+      border-left: 2px solid var(--rule);
+      margin-left: 0.5rem;
+    }
+    .decision-node p { margin-bottom: 0.3rem; }
+    .decision-node .action {
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0.3rem 0;
+    }
+    .decision-leaf {
+      padding-left: 1rem;
+      margin-left: 1rem;
+      border-left: 2px solid var(--rule);
+      margin-top: 0.3rem;
+    }
+    .decision-leaf .action {
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .decision-leaf p { margin-bottom: 0.2rem; }
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 { font-weight: 700; margin-bottom: 0.5rem; }
+    .scenario.victory { border-left: 3px solid #4caf50; }
+    .scenario.medium { border-left: 3px solid #ff9800; }
+    .scenario.fail { border-left: 3px solid #b71c1c; }
+    .compare-matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .compare-cell {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-cell:last-child { border-right: none; }
+    .compare-cell:first-child { font-weight: 700; background: var(--code-bg); }
+    .compare-header {
+      padding: 0.6rem 0.8rem;
+      background: #ede9fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-header:last-child { border-right: none; }
+    .compare-header:first-child { background: var(--code-bg); }
+    .log-entry {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+      border-left: 3px solid var(--accent);
+    }
+    .log-entry .log-meta {
+      color: var(--ink-soft);
+      font-size: 0.8rem;
+      margin-bottom: 0.2rem;
+    }
+    .log-entry .log-content { margin-bottom: 0.2rem; }
+    .log-entry .log-outcome { font-weight: 700; }
+    .log-entry .log-outcome.ok { color: #16a34a; }
+    .log-entry .log-outcome.replan { color: #d97706; }
+    .log-entry .log-outcome.prd { color: var(--accent); }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+    .two-col-box {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+    }
+    .two-col-box h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0008</span></span>
+  <span>Phase 06: Execution</span>
+  <span>2026-07-03</span>
+  <span>20–30 min</span>
+</div>
+
+<h1>The Execution Phase — Calibrated Trust</h1>
+<p class="subtitle">Execution is not watching the agent code. It's checkpoint-first oversight: trust between checkpoints, audit at checkpoints, intervene only when the plan says to or the agent signals blocked. This lesson covers the supervision model, the intervention decision tree, and the three types of deviation from plan.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03. Builds on lessons 0001–0007.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> The Execution phase is where most manager anxiety lives. Read the supervision model first — it's the calibration for how much to trust the agent. Then read the intervention decision tree — it's the operational rule for when to step in vs. let run. The three deviation types at the end are what your execution log should capture, and what determines whether you replan, revise the PRD, or accept the delay.</p>
+</div>
+
+<h2>What Pocock Actually Said</h2>
+
+<p>The full quote, in context:</p>
+
+<blockquote>
+  <em>"So the sixth phase is implementation. This is where you actually implement the thing. The way that I've seen this work best is you give the agent the PRD, the plan, and you just let it go. And then at certain checkpoints, you come back and review it."</em> — Matt Pocock
+</blockquote>
+
+<p>Two phrases matter: <em>"you just let it go"</em> and <em>"at certain checkpoints."</em> Together they define the supervision model. The manager's job is to set the context (PRD + plan), trust the agent between checkpoints, and audit at checkpoints. Not to write code alongside the agent. Not to watch the agent every minute.</p>
+
+<h2>The Core Idea: Supervised Autonomy</h2>
+
+<p>Execution is <strong>supervised autonomy</strong>: the agent has autonomy within the step, and the manager supervises at the checkpoint. This is neither micromanagement (supervise every line) nor disappearance (never check in). It's checkpoint-first oversight.</p>
+
+<div class="compare-matrix">
+  <div class="compare-header">Mode</div>
+  <div class="compare-header">What happens</div>
+  <div class="compare-header">Failure mode</div>
+  <div class="compare-cell">Micromanagement</div>
+  <div class="compare-cell">Manager watches every agent output; corrects mid-step</div>
+  <div class="compare-cell">Agent can't build momentum; manager is the bottleneck</div>
+  <div class="compare-cell">Disappearance</div>
+  <div class="compare-cell">Manager never checks in; agent runs unsupervised</div>
+  <div class="compare-cell">Agent builds wrong thing for hours; waste discovered too late</div>
+  <div class="compare-cell">Ghost</div>
+  <div class="compare-cell">Manager is nominally present but gives no direction</div>
+  <div class="compare-cell">Agent drifts without feedback; context window degrades silently</div>
+  <div class="compare-cell">Supervised Autonomy ✓</div>
+  <div class="compare-cell">Manager trusts between checkpoints; audits at checkpoints</div>
+  <div class="compare-cell">Checkpoint missed → deviation grows; acceptable risk</div>
+</div>
+
+<h2>The Intervention Decision Tree</h2>
+
+<p>The question is never "should I intervene?" The question is: <strong>has a checkpoint been reached, or has the agent signaled blocked?</strong></p>
+
+<div class="decision-tree">
+  <h4>Intervention decision tree — run this before any action</h4>
+
+  <div class="decision-node">
+    <p class="action">Is a checkpoint in the impl plan reached?</p>
+    <div class="decision-leaf">
+      <p class="action">→ YES: Audit the checkpoint.</p>
+      <p>Does the observable match the checkpoint description?</p>
+      <p>If yes → let agent proceed to next step.</p>
+      <p>If no → assess deviation type (see below).</p>
+    </div>
+  </div>
+
+  <div class="decision-node">
+    <p class="action">Has the agent signaled blocked?</p>
+    <div class="decision-leaf">
+      <p class="action">→ YES: Unblock.</p>
+      <p>Agent blocked types:</p>
+      <ul>
+        <li>"I need a decision on X" → make the decision, give context</li>
+        <li>"This pattern doesn't work" → acknowledge, redirect to alternative</li>
+        <li>"I got an error I can't resolve" → diagnose, give the fix</li>
+      </ul>
+      <p>Do NOT: re-explain the whole PRD, rewrite the step, or give low-level implementation instructions. Give the minimum context needed to unblock.</p>
+    </div>
+  </div>
+
+  <div class="decision-node">
+    <p class="action">Neither?</p>
+    <div class="decision-leaf">
+      <p class="action">→ Hands off. Trust the agent.</p>
+      <p>The agent is executing within the step. This is normal. The agent may be quiet for minutes or tens of minutes. This is not a signal to check in.</p>
+      <p>Exception: if the agent has been quiet for more than 2x the expected time for the step, gently ask for a status update. Use a question, not a command. "How's step 3 going?" — not "show me what you've done."</p>
+    </div>
+  </div>
+</div>
+
+<h2>The Three Deviation Types</h2>
+
+<p>When the checkpoint doesn't match the description, the deviation is one of three types. Each has a different response:</p>
+
+<div class="two-col">
+  <div class="two-col-box">
+    <h4>Type 1: Replan the step</h4>
+    <p>The PRD is right, but the plan was wrong. The step was XL, or the failure mode wasn't anticipated.</p>
+    <p><strong>Response:</strong> Go back to impl plan. Replan this step only. Re-execute.</p>
+    <p><strong>Signal:</strong> "The approach in step 4 doesn't work for the actual data shape."</p>
+  </div>
+  <div class="two-col-box">
+    <h4>Type 2: Revise the PRD</h4>
+    <p>The plan was right, but the PRD was wrong. A requirement needs to change, or a new edge case was discovered.</p>
+    <p><strong>Response:</strong> Go back to PRD. Update the requirement or edge case. Then replan the affected steps.</p>
+    <p><strong>Signal:</strong> "The CSV export should include soft-deleted rows, but the PRD doesn't mention them."</p>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="two-col-box">
+    <h4>Type 3: Accept the delay</h4>
+    <p>Both PRD and plan were right, but the step took longer than estimated. Reality is slower than prediction.</p>
+    <p><strong>Response:</strong> Note it in the execution log. Update the timeline. Do not change PRD or plan.</p>
+    <p><strong>Signal:</strong> "Step 4 works correctly but took 3 hours instead of 1."</p>
+  </div>
+  <div class="two-col-box">
+    <h4>Not a deviation: scope creep</h4>
+    <p>Something was built that isn't in the PRD. This is not a deviation from the plan — it's an addition.</p>
+    <p><strong>Response:</strong> This is a PRD question. Does the new thing belong in v1? If yes → update PRD. If no → remove it from the build.</p>
+    <p><strong>Signal:</strong> "The agent also built a PDF export, which isn't in the PRD."</p>
+  </div>
+</div>
+
+<div class="callout warning">
+  <p><strong>The discipline: do not handle PRD changes in the execution phase.</strong> When execution reveals that the PRD is wrong, the right response is to flag it and return to the PRD phase — not to patch the PRD mid-execution. Executing with a wrong PRD means building the wrong thing. The loopback to PRD is not a failure; it's the process working correctly.</p>
+</div>
+
+<h2>The Blocked Signal</h2>
+
+<p>Agents signal blocked in two ways: explicit and implicit. Both are valid, but the response differs.</p>
+
+<h3>Explicit blocked signals</h3>
+<ul>
+  <li><em>"I need a decision on X before I can continue."</em> — agent is asking for context. Give the decision, not the implementation.</li>
+  <li><em>"I'm not sure which approach to take here."</em> — agent wants guidance on direction. Give the direction, not the code.</li>
+  <li><em>"I encountered an error I can't resolve."</em> — agent has hit a technical wall. Diagnose, then give the fix.</li>
+</ul>
+
+<h3>Implicit blocked signals</h3>
+<ul>
+  <li>Agent is repeating the same operation without progress. — implicit signal that something is stuck in a loop.</li>
+  <li>Agent asks the same clarifying question it asked 10 minutes ago. — implicit signal that the earlier answer wasn't sufficient.</li>
+  <li>Agent's output quality has degraded (incoherent, off-target). — implicit signal that the context window is degrading.</li>
+</ul>
+
+<div class="callout">
+  <p><strong>The unblock response rule.</strong> When an agent signals blocked, give the minimum context needed to unblock — not the maximum. The agent needs a decision, not a tutorial. The manager's job is to provide context, not to write code. If the manager finds themselves writing code to unblock the agent, the manager is micromanaging.</p>
+</div>
+
+<h2>Trust Calibration</h2>
+
+<p>Trust is not binary and not static. It depends on two factors:</p>
+
+<h3>Agent experience with the task type</h3>
+<p>A new agent (fresh session, no prior work on this codebase) gets more oversight than an agent with established context. A task the agent has done before gets more trust than a novel task.</p>
+
+<h3>Step risk level</h3>
+<p>The impl plan's step sizes give you a risk signal. XS steps (well-understood, &lt;50 LOC) warrant less oversight. L steps (multiple components, novel pattern) warrant more.</p>
+
+<div class="compare-matrix">
+  <div class="compare-header">Step risk</div>
+  <div class="compare-header">Agent experience</div>
+  <div class="compare-header">Supervision level</div>
+  <div class="compare-cell">XS — well-understood</div>
+  <div class="compare-cell">New agent</div>
+  <div class="compare-cell">Light — check at end of step</div>
+  <div class="compare-cell">M — standard</div>
+  <div class="compare-cell">New agent</div>
+  <div class="compare-cell">Medium — check at checkpoint</div>
+  <div class="compare-cell">M — standard</div>
+  <div class="compare-cell">Established agent</div>
+  <div class="compare-cell">Light — check at checkpoint</div>
+  <div class="compare-cell">L — high-risk</div>
+  <div class="compare-cell">Any</div>
+  <div class="compare-cell">Heavy — check at sub-checkpoints</div>
+</div>
+
+<div class="callout success">
+  <p><strong>Trust but verify is wrong for AI agents.</strong> The aphorism "trust but verify" implies that verification is the exception. For AI execution, the rule is "calibrated trust": the calibration is the impl plan's checkpoints. Trust is the default between checkpoints. Verification is the rule at checkpoints. This is not a trust problem — it's a process design problem.</p>
+</div>
+
+<h2>What Execution Reveals</h2>
+
+<p>Execution is the phase that tests the plan. A plan that survives execution is validated. A plan that doesn't survive execution is corrected. Both outcomes are correct.</p>
+
+<h3>What execution reveals about the PRD</h3>
+<ul>
+  <li>Which requirements were architectural edge cases (specified in PRD) vs. discovered edge cases (not in PRD)</li>
+  <li>Which success metrics are actually measurable and which are aspirational</li>
+  <li>Whether the non-goals section was sufficient or scope crept anyway</li>
+</ul>
+
+<h3>What execution reveals about the impl plan</h3>
+<ul>
+  <li>Which step sizes were XL (took too long, had too many failure modes)</li>
+  <li>Which dependency assumptions were wrong</li>
+  <li>Which checkpoints were well-specified vs. vague</li>
+</ul>
+
+<h3>What execution reveals about the team</h3>
+<ul>
+  <li>Which agents do well on which types of tasks (capability map)</li>
+  <li>Which manager instincts are correct (intervention was helpful) vs. overcautious (intervention was unnecessary)</li>
+  <li>Which phase upstream had a gap (PRD missing a requirement → execution discovered it)</li>
+</ul>
+
+<h2>The Execution Log</h2>
+
+<p>The execution log is a living document created during execution. It captures what actually happened, not what was planned to happen. It is not a status report — it is the historical record of execution.</p>
+
+<div class="log-entry">
+  <div class="log-meta">Step 1 — Schema migration — started 09:00, ended 09:12</div>
+  <div class="log-content">Expected: 30 min. Actual: 12 min.</div>
+  <div class="log-outcome ok">Checkpoint: passed. Table exists with correct columns.</div>
+</div>
+
+<div class="log-entry">
+  <div class="log-meta">Step 2 — Job queue — started 09:13, blocked 09:28</div>
+  <div class="log-content">Agent asked: "Which job queue library should I use? We have BullMQ and Agenda in the codebase."</div>
+  <div class="log-outcome replan">Type 1 deviation: BullMQ chosen (matches existing job infrastructure). Step 2 replanned to use BullMQ. Remaining steps unchanged.</div>
+</div>
+
+<div class="log-entry">
+  <div class="log-meta">Step 3 — Sync export endpoint — started 10:05, ended 11:48</div>
+  <div class="log-content">Expected: 1 hour. Actual: 1h 43m. Agent hit a bug in the existing query optimizer with the large IN clause.</div>
+  <div class="log-outcome ok">Checkpoint: passed after workaround (batch by 500 IDs instead of 5K). Workaround noted.</div>
+</div>
+
+<div class="log-entry">
+  <div class="log-meta">Step 4 — Batch query — started 11:49, blocked 12:30</div>
+  <div class="log-content">Agent asked: "The CSV export should include soft-deleted rows, but the PRD doesn't mention soft-deleted rows. Should I include them?"</div>
+  <div class="log-outcome prd">Type 2 deviation: Scope question — PRD needs to specify inclusion/exclusion of soft-deleted rows. Loopback to PRD phase. Execution paused.</div>
+</div>
+
+<div class="callout">
+  <p><strong>The execution log's purpose.</strong> Three uses: (1) audit trail for what was built vs. what was planned, (2) input for the QA phase — deviations become test cases, (3) retrospective input for improving future impl plans and PRDs. The log is written during execution, not after. Every deviation, every block, every timing surprise gets a line.</p>
+</div>
+
+<h2>Three Team Scenarios</h2>
+
+<h3>Scenario A — The micromanager</h3>
+
+<p>Manager M watches the agent's every output. After each code block, M asks: <em>"Is that right?"</em> After each function, M asks: <em>"Why did you name it that?"</em> M changes variable names mid-session. M rewrites the error handling because M would have written it differently.</p>
+
+<p>The agent makes progress but at half speed. Every 20 minutes, M interrupts to "align" on approach. The agent can't build momentum. The checkpoint at step 3 is a disaster: M has so many micro-changes that the agent has to reconcile conflicting instructions.</p>
+
+<p><strong>What went wrong:</strong> Manager treated the agent as a junior engineer who needs constant oversight. The supervision model wasn't applied. Interventions happened between checkpoints, not at checkpoints.</p>
+
+<h3>Scenario B — The ghost</h3>
+
+<p>Manager G sends the PRD and plan to the agent. G goes to a meeting and forgets about the agent for 4 hours. G comes back to find the agent has built the CSV export correctly — except it's synchronous for all project sizes, including 500K-row projects that will timeout.</p>
+
+<p>The agent never signaled blocked because it didn't know that sync export for 500K rows was wrong — the PRD said "handle large projects" but didn't say what "large" meant in terms of row count. The agent made a reasonable assumption. G didn't audit at step 3.</p>
+
+<p><strong>What went wrong:</strong> Manager disappeared. The checkpoint at step 3 was missed. The PRD had a gap (threshold not specified), but the gap wasn't caught before execution built the wrong thing.</p>
+
+<h3>Scenario C — The calibrated supervisor</h3>
+
+<p>Manager V sends the PRD and plan. V trusts the agent. V checks in only at checkpoints.</p>
+
+<p>Step 1 checkpoint: table exists. Passed. Step 2 checkpoint: job enqueues and creates a row with status pending. Blocked — agent asks which queue library. V answers: BullMQ (matches existing infrastructure). Agent continues.</p>
+
+<p>Step 3 checkpoint: sync export returns CSV for 5K rows. Passed. Step 4: agent asks about soft-deleted rows — not in PRD. V recognizes this as a Type 2 deviation. Pauses execution. Loops back to PRD. Adds: <em>"Include soft-deleted rows in export."</em> Replans step 4. Continues.</p>
+
+<p><strong>Why it works:</strong> V trusted between checkpoints. V intervened at checkpoints. V recognized deviation types and routed them correctly: unblocked for Type 1, looped back to PRD for Type 2, noted and accepted for Type 3. The execution log captures every decision.</p>
+
+<h2>7 Failure Modes</h2>
+
+<table>
+<thead>
+<tr><th>Symptom</th><th>What you actually missed</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent makes no progress for hours</td>
+<td>Manager micromanaged; agent couldn't build momentum</td>
+</tr>
+<tr>
+<td>Agent built wrong thing; discovered at QA</td>
+<td>Manager ghosted; checkpoint missed at step before the error</td>
+</tr>
+<tr>
+<td>Agent keeps asking clarifying questions mid-step</td>
+<td>PRD too vague; too many Type 1 deviations</td>
+</tr>
+<tr>
+<td>Execution log has no entries past step 2</td>
+<td>Manager disappeared after step 1; no audit trail</td>
+</tr>
+<tr>
+<td>Scope creep built in without PRD change</td>
+<td>Type 2 deviations handled ad hoc instead of looping back to PRD</td>
+</tr>
+<tr>
+<td>PRD updated mid-execution</td>
+<td>Type 2 deviation handled in wrong phase; PRD shouldn't change while executing</td>
+</tr>
+<tr>
+<td>Agent's context window degraded silently</td>
+<td>Manager ghosted; no status-check at 2x estimated step time</td>
+</tr>
+</tbody>
+</table>
+
+<h2>The Manager Ritual for Execution</h2>
+
+<div class="decision-tree">
+  <h4>Execution ritual — before each agent interaction</h4>
+  <div class="decision-node">
+    <p class="action">Question: Is a checkpoint reached, or has the agent signaled blocked?</p>
+    <div class="decision-leaf">
+      <p class="action">→ Yes: Audit or Unblock.</p>
+      <p>At checkpoint: does the observable match the checkpoint description? Yes → let proceed. No → which deviation type?</p>
+      <p>Agent blocked: give minimum context needed. Not the code. The context.</p>
+    </div>
+    <div class="decision-leaf">
+      <p class="action">→ No: Hands off.</p>
+      <p>Unless 2x estimated step time has passed without output. Then: gentle status check, not an audit.</p>
+    </div>
+  </div>
+</div>
+
+<h2>Execution and the Phases Around It</h2>
+
+<h3>Execution ← Impl Plan</h3>
+<p>The impl plan's checkpoints are the manager's entry points. The plan is the queue; the agent manages it. The manager audits at each completion.</p>
+
+<h3>Execution → QA</h3>
+<p>The execution log feeds directly into QA. Every checkpoint becomes an assertion. Every Type 1 and Type 2 deviation becomes a new test case. <em>"Soft-deleted rows must be included"</em> — that's a QA test. <em>"Batch query uses 500-ID batches"</em> — that's a QA test. The execution log is the QA plan's source material.</p>
+
+<h3>Execution → Loopback to PRD</h3>
+<p>When execution reveals a PRD gap, the process is: pause execution, update PRD, replan affected steps, resume execution. Execution does not proceed with a wrong PRD. The loopback is not a failure — it's the process working correctly.</p>
+
+<h2>Decision Tree for Lesson 0009</h2>
+
+<p>Two phases remain in Pocock's sequence:</p>
+
+<table>
+<thead>
+<tr><th>Phase</th><th>Pocock's description</th><th>Key manager question</th></tr>
+</thead>
+<tbody>
+<tr><td>07 QA</td><td>"test the thing"</td><td>What does "done" look like when an agent built it?</td>
+</tr>
+<tr><td>(loopback)</td><td>Back to Idea when a phase proves the original idea is wrong</td><td>When should we kill a feature vs. keep patching it?</td>
+</tr>
+</tbody>
+</table>
+
+<p>The natural next is <strong>QA (07)</strong> — the final phase in Pocock's sequence. The QA deep-dive will introduce the <em>execution-log-to-test mapping</em>: every checkpoint and deviation becomes a test case. Most teams QA agent-built code the same way they QA human-built code — but the failure modes are different. Agent-built code tends to have edge case gaps (the agent handles the happy path well but misses the hard edge cases). The QA phase needs to account for this pattern.</p>
+
+<div class="callout success">
+  <p><strong>Final note on this lesson.</strong> The Execution phase is where the plan meets reality. The supervision model is the discipline that prevents two failures: micromanagement and disappearance. The intervention decision tree is the operational rule. The three deviation types are the routing logic. Type 1 → replan. Type 2 → loopback to PRD. Type 3 → accept and note. The execution log is the record of what actually happened. Execution is supervised autonomy: trust between checkpoints, audit at checkpoints, intervene only when signaled. The manager's job is not to write code — it's to maintain the context that lets the agent write code.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0007-impl-plan-phase.html">← Lesson 0007: Impl Plan Phase</a>
+  <a href="0009-qa-phase.html">Lesson 0009: QA Phase →</a>
+</div>
+
+</body>
+</html>

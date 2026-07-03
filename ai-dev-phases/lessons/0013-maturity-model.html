@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0013: Team Maturity Model — Where Is Your Team and How to Level Up</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-light: #ede9fe;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre { background: var(--code-bg); padding: 1rem 1.25rem; margin: 1rem 0; overflow-x: auto; border-radius: 4px; border-left: 3px solid var(--accent); }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: var(--accent-light);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.green { background: var(--green-light); border-left-color: var(--green); }
+    .callout.orange { background: var(--orange-light); border-left-color: var(--orange); }
+    .callout.red { background: var(--red-light); border-left-color: var(--red); }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+
+    /* Level card */
+    .level-card {
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .level-header {
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .level-header h4 { font-weight: 700; font-size: 1rem; }
+    .level-header .tag {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-weight: 700;
+      color: white;
+    }
+    .level-header .tag.l1 { background: var(--red); }
+    .level-header .tag.l2 { background: var(--orange); }
+    .level-header .tag.l3 { background: #d97706; }
+    .level-header .tag.l4 { background: #0891b2; }
+    .level-header .tag.l5 { background: var(--green); }
+    .level-body { padding: 1rem 1.25rem; }
+    .level-body p:last-child { margin-bottom: 0; }
+
+    /* Phase indicator strip */
+    .phase-strip {
+      display: flex;
+      margin: 0.75rem 0;
+      gap: 2px;
+    }
+    .phase-strip-item {
+      flex: 1;
+      text-align: center;
+      font-size: 0.7rem;
+      font-family: "SF Mono", Menlo, monospace;
+      padding: 0.2rem 0;
+      border-radius: 2px;
+    }
+    .phase-strip-item.done { background: var(--green); color: white; }
+    .phase-strip-item.partial { background: #d97706; color: white; }
+    .phase-strip-item.absent { background: var(--red-light); color: var(--red); }
+    .phase-strip-item.na { background: var(--rule); color: var(--ink-soft); }
+
+    /* Metric bar */
+    .metric-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.4rem 0;
+      font-size: 0.85rem;
+    }
+    .metric-label { width: 160px; flex-shrink: 0; font-weight: 700; }
+    .metric-bar-bg {
+      flex: 1;
+      height: 10px;
+      background: var(--rule);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .metric-bar-fill { height: 100%; border-radius: 5px; }
+    .metric-val { font-family: "SF Mono", Menlo, monospace; font-size: 0.78rem; color: var(--ink-soft); width: 60px; text-align: right; flex-shrink: 0; }
+    .bar-green { background: var(--green); }
+    .bar-amber { background: #d97706; }
+    .bar-red { background: var(--red); }
+
+    /* Scenario */
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 { font-weight: 700; margin-bottom: 0.5rem; }
+    .scenario.victory { border-left: 3px solid var(--green); }
+    .scenario.warn { border-left: 3px solid var(--orange); }
+    .scenario.fail { border-left: 3px solid var(--red); }
+
+    /* Skill radar / comparison table */
+    .radar-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.82rem; }
+    .radar-table th {
+      padding: 0.5rem 0.4rem;
+      text-align: center;
+      border-bottom: 2px solid var(--rule);
+      font-weight: 700;
+    }
+    .radar-table th:first-child { text-align: left; }
+    .radar-table td { padding: 0.4rem 0.4rem; border-bottom: 1px solid var(--rule); text-align: center; vertical-align: middle; }
+    .radar-table td:first-child { text-align: left; font-weight: 700; }
+    .radar-table tr:last-child td { border-bottom: none; }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+    .dot-green { background: var(--green); }
+    .dot-amber { background: #d97706; }
+    .dot-red { background: var(--red); }
+    .dot-none { background: var(--rule); border: 1px solid var(--ink-soft); }
+
+    /* Checklist */
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+    }
+    .checklist li {
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist .check-box {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--rule);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+    .checklist li.done { color: var(--green); }
+    .checklist li.done .check-box { background: var(--green); border-color: var(--green); }
+
+    /* Role evolution table */
+    .role-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.82rem; }
+    .role-table th { background: var(--code-bg); padding: 0.5rem 0.6rem; text-align: left; font-weight: 700; border-bottom: 2px solid var(--rule); }
+    .role-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    .role-table tr:last-child td { border-bottom: none; }
+    .role-table .role-name { font-weight: 700; white-space: nowrap; }
+    .role-table .level-col { text-align: center; font-family: "SF Mono", Menlo, monospace; font-weight: 700; width: 60px; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0013</span></span>
+  <span>Synthesis</span>
+  <span>2026-07-03</span>
+  <span>35–45 min</span>
+</div>
+
+<h1>Team Maturity Model — Where Is Your Team and How to Level Up</h1>
+<p class="subtitle">The 7-phase framework doesn't work the same way at every team. A team of 2 and a team of 12 require different setups. A team shipping 3 features a week has different process needs than a team shipping 1 a quarter. This lesson gives you the tools to assess where your team actually is, where you need to be, and the path between them.</p>
+
+<p>Source: Synthesis of all lessons 0001–0012. This lesson is the capstone — it maps every concept in the curriculum to a team maturity level and tells you which concept to prioritize next based on where your team is.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> Start with the Team Self-Assessment — 12 questions that score your team on the 5 maturity dimensions. The score tells you your current level. Then read the Level Detail section for your level and the level above it. Finally, use the Advancement Roadmap to identify the 2–3 specific actions that will move you to the next level fastest.</p>
+</div>
+
+<h2>The 5 Maturity Levels: Overview</h2>
+
+<p>The 7-phase system has 5 maturity levels. Each level is defined by a specific set of behaviors — not team size, not tooling, not headcount. Two-person teams can be Level 4. Ten-person teams can be Level 1. The level is about how the team operates, not who they are.</p>
+
+<table>
+<thead>
+<tr><th>Level</th><th>Name</th><th>Core behavior</th><th>Ship confidence</th><th>Loopback cost</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>1</strong></td>
+  <td>Ad-hoc</td>
+  <td>No phases. Build fast, ship, debug.</td>
+  <td>Unpredictable</td>
+  <td>100% of feature cost</td>
+</tr>
+<tr>
+  <td><strong>2</strong></td>
+  <td>Phases exist</td>
+  <td>Team knows phases. Artifacts are inconsistent.</td>
+  <td>Low–Medium</td>
+  <td>60–80% of feature cost</td>
+</tr>
+<tr>
+  <td><strong>3</strong></td>
+  <td>Phases formalized</td>
+  <td>Artifacts are deposited. Handoffs have rules.</td>
+  <td>Medium–High</td>
+  <td>30–50% of feature cost</td>
+</tr>
+<tr>
+  <td><strong>4</strong></td>
+  <td>Phases optimized</td>
+  <td>HFMs tracked. Loopback detector runs proactively.</td>
+  <td>High</td>
+  <td>10–20% of feature cost</td>
+</tr>
+<tr>
+  <td><strong>5</strong></td>
+  <td>Self-correcting</td>
+  <td>Process learns from each iteration. R3 implemented before next feature.</td>
+  <td>Very High</td>
+  <td>0–5% of feature cost</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout orange">
+  <p><strong>The most common error in maturity assessment:</strong> Teams believe they are 1–2 levels above where they actually are. The reason is simple: the behaviors that define Level 3 are easy to claim and hard to sustain. "We have artifacts" is a Level 2 claim. "Our artifacts are always in the right place, always read by the next phase owner, and always contain an assumptions section" is a Level 3 reality. Read the Level Detail section carefully before assessing your team.</p>
+</div>
+
+<h2>Team Self-Assessment</h2>
+
+<p>Answer each question honestly. Score: <strong>0 = never / 1 = sometimes / 2 = usually / 3 = always</strong>. Add your total.</p>
+
+<table class="radar-table">
+<thead>
+<tr>
+  <th style="width:50%">Question</th>
+  <th>0</th><th>1</th><th>2</th><th>3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1. Every feature starts with a written idea that names a user and a measurable problem.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>2. Research artifacts are in a standard location and include a freshness date.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>3. The PRD has non-goals and testable requirements before implementation starts.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>4. Every impl plan step is completable in 2–4 hours and maps to a PRD requirement.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>5. Each execution step has an explicit supervision tier (Tier 1 / 2 / 3) before it starts.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>6. Deviations in execution are logged with root cause, not just outcome.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>7. QA verdict is binary: ship or don't ship. No "ship with known issues."</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>8. Every phase has an explicitly named owner (Manager / Engineer / Agent).</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>9. Handoff failure modes (HF-01 to HF-07) are tracked across features.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>10. The loopback pattern detector (lesson 0010) runs proactively during each feature.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>11. A retrospective runs within 24 hours of every QA verdict, with R3 action items written.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+<tr>
+  <td>12. R3 items from the last retrospective were implemented before the current feature started.</td>
+  <td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td><td><span class="dot dot-none"></span></td>
+</tr>
+</tbody>
+</table>
+
+<p style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:1.5rem;">
+  <strong>Scoring guide:</strong><br>
+  0–12 = <strong>Level 1 (Ad-hoc)</strong><br>
+  13–20 = <strong>Level 2 (Phases exist)</strong><br>
+  21–27 = <strong>Level 3 (Phases formalized)</strong><br>
+  28–33 = <strong>Level 4 (Phases optimized)</strong><br>
+  34–36 = <strong>Level 5 (Self-correcting)</strong>
+</p>
+
+<h2>Level Detail</h2>
+
+<div class="level-card">
+  <div class="level-header">
+    <h4>Level 1 — Ad-hoc</h4>
+    <span class="tag l1">Score 0–12</span>
+  </div>
+  <div class="level-body">
+    <p><strong>What it looks like:</strong> The team builds features without a predictable sequence. Someone has an idea, someone builds it, it gets tested if there's time, it ships. When it breaks, it gets fixed. There's no document called a PRD. There's no plan called an impl plan. The team's memory is the process.</p>
+    <p><strong>Phase coverage strip (where phases exist informally):</strong></p>
+    <div class="phase-strip">
+      <div class="phase-strip-item absent">01</div>
+      <div class="phase-strip-item absent">02</div>
+      <div class="phase-strip-item absent">03</div>
+      <div class="phase-strip-item absent">04</div>
+      <div class="phase-strip-item absent">05</div>
+      <div class="phase-strip-item partial">06</div>
+      <div class="phase-strip-item partial">07</div>
+    </div>
+    <p><strong>What to do first:</strong> Stop trying to optimize. Start with the minimum viable structure: write the idea down before building it. That's it. One sentence: "Who has the problem, what is the problem, what does success look like." Everything else is secondary.</p>
+    <p><strong>What not to do:</strong> Don't implement all 7 phases at once. Don't write a 40-field PRD template. Don't hire a process coach. Level 1 teams that try to leap to Level 3 usually collapse back to Level 1 within 2 features.</p>
+    <p><strong>Typical team:</strong> 1–3 people, early stage product, or high-urgency environment where speed feels more important than quality.</p>
+  </div>
+</div>
+
+<div class="level-card">
+  <div class="level-header">
+    <h4>Level 2 — Phases Exist</h4>
+    <span class="tag l2">Score 13–20</span>
+  </div>
+  <div class="level-body">
+    <p><strong>What it looks like:</strong> The team knows there are phases. They talk about "the PRD" and "the plan." Artifacts exist but they're inconsistent — sometimes in Notion, sometimes in a Google Doc, sometimes in Slack. Loopbacks are surprises. The team is always reacting to something that went wrong in a previous phase.</p>
+    <p><strong>Phase coverage strip:</strong></p>
+    <div class="phase-strip">
+      <div class="phase-strip-item partial">01</div>
+      <div class="phase-strip-item partial">02</div>
+      <div class="phase-strip-item partial">03</div>
+      <div class="phase-strip-item partial">04</div>
+      <div class="phase-strip-item partial">05</div>
+      <div class="phase-strip-item partial">06</div>
+      <div class="phase-strip-item partial">07</div>
+    </div>
+    <p><strong>What to do first:</strong> Standardize artifact locations. Pick one place for all artifacts. Use the naming convention: <code>features/[name]/phase-[number]-[name].md</code>. Enforce it. This single change eliminates HF-01 (Artifact Drop) and makes HF-02 (Assumption Inheritance) visible because artifacts are in one place and can be read.</p>
+    <p><strong>Priority actions to level up:</strong></p>
+    <ol>
+      <li>Standardize artifact location (fixes HF-01)</li>
+      <li>Add # Assumptions section to every artifact (fixes HF-02)</li>
+      <li>Assign one owner per phase (fixes HF-04)</li>
+    </ol>
+    <p><strong>Typical team:</strong> 3–6 people, some process awareness, has shipped features that worked and features that didn't, starting to feel the cost of rework.</p>
+  </div>
+</div>
+
+<div class="level-card">
+  <div class="level-header">
+    <h4>Level 3 — Phases Formalized</h4>
+    <span class="tag l3">Score 21–27</span>
+  </div>
+  <div class="level-body">
+    <p><strong>What it looks like:</strong> Artifacts are in the right place. They're read by the next phase owner. Handoffs have rules. The team runs retrospectives. But the retrospectives produce insights that don't get implemented. The loopback detector hasn't been introduced. The team is doing the work but not getting the full benefit because the system doesn't self-correct.</p>
+    <p><strong>Phase coverage strip:</strong></p>
+    <div class="phase-strip">
+      <div class="phase-strip-item done">01</div>
+      <div class="phase-strip-item done">02</div>
+      <div class="phase-strip-item partial">03</div>
+      <div class="phase-strip-item done">04</div>
+      <div class="phase-strip-item done">05</div>
+      <div class="phase-strip-item done">06</div>
+      <div class="phase-strip-item done">07</div>
+    </div>
+    <p><strong>What to do first:</strong> Introduce the loopback pattern detector (lesson 0010). It runs proactively during each feature, not reactively after a loopback fires. The loopback pattern detector is the mechanism that turns "we know the phases" into "we catch problems before they cost us."</p>
+    <p><strong>Priority actions to level up:</strong></p>
+    <ol>
+      <li>Introduce the loopback pattern detector (lesson 0010)</li>
+      <li>Formalize the phase-end gate ritual (HF-07 fix)</li>
+      <li>Track handoff failure modes per feature in the retrospective</li>
+    </ol>
+    <p><strong>Typical team:</strong> 5–10 people, has strong individual discipline, struggling with systemic improvement. This is where most "mature" teams are — and where they get stuck because they've confused "following the process" with "the process is working."</p>
+  </div>
+</div>
+
+<div class="level-card">
+  <div class="level-header">
+    <h4>Level 4 — Phases Optimized</h4>
+    <span class="tag l4">Score 28–33</span>
+  </div>
+  <div class="level-body">
+    <p><strong>What it looks like:</strong> The loopback pattern detector runs every feature. HFMs are tracked and declining. Retrospectives produce R3 items. R3 items are implemented. The team catches loopbacks 1–2 phases before they'd fire. The process is producing better outcomes than individual discipline would.</p>
+    <p><strong>Phase coverage strip:</strong></p>
+    <div class="phase-strip">
+      <div class="phase-strip-item done">01</div>
+      <div class="phase-strip-item done">02</div>
+      <div class="phase-strip-item done">03</div>
+      <div class="phase-strip-item done">04</div>
+      <div class="phase-strip-item done">05</div>
+      <div class="phase-strip-item done">06</div>
+      <div class="phase-strip-item done">07</div>
+    </div>
+    <p><strong>What to do first:</strong> The biggest gap at Level 4 is usually the Agent Protocol layer (lesson 0011). The team runs phases correctly but execution still has too much supervision overhead. Implementing the 8 instruction protocols (IP-01 to IP-08) is the highest-leverage action at this level.</p>
+    <p><strong>Priority actions to level up:</strong></p>
+    <ol>
+      <li>Implement the 8 instruction protocols (IP-01 to IP-08, lesson 0011)</li>
+      <li>Formalize trust elevation criteria — when does Tier 2 become Tier 3?</li>
+      <li>Build the anti-pattern diagnostic into the retrospective (lesson 0012)</li>
+    </ol>
+    <p><strong>Typical team:</strong> 8–15 people, process is working well, competitive advantage in feature velocity and quality. This is where the 7-phase system starts to pay back the investment.</p>
+  </div>
+</div>
+
+<div class="level-card">
+  <div class="level-header">
+    <h4>Level 5 — Self-Correcting</h4>
+    <span class="tag l5">Score 34–36</span>
+  </div>
+  <div class="level-body">
+    <p><strong>What it looks like:</strong> HF-01 and HF-02 are eliminated. Loopbacks fire early and are brief. Retrospectives produce exactly 1 R3 item per feature that is implemented before the next feature starts. The team's process is measurably improving every iteration. The rate of improvement is faster than the rate of change in the environment.</p>
+    <p><strong>Phase coverage strip:</strong></p>
+    <div class="phase-strip">
+      <div class="phase-strip-item done">01</div>
+      <div class="phase-strip-item done">02</div>
+      <div class="phase-strip-item done">03</div>
+      <div class="phase-strip-item done">04</div>
+      <div class="phase-strip-item done">05</div>
+      <div class="phase-strip-item done">06</div>
+      <div class="phase-strip-item done">07</div>
+    </div>
+    <p><strong>What to do at Level 5:</strong> Maintain. The risk at Level 5 is complacency and process bureaucracy — adding rituals that feel productive but don't improve outcomes. At Level 5, the measure of a good change is: does it reduce loopback cost or increase ship rate? If yes, implement it. If no, don't.</p>
+    <p><strong>What to do first:</strong> Teach other teams. Level 5 teams that don't transfer knowledge become fragile — dependent on specific people who know the system. Documenting the team's specific R3 learnings into a team playbook is the highest-value activity at Level 5.</p>
+    <p><strong>Typical team:</strong> 10–20+ people, consistently ships features on time, low production incident rate, process is a recruiting asset ("this is how we work").</p>
+  </div>
+</div>
+
+<h2>Skill Progression by Level</h2>
+
+<p>Not every concept from the curriculum is relevant at every level. The table below shows which skills to prioritize at each level, and which to defer.</p>
+
+<table class="radar-table">
+<thead>
+<tr>
+  <th>Skill / Concept</th>
+  <th>L1</th>
+  <th>L2</th>
+  <th>L3</th>
+  <th>L4</th>
+  <th>L5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Write a 1-sentence idea (lesson 0003)</td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>Artifact deposit location (HF-01 fix)</td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td># Assumptions section (HF-02 fix)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>Evidence freshness date (HF-05 fix)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>PRD non-goals section</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>M-sized steps (lesson 0006)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>Explicit supervision tier (lesson 0011)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>8 instruction protocols (IP-01 to IP-08)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>Loopback pattern detector (lesson 0010)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>Retrospective R3 items (lesson 0010)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>HFM tracking per feature (lesson 0010)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>Anti-pattern diagnostic (lesson 0012)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>Trust elevation evidence log (lesson 0011)</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+<tr>
+  <td>Team playbook from R3 learnings</td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-none"></span></td>
+  <td><span class="dot dot-amber"></span></td>
+  <td><span class="dot dot-green"></span></td>
+</tr>
+</tbody>
+<tbody>
+</tbody>
+</table>
+
+<p style="font-size:0.78rem; color:var(--ink-soft); margin-top:-0.5rem; margin-bottom:1.5rem;">
+  <span class="dot dot-green" style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--green); vertical-align:middle;"></span> Full priority &nbsp;
+  <span class="dot dot-amber" style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#d97706; vertical-align:middle;"></span> Introduced &nbsp;
+  <span class="dot dot-none" style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--rule); border:1px solid var(--ink-soft); vertical-align:middle;"></span> Deferred
+</p>
+
+<h2>Role Evolution by Level</h2>
+
+<p>The Manager, Engineer, and Agent roles evolve significantly across maturity levels. The manager's job changes most dramatically.</p>
+
+<table class="role-table">
+<thead>
+<tr><th>Role</th><th>Level 1–2</th><th>Level 3</th><th>Level 4</th><th>Level 5</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td class="role-name">Manager</td>
+  <td>Decides what to build. Reviews code. Signs off on deploys.</td>
+  <td>Runs phases. Writes PRDs. Runs retrospectives. Monitors loopbacks.</td>
+  <td>Runs instruction protocols. Calibrates trust tiers. Interprets loopback detector signals. Reviews R3 items.</td>
+  <td>Coaches other teams. Builds the playbook. Decides which process changes are worth the overhead.</td>
+</tr>
+<tr>
+  <td class="role-name">Engineer</td>
+  <td>Builds features. Tests code. Writes docs.</td>
+  <td>Owns impl plan and execution. Breaks work into M-sized steps. Logs deviations. Reviews agent output.</td>
+  <td>Delegates execution to agent with Tier 2/3 trust. Reviews at checkpoints. Makes architectural decisions escalated by agent.</td>
+  <td>Owns a feature class end-to-end. Writes the team playbook entries. Identifies anti-patterns proactively.</td>
+</tr>
+<tr>
+  <td class="role-name">Agent</td>
+  <td>Not used consistently. Used ad-hoc by individual engineers.</td>
+  <td>Used in execution phase with Tier 1 supervision. Follows impl plan steps. Shows output before committing.</td>
+  <td>AFK-able on Tier 2 steps. Follows all 8 instruction protocols. Runs session close. Reports deviations with root cause.</td>
+  <td>Delegated Tier 3 on established patterns. Writes execution logs. Flags loopback detector signals. Suggests R3 items.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Outcome Metrics by Level</h2>
+
+<p>The metrics below are proxies for maturity. A team at a given level will have outcomes clustered around the ranges shown. If your outcomes are better than your process level suggests, your process is likely more fragile than it looks. If your outcomes are worse, your process is working harder than it should.</p>
+
+<div class="metric-row">
+  <span class="metric-label">Ship rate (features shipped / quarter)</span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-red" style="width:20%"></div></div>
+  <span class="metric-val">L1: 1–3</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-amber" style="width:45%"></div></div>
+  <span class="metric-val">L2: 3–6</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-amber" style="width:65%"></div></div>
+  <span class="metric-val">L3: 6–10</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:80%"></div></div>
+  <span class="metric-val">L4: 10–15</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:95%"></div></div>
+  <span class="metric-val">L5: 15+</span>
+</div>
+
+<div class="metric-row" style="margin-top:1.5rem;">
+  <span class="metric-label">Avg loopback cost (% of feature)</span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-red" style="width:90%"></div></div>
+  <span class="metric-val">L1: ~100%</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-amber" style="width:65%"></div></div>
+  <span class="metric-val">L2: 60–80%</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-amber" style="width:40%"></div></div>
+  <span class="metric-val">L3: 30–50%</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:18%"></div></div>
+  <span class="metric-val">L4: 10–20%</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:4%"></div></div>
+  <span class="metric-val">L5: 0–5%</span>
+</div>
+
+<div class="metric-row" style="margin-top:1.5rem;">
+  <span class="metric-label">Production incident rate (per shipped feature)</span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-red" style="width:80%"></div></div>
+  <span class="metric-val">L1: 0.5–1+</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-amber" style="width:50%"></div></div>
+  <span class="metric-val">L2: 0.2–0.5</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-amber" style="width:28%"></div></div>
+  <span class="metric-val">L3: 0.1–0.2</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:12%"></div></div>
+  <span class="metric-val">L4: 0.05–0.1</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:4%"></div></div>
+  <span class="metric-val">L5: &lt;0.05</span>
+</div>
+
+<div class="metric-row" style="margin-top:1.5rem;">
+  <span class="metric-label">R3 items implemented (per quarter)</span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-red" style="width:5%"></div></div>
+  <span class="metric-val">L1: 0</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-amber" style="width:15%"></div></div>
+  <span class="metric-val">L2: 0–1</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-amber" style="width:40%"></div></div>
+  <span class="metric-val">L3: 1–3</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:70%"></div></div>
+  <span class="metric-val">L4: 3–6</span>
+</div>
+<div class="metric-row">
+  <span class="metric-label"></span>
+  <div class="metric-bar-bg"><div class="metric-bar-fill bar-green" style="width:95%"></div></div>
+  <span class="metric-val">L5: 6+</span>
+</div>
+
+<h2>The Advancement Roadmap</h2>
+
+<p>The fastest path between levels is not to implement everything at once. It is to find the single highest-leverage action at each level and do that until it is automatic.</p>
+
+<h3>Level 1 → Level 2</h3>
+<p><strong>One action:</strong> Write the idea down before building it. One sentence. The rest follows.</p>
+
+<h3>Level 2 → Level 3</h3>
+<p><strong>One action:</strong> Standardize artifact location. Everything goes in <code>features/[name]/</code>. No exceptions. No "I'll send it to you." Enforce it for 3 features. By feature 4 it will be a habit.</p>
+
+<h3>Level 3 → Level 4</h3>
+<p><strong>One action:</strong> Run the loopback pattern detector at the start of every execution phase. Not after things go wrong — proactively, before things go wrong. The detector costs 5 minutes. A late loopback costs 2 weeks.</p>
+
+<h3>Level 4 → Level 5</h3>
+<p><strong>One action:</strong> Implement R3 item follow-through. Track which R3 items from the last retrospective were implemented before the next feature's Idea phase. If they're not implemented, they don't count. The gap between "we decided this in retro" and "we did this before the next feature" is the difference between Level 4 and Level 5.</p>
+
+<div class="callout green">
+  <p><strong>The single most important metric for your team's maturity:</strong> Are the R3 items from your last retrospective implemented before your next feature started? Everything else in this lesson is preparation for that question. If you can answer "yes" consistently, your team is Level 5. If you can't, your team is somewhere between Level 2 and Level 4 — and you know exactly which level by how consistently you're doing it.</p>
+</div>
+
+<h2>What You've Learned: The Curriculum Map</h2>
+
+<p>Lessons 0001–0013 form a complete system. Here's how they connect:</p>
+
+<table>
+<thead>
+<tr><th>Lesson</th><th>Topic</th><th>Addresses</th></tr>
+</thead>
+<tbody>
+<tr><td>0001</td><td>Team Workflow Diagnostic</td><td>Where is your team right now?</td></tr>
+<tr><td>0002</td><td>The 7 Phases in Detail</td><td>What are the phases?</td></tr>
+<tr><td>0003</td><td>Idea Phase Deep Dive</td><td>How to write a buildable idea</td></tr>
+<tr><td>0004</td><td>Research Phase Deep Dive</td><td>How to answer hard questions with evidence</td></tr>
+<tr><td>0005</td><td>Prototype Phase Deep Dive</td><td>How to validate cheaply before building</td></tr>
+<tr><td>0006</td><td>PRD Phase Deep Dive</td><td>How to write a testable spec</td></tr>
+<tr><td>0007</td><td>Implementation Planning Phase Deep Dive</td><td>How to break work into M-sized steps</td></tr>
+<tr><td>0008</td><td>Execution Phase Deep Dive</td><td>How to run the AI agent with supervision</td></tr>
+<tr><td>0009</td><td>QA Phase Deep Dive</td><td>How to verify, not trust</td></tr>
+<tr><td>0010</td><td>Cross-Phase Handoffs</td><td>How to move artifacts between phases</td></tr>
+<tr><td>0011</td><td>Agent Protocols</td><td>How to talk to the AI during execution</td></tr>
+<tr><td>0012</td><td>Anti-Patterns</td><td>What not to do in each phase</td></tr>
+<tr><td>0013</td><td>Team Maturity Model</td><td>Where you are and how to level up</td></tr>
+</tbody>
+</table>
+
+<div class="scenario victory">
+  <h4>Level 5 in practice: The team that ships without surprises</h4>
+  <p>A Level 5 team starts a feature. Idea is written and scored. Research answers the hard questions and deposits evidence with freshness dates. PRD has 3 non-goals and 8 testable requirements. Impl plan has 14 M-sized steps, each mapped to a requirement. Execution runs with Tier 2 trust on 10 steps, Tier 1 on 4. The loopback detector fires a Mid-tier signal at step 6. The team loops back to impl plan, revises step 6, and continues. No late loopback. No surprise. QA finds 2 issues, both fixed before ship. Retrospective runs 18 hours after QA verdict. R3 item written: "Add evidence freshness date to all research artifacts — 2 features last quarter had stale evidence." It is implemented before the next feature's Idea phase starts. The team is Level 5.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0012-anti-patterns.html">← Lesson 0012: Anti-Patterns</a>
+</div>
+
+</body>
+</html>

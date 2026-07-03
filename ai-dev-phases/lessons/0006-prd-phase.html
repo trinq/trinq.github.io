@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006: The PRD Phase — Buildable, Not Long</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success { background: #e8f5e9; border-left-color: #4caf50; }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .prd-template {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .prd-template h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .prd-template ul { margin: 0.5rem 0 0.5rem 1.5rem; }
+    .prd-section { margin-bottom: 1rem; }
+    .prd-section h4 {
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .prd-section p { margin: 0; }
+    .prd-section ul { margin: 0.3rem 0 0.3rem 1.5rem; }
+    .prd-section .example {
+      font-style: italic;
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+    .ladder {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr 1fr;
+      gap: 0;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .ladder-cell {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .ladder-cell:last-child { border-right: none; }
+    .ladder-header {
+      padding: 0.7rem 1rem;
+      background: #ede9fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .ladder-header:last-child { border-right: none; }
+    .ladder-cell.level {
+      font-weight: 700;
+      background: var(--code-bg);
+    }
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .scenario.victory { border-left: 3px solid #4caf50; }
+    .scenario.medium { border-left: 3px solid #ff9800; }
+    .scenario.fail { border-left: 3px solid #b71c1c; }
+    .compare-matrix {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(4, 1fr);
+      gap: 0;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .compare-cell {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-cell:last-child { border-right: none; }
+    .compare-cell:first-child {
+      font-weight: 700;
+      background: var(--code-bg);
+    }
+    .compare-header {
+      padding: 0.6rem 0.8rem;
+      background: #ede9fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-header:last-child { border-right: none; }
+    .compare-header:first-child { background: var(--code-bg); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0006</span></span>
+  <span>Phase 04: PRD</span>
+  <span>2026-07-03</span>
+  <span>20–30 min</span>
+</div>
+
+<h1>The PRD Phase — Buildable, Not Long</h1>
+<p class="subtitle">A PRD fails in two opposite directions: too vague to build, or too long to read. The buildable spec lives between them. This lesson covers the granularity ladder, what goes in vs. what stays out, and the non-goals section most teams forget.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03. Builds on lessons 0001–0005.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> The PRD phase is the first place where vague documentation becomes buildable code. The lesson teaches a precision test for every requirement: does an agent need to know this to build it? If yes, write it. If no, leave it out. Read the granularity ladder first — it answers the question "how long should my PRD be?" Then read the failure modes at the end. Those are the traps your team will hit if the precision test isn't applied.</p>
+</div>
+
+<h2>What Pocock Actually Said</h2>
+
+<p>The full quote, in context:</p>
+
+<blockquote>
+  <em>"The fourth phase is the PRD — a product requirements document. So this is where you're actually writing down what the thing is going to do. So this is the moment where you write down what the thing actually does."</em> — Matt Pocock
+</blockquote>
+
+<p>He says <em>"writing down what the thing is going to do"</em> and <em>"what the thing actually does"</em> on purpose. The PRD captures <em>behavior</em>, not architecture, not implementation, not motivation. The behavior is the contract between the team and the build agent.</p>
+
+<h2>The Two Failure Modes</h2>
+
+<p>Most PRDs fail in two opposite directions. Recognizing them is the first skill:</p>
+
+<h3>Mode 1: Too vague</h3>
+<p>Symptoms: <em>"the system should be fast and user-friendly."</em> An agent reads the PRD and asks 30 clarifying questions. The build phase becomes a series of guesses. Engineers and agents interpret the same sentence differently. The result is something built, but not what was meant.</p>
+
+<h3>Mode 2: Too long</h3>
+<p>Symptoms: 50-page PRD with edge cases for every conceivable input. The agent drowns in noise. The team stops reading. The PRD becomes a wishlist with no priority. The build phase has too much to consider and ends up implementing the most recent thing the team read.</p>
+
+<div class="callout warning">
+  <p><strong>The buildable spec is between these two modes.</strong> "Buildable" means: an agent who knows nothing about your project can read the PRD and start coding without asking clarifying questions. Test: hand the PRD to a fresh agent session. If they ask more than 3 questions before starting, the PRD is too vague. If they can't find the buildable parts in 5 minutes of reading, the PRD is too long.</p>
+</div>
+
+<h2>The Granularity Ladder</h2>
+
+<p>Pocock's framework has a natural 5-level PRD granularity. Different phases, audiences, and feature sizes need different levels:</p>
+
+<div class="ladder">
+  <div class="ladder-header">Level</div>
+  <div class="ladder-header">Length</div>
+  <div class="ladder-header">Audience</div>
+  <div class="ladder-header">Use when…</div>
+  <div class="ladder-cell level">L1</div>
+  <div class="ladder-cell">1 paragraph</div>
+  <div class="ladder-cell">Internal team</div>
+  <div class="ladder-cell">Tiny change, no agent involvement</div>
+  <div class="ladder-cell level">L2</div>
+  <div class="ladder-cell">1 page</div>
+  <div class="ladder-cell">Engineer + agent</div>
+  <div class="ladder-cell">Small feature, single component</div>
+  <div class="ladder-cell level">L3</div>
+  <div class="ladder-cell">2–3 pages</div>
+  <div class="ladder-cell">Agent + reviewer</div>
+  <div class="ladder-cell">Medium feature, multiple files</div>
+  <div class="ladder-cell level">L4</div>
+  <div class="ladder-cell">5–10 pages</div>
+  <div class="ladder-cell">Agent + manager + QA</div>
+  <div class="ladder-cell">Large feature, multiple components</div>
+  <div class="ladder-cell level">L5</div>
+  <div class="ladder-cell">10+ pages</div>
+  <div class="ladder-cell">Cross-team coordination</div>
+  <div class="ladder-cell">Multi-team, multi-quarter</div>
+</div>
+
+<div class="callout">
+  <p><strong>Most teams should default to L3.</strong> L3 (2–3 pages) is the sweet spot for AI-assisted development: enough specificity that an agent can build, short enough that the team can read in one sitting. L4–L5 should be reserved for features that touch multiple components or require cross-team coordination. L1–L2 are for internal work that doesn't need agent involvement.</p>
+</div>
+
+<h2>What Goes In vs. What Stays Out</h2>
+
+<p>The hardest part of writing a PRD is deciding what to include. The precision test is the rule:</p>
+
+<table>
+<thead>
+<tr><th>Include in PRD</th><th>Exclude from PRD</th></tr>
+</thead>
+<tbody>
+<tr><td>User outcomes — what the user gets</td><td>Implementation details — how the engineer codes it</td></tr>
+<tr><td>Interface contracts — API surface, schema, UX flow</td><td>Internal refactoring — what stays the same</td></tr>
+<tr><td>Edge cases that change the architecture</td><td>Edge cases that don't change the design</td></tr>
+<tr><td>Success metrics — how we know it works</td><td>Code style, lint rules, formatting</td></tr>
+<tr><td>Non-goals — what we're NOT doing</td><td>Future considerations — what might come later</td></tr>
+<tr><td>Out-of-scope behaviors</td><td>Detailed migration plans for non-related systems</td></tr>
+</tbody>
+</table>
+
+<h3>The user-outcome test</h3>
+<p>Every requirement should be traceable to a user outcome. <em>"The system processes payments."</em> — user outcome. <em>"The system uses a payment processor abstraction layer."</em> — implementation. Implementation goes in the impl plan (phase 05), not the PRD.</p>
+
+<h3>The agent-input test</h3>
+<p>Every requirement should be something an agent needs to know to build it. If an agent doesn't need it, it's noise. <em>"Users will see a 3-second loading spinner."</em> — agent needs to know. <em>"The codebase uses TypeScript strict mode."</em> — agent can read tsconfig.json.</p>
+
+<h2>Two Mistakes in Two Places</h2>
+
+<p>Most PRD failures are two mistakes in different places:</p>
+
+<h3>Premature precision</h3>
+<p>Specifying things that should be discovered in execution. Example: <em>"The database connection pool size will be 50."</em> The agent doesn't need this upfront; the agent can pick a reasonable default and tune later. Premature precision makes the PRD longer without making the build better.</p>
+
+<h3>Late precision</h3>
+<p>Leaving things vague that should be specified upfront. Example: <em>"The system will authenticate users."</em> The agent needs to know: which method (OAuth? magic link? password?)? What providers? What's the session lifetime? Late precision forces the build phase to make decisions the PRD was supposed to make.</p>
+
+<div class="callout success">
+  <p><strong>Rule of thumb: precision belongs in the PRD when it changes the architecture, and in the impl plan when it doesn't.</strong> If changing the answer would force a rewrite of the implementation, specify it in the PRD. If changing the answer is a simple constant tweak, leave it for the impl plan.</p>
+</div>
+
+<h2>Anatomy of a PRD</h2>
+
+<p>Every PRD has a minimum viable structure. The artifact is <code>prd-[feature].md</code> in the feature folder:</p>
+
+<div class="prd-template">
+  <div class="prd-section">
+    <h4>1. Summary</h4>
+    <p>One paragraph. What the feature does, who it's for, why it matters. Plain language.</p>
+    <p class="example">"This feature lets users export their project data to a CSV file. It serves the back-office team who currently copy-paste from the dashboard. It reduces the export workflow from 20 minutes to 30 seconds."</p>
+  </div>
+
+  <div class="prd-section">
+    <h4>2. User Outcomes</h4>
+    <ul>
+      <li>The user can trigger an export from the project page.</li>
+      <li>The user receives a CSV file within 30 seconds for projects &lt; 10K rows.</li>
+      <li>The user gets an email link for projects &gt; 10K rows.</li>
+    </ul>
+  </div>
+
+  <div class="prd-section">
+    <h4>3. Interface Contract</h4>
+    <ul>
+      <li>API: <code>POST /api/projects/:id/export</code> — returns <code>{ jobId }</code></li>
+      <li>UI: an "Export" button on the project toolbar</li>
+      <li>Schema: the CSV must match the existing dashboard columns</li>
+    </ul>
+  </div>
+
+  <div class="prd-section">
+    <h4>4. Edge Cases That Change Architecture</h4>
+    <ul>
+      <li>Projects &gt; 100K rows must not be exported synchronously (background job required)</li>
+      <li>Concurrent exports from the same project share a job (no duplicate work)</li>
+    </ul>
+  </div>
+
+  <div class="prd-section">
+    <h4>5. Success Metrics</h4>
+    <ul>
+      <li>95% of exports &lt; 10K rows complete in &lt; 30 seconds</li>
+      <li>0 silent failures (user always gets a result or a clear error)</li>
+      <li>Back-office team reports export workflow &lt; 1 minute (subjective, surveyed)</li>
+    </ul>
+  </div>
+
+  <div class="prd-section">
+    <h4>6. Non-Goals</h4>
+    <ul>
+      <li>We are NOT supporting Excel (.xlsx) exports in v1</li>
+      <li>We are NOT supporting scheduled / recurring exports</li>
+      <li>We are NOT exporting audit logs or user data outside the project</li>
+    </ul>
+  </div>
+
+  <div class="prd-section">
+    <h4>7. Links to Upstream</h4>
+    <ul>
+      <li>Idea doc: <code>idea-export-feature.md</code></li>
+      <li>Research: <code>research-csv-export.md</code></li>
+      <li>Prototype: <code>prototype-csv-export.md</code></li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout warning">
+  <p><strong>The non-goals section is the most skipped part of a PRD.</strong> Without explicit non-goals, scope creep is inevitable. A PRD without non-goals is a wishlist. The non-goals are not "future considerations" — they're active constraints on v1. When stakeholders ask for one of them, the answer is: "in v2, not v1."</p>
+</div>
+
+<h2>PRD vs. Spec vs. User Story vs. Ticket</h2>
+
+<p>Teams conflate four different artifacts. They have different scopes and different audiences:</p>
+
+<div class="compare-matrix">
+  <div class="compare-header">Artifact</div>
+  <div class="compare-header">Scope</div>
+  <div class="compare-header">Audience</div>
+  <div class="compare-header">Lifetime</div>
+  <div class="compare-cell">PRD</div>
+  <div class="compare-cell">One feature</div>
+  <div class="compare-cell">Build agent, manager, QA</div>
+  <div class="compare-cell">Quarter</div>
+  <div class="compare-cell">Spec</div>
+  <div class="compare-cell">Whole system</div>
+  <div class="compare-cell">Architects, cross-team</div>
+  <div class="compare-cell">Year(s)</div>
+  <div class="compare-cell">User story</div>
+  <div class="compare-cell">One user-facing slice</div>
+  <div class="compare-cell">Engineer building the slice</div>
+  <div class="compare-cell">Sprint</div>
+  <div class="compare-cell">Ticket</div>
+  <div class="compare-cell">One task</div>
+  <div class="compare-cell">Engineer working the task</div>
+  <div class="compare-cell">Days</div>
+</div>
+
+<p>Notice: <strong>each artifact is a unit of one decision</strong>. The PRD is the whole feature. The spec is the whole system. The user story is one user slice. The ticket is one task. When teams write a "user story" but actually mean a PRD, the story grows. When they write a "PRD" but actually mean a spec, the PRD becomes a 50-page document.</p>
+
+<h2>Three Team Scenarios</h2>
+
+<h3>Scenario A — The PRD that was a wishlist</h3>
+
+<p>The team writes a PRD for a "User Onboarding" feature. The PRD is 12 pages, with sections on every conceivable aspect: email verification, profile completion, social sign-in, SSO, password recovery, account deletion, GDPR compliance, 2FA, passwordless login, social graph, profile photos, friend lists, group onboarding, cohort tracking, A/B test hooks…</p>
+
+<p>The agent reads the PRD. After 30 minutes, it starts implementing. It picks social sign-in first, because that was the section the team wrote most recently. Six weeks later, the build is half-done, and the team has implemented 30% of the wishlist, including things no one asked for.</p>
+
+<p><strong>What went wrong:</strong> The PRD had no non-goals. It had no priority order. It was a wishlist, not a buildable spec. The agent had to pick; the agent picked the most-recently-written section.</p>
+
+<p><strong>Diagnostic:</strong> No non-goals section. The PRD included "future considerations" instead of explicit out-of-scope items. Total feature surface was too large for one PRD; should have been split into multiple PRDs.</p>
+
+<h3>Scenario B — The PRD that was a user story</h3>
+
+<p>The team writes a one-paragraph "PRD" for a "Login" feature: <em>"User can log in with email and password."</em> The agent starts building. The first question: "What's the session lifetime?" Second question: "What happens on failed login — lockout, throttle, or none?" Third question: "Do we support password reset?" Fourth question: "What's the email verification flow?"</p>
+
+<p>Each question forces a sync with the manager. The build takes 3 weeks because the spec wasn't a spec.</p>
+
+<p><strong>What went wrong:</strong> The PRD was a user story dressed up as a PRD. The user outcome (log in) was specified, but the interface contract (what the API returns, what the UI shows) wasn't. The agent had to make decisions that the PRD was supposed to make.</p>
+
+<p><strong>Diagnostic:</strong> No interface contract section. No edge case section. The PRD was the wrong level on the granularity ladder — L1 (one paragraph) for what should've been L3 (2–3 pages).</p>
+
+<h3>Scenario C — The PRD that built</h3>
+
+<p>Engineer T writes a PRD for "CSV Export." Following the template:</p>
+
+<ul>
+  <li><strong>Summary:</strong> 1 paragraph, names the user (back-office team), the current pain (20-minute copy-paste), and the goal (30 seconds).</li>
+  <li><strong>User outcomes:</strong> 3 bulleted, each testable.</li>
+  <li><strong>Interface contract:</strong> API endpoint, UI button, CSV schema. Specific.</li>
+  <li><strong>Edge cases that change architecture:</strong> 2 bullets — 100K-row threshold forces async, concurrent exports share jobs.</li>
+  <li><strong>Success metrics:</strong> 3 numbers — p95 &lt; 30s, 0 silent failures, subjective survey.</li>
+  <li><strong>Non-goals:</strong> 3 bullets — no Excel, no scheduled exports, no audit log export.</li>
+  <li><strong>Links:</strong> idea, research, prototype docs.</li>
+</ul>
+
+<p>Engineer T hands the PRD to a fresh agent. The agent reads it, asks 1 question (a clarification on CSV delimiter), and starts building. The build takes 1 week. The result matches the PRD's success metrics. The team can review the diff and the PRD side by side.</p>
+
+<p><strong>Why it works:</strong> Specific outcomes, specific contracts, specific edge cases that mattered, specific success metrics, specific non-goals. The PRD is 3 pages. The agent builds in 1 week. The team reviews in 1 day.</p>
+
+<h2>PRD and the Phases Around It</h2>
+
+<h3>PRD ← Prototype</h3>
+<p>The prototype (phase 03) was the model. The PRD captures what the prototype taught: what's hard, what's easy, what the gotchas are. Without the prototype, the PRD is mostly fiction. The prototype-N.md is the prototype's "decision artifact"; the PRD is the buildable translation of that decision.</p>
+
+<h3>PRD → Impl Plan</h3>
+<p>The impl plan (phase 05) decomposes the PRD into steps. The PRD is what the plan decomposes. The plan is what the agent reads in execution. If the PRD is vague, the plan has to fill in the gaps, and the plan gets too long to verify.</p>
+
+<h3>PRD → Execution</h3>
+<p>The execution (phase 06) is the agent reading the PRD and the plan, then writing code. The PRD is the source of truth. If a contradiction appears between the PRD and the plan, the PRD wins — plans are decomposable, requirements aren't.</p>
+
+<h3>PRD → QA</h3>
+<p>The success metrics in the PRD become test cases in QA (phase 07). <em>"95% of exports &lt; 10K rows complete in &lt; 30 seconds"</em> — that's a test. <em>"0 silent failures"</em> — that's a test. The PRD's success metrics are the QA's acceptance criteria.</p>
+
+<div class="callout success">
+  <p><strong>The PRD is the contract.</strong> Between manager and engineer, between engineer and agent, between build and QA. Every phase reads the PRD. If the PRD is wrong, every phase inherits the error. If the PRD is vague, every phase invents its own interpretation. The PRD is the most-read document in the whole pipeline — so its quality matters more than any other single artifact.</p>
+</div>
+
+<h2>The Lifetime of a PRD</h2>
+
+<p>PRDs decay. The PRD for v1 isn't the PRD for v2. The lesson includes a versioning rule:</p>
+
+<table>
+<thead>
+<tr><th>Version</th><th>Status</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td>v1 (initial)</td><td>Active</td><td>Source of truth for build</td></tr>
+<tr><td>v1.1 (post-build patches)</td><td>Active</td><td>Patch the PRD when scope changes mid-build</td></tr>
+<tr><td>v2 (post-launch iterations)</td><td>Pending</td><td>Write a new PRD; don't edit v1 in place</td></tr>
+<tr><td>v1 (after v2 ships)</td><td>Archived</td><td>Move to <code>prd-archive/</code>; never edit</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+  <p><strong>Never edit v1 in place once v2 is written.</strong> The PRD is a historical record. If you edit v1 after v2 ships, you lose the ability to ask "what did the build actually do?" A year from now, someone wants to know why a feature works the way it does — the answer is in the v1 PRD. Once v2 ships, v1 is a museum exhibit.</p>
+</div>
+
+<h2>8 Failure Modes</h2>
+
+<table>
+<thead>
+<tr><th>Symptom</th><th>What you actually missed</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>PRD too vague — agent re-asks everything</td>
+<td>No interface contract; no edge cases that change architecture</td>
+</tr>
+<tr>
+<td>PRD too long — agent can't find the buildable parts</td>
+<td>Future considerations included; wishlist mixed with v1</td>
+</tr>
+<tr>
+<td>PRD writes implementation, not interface</td>
+<td>Premature precision; user-outcome test failed</td>
+</tr>
+<tr>
+<td>PRD writes user story, not feature</td>
+<td>Granularity ladder missed; L1 used for L3 work</td>
+</tr>
+<tr>
+<td>PRD written before prototype</td>
+<td>Phase order violated; PRD is engineering fiction</td>
+</tr>
+<tr>
+<td>PRD has no success metrics</td>
+<td>No acceptance criteria; "done" is undefined</td>
+</tr>
+<tr>
+<td>PRD has no non-goals</td>
+<td>Scope creep is inevitable; PRD is a wishlist</td>
+</tr>
+<tr>
+<td>PRD decoupled from idea/research/prototype</td>
+<td>No traceability; PRD is unmoored from upstream decisions</td>
+</tr>
+</tbody>
+</table>
+
+<h2>The Manager Ritual for PRD</h2>
+
+<div class="prd-template">
+  <h4>PRD phase ritual — 3 questions before approving</h4>
+  <ol>
+    <li><strong>"Is it buildable by an agent?"</strong> — hand the PRD to a fresh agent session. If they ask more than 3 clarifying questions, the PRD is too vague.</li>
+    <li><strong>"Does it have non-goals?"</strong> — read the non-goals section. If it's empty or full of "future considerations," the PRD is a wishlist.</li>
+    <li><strong>"Does it link to the prototype that justified it?"</strong> — find the links-to-upstream section. If the prototype is missing, the PRD is fiction.</li>
+  </ol>
+</div>
+
+<div class="callout warning">
+  <p><strong>The manager's hardest question after a PRD.</strong> It's not "is it complete?" — completeness is vague. It's "can I read this PRD and tell a junior engineer to build it, and have the result match my expectations?" If the answer is no, the PRD is too vague, too long, or written in the wrong voice. The PRD is the most-read document in the pipeline. Manager review is the highest-leverage use of the manager's time.</p>
+</div>
+
+<details>
+  <summary>Recall exercise: audit your last 3 PRDs</summary>
+  <div style="margin-top: 0.5rem;">
+    <p>For your last 3 PRDs, answer:</p>
+    <ol>
+      <li>Could a fresh agent build from it without more than 3 clarifying questions?</li>
+      <li>Did it have an interface contract section?</li>
+      <li>Did it have a non-goals section with explicit out-of-scope items?</li>
+      <li>Did it have success metrics that map to test cases?</li>
+      <li>Did it link back to the prototype / research / idea?</li>
+      <li>Was it 2–3 pages (L3) or 10+ pages (L5)?</li>
+      <li>Did anyone read it from start to finish before building?</li>
+      <li>Did the build match the PRD's success metrics?</li>
+    </ol>
+    <p>Score: each yes = 1 point. Below 4/8 → PRD is leaking into wishlist territory. 4–6/8 → solid. 7+/8 → strong PRD discipline. Whatever the score, the value of measuring is the same.</p>
+  </div>
+</details>
+
+<h2>Decision Tree for Lesson 0007</h2>
+
+<p>Four phases remain in Pocock's sequence:</p>
+
+<table>
+<thead>
+<tr><th>Phase</th><th>Pocock's description</th><th>Key manager question</th></tr>
+</thead>
+<tbody>
+<tr><td>05 Impl Plan</td><td>"break the thing into steps"</td><td>How detailed must the plan be before agents can execute?</td>
+</tr>
+<tr><td>06 Execution</td><td>"implement the thing"</td><td>When does the manager step in vs. let the agent run?</td>
+</tr>
+<tr><td>07 QA</td><td>"test the thing"</td><td>What does "done" look like when an agent built it?</td>
+</tr>
+<tr><td>(loopback)</td><td>Back to Idea when a phase proves the original idea is wrong</td><td>When should we kill a feature vs. keep patching it?</td>
+</tr>
+</tbody>
+</table>
+
+<p>The natural next is <strong>Impl Plan (05)</strong> — Pocock's order places it directly after PRD. The Impl Plan deep-dive will introduce the <em>decomposable contract</em> concept: a plan that an agent can follow step by step, with checkpoints that the manager can audit. Most impl plans fail by being either too vague (the agent has to re-decompose) or too prescriptive (the agent can't adapt to discovery). The same precision test applies, but to steps instead of requirements.</p>
+
+<div class="callout success">
+  <p><strong>Final note on this lesson.</strong> The PRD is the first place where vague intent becomes buildable contract. The buildable spec is rare — most PRDs are either too vague (the agent re-asks) or too long (the agent drowns). The 5-level granularity ladder gives the team a calibration. The 8 failure modes give the team a diagnostic. The 3-question manager ritual gives the manager a forcing function. Together, they make the PRD a useful artifact instead of a ceremonial one. The PRD is the most-read document in the pipeline. Make it count.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0005-prototype-phase.html">← Lesson 0005: Prototype Phase</a>
+  <a href="0007-impl-plan-phase.html">Lesson 0007: Impl Plan Phase →</a>
+</div>
+
+</body>
+</html>

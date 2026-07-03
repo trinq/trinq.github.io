@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0010: Cross-Phase Handoffs — The Invisible Work Between Phases</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-light: #ede9fe;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle { color: var(--ink-soft); font-style: italic; margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre { background: var(--code-bg); padding: 1rem 1.25rem; margin: 1rem 0; overflow-x: auto; border-radius: 4px; border-left: 3px solid var(--accent); }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: var(--accent-light);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.green { background: var(--green-light); border-left-color: var(--green); }
+    .callout.orange { background: var(--orange-light); border-left-color: var(--orange); }
+    .callout.red { background: var(--red-light); border-left-color: var(--red); }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 { font-weight: 700; margin-bottom: 0.5rem; }
+    .scenario.victory { border-left: 3px solid var(--green); }
+    .scenario.medium { border-left: 3px solid var(--orange); }
+    .scenario.fail { border-left: 3px solid var(--red); }
+
+    /* Phase flow diagram */
+    .phase-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 2rem 0;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+    .phase-node {
+      flex: 1;
+      min-width: 70px;
+      background: var(--accent-light);
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.5rem 0.4rem;
+      text-align: center;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .phase-node.loopback {
+      background: var(--orange-light);
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+    .phase-node.dead-end {
+      background: var(--red-light);
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .phase-arrow {
+      color: var(--ink-soft);
+      font-size: 1.2rem;
+      padding: 0 0.3rem;
+    }
+    .phase-arrow.fail {
+      color: var(--red);
+      font-weight: 700;
+    }
+    .phase-arrow.retry {
+      color: var(--orange);
+      font-weight: 700;
+    }
+
+    /* Handoff card */
+    .handoff-card {
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .handoff-header {
+      background: var(--code-bg);
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .handoff-header h4 { font-weight: 700; }
+    .handoff-header .tag {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+    }
+    .handoff-header .tag.freq-high { background: var(--red); }
+    .handoff-header .tag.freq-med { background: var(--orange); }
+    .handoff-header .tag.freq-low { background: var(--green); }
+    .handoff-body { padding: 1rem 1.25rem; }
+
+    /* Ownership matrix */
+    .matrix { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.82rem; }
+    .matrix th { background: var(--accent-light); padding: 0.5rem 0.6rem; text-align: center; font-weight: 700; border: 1px solid var(--rule); }
+    .matrix td { padding: 0.4rem 0.6rem; border: 1px solid var(--rule); vertical-align: middle; }
+    .matrix .phase-name { font-weight: 700; background: var(--code-bg); white-space: nowrap; }
+    .matrix .owner-M { background: #dbeafe; text-align: center; }
+    .matrix .owner-E { background: #f0fdf4; text-align: center; }
+    .matrix .owner-A { background: #fef9c3; text-align: center; }
+    .matrix .owner-Both { background: #f3e8ff; text-align: center; }
+    .matrix .owner-none { background: var(--red-light); text-align: center; color: var(--red); }
+
+    /* Loopback detector */
+    .detector-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.82rem; }
+    .detector-table th { background: var(--orange-light); padding: 0.5rem 0.6rem; text-align: left; font-weight: 700; border-bottom: 2px solid var(--rule); }
+    .detector-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    .detector-table tr:last-child td { border-bottom: none; }
+    .signal-badge {
+      display: inline-block;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .signal-early { background: #fef9c3; color: #92400e; }
+    .signal-mid { background: #fff7ed; color: #c2410c; }
+    .signal-late { background: #fef2f2; color: #b91c1c; }
+
+    /* Retrospective template */
+    .retro-section {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+    .retro-section h4 { font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); }
+    .retro-item {
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .retro-item:last-child { border-bottom: none; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+    @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+    .two-col-box { background: var(--code-bg); border-radius: 4px; padding: 1rem 1.25rem; }
+    .two-col-box h4 { font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); }
+
+    .freq-bar {
+      display: inline-block;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--accent);
+      vertical-align: middle;
+    }
+    .freq-1 { width: 8px; }
+    .freq-2 { width: 16px; }
+    .freq-3 { width: 24px; }
+    .freq-4 { width: 32px; }
+    .freq-5 { width: 40px; }
+    .freq-6 { width: 48px; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0010</span></span>
+  <span>Integration</span>
+  <span>2026-07-03</span>
+  <span>30–40 min</span>
+</div>
+
+<h1>Cross-Phase Handoffs — The Invisible Work Between Phases</h1>
+<p class="subtitle">The phases don't end when the next phase begins. Every phase transition carries a package of assumptions, decisions, and unknowns. Most process failures happen in the handoff — not inside any phase. This lesson maps the 7 failure modes of handoffs, assigns phase ownership, builds a loopback pattern detector, and closes with a retrospective taxonomy.</p>
+
+<p>Source: Integration lesson. Builds on lessons 0001–0009 (Matt Pocock — "The 7 phases of AI-driven development," AI Hero / YouTube, 2026). This lesson synthesizes the 7-phase sequence into a cross-phase system view.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> Read the "phases are a system" section first — it establishes the handoff concept. Then read the 7 failure modes — each maps to a specific phase transition and has a fix. The phase ownership matrix clarifies who does what. The loopback pattern detector is the most actionable tool in this lesson: it gives you the early warning signals for when the process is about to fail. The retrospective taxonomy is the template to run after every feature, regardless of outcome.</p>
+</div>
+
+<h2>The Core Idea: Phases Are a System, Not a Checklist</h2>
+
+<p>Lessons 0001–0009 described each phase individually. This lesson describes what happens <em>between</em> phases — and why that's where most process failures actually live.</p>
+
+<p>Each phase produces an artifact. Each artifact is the input to the next phase. A phase transition (handoff) is the act of passing that artifact forward. The failure modes of handoffs are different from the failure modes of phases:</p>
+
+<ul>
+  <li><strong>Phase failure:</strong> A phase produces the wrong artifact (wrong PRD, wrong plan, wrong execution log)</li>
+  <li><strong>Handoff failure:</strong> The right artifact is produced but the receiver can't use it — wrong format, wrong assumptions, missing context, wrong owner</li>
+</ul>
+
+<p>Most teams optimize for phase quality (they care about good PRDs, good plans, good code). Few teams optimize for handoff quality. That's the gap this lesson addresses.</p>
+
+<h2>The Phase Flow: Forward and Backward</h2>
+
+<p>The 7 phases form a directed graph. Forward edges go to the next phase. Backward edges (loopbacks) go to an earlier phase:</p>
+
+<div class="phase-flow">
+  <div class="phase-node">01<br>Idea</div>
+  <div class="phase-arrow fail">✕</div>
+  <div class="phase-node">02<br>Research</div>
+  <div class="phase-arrow fail">✕</div>
+  <div class="phase-node">03<br>Prototype</div>
+  <div class="phase-arrow fail">✕</div>
+  <div class="phase-node">04<br>PRD</div>
+  <div class="phase-arrow fail">✕</div>
+  <div class="phase-node">05<br>Impl Plan</div>
+  <div class="phase-arrow fail">✕</div>
+  <div class="phase-node">06<br>Execution</div>
+  <div class="phase-arrow fail">✕</div>
+  <div class="phase-node loopback">07<br>QA</div>
+</div>
+
+<p style="font-size:0.85rem; color:var(--ink-soft); margin-top:-0.5rem;">Forward flow: Idea → Research → Prototype → PRD → Impl Plan → Execution → QA → Ship</p>
+
+<p>QA is the only phase that can loop back to any earlier phase. The three valid loopbacks from QA:</p>
+
+<ul>
+  <li><strong>QA → Idea:</strong> Feature shipped but doesn't solve the user's problem. Loopback C (kill). Lesson 0009, §The Three Loopbacks.</li>
+  <li><strong>QA → PRD:</strong> Build fails at the requirement level. Loopback B (rollback). Lesson 0009, §The Three Verdicts.</li>
+  <li><strong>QA → Impl Plan:</strong> Build fails at the implementation level. Loopback Fix path. Lesson 0009, §Verdict 2.</li>
+</ul>
+
+<p>Impl Plan can loop back to Research (when the approach is wrong) or to PRD (when requirements are wrong). Research can loop back to Idea (when the idea needs refining before evidence is gathered). Prototype can loop back to Idea (when the prototype reveals the idea is wrong). The loops are not failures — they are the system's correction mechanism.</p>
+
+<h2>The 7 Handoff Failure Modes</h2>
+
+<p>Each handoff failure mode has a name, a description of what goes wrong, the phase transition it affects, and a fix. The fix is always a document-format or process requirement at the sending phase — not a check at the receiving phase.</p>
+
+<div class="handoff-card">
+  <div class="handoff-header">
+    <h4>HF-01: Artifact Drop</h4>
+    <span class="tag freq-high">High frequency</span>
+  </div>
+  <div class="handoff-body">
+    <p><strong>What goes wrong:</strong> The sending phase produces an artifact, but it never arrives at the receiving phase in a usable form. The artifact exists in the team's memory, in a Slack thread, or in a file that's not in the standard location. The receiving phase starts from scratch or from incorrect assumptions.</p>
+    <p><strong>Affected transitions:</strong> Any. Most common: Idea → Research, PRD → Impl Plan, Execution → QA.</p>
+    <p><strong>Why it happens:</strong> No artifact deposit rule. The team assumes "everyone knows" because the conversation was recent.</p>
+    <p><strong>Fix:</strong> Every phase must deposit its artifact in a standard location before the next phase begins. Standard path: <code>features/[name]/phase-[number]-[name].md</code>. The next phase's first action is to read the prior artifact — not to ask for it.</p>
+    <p><strong>Signal in retrospective:</strong> <em>"Phase 3 started without reading Phase 2 output"</em> or <em>"The impl plan didn't reference the PRD"</em>.</p>
+  </div>
+</div>
+
+<div class="handoff-card">
+  <div class="handoff-header">
+    <h4>HF-02: Assumption Inheritance</h4>
+    <span class="tag freq-high">High frequency</span>
+  </div>
+  <div class="handoff-body">
+    <p><strong>What goes wrong:</strong> The sending phase makes assumptions that the receiving phase inherits without realizing it. The receiving phase treats these assumptions as facts. Later, when the assumption turns out to be wrong, every downstream phase has to redo work.</p>
+    <p><strong>Affected transitions:</strong> Research → Prototype (assumptions about what the prototype needs to prove), PRD → Impl Plan (assumptions about what the plan needs to cover), Impl Plan → Execution (assumptions about what the execution steps need to handle).</p>
+    <p><strong>Why it happens:</strong> Assumptions are invisible. They don't appear in the artifact because they were so obvious to the sender that they weren't worth writing down.</p>
+    <p><strong>Fix:</strong> Every artifact must contain an explicit <code># Assumptions</code> section. The receiving phase must read the assumptions section and flag any that are wrong before proceeding. This is not optional — it's the assumption review gate.</p>
+    <p><strong>Signal in retrospective:</strong> <em>"We assumed X was true but it wasn't" — where X appears nowhere in the prior artifact</em>.</p>
+  </div>
+</div>
+
+<div class="handoff-card">
+  <div class="handoff-header">
+    <h4>HF-03: Granularity Mismatch</h4>
+    <span class="tag freq-high">High frequency</span>
+  </div>
+  <div class="handoff-body">
+    <p><strong>What goes wrong:</strong> The sending phase produces an artifact at the wrong level of detail for the receiving phase's needs. The receiving phase either has to work harder (artifact is too coarse) or gets paralyzed (artifact is too fine).</p>
+    <p><strong>Affected transitions:</strong> Prototype → PRD (prototype proves concept but PRD needs requirements; gap between proof and spec), PRD → Impl Plan (PRD has user stories but impl plan needs M-sized steps), Impl Plan → Execution (plan has checkpoints but execution needs action-level detail).</p>
+    <p><strong>Why it happens:</strong> Each phase has its own granularity ladder (lesson 0006). The ladder doesn't align automatically between phases. The sender doesn't know what level of detail the receiver needs.</p>
+    <p><strong>Fix:</strong> Phase contracts. Before sending an artifact, the sender asks: <em>"What level of detail do you need from me?"</em> The receiver defines their minimum artifact requirements. This is a 5-minute conversation, not a document.</p>
+    <p><strong>Signal in retrospective:</strong> <em>"The impl plan had 3 steps but each step took 2 days"</em> or <em>"The PRD had 40 requirements but only 8 were buildable"</em>.</p>
+  </div>
+</div>
+
+<div class="handoff-card">
+  <div class="handoff-header">
+    <h4>HF-04: Owner Ambiguity</h4>
+    <span class="tag freq-med">Medium frequency</span>
+  </div>
+  <div class="handoff-body">
+    <p><strong>What goes wrong:</strong> Two people believe they own the same phase, or no one believes they own it. The phase starts late, runs in parallel with the wrong scope, or produces an artifact with no clear owner to defend it.</p>
+    <p><strong>Affected transitions:</strong> Research → Prototype (both engineer and manager think the other is defining the prototype scope), Prototype → PRD (no clear owner for writing the PRD), PRD → QA (no clear owner for running the test traceability check).</p>
+    <p><strong>Why it happens:</strong> Ownership is assumed, not assigned. The team is small so "everyone owns everything." The manager thinks the engineer is driving; the engineer thinks the manager is driving.</p>
+    <p><strong>Fix:</strong> Explicit owner assignment at the start of each phase. One owner per phase. The owner is responsible for artifact quality and for the handoff. Ownership is not about authority — it's about accountability. See the Phase Ownership Matrix below.</p>
+    <p><strong>Signal in retrospective:</strong> <em>"We weren't sure who was running the PRD phase"</em> or <em>"Both of us thought the other was writing the impl plan"</em>.</p>
+  </div>
+</div>
+
+<div class="handoff-card">
+  <div class="handoff-header">
+    <h4>HF-05: Evidence Decay</h4>
+    <span class="tag freq-med">Medium frequency</span>
+  </div>
+  <div class="handoff-body">
+    <p><strong>What goes wrong:</strong> The research phase produces evidence. Weeks later, the impl plan phase uses that evidence to make architectural decisions. But the evidence has decayed — the landscape changed, the user need shifted, the technology evolved. The impl plan makes decisions on stale evidence.</p>
+    <p><strong>Affected transitions:</strong> Research → Impl Plan (most common), Prototype → PRD (user need shifts between prototype and spec), Idea → Research (stale problem statement).</p>
+    <p><strong>Why it happens:</strong> Research artifacts don't include a freshness date. The impl plan doesn't check whether the evidence is still valid. Evidence decay is invisible until the build is shipped.</p>
+    <p><strong>Fix:</strong> Every research artifact must include a <code># Evidence Freshness</code> section with: (1) date collected, (2) conditions under which it's valid, (3) expiry date or trigger. The impl plan phase must review freshness before using research evidence.</p>
+    <p><strong>Signal in retrospective:</strong> <em>"The architecture decision was based on research from 6 weeks ago"</em> or <em>"User needs shifted between research and build"</em>.</p>
+  </div>
+</div>
+
+<div class="handoff-card">
+  <div class="handoff-header">
+    <h4>HF-06: Scope Creep in Transit</h4>
+    <span class="tag freq-med">Medium frequency</span>
+  </div>
+  <div class="handoff-body">
+    <p><strong>What goes wrong:</strong> Between phases, new information arrives — a user interview, a competitor release, an internal stakeholder request — and gets incorporated into the next phase's artifact without going through the idea gate. The feature scope grows in transit, invisibly.</p>
+    <p><strong>Affected transitions:</strong> Research → Prototype (new user data mid-research), PRD → Impl Plan (stakeholder adds requirements after PRD is signed off), Impl Plan → Execution (engineer adds polish items mid-implementation).</p>
+    <p><strong>Why it happens:</strong> The team is excited and responsive. New information feels valuable. There's no gate between phases that says "this new information goes back to Idea, not straight into the build."</p>
+    <p><strong>Fix:</strong> Inter-phase gate rule: any new requirement discovered between phases goes back to Idea for evaluation. Not to the current phase's artifact. Not to the next phase's artifact. To Idea. Idea decides whether the new requirement changes scope.</p>
+    <p><strong>Signal in retrospective:</strong> <em>"We added 5 features that weren't in the PRD"</em> or <em>"The scope grew by 40% between sign-off and ship"</em>.</p>
+  </div>
+</div>
+
+<div class="handoff-card">
+  <div class="handoff-header">
+    <h4>HF-07: Premature Forward Motion</h4>
+    <span class="tag freq-low">Low frequency but high damage</span>
+  </div>
+  <div class="handoff-body">
+    <p><strong>What goes wrong:</strong> The current phase hasn't finished, but the next phase starts anyway — either because of schedule pressure, or because the team is excited, or because the phase boundary was never formally checked. The next phase builds on an incomplete artifact. Errors compound.</p>
+    <p><strong>Affected transitions:</strong> Research → Prototype (prototype starts before research is conclusive), Prototype → PRD (PRD written before prototype is done), PRD → Impl Plan (plan written while PRD is still being revised), Impl Plan → Execution (execution starts before plan is reviewed), Execution → QA (QA starts before execution log is complete).</p>
+    <p><strong>Why it happens:</strong> Schedule pressure. Enthusiasm. The belief that "we know enough to move forward." The absence of a formal phase-end check.</p>
+    <p><strong>Fix:</strong> Phase-end gate. Before the next phase begins, the owner of the current phase formally closes it: (1) artifact is complete and deposited, (2) all assumptions are documented, (3) the receiving phase owner acknowledges receipt and confirms the artifact meets their minimum requirements. This is a 10-minute ritual. It prevents days of rework.</p>
+    <p><strong>Signal in retrospective:</strong> <em>"We started execution before the impl plan was fully reviewed"</em> or <em>"QA found gaps that should have been caught in execution"</em>.</p>
+  </div>
+</div>
+
+<h2>Frequency and Damage Map</h2>
+
+<p>High frequency doesn't always mean high damage. HF-07 (premature forward motion) is low frequency but can invalidate an entire build. HF-01 and HF-02 are the most common and should be eliminated first — they compound every other failure mode.</p>
+
+<table>
+<thead>
+<tr><th>Failure Mode</th><th>Frequency</th><th>Damage</th><th>Primary fix</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>HF-01 Artifact Drop</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span> Very High</td>
+  <td>Medium–High</td>
+  <td>Standard artifact deposit location</td>
+</tr>
+<tr>
+  <td>HF-02 Assumption Inheritance</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span> Very High</td>
+  <td>High</td>
+  <td>Explicit # Assumptions section in every artifact</td>
+</tr>
+<tr>
+  <td>HF-03 Granularity Mismatch</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar"></span> High</td>
+  <td>Medium</td>
+  <td>Phase contracts (5-min pre-handoff conversation)</td>
+</tr>
+<tr>
+  <td>HF-04 Owner Ambiguity</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar"></span> High</td>
+  <td>Medium</td>
+  <td>Explicit owner assignment per phase</td>
+</tr>
+<tr>
+  <td>HF-05 Evidence Decay</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar"></span> Medium</td>
+  <td>High</td>
+  <td>Evidence freshness section with expiry date</td>
+</tr>
+<tr>
+  <td>HF-06 Scope Creep in Transit</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-3"></span><span class="freq-bar"></span> Medium</td>
+  <td>Medium–High</td>
+  <td>Inter-phase gate: new info → Idea, not current phase</td>
+</tr>
+<tr>
+  <td>HF-07 Premature Forward Motion</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-3"></span><span class="freq-bar freq-2"></span><span class="freq-bar freq-1"></span><span class="freq-bar"></span> Low</td>
+  <td>Very High</td>
+  <td>Phase-end gate ritual (10 min)</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Phase Ownership Matrix</h2>
+
+<p>Three roles: Manager (M), Engineer (E), Agent (A). "Both" means two roles share ownership. The owner is accountable for artifact quality and the handoff to the next phase. Non-owners participate but don't drive.</p>
+
+<table class="matrix">
+<thead>
+<tr><th>Phase</th><th>Primary Owner</th><th>Accountable for</th><th>Non-owner role</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td class="phase-name">01 Idea</td>
+  <td class="owner-M">Manager</td>
+  <td>Buildable question test; traceable to user problem</td>
+  <td>Engineer advises on feasibility signal</td>
+</tr>
+<tr>
+  <td class="phase-name">02 Research</td>
+  <td class="owner-Both">Manager + Engineer</td>
+  <td>Evidence chains; hard questions answered; freshness dates</td>
+  <td>Agent synthesizes research notes</td>
+</tr>
+<tr>
+  <td class="phase-name">03 Prototype</td>
+  <td class="owner-E">Engineer</td>
+  <td>Proof of concept; throwaway artifact; clear outcome statement</td>
+  <td>Manager defines what the prototype must prove</td>
+</tr>
+<tr>
+  <td class="phase-name">04 PRD</td>
+  <td class="owner-M">Manager</td>
+  <td>Buildable spec; non-goals; success metrics; interface contracts</td>
+  <td>Engineer reviews for buildability</td>
+</tr>
+<tr>
+  <td class="phase-name">05 Impl Plan</td>
+  <td class="owner-E">Engineer</td>
+  <td>M-sized steps; checkpoints; assumption section; plan traceable to PRD</td>
+  <td>Manager reviews for PRD coverage</td>
+</tr>
+<tr>
+  <td class="phase-name">06 Execution</td>
+  <td class="owner-E">Engineer (with Agent)</td>
+  <td>Supervised autonomy; execution log; deviation types documented</td>
+  <td>Manager monitors trust calibration; reads execution log</td>
+</tr>
+<tr>
+  <td class="phase-name">07 QA</td>
+  <td class="owner-M">Manager</td>
+  <td>Test traceability to PRD; verdicts; retrospective input</td>
+  <td>Engineer runs tests; Agent helps write test cases</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout orange">
+  <p><strong>The impl plan is the engineer's phase, even when the agent does the work.</strong> The engineer owns the impl plan artifact. The agent is a tool that executes within the impl plan. The engineer reviews every step before it runs. This is not optional: the impl plan is where the engineer thinks through the architecture, and the agent executes it. If the engineer doesn't own the impl plan, the architecture is whatever the agent happened to choose.</p>
+</div>
+
+<h2>The Loopback Pattern Detector</h2>
+
+<p>The most valuable skill in AI-driven development is recognizing the loopback before the loopback fires. The loopback pattern detector gives you early warning signals — symptoms that appear 1–2 phases before the loopback would be necessary. Catch the signal, fix the root cause, avoid the loopback.</p>
+
+<p>Three signal tiers:</p>
+
+<ul>
+  <li><span class="signal-badge signal-early">Early</span> — 2 phases before loopback would fire. Actionable: investigate now.</li>
+  <li><span class="signal-badge signal-mid">Mid</span> — 1 phase before loopback would fire. Actionable: escalate to phase owner.</li>
+  <li><span class="signal-badge signal-late">Late</span> — Loopback is necessary. Cannot be avoided; manage it well.</li>
+</ul>
+
+<table class="detector-table">
+<thead>
+<tr><th>Signal</th><th>Tier</th><th>Indicates loopback to...</th><th>What to do now</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>Research evidence conflicts with itself or the idea</td>
+  <td><span class="signal-badge signal-early">Early</span></td>
+  <td>Idea</td>
+  <td>Refine the idea before writing the prototype spec</td>
+</tr>
+<tr>
+  <td>Prototype outcome is ambiguous — can't tell if it succeeded</td>
+  <td><span class="signal-badge signal-early">Early</span></td>
+  <td>Research</td>
+  <td>Redefine the prototype's success criteria; re-run</td>
+</tr>
+<tr>
+  <td>PRD has &lt; 3 user outcomes or no non-goals</td>
+  <td><span class="signal-badge signal-early">Early</span></td>
+  <td>Research</td>
+  <td>Return to research; insufficient problem definition</td>
+</tr>
+<tr>
+  <td>Impl plan step cannot be traced to a PRD requirement</td>
+  <td><span class="signal-badge signal-early">Early</span></td>
+  <td>PRD</td>
+  <td>Add the missing PRD requirement; don't build without it</td>
+</tr>
+<tr>
+  <td>Impl plan step has &gt; 3 assumptions listed</td>
+  <td><span class="signal-badge signal-early">Early</span></td>
+  <td>Research</td>
+  <td>Each untested assumption needs evidence before execution</td>
+</tr>
+<tr>
+  <td>Execution deviates more than twice on the same step</td>
+  <td><span class="signal-badge signal-mid">Mid</span></td>
+  <td>Impl Plan</td>
+  <td>Pause execution; the plan step is wrong; revise before continuing</td>
+</tr>
+<tr>
+  <td>Agent asks the same question twice about the same step</td>
+  <td><span class="signal-badge signal-mid">Mid</span></td>
+  <td>Impl Plan</td>
+  <td>The plan step isn't specific enough; clarify before agent continues</td>
+</tr>
+<tr>
+  <td>Execution log has a Type 3 deviation (wrong tool/approach)</td>
+  <td><span class="signal-badge signal-mid">Mid</span></td>
+  <td>Impl Plan</td>
+  <td>Type 3 means the plan chose wrong approach; revisit before more steps run</td>
+</tr>
+<tr>
+  <td>QA cannot write an A-test for a PRD requirement</td>
+  <td><span class="signal-badge signal-mid">Mid</span></td>
+  <td>PRD</td>
+  <td>PRD requirement is vague or non-testable; refine before verdict</td>
+</tr>
+<tr>
+  <td>QA finds missing PRD non-goals (behavior that should have been excluded)</td>
+  <td><span class="signal-badge signal-late">Late</span></td>
+  <td>PRD (rollback)</td>
+  <td>Feature was built but with wrong scope; rollback or fix depending on severity</td>
+</tr>
+<tr>
+  <td>QA verdict is rollback; root cause is in the PRD</td>
+  <td><span class="signal-badge signal-late">Late</span></td>
+  <td>PRD</td>
+  <td>Loopback to PRD; archive current artifact; start fresh</td>
+</tr>
+<tr>
+  <td>Feature ships; no users adopt it within 2 weeks</td>
+  <td><span class="signal-badge signal-late">Late</span></td>
+  <td>Idea (kill)</td>
+  <td>Loopback C — idea was wrong; not execution; research why before next iteration</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout green">
+  <p><strong>The single most actionable rule from this lesson:</strong> When you see a Mid-tier signal, stop the current phase. Mid-tier signals mean the current phase is working with a flawed upstream artifact. Continuing costs more than stopping. The instinct is to push through. The discipline is to loop back early. The cost of a loopback at phase 3 is 10% of the cost of the same loopback at phase 7.</p>
+</div>
+
+<h2>When Each Loopback Actually Fires</h2>
+
+<p>The loopback frequency table below is based on patterns across many AI-driven development teams. Research → Idea and Prototype → Idea are the most common loopbacks. QA → Idea is the rarest and most valuable to catch early.</p>
+
+<table>
+<thead>
+<tr><th>Loopback path</th><th>How often it fires</th><th>Most common trigger</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>Research → Idea</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span> Very common</td>
+  <td>Evidence doesn't support the idea as stated</td>
+</tr>
+<tr>
+  <td>Prototype → Idea</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-2"></span> Common</td>
+  <td>Prototype proves something different than expected</td>
+</tr>
+<tr>
+  <td>Prototype → Research</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-3"></span><span class="freq-bar freq-2"></span> Moderately common</td>
+  <td>Prototype reveals new questions that research didn't answer</td>
+</tr>
+<tr>
+  <td>PRD → Research</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-3"></span><span class="freq-bar freq-2"></span><span class="freq-bar freq-1"></span> Occasional</td>
+  <td>PRD written before research questions were fully answered</td>
+</tr>
+<tr>
+  <td>Impl Plan → PRD</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-3"></span><span class="freq-bar freq-2"></span><span class="freq-bar freq-1"></span> Occasional</td>
+  <td>Impl plan reveals unbuildable requirements; PRD needs revision</td>
+</tr>
+<tr>
+  <td>Impl Plan → Research</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-3"></span><span class="freq-bar freq-1"></span><span class="freq-bar"></span> Uncommon</td>
+  <td>Architecture decision requires evidence not gathered in research</td>
+</tr>
+<tr>
+  <td>Execution → Impl Plan</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-3"></span><span class="freq-bar freq-2"></span><span class="freq-bar freq-1"></span> Occasional</td>
+  <td>Type 3 deviation (wrong approach) or repeated Type 1 deviations</td>
+</tr>
+<tr>
+  <td>QA → Impl Plan (FIX path)</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-5"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-2"></span><span class="freq-bar freq-1"></span><span class="freq-bar"></span> Uncommon</td>
+  <td>Build passes but test coverage gaps found; fix in same iteration</td>
+</tr>
+<tr>
+  <td>QA → PRD (rollback)</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-4"></span><span class="freq-bar freq-3"></span><span class="freq-bar freq-1"></span><span class="freq-bar"></span><span class="freq-bar"></span> Rare</td>
+  <td>Build meets plan but doesn't meet PRD requirements</td>
+</tr>
+<tr>
+  <td>QA → Idea (kill)</td>
+  <td><span class="freq-bar freq-6"></span><span class="freq-bar freq-3"></span><span class="freq-bar freq-1"></span><span class="freq-bar"></span><span class="freq-bar"></span><span class="freq-bar"></span> Very rare</td>
+  <td>Feature shipped; no adoption; idea was wrong, not execution</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Which Phases Can Be Skipped?</h2>
+
+<p>Each phase has a skip cost — the probability-weighted cost of skipping it versus running it. Some phases have zero-skip situations: conditions under which skipping them is never acceptable.</p>
+
+<table>
+<thead>
+<tr><th>Phase</th><th>Can skip if...</th><th>Never skip when...</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>Idea</td>
+  <td>Feature is a known commodity with established user problem (e.g., adding OAuth to a known user base)</td>
+  <td>Feature is new to the team, the user, or the domain. "We've done this before" is not a valid skip condition.</td>
+</tr>
+<tr>
+  <td>Research</td>
+  <td>Evidence exists from a prior related feature, and freshness date has not expired. The related feature's research must be traceable and dated.</td>
+  <td>Any hard question in the idea phase was marked "unanswered." Research must answer it before PRD.</td>
+</tr>
+<tr>
+  <td>Prototype</td>
+  <td>Technology is proven, user need is well-understood, team has done this exact thing before. Run prototype anyway if timeline allows — it's cheap insurance.</td>
+  <td>First time the team is using a new framework, library, or architectural pattern in this domain. Prototype validates the approach, not just the idea.</td>
+</tr>
+<tr>
+  <td>PRD</td>
+  <td>Feature is a minor change to an existing feature with a current PRD. Update the existing PRD rather than writing a new one.</td>
+  <td>Any new user-facing behavior. Non-goals section is missing. Success metrics are missing. Interface contract is missing.</td>
+</tr>
+<tr>
+  <td>Impl Plan</td>
+  <td>Change is &lt; 1 day of work AND doesn't touch shared systems. Still write a 3-line plan: what, why, how to verify.</td>
+  <td>Anything that touches auth, payments, data pipelines, or shared infrastructure. These require M-sized steps and checkpoints.</td>
+</tr>
+<tr>
+  <td>Execution</td>
+  <td>Cannot skip. The feature doesn't exist without execution. "Auto-execute" is not a skip — it's running execution without a plan.</td>
+  <td>—</td>
+</tr>
+<tr>
+  <td>QA</td>
+  <td>Cannot skip. "Shipped without QA" is not a feature — it's a production incident waiting to happen. Even automated test runs count.</td>
+  <td>—</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout red">
+  <p><strong>The "We've done this before" trap.</strong> Teams that skip phases on familiar features tend to skip them on unfamiliar features too. The skip habit is contagious. If a phase is skippable on one feature, document why — and require explicit sign-off before skipping on the next similar feature. The documentation itself is the check.</p>
+</div>
+
+<h2>Retrospective Taxonomy</h2>
+
+<p>Run a retrospective after every feature, regardless of outcome. The retrospective is not about blame — it's about pattern detection. Three categories of retrospective findings:</p>
+
+<h3>Category R1: What the process caught well</h3>
+<div class="retro-section">
+  <div class="retro-item"><strong>R1.1</strong> — Loopback detected at which phase? Did it fire at the right time or later than optimal?</div>
+  <div class="retro-item"><strong>R1.2</strong> — Which handoff failure modes appeared? Rate each: HF-01 through HF-07. Were any eliminated this iteration?</div>
+  <div class="retro-item"><strong>R1.3</strong> — Which phase produced its best artifact yet? What made it good?</div>
+  <div class="retro-item"><strong>R1.4</strong> — PRD non-goals: how many actual scope-creep items were caught by non-goals vs. slipped through?</div>
+  <div class="retro-item"><strong>R1.5</strong> — Execution log quality: how many deviations were Type 1 / Type 2 / Type 3? Did the impl plan improve over time?</div>
+</div>
+
+<h3>Category R2: What the process missed</h3>
+<div class="retro-section">
+  <div class="retro-item"><strong>R2.1</strong> — Which PRD requirement was missing or wrong? Did QA catch it or did it reach production?</div>
+  <div class="retro-item"><strong>R2.2</strong> — Which assumption was inherited without being flagged? What was the downstream cost?</div>
+  <div class="retro-item"><strong>R2.3</strong> — Which evidence decayed between research and impl plan? How old was it?</div>
+  <div class="retro-item"><strong>R2.4</strong> — Which phase-end gate was skipped or informal? What entered the next phase without being checked?</div>
+  <div class="retro-item"><strong>R2.5</strong> — What was the cost of the worst loopback? Phase where it started, phase where it was detected, days of rework.</div>
+</div>
+
+<h3>Category R3: Process improvements for next iteration</h3>
+<div class="retro-section">
+  <div class="retro-item"><strong>R3.1</strong> — One artifact format change to make the next handoff cleaner (per HF-01 fix)</div>
+  <div class="retro-item"><strong>R3.2</strong> — One assumption to always surface in the next artifact (per HF-02 fix)</div>
+  <div class="retro-item"><strong>R3.3</strong> — One phase that needs a longer or shorter timeline next time</div>
+  <div class="retro-item"><strong>R3.4</strong> — One retrospective finding to carry into the pattern library for the team</div>
+</div>
+
+<div class="callout green">
+  <p><strong>The retrospective is not done until R3 is written.</strong> R1 and R2 are observation. R3 is action. A retrospective without R3 is a debrief, not a retrospective. The R3 items become the pre-flight checklist for the next feature's Idea phase. The team's process improves by 1 item per retrospective — over time, that's a fundamentally better system.</p>
+</div>
+
+<h2>The Process Maturity Ladder</h2>
+
+<p>Teams move through 5 levels of process maturity on this system. Most teams start at Level 2. Most teams believe they're at Level 4.</p>
+
+<table>
+<thead>
+<tr><th>Level</th><th>Name</th><th>Behavior</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>Ad-hoc</td>
+  <td>No phases. Build fast, ship, see what breaks. No PRD, no plan, no QA. Production incidents are the QA.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>Phases exist</td>
+  <td>Team knows the phases. Artifacts exist but aren't consistent. Handoffs are verbal. Loopbacks are surprises.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>Phases formalized</td>
+  <td>Artifacts are written and deposited. Handoffs have a location rule. Loopbacks are detected but late.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>Phases optimized</td>
+  <td>Handoff failure modes are tracked. Loopback pattern detector runs proactively. Retrospectives produce R3 items.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>Phases self-correcting</td>
+  <td>Process learns from each iteration. R3 items from retrospectives are implemented before the next feature starts. HF-01 and HF-02 are eliminated. Loopbacks fire early.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Level 3 is where most "mature" teams believe they are. Level 5 is where the 7-phase system is a genuine competitive advantage — not because the phases run, but because the feedback loop between phases runs faster than the team's competitors can ship features.</p>
+
+<h2>What the 7-Phase System Looks Like at Level 5</h2>
+
+<div class="scenario victory">
+  <h4>Level 5: The feature that looped back early and shipped on time</h4>
+  <p>The team starts a feature. Idea is written. Research answers 3 of 4 hard questions. The 4th — <em>"will this approach scale to 10x current load?"</em> — is answered with "we think so, prototype will tell us."</p>
+  <p>Prototype runs. The early signal (Mid-tier in the loopback detector) fires: <em>"Prototype outcome is ambiguous — can't tell if it succeeded."</em> The team doesn't push through. They return to Research with a precise question: <em>"Does this approach scale to 10x?"</em></p>
+  <p>Research answers: <em>"No, not without a caching layer."</em> The idea is refined: add caching layer to scope. Research loops back to Idea; Idea loops forward to Research; PRD is written with the caching layer as a non-goal for v1.</p>
+  <p>Impl Plan includes the caching layer decision. Execution runs. QA runs. Ship date is 3 days later than the Level 2 version of this team would have shipped — because the Level 2 team would have shipped, discovered the scale problem in production, and spent 2 weeks on incident response.</p>
+  <p>The Level 5 team shipped on time with the right scope. The loopback saved them, not cost them.</p>
+</div>
+
+<div class="callout">
+  <p><strong>Final note on cross-phase integration.</strong> The 7 phases are not a waterfall. They are a system with feedback loops. The most important feedback loop is the loopback — the mechanism by which the system corrects itself. Teams that fear loopbacks have a quality problem. Teams that expect loopbacks have a process. The goal is not to eliminate loopbacks. The goal is to catch them early enough that they cost nothing.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0009-qa-phase.html">← Lesson 0009: QA Phase</a>
+  <a href="0011-agent-protocols.html">Lesson 0011: Agent Protocols →</a>
+</div>
+
+</body>
+</html>

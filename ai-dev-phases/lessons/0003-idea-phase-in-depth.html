@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: The Idea Phase in Depth — What Naming the Work Actually Buys You</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .check-item {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin-top: 1rem;
+      font-size: 0.92rem;
+      border-radius: 0 4px 4px 0;
+    }
+    .check-q { font-weight: 700; margin-bottom: 0.4rem; }
+    .ladder {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      line-height: 1.6;
+    }
+    .ladder .level {
+      padding: 0.4rem 0;
+      border-bottom: 1px dashed var(--rule);
+    }
+    .ladder .level:last-child { border-bottom: none; }
+    .ladder .level-label {
+      display: inline-block;
+      width: 8rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .good {
+      color: #1b5e20;
+      font-weight: 700;
+    }
+    .bad {
+      color: #b71c1c;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0003</span></span>
+  <span>Phase 01: Idea</span>
+  <span>2026-07-03</span>
+  <span>20–30 min</span>
+</div>
+
+<h1>The Idea Phase in Depth — What Naming the Work Actually Buys You</h1>
+<p class="subtitle">Lesson 0002 covered Idea as one row of a 7-phase table. This lesson drills into what naming the work really does — and why skipping it is more expensive than skipping any other phase.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03. Builds on lessons 0001 and 0002.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> The Idea phase is the smallest phase in the framework by <em>artifact size</em>, but the most-skipped phase in practice — because it looks easy. Read this lesson slowly. After each section, name a real piece of work your team has shipped in the last 30 days and test it against the test below. If it fails the test, the work was undertnamed — and the next 6 phases paid for it.</p>
+</div>
+
+<h2>What Pocock Actually Said</h2>
+
+<p>The full quote, in context:</p>
+
+<blockquote>
+  <em>"So the idea is the first phase. This is just like, what are you working on? This idea can be as small and as big as you like. Bug fix. It could be a feature, a refactor. It could be an app. Whatever you want to ship."</em> — Matt Pocock
+</blockquote>
+
+<p>Eight seconds of talking. That's it. Pocock spends more time on every other phase. Why? Because <em>he assumes you already know how to name work</em>. He's wrong about that assumption — most teams don't. Hence this lesson.</p>
+
+<h2>The Smallest Phase That's the Most Skipped</h2>
+
+<p>The Idea phase is what makes every other phase possible. If your idea isn't named, bounded, and targetted, the downstream phases drift:</p>
+
+<ul>
+  <li>Research without a clear idea = rabbit holes. <em>"We're looking into the Stripe API."</em> For what?</li>
+  <li>Prototype without a clear idea = throwaway code that's evaluated against no target.</li>
+  <li>PRD without a clear idea = a doc that re-litigates the idea each time someone reads it.</li>
+  <li>Impl plan without a clear idea = tickets that don't compose.</li>
+  <li>Execution without a clear idea = AFK agents that keep asking <em>"wait, what are we doing again?"</em></li>
+  <li>QA without a clear idea = bugs that get accepted because <em>"well, that's not technically out of scope."</em></li>
+</ul>
+
+<p>The cost of skipping Idea is the cost of doing all 6 downstream phases <em>twice</em>. Pocock's brevity is not dismissal — it's the start of the funnel.</p>
+
+<div class="callout warning">
+  <p><strong>Manager red flag.</strong> When a senior engineer comes to you with a vague <em>"I want to redesign the auth system"</em> request, they have not yet completed the Idea phase. Do not push them into Research or Prototype from there. Push them to write a one-sentence idea first. If they can't, you don't have an engineering problem — you have an idea-shape problem.</p>
+</div>
+
+<h2>The 4 Functions of an Idea</h2>
+
+<p>A named idea does four jobs. If any one of them is missing, the idea is half-formed and the downstream phases will leak.</p>
+
+<h3>1. Names the work (durability)</h3>
+<p>The idea has a name that survives conversation. <em>"The cache layer for dashboard charts"</em> is a name. <em>"Performance stuff"</em> is not. The name is what shows up in commit messages, sprint boards, retros, and reviews. If three people remember three different names, the work hasn't been named yet.</p>
+
+<h3>2. Bounds the work (scope)</h3>
+<p>The idea has a scope you can answer questions <em>about</em>, not questions <em>open</em>. <em>"The cache layer for dashboard charts, only on the loaded dashboard page, only for authenticated users, only for charts the user has viewed in the last 30 days"</em> has scope. <em>"Make the dashboard faster"</em> has no scope — anything is fair game.</p>
+
+<h3>3. Targets the work (success criteria)</h3>
+<p>The idea has a measurable target. <em>"p95 dashboard load drops from 3s to under 800ms."</em> Either the dashboard hits that, or it doesn't. The target is the QA plan's source-of-truth, and the QA plan's existence proves the Idea phase ran.</p>
+
+<h3>4. Commits the work (sunk cost signal)</h3>
+<p>The idea has been <em>committed to</em>. Someone has said <em>"this is the thing we'll be working on."</em> Once committed, downstream decisions stop being optional. Team members orient their work to it. The commitment is also the moment the sunk cost starts accruing — every day the idea isn't finished, you've paid for the commitment.</p>
+
+<h2>The Naming Test</h2>
+
+<p>For any idea your team proposes, answer all 5 questions. If any answer is <em>"I don't know,"</em> the idea isn't ready for phase 02.</p>
+
+<ol>
+  <li><strong>What does the user see / do / feel differently when this idea is done?</strong></li>
+  <li><strong>How will we know it's done? What's the measurement?</strong></li>
+  <li><strong>What's explicitly out of scope?</strong></li>
+  <li><strong>Who is the owner of this idea — the person whose name appears in the "decision authority" column?</strong></li>
+  <li><strong>When is this idea stale? When do we kill or revisit it?</strong></li>
+</ol>
+
+<div class="callout success">
+  <p><strong>Practical heuristic.</strong> A named idea fits in one paragraph. If it takes more than 5 sentences to explain what the idea is, the idea is actually 2–3 ideas. Decompose before entering phase 02.</p>
+</div>
+
+<h2>The Granularity Ladder</h2>
+
+<p>Pocock says ideas can be <em>"as small as a bug fix"</em> or <em>"as big as an app."</em> In practice, work has a granularity. Mismatched granularity is one of the most common ways teams get stuck. Here's the ladder:</p>
+
+<div class="ladder">
+<div class="level"><span class="level-label">idea</span> "Cut dashboard load time" — strategic intent. No work yet. Lives in the head or a doc.</div>
+<div class="level"><span class="level-label">epic</span> "Dashboard performance Q3 — caching, query tuning, frontend skeleton" — a set of related ideas. Owned by PM or EM. Lasts weeks.</div>
+<div class="level"><span class="level-label">feature</span> "Add Redis cache layer to chart data endpoint" — an implemented, scoped idea. Owned by an engineer. Lasts days to 1 week.</div>
+<div class="level"><span class="level-label">ticket</span> "Add cache invalidation when user updates their profile" — a sub-task of a feature. Owned by an engineer. Lasts hours to 1 day.</div>
+<div class="level"><span class="level-label">task</span> "Update test fixtures for the cache layer" — a sub-task of a ticket. Lasts minutes.</div>
+</div>
+
+<p>The framework's <em>phase 01 runs at every rung of this ladder</em>. Even a task has an idea: <em>"update the test fixture, in this file, to include the new field X."</em> The agent (or engineer) needs the name even for a 10-minute change.</p>
+
+<div class="callout warning">
+  <p><strong>Anti-pattern: an idea at the wrong rung.</strong> <em>"Improve performance"</em> at the task level is meaningless — too vague. <em>"Cut dashboard load time"</em> at the task level is meaningless too — too big for a ticket. Match the granularity: feature-level ideas become tickets, ticket-level ideas become tasks. Don't conflate them.</p>
+</div>
+
+<h2>Three Team Scenarios</h2>
+
+<p>Same real-world problem, three different idea qualities.</p>
+
+<h3>Scenario A — Zombie idea</h3>
+<p>Your engineering manager says: <em>"We need to improve performance."</em></p>
+<p><strong>Why it fails:</strong> No name. No scope. No target. No owner. No kill-date. This idea lives forever in the manager's head. Every sprint, something <em>performance-related</em> gets pulled in. After 6 months, nothing measurable has shipped. The team calls it the <em>"performance work"</em> and resents it.</p>
+<p><strong>Diagnostic:</strong> It scores 0/5 on the naming test.</p>
+
+<h3>Scenario B — Vague but named</h3>
+<p>The PM writes an initiative: <em>"Cut dashboard p95 load time below 1 second."</em></p>
+<p><strong>What's missing:</strong> Scope. The team implements Redis caching (good), but also rewrites the front-end routing (out of scope), and adds a service-worker cache (out of scope). Six weeks of work later, p95 is 1.4s. The initiative is "still open."</p>
+<p><strong>Diagnostic:</strong> It scores 2/5 on the naming test. <em>Targets</em> the work, but doesn't bound it. Bound is the most-skipped element — engineers love to expand scope when targets feel hard to hit.</p>
+
+<h3>Scenario C — Well-named</h3>
+<p>The PM writes: <em>"Cut p95 dashboard load time under 800ms for authenticated users on the loaded dashboard page, by adding a 5-minute TTL cache layer to the /api/charts endpoint. Owner: Senior Engineer X. Out of scope: mobile app, public pages, charts older than 30 days. Stale-by: end of Q3."</em></p>
+<p><strong>Why it works:</strong> Name, scope, target, owner, kill-date — all five. Downstream phases have everything they need. Research can start. Prototype is constrained to the right surface. PRD can write outcomes. Tickets decompose cleanly.</p>
+<p><strong>Diagnostic:</strong> It scores 5/5 on the naming test.</p>
+
+<div class="callout success">
+  <p><strong>Manager instinct.</strong> When reviewing a proposed idea from your team, ask one question: <em>"What is explicitly out of scope?"</em> If they can answer crisply, the idea is well-formed. If they can't, the idea is half-formed. Don't accept half-formed ideas as the start of work.</p>
+</div>
+
+<h2>Failure Modes — The 7 Ways the Idea Phase Leaks</h2>
+
+<p>Most engineering retros never identify <em>"we skipped the Idea phase"</em> as a cause. They identify symptoms. Learn to read the symptoms:</p>
+
+<table>
+<thead>
+<tr><th>Symptom</th><th>What you actually missed</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Sprint after sprint of <em>"almost-done"</em> features</td>
+<td>No target — no way to call something done</td>
+</tr>
+<tr>
+<td>Engineers polishing tickets they didn't scope</td>
+<td>No scope boundary — every ticket grows</td>
+</tr>
+<tr>
+<td>Repeated <em>"wait, what are we doing again?"</em> in standup</td>
+<td>No name — the work isn't durable across conversations</td>
+</tr>
+<tr>
+<td>2–3 engineers building incompatible things</td>
+<td>No scope — the work has multiple interpretations</td>
+</tr>
+<tr>
+<td>Performance work that never gets benchmarked</td>
+<td>No target — no measurement, no incentive to ship</td>
+</tr>
+<tr>
+<td>Work that outlives its usefulness</td>
+<td>No kill-date — the work drifts past its relevance</td>
+</tr>
+<tr>
+<td>Work without a decider — endless meetings</td>
+<td>No owner — no one has the authority to push back</td>
+</tr>
+</tbody>
+</table>
+
+<h2>The Manager Ritual — Make Idea Phase Run in 5 Minutes / Week</h2>
+
+<p>The Idea phase doesn't require a workshop or a doc. It requires a ritual. The cheapest ritual:</p>
+
+<ol>
+  <li><strong>Friday 4pm, 15 minutes, all engineers.</strong> Each engineer reads out their 1–3 active ideas.</li>
+  <li><strong>For each idea, the room applies the naming test.</strong> Score 0–5. Average across the room.</li>
+  <li><strong>Half-formed ideas are not entered into next sprint.</strong> Owner has until Monday to fill in the gaps, or the idea gets re-named or killed.</li>
+</ol>
+
+<p>That's it. 15 minutes/week. The ritual's value is that the team hears each other's framing weekly and applies a consistent standard. The result: idea drift is caught on Friday, not in 3 weeks when the scope has expanded.</p>
+
+<div class="callout">
+  <p><strong>Calibration, not policing.</strong> The point of this ritual is not to block ideas. It's to surface <em>which idea needs more shape</em> before it costs engineering time. If the team ends up with 0 well-named ideas at the start of a sprint, the failure is in idea generation, not in the framework.</p>
+</div>
+
+<h2>The Idea Phase Output — Artifacts You Can Ask For</h2>
+
+<p>At the end of phase 01, the artifacts are:</p>
+<ul>
+  <li><strong>A one-paragraph named idea</strong> — in the team's vocab, in writing, in the team's tooling (Notion, GitHub issue, Linear).</li>
+  <li><strong>The 5 naming-test answers</strong> — usually embedded in the same paragraph; not always separate artifacts.</li>
+  <li><strong>An owner</strong> — one name, not a team. The team has many people; the idea has one owner.</li>
+  <li><strong>A kill-date</strong> — when this idea is dead if not shipped by then. Forces honest scoping.</li>
+</ul>
+
+<p>If your team can show you these 4 artifacts, the Idea phase ran. If they can't, it didn't — regardless of how many tickets exist.</p>
+
+<h2>Connection to the Other Phases</h2>
+
+<p>The Idea phase is the <em>source of all downstream rigor</em>. When phases 02–07 look weak, walk backwards:</p>
+
+<ul>
+  <li>Phase 04 PRDs drift from one sprint to the next → the idea wasn't targeting specific outcomes.</li>
+  <li>Phase 03 prototypes get evaluated as finished products → the idea wasn't bounding scope.</li>
+  <li>Phase 06 execution stalls on clarification → the idea wasn't naming the work crisply.</li>
+  <li>Phase 07 QA reveals "out-of-scope" bugs → the idea hadn't drawn the scope line.</li>
+</ul>
+
+<p>Every downstream phase inherits from the Idea phase. Get the Idea phase right, and the other 6 are easier. Skip it, and the other 6 collapse.</p>
+
+<details>
+  <summary>Recall exercise: test your team's last shipped feature</summary>
+  <div style="margin-top: 0.5rem;">
+    <p>Pick the last feature your team shipped. Answer the 5 naming-test questions about it:</p>
+    <ol>
+      <li>What does the user see / do / feel differently?</li>
+      <li>How will we know it's done? What's the measurement?</li>
+      <li>What's explicitly out of scope?</li>
+      <li>Who is the owner?</li>
+      <li>When is this idea stale?</li>
+    </ol>
+    <p>If you can answer all 5 crisply, the Idea phase ran. If you can't, you shipped a half-formed idea and the team paid for it later. Neither answer is a judgment — it's a measurement. Tomorrow's feature starts with a fully-named idea.</p>
+  </div>
+</details>
+
+<h2>Decision Tree for Next Lesson (0004)</h2>
+
+<p>I still have 6 phases left to drill into. The choice of phase 0004 depends on what your team needs most. Re-asking the 4 questions from lessons 0001 and 0002 — but with sharper signal now that you understand Phase 01 in depth:</p>
+
+<ol>
+  <li><strong>Which phase do you have <em>any</em> existing ritual for?</strong> <em>(Signal: weakest phase ≠ strongest phase. Strongest phase tells me what to defend; weakest tells me what to fix. Pick whichever is more useful to you.)</em></li>
+  <li><strong>When a senior engineer comes to you with a 6-week vague proposal, how do you react today?</strong> <em>(Signal: how comfortable you are applying the naming test in real time. If you're not yet comfortable, lesson 0005 will revisit it.)</em></li>
+  <li><strong>Does your team have more <em>"we should improve X"</em> floating ideas, or more well-named ideas?</strong> <em>(Signal: a team full of floating ideas has an Idea phase problem; a team with crisp ideas has a different problem. Different lesson for each.)</em></li>
+  <li><strong>Are you running the 5-minute idea ritual weekly yet?</strong> <em>(Signal: whether to write a ritual script in <code>reference/idea-playbook.md</code> as lesson 0004, or move to another phase.)</em></li>
+</ol>
+
+<div class="callout">
+  <p><strong>Final note on this lesson.</strong> The Idea phase is small in artifact-size but heavy in consequence. If your team internalizes only one thing from this entire curriculum, internalize this: <em>an idea that doesn't score 5/5 on the naming test is not an idea; it's a wish.</em> Treat wishes with kindness, but don't enter them into sprints.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0002-the-seven-phases-in-detail.html">← Lesson 0002: The 7 Phases in Detail</a>
+  <a href="../MISSION.md">Mission →</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: The Research Phase — When Exploration Earns Its Keep</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success { background: #e8f5e9; border-left-color: #4caf50; }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .research-template {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .research-template h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .research-template ul { margin: 0.5rem 0 0.5rem 1.5rem; }
+    .decision-matrix {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .decision-matrix-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+    }
+    .decision-matrix-header div {
+      padding: 0.6rem 1rem;
+      background: #ede9fe;
+    }
+    .decision-matrix-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.88rem;
+    }
+    .decision-matrix-row:last-child { border-bottom: none; }
+    .decision-matrix-row div {
+      padding: 0.6rem 1rem;
+      border-right: 1px solid var(--rule);
+    }
+    .decision-matrix-row div:last-child { border-right: none; }
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .scenario.victory { border-left: 3px solid #4caf50; }
+    .scenario.medium { border-left: 3px solid #ff9800; }
+    .scenario.fail { border-left: 3px solid #b71c1c; }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0004</span></span>
+  <span>Phase 02: Research</span>
+  <span>2026-07-03</span>
+  <span>25–35 min</span>
+</div>
+
+<h1>The Research Phase — When Exploration Earns Its Keep</h1>
+<p class="subtitle">Idea names the work. Research does the hard exploration that makes execution AFK-able. This lesson covers when to write a research.md, what to put in it, and why the manager's job is to make sure research.md is findable, not just well-written.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03. Builds on lessons 0001–0003.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> The Research phase is where most teams either over-invest (documenting what Slack can answer) or under-invest (rediscovering every hard problem in every session). Read the "expensive filter" section first. Then open your team's last 3 features and ask: "did a research.md exist for the hard part? Was it findable?" If not, you have a Research phase problem hiding inside a velocity problem.</p>
+</div>
+
+<h2>What Pocock Actually Said</h2>
+
+<p>The full quote, in context:</p>
+
+<blockquote>
+  <em>"The second phase is research. So you might explore the library, you might look at a codebase, you might do some reading. You might want to do some experimentation. If that exploration is difficult, you might want to cache it in a research.md asset."</em> — Matt Pocock
+</blockquote>
+
+<p>Twelve seconds. The word <em>"might"</em> appears three times — he is deliberately non-prescriptive. Research is the optional phase. The question this lesson answers: <strong>when is research.md worth writing, and when is it overhead?</strong></p>
+
+<h2>The Agent Context Window Problem — Why Research Exists</h2>
+
+<p>For human teams, research is often kept in someone's head or discussed in a Slack thread. That's fine when the explorer and the executor are the same person. When they're not — or when an AI agent is the executor — the research disappears at the end of the session.</p>
+
+<p>The Research phase exists because of a specific engineering problem: <strong>context windows have a limit, and exploration has a cost.</strong></p>
+
+<ul>
+  <li>A human can spend 2 hours exploring the Stripe API, remember the key gotcha ("webhooks retry 72 hours, not 24"), and apply it on day 14 of the project.</li>
+  <li>An AI agent in session 14 has no memory of session 1's exploration. If the gotcha wasn't written down, it gets rediscovered — or it causes a bug.</li>
+</ul>
+
+<p>Research.md is not documentation for humans. It's <strong>context injection for future sessions</strong>. The person who writes it isn't necessarily the person who benefits from it. That's the manager's insight: research.md is a team asset, not a personal note.</p>
+
+<div class="callout warning">
+  <p><strong>Manager instinct.</strong> When you see a team re-making the same technical decision twice, you don't have a talent problem. You have a Research phase problem. The first exploration wasn't cached — so the second session paid for it. That's a process cost, not a people cost. Fix the Research phase and the re-decisions stop.</p>
+</div>
+
+<h2>The Expensive Filter — When Does Research Earn Its Keep?</h2>
+
+<p>Pocock says research.md is for <em>"difficult"</em> exploration. Here's a practical filter:</p>
+
+<div class="decision-matrix">
+  <div class="decision-matrix-header">
+    <div>Exploration type</div>
+    <div>Where it lives</div>
+    <div>Example</div>
+  </div>
+  <div class="decision-matrix-row">
+    <div>Trivial question</div>
+    <div>Slack / LMK / one message</div>
+    <div>"Which auth library are we using?"</div>
+  </div>
+  <div class="decision-matrix-row">
+    <div>Moderate exploration</div>
+    <div>Code comment / commit message</div>
+    <div>"Why we chose Turso over PlanetScale"</div>
+  </div>
+  <div class="decision-matrix-row">
+    <div>Difficult exploration</div>
+    <div><strong>research.md</strong></div>
+    <div>"Stripe webhook idempotency under retry storms"</div>
+  </div>
+  <div class="decision-matrix-row">
+    <div>Exploratory spike</div>
+    <div>Proof-of-concept branch</div>
+    <div>"Can we use edge workers for this?"</div>
+  </div>
+</div>
+
+<p>Rule of thumb: if answering the question <em>"why did we do it this way?"</em> would take more than 10 minutes of re-exploration for someone who wasn't in the room, write a research.md. If the answer lives in a code comment, that's fine too — just make sure the comment has a timestamp and a link to the source.</p>
+
+<h2>Anatomy of a research.md</h2>
+
+<p>Not all research.md files need all sections. Use what's relevant. But every research.md should answer these questions:</p>
+
+<div class="research-template">
+  <h4>research/[area]-[question].md — minimum viable template</h4>
+  <ul>
+    <li><strong>Question:</strong> What hard problem does this exploration answer? (One sentence.)</li>
+    <li><strong>Context:</strong> Why does this question matter for the idea? What's at stake?</li>
+    <li><strong>Sources:</strong> Links to docs, PRs, Stack Overflow, internal threads. (With dates.)</li>
+    <li><strong>Findings:</strong> What you learned. Be specific. Include counter-intuitive things.</li>
+    <li><strong>Decision:</strong> What are we doing, and why? (Not "we'll use X" — "we'll use X because A, B, C.")</li>
+    <li><strong>Gotchas / Watch-outs:</strong> What will bite someone who hasn't read this doc? (Be honest.)</li>
+    <li><strong>Code snippets:</strong> The 3 lines that would have taken 2 hours to write from scratch.</li>
+    <li><strong>Last verified:</strong> <code>YYYY-MM-DD</code> — dependencies, not just the doc. Link to the version checked.</li>
+    <li><strong>Owner:</strong> Who to ping if this goes stale. (Usually the explorer.)</li>
+    <li><strong>Linked idea:</strong> Which idea (from phase 01) is this research for?</li>
+  </ul>
+</div>
+
+<div class="callout success">
+  <p><strong>Research.md naming convention.</strong> File name should answer the question, not the answer. <code>research/stripe-webhook-retry-behavior.md</code> is findable. <code>research/api-research.md</code> is not. The agent needs to find it when the question is "what happens when Stripe retries a webhook?"</p>
+</div>
+
+<h2>The Lifetime Problem — When Does research.md Expire?</h2>
+
+<p>Every research.md has a half-life. The moment a dependency ships a breaking change, the research.md becomes misleading. The moment an internal API is refactored, the code snippets are dangerous.</p>
+
+<p>The most expensive failure mode: <strong>stale research.md causes confident wrong decisions.</strong> The explorer knew it was dated. The next person didn't.</p>
+
+<div class="callout warning">
+  <p><strong>The version-linking rule.</strong> Every research.md should link to the exact version of the external dependency it was verified against. <em>"Verified against Stripe SDK v14.2.0, 2026-01-15."</em> When Stripe ships v15, the research.md needs re-verification. Without the version link, nobody knows when to re-check.</p>
+</div>
+
+<h2>Three Team Scenarios</h2>
+
+<h3>Scenario A — No research.md for a hard problem</h3>
+
+<p>Engineer A spends 3 hours figuring out that the Turso local emulator has a bug that conflicts with Turso Studio. She discovers the workaround on a GitHub issue. She tells Engineer B verbally in standup: <em>"yeah, just use the CLI, not Studio."</em></p>
+
+<p><strong>What happens next:</strong> Week 2, Engineer C joins the team. She spends 3 hours on the same problem. She finds a different workaround that introduces a subtle bug. The bug ships to production. Research.md would have prevented this.</p>
+
+<p><strong>Diagnostic:</strong> A 3-hour exploration without a durable artifact. The cost: 3 hours × N sessions of re-exploration, compounding.</p>
+
+<h3>Scenario B — Vague research.md (too broad, no decision)</h3>
+
+<p>Engineer B writes: <code>research/auth-strategy.md</code> — 8 pages covering OAuth, JWT, sessions, every auth library they considered, trade-offs, and a final line: <em>"TBD — need to discuss as a team."</em></p>
+
+<p><strong>What happens next:</strong> The doc is too broad to be actionable. The agent asks "which auth approach should I use?" and the research.md can't answer because it was never decided. Research.md without a decision is a meeting agenda, not research. Enter the Prototype phase from Research, and the team builds two approaches in parallel.</p>
+
+<p><strong>Diagnostic:</strong> Research phase ran, but the <em>Decision</em> section is empty. The 4-function model from lesson 0003 applies here — even research.md needs to name a decision.</p>
+
+<h3>Scenario C — Well-scoped research.md, findable location</h3>
+
+<p>Engineer B writes: <code>research/stripe-webhook-idempotency-retry-storm.md</code> with sections: Question, Context, Sources (Stripe docs + 2 GitHub issues + 1 internal Slack thread), Findings, Decision (use Stripe's <code>Idempotency-Key</code> header with 24-hour window, plus DB-level deduplication), Gotchas (SDK retry logic fires before your idempotency handler), Code snippets (the 10-line idempotency check), Last verified (Stripe SDK v14.2.0, 2026-06-10), Owner (Engineer B), Linked idea (Idea #042 — subscription renewal webhook reliability).</p>
+
+<p><strong>Why it works:</strong> Scoped to one hard question. Decision is explicit. Code snippets are copy-paste ready. Version is linked. Location is findable. Phase 06 (Execution) can run AFK from this doc.</p>
+
+<p><strong>Diagnostic:</strong> Research.md is a durable, findable, version-linked decision artifact. The Idea → Research → Prototype chain is clean.</p>
+
+<h2>Where research.md Lives — The Findability Problem</h2>
+
+<p>The best research.md in the world is worthless if the agent can't find it. Three rules:</p>
+
+<ol>
+  <li><strong>Location convention.</strong> <code>research/[domain]-[question].md</code> in the repo root. Not in a Google Doc. Not in Notion without a link from the repo. In the repo, where the agent operates.</li>
+  <li><strong>Index it.</strong> A single <code>research/README.md</code> that lists all research.md files with one-line summaries and linked ideas. The agent reads this on every new session. Without it, the agent has to know to run <code>find . -name "*.md" | xargs grep "stripe"</code>.</li>
+  <li><strong>Link from the idea.</strong> The Idea phase artifact (lesson 0003) should link to the research.md for that idea. Bidirectional links: idea → research, research → idea. This closes the loop for phase review.</li>
+</ol>
+
+<div class="callout">
+  <p><strong>The manager's findability checklist.</strong> Before a long-running agent session, ask: "does <code>research/README.md</code> exist? Does it index the right files? Does the active idea link to its research?" If any answer is no, the Research phase is broken downstream — and phase 06 will pay for it in context-window re-explanation.</p>
+</div>
+
+<h2>Failure Modes — The 6 Ways the Research Phase Leaks</h2>
+
+<table>
+<thead>
+<tr><th>Symptom</th><th>What you actually missed</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Same technical decision made twice</td>
+<td>First exploration wasn't cached</td>
+</tr>
+<tr>
+<td>Agent re-asks the same question every session</td>
+<td>research.md exists but isn't indexed / findable</td>
+</tr>
+<tr>
+<td>Prototype phase runs without a decision artifact</td>
+<td>Research phase ran but the Decision section was empty</td>
+</tr>
+<tr>
+<td>Code shipped with a known-gotcha that wasn't documented</td>
+<td>Gotcha section missing from research.md</td>
+</tr>
+<tr>
+<td>Research.md is 8 pages of everything they considered</td>
+<td>Research scoped too broad — should be one question, not a survey</td>
+</tr>
+<tr>
+<td>Stale research.md causes a confident wrong decision</td>
+<td>No last-verified field, no version link</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Research and the Downstream Phases</h2>
+
+<p>The Research phase has the tightest coupling to both neighbors:</p>
+
+<h3>Research ← Idea</h3>
+<p>Phase 01 names the work. Phase 02 does the hard exploration that the named idea requires. If the idea isn't well-named (lesson 0003: 5/5 on the naming test), the research scope is unclear. Research is bounded by the idea's scope.</p>
+
+<h3>Research → Prototype</h3>
+<p>If the research phase is skipped or half-done, the Prototype phase becomes a research spike — you're building to learn, not building to validate. Prototype should validate a decision already made in Research, not make the decision.</p>
+
+<h3>Research → Execution</h3>
+<p>Research.md is what makes phase 06 (Execution) AFK-able. The agent needs the decision, the gotchas, and the code snippets to run without re-explaining. Without research.md, every execution session is a new exploration session.</p>
+
+<h2>The Manager Ritual for Research</h2>
+
+<p>Three questions, applied at three moments:</p>
+
+<div class="research-template">
+  <h4>Research phase ritual — 3 questions × 3 moments</h4>
+
+  <h4>At idea intake (phase 01 → 02 transition)</h4>
+  <ul>
+    <li>"What's the hard exploration in this idea?"</li>
+    <li>"Is the answer already in a research.md somewhere?"</li>
+    <li>If yes: link it. If no: is the exploration expensive enough to warrant a research.md?</li>
+  </ul>
+
+  <h4>Before phase 06 execution (any long-running session)</h4>
+  <ul>
+    <li>"Does a research.md exist for this idea?"</li>
+    <li>"Does research/README.md index it?"</li>
+    <li>"Is the last-verified field current?"</li>
+  </ul>
+
+  <h4>Monthly / quarterly review</h4>
+  <ul>
+    <li>"Which research.md files haven't been verified in over 90 days?"</li>
+    <li>"Which ones should be archived vs. re-verified?"</li>
+    <li>"Are we re-discovering things that are already documented?"</li>
+  </ul>
+</div>
+
+<h2>Research vs. the Other Phases — A Quick Distinction</h2>
+
+<p>Teams often confuse Research with:</p>
+
+<ul>
+  <li><strong>Research vs. spike.</strong> A spike is time-boxed exploration (usually 1–3 days) that ends in a yes/no decision. Research.md is the artifact of the Research phase; a spike branch is the artifact of a time-boxed exploration that may be a different process. In Pocock's framework, research and spike overlap — but spike implies a time limit, research does not.</li>
+  <li><strong>Research vs. design doc.</strong> A design doc argues for a direction. A research.md documents what you found. Design docs live in PRD territory (phase 04). Research.md lives here, in phase 02.</li>
+  <li><strong>Research vs. code comments.</strong> Code comments document what the code does. research.md documents what the code can't tell you — the reasoning, the gotchas, the alternatives considered. Code comments are for readers of the code; research.md is for explorers of the decision.</li>
+</ul>
+
+<details>
+  <summary>Recall exercise: audit your last sprint's research.md hygiene</summary>
+  <div style="margin-top: 0.5rem;">
+    <p>Go to your team's repo. Run:</p>
+    <pre>find . -name "research.md" -o -name "research" -type d | head -20</pre>
+    <p>Then for each file found, answer:</p>
+    <ol>
+      <li>Does it have a <strong>Question</strong> section? (One sentence.)</li>
+      <li>Does it have a <strong>Decision</strong> section? (Not "TBD" or "needs discussion.")</li>
+      <li>Does it have a <strong>Last verified</strong> field with a date?</li>
+      <li>Does it have a <strong>version link</strong> to the dependency it was checked against?</li>
+      <li>Is it indexed in <code>research/README.md</code>?</li>
+    </ol>
+    <p>Score: each yes = 1 point. Below 3/5 → the Research phase is leaking downstream. Above 4/5 → your team has good research hygiene. Neither is a judgment — it's a measurement.</p>
+  </div>
+</details>
+
+<h2>Decision Tree for Lesson 0005</h2>
+
+<p>Six phases remain. The natural sequence follows Pocock's order:</p>
+
+<table>
+<thead>
+<tr><th>Phase</th><th>Pocock's description</th><th>Key manager question</th></tr>
+</thead>
+<tbody>
+<tr><td>03 Prototype</td><td>"a small working version of the thing"</td><td>When does a prototype prove something vs. become the product?</td>
+</tr>
+<tr><td>04 PRD</td><td>"what the thing actually does"</td><td>How detailed must a PRD be to be useful vs. constraining?</td>
+</tr>
+<tr><td>05 Impl Plan</td><td>"break the thing into steps"</td><td>How detailed must the plan be before agents can execute?</td>
+</tr>
+<tr><td>06 Execution</td><td>"implement the thing"</td><td>When does the manager step in vs. let the agent run?</td>
+</tr>
+<tr><td>07 QA</td><td>"test the thing"</td><td>What does "done" look like when an agent built it?</td>
+</tr>
+</tbody>
+</table>
+
+<p>The natural next is <strong>Prototype (03)</strong> — it follows Research in Pocock's sequence, and it's the phase with the most intuitive confusion ("I always prototype — isn't that just how you build?"). The Prototype deep-dive will introduce the <em>proof threshold</em> concept: a prototype proves something or it isn't a prototype.</p>
+
+<div class="callout success">
+  <p><strong>Final note on this lesson.</strong> The Research phase's job is deceptively simple: make hard exploration durable. But durability requires three things most teams skip — a scoped question, an explicit decision, and a version link. Without those three, research.md is a note. With them, it's a team asset that compounds in value across every session that doesn't have to re-ask the question. The manager's job: make research.md findable. The engineer's job: write the decision. Separate responsibilities, one artifact.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0003-idea-phase-in-depth.html">← Lesson 0003: Idea Phase in Depth</a>
+  <a href="0005-prototype-phase.html">Lesson 0005: Prototype Phase →</a>
+</div>
+
+</body>
+</html>

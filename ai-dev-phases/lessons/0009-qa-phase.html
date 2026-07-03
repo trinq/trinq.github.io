@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0009: The QA Phase — Verification, Not Trust</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success { background: #e8f5e9; border-left-color: #4caf50; }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 { font-weight: 700; margin-bottom: 0.5rem; }
+    .scenario.victory { border-left: 3px solid #4caf50; }
+    .scenario.medium { border-left: 3px solid #ff9800; }
+    .scenario.fail { border-left: 3px solid #b71c1c; }
+    .compare-matrix {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 0;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .compare-cell {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-cell:last-child { border-right: none; }
+    .compare-cell:first-child { font-weight: 700; background: var(--code-bg); }
+    .compare-header {
+      padding: 0.6rem 0.8rem;
+      background: #ede9fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-header:last-child { border-right: none; }
+    .compare-header:first-child { background: var(--code-bg); }
+    .test-case {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+    .test-case .test-id {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .test-case .test-name { font-weight: 700; margin-bottom: 0.3rem; }
+    .test-case .test-source {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+    .test-case .test-body { font-size: 0.9rem; }
+    .test-case .test-body code { font-size: 0.85rem; }
+    .test-pass { border-left: 3px solid #4caf50; }
+    .test-fail { border-left: 3px solid #b71c1c; }
+    .test-pending { border-left: 3px solid #ff9800; }
+    .verdict-block {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+    .verdict-ship {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .verdict-ship h3 { color: #16a34a; margin-top: 0; }
+    .verdict-fix {
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .verdict-fix h3 { color: #c2410c; margin-top: 0; }
+    .verdict-rollback {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .verdict-rollback h3 { color: #b91c1c; margin-top: 0; }
+    .verdict-ship h3, .verdict-fix h3, .verdict-rollback h3 {
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .verdict-ship p, .verdict-fix p, .verdict-rollback p { margin-bottom: 0; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+    .two-col-box {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+    }
+    .two-col-box h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0009</span></span>
+  <span>Phase 07: QA</span>
+  <span>2026-07-03</span>
+  <span>25–35 min</span>
+</div>
+
+<h1>The QA Phase — Verification, Not Trust</h1>
+<p class="subtitle">The QA phase answers one question: did the build match the PRD? Most QA on agent-built code is over-trusting or under-trusting. The QA phase uses the PRD as the contract and the execution log as the test plan. Three verdicts determine what happens next: ship, fix, or rollback.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03. Builds on lessons 0001–0008. This is the final phase in Pocock's 7-phase sequence.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> The QA phase is the last gate before the user's code goes to production. Read the "verification, not trust" section first — it reframes how to test agent-built code. Then read the test taxonomy — it categorizes tests by source (PRD requirement / impl-plan checkpoint / execution deviation / stability). The three verdicts at the end determine what happens next in the process: ship it, fix it, or roll back. The loopback section at the end shows that QA is not always the end — sometimes it loops back to Idea.</p>
+</div>
+
+<h2>What Pocock Actually Said</h2>
+
+<p>The full quote, in context:</p>
+
+<blockquote>
+  <em>"The seventh and final phase is QA. So this is where you actually test the thing. The trick here is that a lot of people get really excited about this and they spend a lot of time on testing, but actually QA is really just checking that you built the right thing."</em> — Matt Pocock
+</blockquote>
+
+<p>Two phrases matter: <em>"checking that you built the right thing"</em> and the warning about getting <em>"really excited about this."</em> QA tests whether the build matches the PRD — not whether the code is perfect. There's a difference: <em>the code could be perfectly clean and still have built the wrong thing.</em> That's the test case QA must catch.</p>
+
+<h2>The Core Idea: Verification, Not Trust</h2>
+
+<p>QA for agent-built code differs from QA for human-built code in one fundamental way. For human code, the assumption is: <em>"the human understood the spec — QA catches the surface-level mistakes."</em> For agent code, the assumption is: <em>"the agent built what the plan said, but the plan may have been wrong."</em> QA verifies the build against the PRD, not against the plan.</p>
+
+<h3>The trust problem</h3>
+<p>When an agent builds a feature, the manager saw the agent execute. They watched several checkpoints. They have a felt impression of how the build went. They <em>feel</em> like the build is good. This is the trust problem: feeling isn't verification. The build passed the agent's steps; that's not the same as the build satisfying the PRD's requirements.</p>
+
+<div class="callout warning">
+  <p><strong>The rare bug pattern for agent code.</strong> Human code tends to fail on the happy path (it's undertested because "obviously" it works). Agent code tends to fail on edge cases (it's good at the happy path because the plan specifies it well, and weak on edge cases because edge cases aren't always in the plan). This means QA should over-test edge cases and under-test the happy path. Reverse the human intuition.</p>
+</div>
+
+<h2>Test Taxonomy</h2>
+
+<p>Tests fall into four buckets by source. Each source answers a different question:</p>
+
+<div class="compare-matrix">
+  <div class="compare-header">Source</div>
+  <div class="compare-header">Question it answers</div>
+  <div class="compare-header">Where it comes from</div>
+  <div class="compare-cell">A. PRD requirement test</div>
+  <div class="compare-cell">Did we build the thing the PRD said to build?</div>
+  <div class="compare-cell">PRD §2 user outcomes, §3 interface contract</div>
+  <div class="compare-cell">B. Impl plan checkpoint test</div>
+  <div class="compare-cell">Did each step do what the plan said?</div>
+  <div class="compare-cell">Impl plan step checkpoints</div>
+  <div class="compare-cell">C. Execution deviation test</div>
+  <div class="compare-cell">Did the deviation get resolved correctly?</div>
+  <div class="compare-cell">Execution log Type 1 / Type 2 / Type 3 entries</div>
+  <div class="compare-cell">D. Stability test</div>
+  <div class="compare-cell">Does the build hold under load, time, weird inputs?</div>
+  <div class="compare-cell">Edge cases, performance, security</div>
+</div>
+
+<p>Most teams only write (D) and skip (A), (B), (C). That's the failure. (D) is necessary but not sufficient. The PRD's success metrics become (A) tests. The impl plan's checkpoints become (B) tests. The execution log's deviations become (C) tests.</p>
+
+<h2>Anatomy of a Test Case</h2>
+
+<p>Every test case has five parts. Skipping any one turns the test into something weaker than it should be:</p>
+
+<div class="test-case test-pending">
+  <div class="test-id">A.001 — PRD §2 User Outcome #1</div>
+  <div class="test-name">User can export CSV from project page in &lt; 30 sec for &lt; 10K rows</div>
+  <div class="test-source">Source: PRD §2 / success metric #1</div>
+  <div class="test-body">
+    <strong>Given:</strong> Project with 5,000 rows<br>
+    <strong>When:</strong> User clicks "Export" button on project page<br>
+    <strong>Then:</strong> CSV file is downloaded within 30 seconds, with row count equal to source
+  </div>
+</div>
+
+<div class="test-case test-pending">
+  <div class="test-id">B.003 — Impl plan step 5 checkpoint</div>
+  <div class="test-name">50K-row project returns job ID immediately; reaches done within 2 min; file exists</div>
+  <div class="test-source">Source: plan-step-5.md checkpoint</div>
+  <div class="test-body">
+    <strong>Given:</strong> Project with 50,000 rows<br>
+    <strong>When:</strong> User calls POST /api/projects/:id/export<br>
+    <strong>Then:</strong> Response within 200ms with jobId; after job runs, file at /exports/[jobId].csv exists with correct rows
+  </div>
+</div>
+
+<div class="test-case test-pending">
+  <div class="test-id">C.002 — Type 2 deviation: soft-deleted rows</div>
+  <div class="test-name">Soft-deleted rows must appear in CSV export</div>
+  <div class="test-source">Source: execution log step 4 (Type 2 deviation)</div>
+  <div class="test-body">
+    <strong>Given:</strong> Project with 1,000 active + 100 soft-deleted rows<br>
+    <strong>When:</strong> User exports project<br>
+    <strong>Then:</strong> CSV contains 1,100 rows; both active and soft-deleted rows present
+  </div>
+</div>
+
+<div class="test-case test-pending">
+  <div class="test-id">D.007 — Stability: 100K rows under 60 sec</div>
+  <div class="test-name">100K-row project export completes within success metric window</div>
+  <div class="test-source">Source: PRD §5 success metric / edge case lower bound</div>
+  <div class="test-body">
+    <strong>Given:</strong> Project with 100,000 rows<br>
+    <strong>When:</strong> User triggers export<br>
+    <strong>Then:</strong> Job completes within the documented window; file row count matches DB
+  </div>
+</div>
+
+<div class="callout">
+  <p><strong>Tests A, B, C come from documents, not from the engineer's imagination.</strong> This is the structural discipline: if a test isn't traceable to a PRD requirement, an impl plan checkpoint, an execution deviation, or a stability concern, it's a wandering test. Wandering tests are easy to write but not auditable. Auditable tests are the QA's output.</p>
+</div>
+
+<h2>The Three Verdicts</h2>
+
+<p>Once testing is complete, one of three verdicts. Each verdict has a defined next step:</p>
+
+<h3>Verdict 1: Ship</h3>
+
+<div class="verdict-ship">
+  <h3>SHIP — All PRD requirements met; impl plan checkpoints passed; deviations resolved; stability under thresholds</h3>
+  <p><strong>Action:</strong> Release the build. Move the PRD to <code>v1-shipped</code> state. Archive the execution log. Update the team retrospective template with what was learned. The feature is in production.</p>
+  <p><strong>Next phase:</strong> Loop back to <em>idea</em> for v2 — or wait for new feature requests.</p>
+</div>
+
+<h3>Verdict 2: Fix</h3>
+
+<div class="verdict-fix">
+  <h3>FIX — Build has gaps but is salvageable in the same iteration</h3>
+  <p><strong>Action:</strong> Create a new impl plan section called <code>qa-fixes.md</code>. List each failing test. The agent fixes the tests. Re-run QA against the failing subset. Tests that pass move to ship; tests that fail move to either fix or rollback.</p>
+  <p><strong>Next phase:</strong> Back to <em>execution</em> with the qa-fixes plan.</p>
+</div>
+
+<h3>Verdict 3: Rollback</h3>
+
+<div class="verdict-rollback">
+  <h3>ROLLBACK — Build is fundamentally wrong; PRD or architecture needs revisit</h3>
+  <p><strong>Action:</strong> Revert the merge. Don't try to fix forward. The build is wrong at the requirement level, the architecture level, or both. Fixing forward risks shipping something the team can't reason about.</p>
+  <p><strong>Next phase:</strong> Loop back to <em>PRD</em> for v2 — or, if the idea itself is wrong, loop back to <em>idea</em>.</p>
+</div>
+
+<p>Notice the verdict flows: <strong>ship</strong> ends the loop in success. <strong>fix</strong> stays in execution with a focused plan. <strong>rollback</strong> loops back to PRD or idea. The QA phase is not always the end of the loop. Sometimes it's the longest feedback path.</p>
+
+<h2>The Verification Ladder</h2>
+
+<p>Not all tests are equal. Some run fast and cheaply; others run slow but thoroughly. Verification builds from cheap to expensive:</p>
+
+<table>
+<thead>
+<tr><th>Level</th><th>What it tests</th><th>Speed</th><th>Cost</th><th>When</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>L1 — Unit</td>
+<td>Individual functions behave as the plan specified</td>
+<td>Seconds</td>
+<td>Free</td>
+<td>Every commit</td>
+</tr>
+<tr>
+<td>L2 — Integration</td>
+<td>Components cooperate; data flows</td>
+<td>Minutes</td>
+<td>Low</td>
+<td>Every step checkpoint</td>
+</tr>
+<tr>
+<td>L3 — End-to-end</td>
+<td>User outcome from PRD §2 works</td>
+<td>Minutes–hours</td>
+<td>Medium</td>
+<td>After execution completes</td>
+</tr>
+<tr>
+<td>L4 — Performance</td>
+<td>Success metrics in PRD §5 met under load</td>
+<td>Hours</td>
+<td>High (load infra)</td>
+<td>Before ship</td>
+</tr>
+<tr>
+<td>L5 — Security</td>
+<td>Permissions, secrets, audit trails</td>
+<td>Hours</td>
+<td>High (security team)</td>
+<td>Before ship</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout">
+  <p><strong>L1–L3 run during execution; L4–L5 run after execution.</strong> The impl plan's checkpoints are L1–L2 tests in disguise. Every step's checkpoint becomes an automated test. By the time execution finishes, most of L1–L3 coverage exists. The QA phase adds L4–L5 (performance and security) and runs the L3 end-to-end tests.</p>
+</div>
+
+<h2>Three Team Scenarios</h2>
+
+<h3>Scenario A — The QA that over-trusted</h3>
+
+<p>Manager M oversaw execution. The agent built the CSV export. The impl plan's checkpoints all passed at runtime. M feels good — the build went well. M approves ship without further testing.</p>
+
+<p>Two weeks later, a back-office user reports: <em>"The export is missing the soft-deleted rows we're supposed to audit."</em> The team discovers this was a Type 2 deviation resolved mid-execution — but the test that would have caught it was never written. The PRD's success metric was "0 silent failures," but the failure mode wasn't even tested, so it wasn't a "silent" failure at all — it was a missed test.</p>
+
+<p><strong>What went wrong:</strong> QA was "did the agent do what the plan said." It should have been "did the agent do what the PRD said." The Type 2 deviation didn't get a (C) test. QA over-trusted.</p>
+
+<p><strong>Diagnostic:</strong> Tests were (B) impl plan checkpoints only. No (A) PRD requirement tests. No (C) execution deviation tests.</p>
+
+<h3>Scenario B — The QA that under-trusted</h3>
+
+<p>Manager U oversaw a careful execution. The agent built the feature. U runs a full manual QA: 6 hours of clicking through every edge case U can think of. U writes 80 tests in JIRA. By the time U is done, the team has shipped 3 features total this quarter.</p>
+
+<p>The problem: 60 of U's 80 tests are wandering tests — not traceable to a PRD requirement or a PRD success metric. The team can't keep them updated when the PRD changes. Half of them are skipped after the first month. The other half become a maintenance burden.</p>
+
+<p><strong>What went wrong:</strong> QA generated more test debt than insight. Tests weren't tied to upstream documents, so they drifted over time.</p>
+
+<p><strong>Diagnostic:</strong> Tests had no (A) / (B) / (C) source trail. Tests were written from the QA's imagination, not from documents.</p>
+
+<h3>Scenario C — The QA that verified</h3>
+
+<p>Manager V oversaw a careful execution with a full execution log. After execution completes, V runs QA:</p>
+
+<ol>
+  <li><strong>A-tests (PRD requirements):</strong> 8 tests derived from PRD §2 user outcomes and §3 interface contract. All pass.</li>
+  <li><strong>B-tests (impl plan checkpoints):</strong> 7 tests derived from impl plan step checkpoints. All pass.</li>
+  <li><strong>C-tests (execution deviations):</strong> 4 tests derived from execution log deviations. All pass — including "soft-deleted rows included" (Type 2 deviation from step 4).</li>
+  <li><strong>D-tests (stability):</strong> 5 tests for edge cases and performance. 4 pass; 1 fails — performance drops for 80K-row projects.</li>
+</ol>
+
+<p>The 1 failing D-test triggers a check: is 80K a documented boundary? PRD §4 said <em>"projects &gt; 100K rows must use background job."</em> 80K is in the sync-export zone, but it's at the boundary. Verdict: <strong>FIX</strong> — the impl plan didn't specify batch sizing for 80K-row projects, and the agent assumed 1K batches but timed out at 80K. Manager V returns to execution with <code>qa-fixes.md</code>: <em>"For sync exports, batch size should be tuned to the project size OR bring the 100K threshold down to 50K."</em></p>
+
+<p>The fix is small (4 hours). The build ships 1 week after QA begins. The retrospective captures the lesson: <em>"Sync export boundary should be more conservative; check PRD thresholds against realistic DB shapes."</em></p>
+
+<p><strong>Why it works:</strong> Tests trace to documents. Verdict is mechanical (passing vs. failing tests). Loop back is the FIX path, not the rollback path. The retrospective input is high-signal because the failures are documented.</p>
+
+<h2>7 Failure Modes</h2>
+
+<table>
+<thead>
+<tr><th>Symptom</th><th>What you actually missed</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Bugs found in production that QA should have caught</td>
+<td>Tests weren't traceable to PRD; over-trusted execution log</td>
+</tr>
+<tr>
+<td>Test debt grows faster than coverage</td>
+<td>Wandering tests; no (A)/(B)/(C) trail; tests without owners</td>
+</tr>
+<tr>
+<td>QA takes longer than execution</td>
+<td>L4/L5 tests run before L1/L3; ladder sequence broken</td>
+</tr>
+<tr>
+<td>"100% coverage" but real bugs slip through</td>
+<td>Line coverage without PRD requirement coverage</td>
+</tr>
+<tr>
+<td>PRD changes in v2, tests break</td>
+<td>Tests not linked to PRD ids; can't be updated automatically</td>
+</tr>
+<tr>
+<td>QA approval is a stamp, not a check</td>
+<td>Manager over-trusts; doesn't read the test outputs</td>
+</tr>
+<tr>
+<td>QA passes but build doesn't match PRD</td>
+<td>QA verified against plan, not against PRD; assumptions unchecked</td>
+</tr>
+</tbody>
+</table>
+
+<h2>The Manager Ritual for QA</h2>
+
+<div class="decision-tree">
+  <h4>QA ritual — 3 tests before any verdict</h4>
+  <div class="decision-node">
+    <p class="action">Question 1: Did every PRD requirement become at least one A-test?</p>
+    <p class="action">Question 2: Did every execution deviation become at least one C-test?</p>
+    <p class="action">Question 3: Did every impl plan checkpoint become at least one B-test?</p>
+  </div>
+  <div class="decision-leaf">
+    <p class="action">→ All yes: Read test outputs. Apply verdict.</p>
+    <p>Ship / Fix / Rollback — depending on test results.</p>
+  </div>
+  <div class="decision-leaf">
+    <p class="action">→ Any no: Add missing tests before verdict.</p>
+    <p>Tests without sources are wandering tests.</p>
+  </div>
+</div>
+
+<div class="callout warning">
+  <p><strong>The manager's hardest moment after QA.</strong> The verdict is ship but one test is borderline — say, 28 seconds when the threshold is 30 seconds. The instinct: ship anyway; 2 seconds is "close enough." The discipline: send it back to FIX with a tightened threshold or a documented variance. The PRD's success metric is the contract. If you ship below the threshold, you changed the contract without a new PRD. Future builds will look at the precedent. Hold the line.</p>
+</div>
+
+<h2>The Loopback: When QA Returns to Idea</h2>
+
+<p>QA is the last phase in Pocock's sequence, but it's not always the last phase the feature sees. Three loopbacks are valid:</p>
+
+<h3>Loopback A — QA → PRD (v2)</h3>
+<p>Build passed QA but stakeholders want changes. The next iteration starts with a new PRD, not a PR to the existing one. The previous PRD is moved to <code>prd-archive/</code> per lesson 0006's versioning rule.</p>
+
+<h3>Loopback B — QA → PRD (rollback)</h3>
+<p>Build failed QA at the requirement level. The fix isn't in the code — it's in the requirements. Loopback to PRD to revise, then back to impl plan.</p>
+
+<h3>Loopback C — QA → Idea (kill)</h3>
+<p>The rare but real case: the build technically meets the PRD, but the feature itself doesn't solve the user's problem. The build is correct; the idea is wrong. The team has discovered that the user's pain is something else. Loopback to idea. The 4 prior phases' worth of work is archived as <em>research</em>. The new idea starts fresh.</p>
+
+<div class="callout success">
+  <p><strong>Loopback C is the rarest and most valuable.</strong> It happens when the team has shipped a perfect feature that nobody uses. The idea was wrong, not the execution. The instinct is to blame the team. The discipline is to record what was learned and move on. Most products that succeed have several Loopback C events in their history — features built perfectly that didn't solve the problem. The team that gets good at recognizing Loopback C early saves months of work.</p>
+</div>
+
+<h2>The QA Phase as the System's Memory</h2>
+
+<p>The QA phase produces three artifacts that persist beyond the feature:</p>
+
+<table>
+<thead>
+<tr><th>Artifact</th><th>Lives where</th><th>Used for</th></tr>
+</thead>
+<tbody>
+<tr><td>Test suite traceable to PRD</td><td>Tests folder, with PRD ids as test ids</td><td>Regression prevention</td></tr>
+<tr><td>Execution log</td><td>Feature folder, archived on ship</td><td>Retrospective, future impl plans</td></tr>
+<tr><td>Verdict record</td><td>Feature folder, status: shipped/fixed/rolled-back</td><td>Audit trail for the team</td></tr>
+<tr><td>Retrospective notes</td><td>Retrospective template</td><td>Improves PRD, research, impl plan patterns over time</td></tr>
+</tbody>
+</table>
+
+<p>The QA phase's discipline produces organizational learning, not just feature validation. Every (A) test that gets linked to a PRD id is a tiny improvement to the spec-test-contract chain. Every retrospective note that captures what the next impl plan should do better is an improvement to the team's pattern library. The QA phase is where the team <em>becomes</em> the team it will be on the next feature.</p>
+
+<h2>Decision Tree for Lesson 0010</h2>
+
+<p>Pocock's 7-phase sequence is complete. The next lesson shifts focus: from phase-by-phase deep dive to <strong>cross-phase integration</strong>. What we haven't yet covered:</p>
+
+<table>
+<thead>
+<tr><th>Topic</th><th>Key question</th></tr>
+</thead>
+<tbody>
+<tr><td>Cross-phase handoffs</td><td>When does info get lost between phases? What are the failure modes between Idea → Research → Prototype → PRD → Plan → Execution → QA?</td></tr>
+<tr><td>Phase skip patterns</td><td>Which phases can be safely skipped (and when)? Which must always run?</td></tr>
+<tr><td>When the loopback fires</td><td>How often does each phase loop back to Idea, and what does that reveal?</td></tr>
+<tr><td>Phase ownership</td><td>Who owns which phase? Manager vs. engineer vs. agent?</td></tr>
+<tr><td>The retrospective taxonomy</td><td>What patterns of failure should be searched for in retrospectives?</td></tr>
+</tbody>
+</table>
+
+<p>The natural next is <strong>cross-phase handoffs and the loopback taxonomy</strong>. Lesson 0010 will catalog the 7 most common handoff failure modes, draw a phase ownership matrix, and show the team how to build a loopback pattern detector — the "early warning signals" that say <em>"you should have caught this two phases ago."</em> The single most valuable skill in AI-driven development is recognizing the loopback before the loopback occurs.</p>
+
+<div class="callout success">
+  <p><strong>Final note on the 7-phase sequence.</strong> The seven phases — Idea, Research, Prototype, PRD, Impl Plan, Execution, QA — are not a checklist. They are a system. Each phase's output is the next phase's input. Each phase's failure mode is the next phase's hidden cost. The phases exist to catch errors at the cheapest moment: a missed requirement caught at Idea saves 100x the cost of a missed requirement caught at QA. The team that runs all 7 phases routinely produces better features faster than the team that runs only Execution and QA. The cost of the phases is the budget for catching errors early. That budget is always worth it.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0008-execution-phase.html">← Lesson 0008: Execution Phase</a>
+  <a href="0010-cross-phase-handoffs.html">Lesson 0010: Cross-Phase Handoffs →</a>
+</div>
+
+</body>
+</html>

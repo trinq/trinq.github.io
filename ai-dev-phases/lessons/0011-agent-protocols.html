@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0011: Agent Protocols — The Contract Between You and Your AI</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --accent-light: #ede9fe;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #c2410c;
+      --orange-light: #fff7ed;
+      --red: #b91c1c;
+      --red-light: #fef2f2;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre { background: var(--code-bg); padding: 1rem 1.25rem; margin: 1rem 0; overflow-x: auto; border-radius: 4px; border-left: 3px solid var(--accent); }
+    code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: var(--accent-light);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout.green { background: var(--green-light); border-left-color: var(--green); }
+    .callout.orange { background: var(--orange-light); border-left-color: var(--orange); }
+    .callout.red { background: var(--red-light); border-left-color: var(--red); }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+
+    /* Protocol card */
+    .protocol-card {
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .protocol-header {
+      background: var(--code-bg);
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .protocol-header h4 { font-weight: 700; }
+    .protocol-header .tag {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-weight: 700;
+      background: var(--accent);
+      color: white;
+    }
+    .protocol-header .tag.freq-high { background: var(--red); }
+    .protocol-header .tag.freq-med { background: var(--orange); }
+    .protocol-header .tag.freq-low { background: var(--green); }
+    .protocol-body { padding: 1rem 1.25rem; }
+
+    /* Trust meter */
+    .trust-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+      font-size: 0.82rem;
+    }
+    .trust-segment {
+      height: 16px;
+      flex: 1;
+      border-radius: 2px;
+    }
+    .trust-level-0 { background: var(--red-light); border: 1px solid var(--red); }
+    .trust-level-1 { background: var(--orange-light); border: 1px solid var(--orange); }
+    .trust-level-2 { background: #fef9c3; border: 1px solid #d97706; }
+    .trust-level-3 { background: var(--green-light); border: 1px solid var(--green); }
+    .trust-filled { background: var(--green); }
+    .trust-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Command/Response block */
+    .exchange {
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .exchange-header {
+      background: var(--code-bg);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      font-family: "SF Mono", Menlo, monospace;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--rule);
+    }
+    .exchange-you {
+      background: var(--accent-light);
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .exchange-you strong { color: var(--accent); font-size: 0.8rem; display: block; margin-bottom: 0.2rem; }
+    .exchange-agent {
+      background: #fff;
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
+    }
+    .exchange-agent strong { color: var(--green); font-size: 0.8rem; display: block; margin-bottom: 0.2rem; }
+    .exchange-fail {
+      background: var(--red-light);
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
+      border-top: 1px solid var(--rule);
+    }
+    .exchange-fail strong { color: var(--red); font-size: 0.8rem; display: block; margin-bottom: 0.2rem; }
+
+    /* Signal badge */
+    .signal-badge {
+      display: inline-block;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .signal-go { background: #dcfce7; color: #166534; }
+    .signal-caution { background: #fef9c3; color: #92400e; }
+    .signal-stop { background: #fef2f2; color: #b91c1c; }
+
+    /* Tier cards */
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 600px) { .tier-grid { grid-template-columns: 1fr; } }
+    .tier-card {
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .tier-header {
+      padding: 0.6rem 1rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .tier-header.tier-supervised { background: var(--red-light); color: var(--red); border-bottom: 2px solid var(--red); }
+    .tier-header.tier-afk { background: #fef9c3; color: #92400e; border-bottom: 2px solid #d97706; }
+    .tier-header.tier-delegated { background: var(--green-light); color: var(--green); border-bottom: 2px solid var(--green); }
+    .tier-body { padding: 0.75rem 1rem; font-size: 0.88rem; }
+
+    /* Scenario */
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 { font-weight: 700; margin-bottom: 0.5rem; }
+    .scenario.victory { border-left: 3px solid var(--green); }
+    .scenario.warn { border-left: 3px solid var(--orange); }
+    .scenario.fail { border-left: 3px solid var(--red); }
+
+    /* Inline checklist */
+    .checklist {
+      list-style: none;
+      margin: 1rem 0 1rem 0;
+    }
+    .checklist li {
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist .check-box {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--rule);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0011</span></span>
+  <span>Execution</span>
+  <span>2026-07-03</span>
+  <span>30–40 min</span>
+</div>
+
+<h1>Agent Protocols — The Contract Between You and Your AI</h1>
+<p class="subtitle">The 7-phase system describes what to build. This lesson describes how to talk to the AI while building it — the instruction protocols, trust calibration levels, context windows, termination conditions, and the manager's real job: not writing code, but deciding what "done" means for each step.</p>
+
+<p>Source: Matt Pocock — "The 7 phases of AI-driven development," AI Hero / YouTube, 2026. Combines execution phase content (lesson 0008) with the implicit communication protocols that Pocock demonstrates throughout the video series.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> Read "The Manager's Real Job" first — it reframes the manager's role from code-writer to quality-definer. Then read the three trust calibration tiers. The instruction protocols (IP-01 through IP-08) are the most immediately actionable: they're five-sentence prompt templates for the eight most common situations in AI-driven execution. The context window management section is the most commonly ignored — and the most expensive.</p>
+</div>
+
+<h2>The Manager's Real Job in AI-Driven Execution</h2>
+
+<p>In a traditional team, a manager reviews code, approves PRs, and signs off on deployments. In an AI-driven team, the AI writes the code. The manager's job hasn't disappeared — it's shifted upstream.</p>
+
+<p>The manager's job in AI-driven execution is three things, in this order:</p>
+
+<ol>
+  <li><strong>Define "done" for each step</strong> — before the agent starts. "Done" means the acceptance criteria, not the implementation approach. The agent figures out the approach; the manager defines what success looks like.</li>
+  <li><strong>Calibrate trust based on evidence</strong> — start skeptical, elevate based on demonstrated reliability. Trust is not a personality trait; it's a performance metric.</li>
+  <li><strong>Terminate at the right moment</strong> — know when the agent has done enough and human review is necessary. The termination condition is a business decision, not a technical one.</li>
+</ol>
+
+<div class="callout orange">
+  <p><strong>The most common mistake managers make with AI agents:</strong> they give vague instructions ("make this work") and then spend more time correcting the agent than they would have spent writing the code themselves. The problem is never the agent. The problem is that "make this work" doesn't define done. The agent will interpret "make this work" in the way that maximizes its own sense of progress — which may not match the manager's intent.</p>
+</div>
+
+<h2>Trust Calibration: Three Tiers</h2>
+
+<p>Trust in an AI agent is not binary. It's a calibration based on demonstrated performance in your codebase, with your stack, on your domain. The three tiers define the manager's supervision level, not the agent's capability.</p>
+
+<div class="tier-grid">
+  <div class="tier-card">
+    <div class="tier-header tier-supervised">Tier 1 — Supervised</div>
+    <div class="tier-body">
+      <p>Agent shows all output before execution.</p>
+      <p>Manager reviews every file change.</p>
+      <p>No autonomous commits.</p>
+      <p><strong>Use for:</strong> unfamiliar stack, first time on a pattern, any step touching shared systems.</p>
+    </div>
+  </div>
+  <div class="tier-card">
+    <div class="tier-header tier-afk">Tier 2 — AFK-able</div>
+    <div class="tier-body">
+      <p>Agent runs for 20–30 min without review.</p>
+      <p>Manager checks results at natural breakpoints.</p>
+      <p>Agent may commit on explicit instruction.</p>
+      <p><strong>Use for:</strong> familiar stack, trusted patterns, well-scoped steps.</p>
+    </div>
+  </div>
+  <div class="tier-card">
+    <div class="tier-header tier-delegated">Tier 3 — Delegated</div>
+    <div class="tier-body">
+      <p>Agent owns a full M-sized step end-to-end.</p>
+      <p>Manager reviews only at the checkpoint.</p>
+      <p>Agent commits, runs tests, flags issues.</p>
+      <p><strong>Use for:</strong> highly reliable agent, well-defined feature, established trust.</p>
+    </div>
+  </div>
+</div>
+
+<p>The trust tier is per-step, not per-session. An agent can be Tier 3 on a straightforward refactor and Tier 1 on a new payment integration in the same session. Moving from Tier 1 to Tier 2 requires demonstrated evidence. Moving from Tier 2 to Tier 3 requires a pattern of clean Tier 2 results.</p>
+
+<div class="trust-labels">
+  <span>Tier 1 — Supervised</span>
+  <span>Tier 2 — AFK-able</span>
+  <span>Tier 3 — Delegated</span>
+</div>
+<div class="trust-bar-container">
+  <div class="trust-segment trust-level-0 trust-filled" style="flex:1"></div>
+  <div class="trust-segment trust-level-1" style="flex:0.5"></div>
+  <div class="trust-segment trust-level-2" style="flex:0.3"></div>
+  <div class="trust-segment trust-level-3" style="flex:0.2"></div>
+</div>
+<p style="font-size:0.78rem; color:var(--ink-soft); margin-top:0.3rem;">Trust elevation requires evidence accumulation. Every Tier 1 clean result = 1 step toward Tier 2. Every 5 Tier 2 clean checkpoints = 1 Tier 3 step. The agent earns trust, it is not given.</p>
+
+<h2>The 8 Instruction Protocols</h2>
+
+<p>Each instruction protocol (IP) is a five-sentence template for a specific execution situation. The templates are not scripts — they're structure. Fill in the blanks; the agent fills in the rest.</p>
+
+<div class="protocol-card">
+  <div class="protocol-header">
+    <h4>IP-01: The Step Brief</h4>
+    <span class="tag">Start of any M-sized step</span>
+  </div>
+  <div class="protocol-body">
+    <p><strong>Use when:</strong> Starting a new M-sized step from the impl plan. The most common instruction. Sets the full context for the step.</p>
+    <pre>We are in the [feature name] feature, step [N] of [total]. The goal of this step is [one sentence — the outcome, not the approach]. Success means: [criterion 1], [criterion 2], [criterion 3]. Do not proceed to the next step until all three criteria are met. After each sub-task, show me the diff before running any git commands. This is Tier [1/2] supervision.</pre>
+    <p><strong>Why it works:</strong> The five sentences cover: context, goal, success criteria, boundary (don't skip ahead), and supervision level. An agent that receives this instruction knows when to stop and report. An agent that receives "implement step 3" doesn't.</p>
+    <p><strong>Common mistake:</strong> Replacing "The goal is to implement authentication" with "Add auth." The difference is precision. "Add auth" could mean 3 lines or 300.</p>
+  </div>
+</div>
+
+<div class="protocol-card">
+  <div class="protocol-header">
+    <h4>IP-02: The Boundary Call</h4>
+    <span class="tag">Out-of-scope item surfaces during execution</span>
+  </div>
+  <div class="protocol-body">
+    <p><strong>Use when:</strong> The agent encounters something that seems out of scope — a missing dependency, a design question, a new requirement. The agent will often either fix it silently (scope creep) or stop and ask (context switch). Neither is optimal.</p>
+    <pre>I see that [observation — the thing that came up]. This is out of scope for this step. For now, do [the minimal safe fix — e.g., "stub it out", "log a TODO with a specific description", "use X as a temporary placeholder"]. Do not design the full solution. We will address this in [the phase it belongs to — PRD / impl plan revision / a new step].</pre>
+    <p><strong>Why it works:</strong> It answers the agent's implicit question ("should I fix this?") without derailing the current step. It documents the decision without making the agent guess.</p>
+    <p><strong>Signal in retrospective:</strong> HF-06 (Scope Creep in Transit) from lesson 0010. Every Boundary Call is a documented decision that prevents a future loopback.</p>
+  </div>
+</div>
+
+<div class="protocol-card">
+  <div class="protocol-header">
+    <h4>IP-03: The Deviation Report</h4>
+    <span class="tag freq-high">High frequency</span>
+  </div>
+  <div class="protocol-body">
+    <p><strong>Use when:</strong> The agent reports a deviation — it tried to do something, it failed, it tried a different approach. This is the most common reason execution diverges from the impl plan.</p>
+    <pre>Noted. Before you try the alternative approach: what was the specific failure? (Paste the error or describe the behavior.) What assumption in the impl plan was wrong? ([e.g., "I assumed the API was REST but it's gRPC."]) Based on that, is the fix a local adjustment to this step or does it require a revision to the impl plan? ([local / plan revision])</pre>
+    <p><strong>Why it works:</strong> It forces the agent to name the root cause before continuing. Agents often skip from "failed approach" to "new approach" without diagnosing why the first one failed. Naming the wrong assumption prevents the same failure from recurring in the next step.</p>
+    <p><strong>Deviation types from lesson 0008:</strong> Type 1 (tool misfire) → local fix. Type 2 (context limit) → pause and clean context. Type 3 (wrong approach) → impl plan revision.</p>
+  </div>
+</div>
+
+<div class="protocol-card">
+  <div class="protocol-header">
+    <h4>IP-04: The Termination Check</h4>
+    <span class="tag freq-high">High frequency</span>
+  </div>
+  <div class="protocol-body">
+    <p><strong>Use when:</strong> The agent reports "step complete" or runs for longer than expected. The termination check prevents two failures: stopping too early (missing criteria) and running too long (wasted time).</p>
+    <pre>Before we close this step: which of the three success criteria are you most uncertain about? ([criterion]) Walk me through how you verified it. ([answer]) If you cannot verify it to your own standard, treat it as open and tell me what you need to close it. Do not mark a criterion as verified if you are guessing.</pre>
+    <p><strong>Why it works:</strong> Agents tend to declare completion optimistically. The question "which criterion are you most uncertain about" surfaces the weakest point without making the agent admit failure. The agent self-triages.</p>
+    <p><strong>Manager rule:</strong> If the agent cannot verify a criterion without guessing, it is not verified. An unverified step is not a closed step.</p>
+  </div>
+</div>
+
+<div class="protocol-card">
+  <div class="protocol-header">
+    <h4>IP-05: The Context Window Alert</h4>
+    <span class="tag">Context window > 70% full</span>
+  </div>
+  <div class="protocol-body">
+    <p><strong>Use when:</strong> The agent's context is filling up — visible in the token counter or in degraded output quality (repetition, forgetting earlier instructions, losing the thread). This is a Type 2 deviation (lesson 0008).</p>
+    <pre>Your context is filling up. Before we continue: write a step summary as a comment at the top of [primary file]. Include: what is done, what is in progress, what is open. Then restart the context by running [specific command — e.g., "create a new session with the same instructions"]. I will paste the step summary as the first message in the new session.</pre>
+    <p><strong>Why it works:</strong> The step summary is the handoff document. Without it, the new session starts cold and repeats work. With it, the new session picks up where the last one left off with full context.</p>
+    <p><strong>Proactive signal:</strong> If you see the agent re-reading the same files repeatedly without making progress, the context is degrading before it reports a problem.</p>
+  </div>
+</div>
+
+<div class="protocol-card">
+  <div class="protocol-header">
+    <h4>IP-06: The Refactor Gate</h4>
+    <span class="tag">Refactoring surfaces during a feature build</span>
+  </div>
+  <div class="protocol-body">
+    <p><strong>Use when:</strong> During a feature build, the agent encounters messy code and proposes "let me clean this up first." Refactors in the middle of a feature build are HF-06 in disguise — they are out-of-scope work that feels productive.</p>
+    <pre>Noted that [file] needs refactoring. Do not refactor it now. This is a separate step. For this feature step, work around the messy code if possible. If it is not possible to work around it without breaking the feature, stop and report: [description of the specific problem]. I will add refactoring as a separate step to the impl plan after this feature is complete.</pre>
+    <p><strong>Why it works:</strong> Refactoring mid-feature is a scope change disguised as a quality improvement. The manager's job is to protect the feature scope, not to let the agent expand it — even for good reasons.</p>
+    <p><strong>When to make an exception:</strong> If the messy code makes the feature literally unbuildable (not just inconvenient), the refactor is a prerequisite to the feature, not a separate concern. But document it explicitly: "Refactoring X as a prerequisite to feature step N."</p>
+  </div>
+</div>
+
+<div class="protocol-card">
+  <div class="protocol-header">
+    <h4>IP-07: The Review Request</h4>
+    <span class="tag">Mid-step human review needed</span>
+  </div>
+  <div class="protocol-body">
+    <p><strong>Use when:</strong> The agent reaches a decision point — an architectural choice, a naming convention, a design pattern — and needs a human judgment call. This is not a deviation; it's the agent correctly escalating.</p>
+    <pre>I need a judgment call on [specific decision]. Option A: [description — pros/cons]. Option B: [description — pros/cons]. My recommendation is [A/B] because [one sentence]. If you disagree or want a third option, tell me before I continue. If neither option is acceptable, describe what "acceptable" means to you.</pre>
+    <p><strong>Why it works:</strong> It frames the escalation as a decision with options and a recommendation, not a blank question. The recommendation shows the agent has thought it through. The "neither is acceptable" clause gives the manager a way to redefine the problem without overriding the agent's analysis.</p>
+  </div>
+</div>
+
+<div class="protocol-card">
+  <div class="protocol-header">
+    <h4>IP-08: The Session Close</h4>
+    <span class="tag">End of a working session (manual or automatic)</span>
+  </div>
+  <div class="protocol-body">
+    <p><strong>Use when:</strong> The working session is ending — end of day, context is full, feature is done, or manager is stepping away. The session close ensures the next session can pick up without repeating work.</p>
+    <pre>End of session. Summary: [what was completed in this session — be specific]. Next action: [the exact next step and why it comes next]. Open issues: [list with one sentence each — what is known but not resolved]. Checkpoint: [which success criterion from the impl plan we are at — e.g., "step 3 of 7, checkpoint 2 reached"]. Do not continue until the next session begins.</pre>
+    <p><strong>Why it works:</strong> The next session's first message should be this summary, pasted as context. The agent should never start a new session without knowing exactly where the last one stopped.</p>
+  </div>
+</div>
+
+<h2>The 8 Instruction Protocols at a Glance</h2>
+
+<table>
+<thead>
+<tr><th>Protocol</th><th>Situation</th><th>Supervision tier</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>IP-01: Step Brief</strong></td>
+  <td>Start of any M-sized step</td>
+  <td>Any</td>
+</tr>
+<tr>
+  <td><strong>IP-02: Boundary Call</strong></td>
+  <td>Out-of-scope item surfaces</td>
+  <td>Any</td>
+</tr>
+<tr>
+  <td><strong>IP-03: Deviation Report</strong></td>
+  <td>Agent reports failure or tries new approach</td>
+  <td>Any</td>
+</tr>
+<tr>
+  <td><strong>IP-04: Termination Check</strong></td>
+  <td>Agent declares step complete</td>
+  <td>Any</td>
+</tr>
+<tr>
+  <td><strong>IP-05: Context Window Alert</strong></td>
+  <td>Context > 70% full or output degrading</td>
+  <td>Any</td>
+</tr>
+<tr>
+  <td><strong>IP-06: Refactor Gate</strong></td>
+  <td>Agent proposes refactoring mid-feature</td>
+  <td>Any</td>
+</tr>
+<tr>
+  <td><strong>IP-07: Review Request</strong></td>
+  <td>Agent needs a judgment call</td>
+  <td>Any</td>
+</tr>
+<tr>
+  <td><strong>IP-08: Session Close</strong></td>
+  <td>Session ending</td>
+  <td>Any</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Context Window Management</h2>
+
+<p>The context window is the agent's working memory. When it's full, the agent forgets. The cost of a full context window depends on what was forgotten:</p>
+
+<ul>
+  <li><strong>Best case:</strong> The agent forgets the impl plan. The manager re-explains. 5 minutes lost.</li>
+  <li><strong>Worst case:</strong> The agent forgets which feature it's building and starts building the wrong one. Hours of rework.</li>
+</ul>
+
+<p>Context management is the manager's responsibility, not the agent's. The manager sets the context at the start of each session and monitors it during execution.</p>
+
+<h3>The Context Hierarchy</h3>
+
+<p>Context has a priority order. The manager should maintain context at each level:</p>
+
+<ol>
+  <li><strong>Level 1 — Mission context</strong> (never drop): Feature name, phase, current step, success criteria. This fits in the first message of every session.</li>
+  <li><strong>Level 2 — Plan context</strong> (monitor): Impl plan, open steps, checkpoints. Dropped when context is 60% full.</li>
+  <li><strong>Level 3 — File context</strong> (rotate): Which files are currently being edited, which are recently read. Rotated based on what the agent is actively touching.</li>
+  <li><strong>Level 4 — Scratch context</strong> (discard freely): Agent's reasoning, failed attempts, exploration notes. Purge aggressively.</li>
+</ol>
+
+<div class="callout orange">
+  <p><strong>The 60% rule:</strong> When the context window reaches 60% full (not 70%, not 80%), start the IP-05 context window protocol. At 60%, you have room to write the step summary and restart cleanly. At 80%, you're making emergency decisions. At 90%, the agent is already degrading.</p>
+</div>
+
+<h3>Session Continuity Protocol</h3>
+
+<p>When restarting a session (new terminal, context full, or resuming after a break), the continuity protocol prevents the agent from repeating work:</p>
+
+<ol>
+  <li>New session first message: paste the IP-08 session close summary from the previous session.</li>
+  <li>Agent reads it, confirms the checkpoint, and asks: "Ready to continue from [checkpoint]. Any changes to the plan since last session?"</li>
+  <li>Manager confirms or adjusts the plan.</li>
+  <li>Execution resumes from the confirmed checkpoint.</li>
+</ol>
+
+<div class="scenario warn">
+  <h4>What happens without continuity protocol</h4>
+  <p>Manager ends session. Agent writes no summary. Next session starts with "continue." Agent doesn't know the checkpoint. Agent re-reads the codebase, re-starts from step 1, and spends 20 minutes reproducing work that was already done. Manager either catches it (wastes 5 minutes) or doesn't (agent overwrites clean code with half-finished code).</p>
+  <p>The fix is always the IP-08 session close. It takes 2 minutes. The cost of skipping it is 20 minutes minimum.</p>
+</div>
+
+<h2>When to Stop the Agent</h2>
+
+<p>The termination condition is the manager's most important decision. The agent will not stop itself unless told to. The signals for when to stop fall into three categories:</p>
+
+<table>
+<thead>
+<tr><th>Signal</th><th>Category</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>Context window approaching limit</td>
+  <td><span class="signal-badge signal-caution">Caution</span></td>
+  <td>Stop at next natural boundary (end of sub-task). Run IP-05 + IP-08.</td>
+</tr>
+<tr>
+  <td>Agent asks the same question twice</td>
+  <td><span class="signal-badge signal-caution">Caution</span></td>
+  <td>Stop. Run IP-03. The impl plan step is ambiguous — not the agent's memory.</td>
+</tr>
+<tr>
+  <td>Agent proposes a design change</td>
+  <td><span class="signal-badge signal-caution">Caution</span></td>
+  <td>Stop. Run IP-06 (Refactor Gate). Design changes are impl plan revisions.</td>
+</tr>
+<tr>
+  <td>Agent's output is repetitive or looping</td>
+  <td><span class="signal-badge signal-stop">Stop</span></td>
+  <td>Stop immediately. Context is degrading. Run IP-05 + IP-08 and restart.</td>
+</tr>
+<tr>
+  <td>Agent introduces code without showing diff first</td>
+  <td><span class="signal-badge signal-stop">Stop</span></td>
+  <td>Revert if possible. This violates the trust tier contract.</td>
+</tr>
+<tr>
+  <td>Agent bypasses a success criterion</td>
+  <td><span class="signal-badge signal-stop">Stop</span></td>
+  <td>Revert the step. Re-run with IP-01 including the missed criterion explicitly.</td>
+</tr>
+<tr>
+  <td>Agent makes a Type 3 deviation (wrong approach)</td>
+  <td><span class="signal-badge signal-stop">Stop</span></td>
+  <td>Stop execution on this step. Loop back to impl plan before continuing.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Example Exchange: IP-01 → IP-03 → IP-04</h2>
+
+<p>The following is a realistic execution exchange showing three protocols in sequence:</p>
+
+<div class="exchange">
+  <div class="exchange-header">IP-01: Manager starts Step 4 of the impl plan</div>
+  <div class="exchange-you"><strong>MANAGER</strong>We are in the Payment Processing feature, step 4 of 7. The goal of this step is to add idempotency keys to the charge endpoint. Success means: (1) idempotency key is accepted as a request header, (2) duplicate charges return the cached response within the 24h window, (3) missing idempotency key returns HTTP 422. Do not proceed to step 5 until all three criteria are met. After each sub-task, show me the diff before running any git commands. This is Tier 1 supervision.</div>
+  <div class="exchange-agent"><strong>AGENT</strong>Understood. Step 4: idempotency keys on the charge endpoint. Three criteria: header accepted, duplicate returns cached response, missing key returns 422. Tier 1: I will show diffs before executing. Starting sub-task 1 — adding the idempotency key validation to the charge handler.</div>
+</div>
+
+<div class="exchange">
+  <div class="exchange-header">10 minutes later — IP-03: Agent hits a deviation</div>
+  <div class="exchange-you"><strong>MANAGER</strong>(Agent reports: "The idempotency library I planned to use (`idempotent-oss`) requires Node 20+ but the project is on Node 18. I tried `node-idempotent` instead and it worked in my test.")</div>
+  <div class="exchange-agent"><strong>AGENT</strong>Before I continue with `node-idempotent`: what was the specific failure? I assumed `idempotent-oss` was compatible with Node 18. The failure was a runtime `ERR_INVALID_PACKAGE_TARGET` when importing it. My assumption that it was Node 18-compatible was wrong. Is the fix a local adjustment (switch the library) or does it require a revision to the impl plan? (node-idempotent is a drop-in replacement for the same interface — local fix.)</div>
+</div>
+
+<div class="exchange">
+  <div class="exchange-header">5 minutes later — IP-04: Agent declares sub-task complete</div>
+  <div class="exchange-you"><strong>MANAGER</strong>Before we close sub-task 1: which of the three success criteria are you most uncertain about?</div>
+  <div class="exchange-agent"><strong>AGENT</strong>Criterion 1 (header accepted) and criterion 3 (422 on missing key) — I'm confident. Criterion 2 (duplicate returns cached response) — I tested it manually with curl and it worked, but I did not write an automated test for it. I can write the test now, or I can flag it as open for QA.</div>
+  <div class="exchange-fail"><strong>MANAGER</strong>Flag it as open for QA. Do not mark a criterion as verified if you haven't automated the verification. We're tracking test coverage in the QA plan. Sub-task 1 is open until an automated test is written.</div>
+</div>
+
+<div class="callout green">
+  <p><strong>The exchange above models the key discipline:</strong> The agent self-reported the deviation correctly (IP-03). The manager asked the termination check question (IP-04). The agent self-identified the gap. The manager closed the gap by refusing to let an unverified criterion pass. This is what "verification, not trust" (lesson 0009) looks like in practice during execution.</p>
+</div>
+
+<h2>What the Manager Does All Day</h2>
+
+<p>The manager in an AI-driven team is not looking at code. The manager is looking at:</p>
+
+<ol>
+  <li><strong>The execution log</strong> — is the agent on track? Are the criteria being met?</li>
+  <li><strong>The context window</strong> — is it filling? Should we IP-05 soon?</li>
+  <li><strong>The impl plan</strong> — is the plan still valid? Are we deviating into HF-06 territory?</li>
+  <li><strong>The agent's questions</strong> — are they escalating appropriately (IP-07) or making silent assumptions (HF-02 risk)?</li>
+  <li><strong>The trust tier</strong> — are we ready to elevate? Has the agent earned a higher tier on this pattern?</li>
+</ol>
+
+<div class="callout">
+  <p><strong>The manager's single most valuable skill in AI-driven execution:</strong> Knowing when to say "stop." Not "stop and fix this" — just "stop" — to think about whether the plan is still correct. The agent will keep running if given the chance. The manager's job is to create pauses at the right moments.</p>
+</div>
+
+<h2>What the Manager Never Does</h2>
+
+<ul class="checklist">
+  <li>
+    <span class="check-box"></span>
+    <span>Never give an instruction without a success criterion. "Do X" is not a brief. "Do X so that Y" is.</span>
+  </li>
+  <li>
+    <span class="check-box"></span>
+    <span>Never let an unverified criterion pass because "it looks right." Verification is not optional.</span>
+  </li>
+  <li>
+    <span class="check-box"></span>
+    <span>Never let the agent refactor mid-feature without a separate impl plan step.</span>
+  </li>
+  <li>
+    <span class="check-box"></span>
+    <span>Never let Tier 1 become Tier 3 because "it's been going well." Trust elevation requires evidence.</span>
+  </li>
+  <li>
+    <span class="check-box"></span>
+    <span>Never end a session without an IP-08 summary. The next session will pay for it.</span>
+  </li>
+  <li>
+    <span class="check-box"></span>
+    <span>Never let the agent introduce out-of-scope work without a Boundary Call (IP-02). The scope creep accumulates.</span>
+  </li>
+  <li>
+    <span class="check-box"></span>
+    <span>Never skip the termination check (IP-04). The agent will declare done optimistically.</span>
+  </li>
+</ul>
+
+<div class="lesson-nav">
+  <a href="0010-cross-phase-handoffs.html">← Lesson 0010: Cross-Phase Handoffs</a>
+  <a href="0012-anti-patterns.html">Lesson 0012: Anti-Patterns →</a>
+</div>
+
+</body>
+</html>

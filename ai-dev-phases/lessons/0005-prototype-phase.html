@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005: The Prototype Phase — Proof Before Code</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #7c3aed;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+    }
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta .badge-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.08rem 0.45rem;
+    }
+    pre, code {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #f5f3ff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success { background: #e8f5e9; border-left-color: #4caf50; }
+    .callout.warning { background: #fdecea; border-left-color: var(--accent); }
+    .callout p:last-child { margin-bottom: 0; }
+    ul { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    ol { margin: 1rem 0 1rem 1.5rem; }
+    ol li { margin-bottom: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    thead tr { border-bottom: 2px solid var(--rule); }
+    tbody tr { border-bottom: 1px solid var(--rule); }
+    th { text-align: left; padding: 0.5rem 0; font-weight: 700; }
+    td { padding: 0.4rem 0; vertical-align: top; }
+    .lesson-nav {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lesson-nav a { color: var(--accent); text-decoration: none; }
+    .lesson-nav a:hover { text-decoration: underline; }
+    blockquote {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+    }
+    details { margin: 1rem 0; }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.3rem 0;
+    }
+    details[open] summary { margin-bottom: 0.5rem; }
+    .research-template {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .research-template h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .research-template ul { margin: 0.5rem 0 0.5rem 1.5rem; }
+    .decision-matrix {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+    .decision-matrix-header {
+      display: grid;
+      grid-template-columns: 1.1fr 1.4fr 1.4fr;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+    }
+    .decision-matrix-header div {
+      padding: 0.6rem 1rem;
+      background: #ede9fe;
+    }
+    .decision-matrix-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1.4fr 1.4fr;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.88rem;
+    }
+    .decision-matrix-row:last-child { border-bottom: none; }
+    .decision-matrix-row div {
+      padding: 0.6rem 1rem;
+      border-right: 1px solid var(--rule);
+    }
+    .decision-matrix-row div:last-child { border-right: none; }
+    .scenario {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .scenario h4 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .scenario.victory { border-left: 3px solid #4caf50; }
+    .scenario.medium { border-left: 3px solid #ff9800; }
+    .scenario.fail { border-left: 3px solid #b71c1c; }
+    .compare-matrix {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(4, 1fr);
+      gap: 0;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+    }
+    .compare-cell {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-cell:first-child {
+      font-weight: 700;
+      background: var(--code-bg);
+    }
+    .compare-header {
+      padding: 0.6rem 0.8rem;
+      background: #ede9fe;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .compare-header:first-child { background: var(--code-bg); }
+  </style>
+</head>
+<body>
+
+<div class="meta">
+  <span><span class="badge">ai-dev-phases</span></span>
+  <span><span class="badge-outline">Lesson 0005</span></span>
+  <span>Phase 03: Prototype</span>
+  <span>2026-07-03</span>
+  <span>20–30 min</span>
+</div>
+
+<h1>The Prototype Phase — Proof Before Code</h1>
+<p class="subtitle">"I always prototype — isn't that just how you build?" No. A prototype proves exactly one thing. Without the proof, you have a half-built feature. This lesson covers the proof threshold, the throwaway test, and why most prototypes die by becoming the production system.</p>
+
+<p>Source: <em>Matt Pocock — "The 7 phases of AI-driven development"</em>, AI Hero / YouTube, 8:26, 2026-03-03. Builds on lessons 0001–0004.</p>
+
+<div class="callout">
+  <p><strong>How to use this lesson.</strong> The Prototype phase is where teams confuse three things: progress, exploration, and validation. Read the "proof threshold" section first — it's the test for whether what you're building is a prototype. Then read the throwaway test, because most "prototypes" in real teams quietly become production code. The 7 failure modes table at the end is the diagnostic you'll use in code review and sprint retro.</p>
+</div>
+
+<h2>What Pocock Actually Said</h2>
+
+<p>The full quote, in context:</p>
+
+<blockquote>
+  <em>"The third phase is the prototype. So I want to build a small working version of the thing. Now, whether that's, like, a CLI tool, or, you know, an HTML page that fakes it, or a real implementation behind a feature flag — however the prototype looks — it's like, build a small working version of the thing."</em> — Matt Pocock
+</blockquote>
+
+<p>He lists three prototype forms on purpose: <em>"a CLI tool," "an HTML page that fakes it," "a real implementation behind a feature flag."</em> The prototype is *whatever shape* serves the proof. The shape is not the point. The proof is the point. Most teams get this exactly backwards.</p>
+
+<h2>The Prototype Confusion</h2>
+
+<p>The most common objection: <em>"I always prototype — that's just how software development works."</em> It's a fair objection. The reason it's wrong:</p>
+
+<ul>
+  <li><strong>Most "prototypes" don't have a proof threshold.</strong> Engineers build small versions of features every day. They're called spikes, POCs, scratch code, or just "writing the feature slowly." Those aren't prototypes in Pocock's sense — they're development.</li>
+  <li><strong>Most "prototypes" are not throwaway.</strong> The code lives in the main branch. It's imported by <code>main.ts</code>. Test files cover it. Junior engineers "improve it" later. The prototype becomes the product — and the codebase inherits decisions that were made to prove a question, not to run a system.</li>
+  <li><strong>Most "prototypes" never answer a question.</strong> They just exist. The team is uncertain whether the prototype proved the thing it was supposed to prove, and they've moved on to the next prototype.</li>
+</ul>
+
+<p>Pocock's prototype is a specific thing: <strong>the smallest throwable piece of code that answers a specific, risky question.</strong> Three criteria. Drop any one and you have something else.</p>
+
+<h2>The Three Criteria</h2>
+
+<table>
+<thead>
+<tr><th>Criterion</th><th>What it means</th><th>If it's missing</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Specific question</td>
+<td>The prototype proves <em>one thing</em>. The thing is named in 1 sentence.</td>
+<td>Vagueness — no one knows what success looks like</td>
+</tr>
+<tr>
+<td>Risky assumption</td>
+<td>The answer is unknown. If you can predict it, no prototype is needed.</td>
+<td>Wasted work — the question could've been answered in Research.md</td>
+</tr>
+<tr>
+<td>Throwaway-friendly</td>
+<td>Deleting the prototype doesn't break anything. The code is isolated.</td>
+<td>Mutation risk — prototype decisions leak into production logic</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout warning">
+  <p><strong>If you can name the question in one sentence, you have a prototype. If you can't, you have a half-built feature.</strong> The first test of a prototype is the 60-second test: can you write, in plain language, what this prototype is going to prove? If the answer takes more than one sentence, the prototype scope is wrong. Stop and rewrite the question before writing code.</p>
+</div>
+
+<h2>Prototype vs. Spike vs. MVP vs. Production</h2>
+
+<p>Four overlapping terms, four distinct meanings. Most teams blur them:</p>
+
+<div class="compare-matrix">
+  <div class="compare-header">Phase</div>
+  <div class="compare-header">Spike</div>
+  <div class="compare-header">Prototype</div>
+  <div class="compare-header">MVP</div>
+  <div class="compare-header">Production</div>
+  <div class="compare-cell">Goal</div>
+  <div class="compare-cell">Answer "is this possible?"</div>
+  <div class="compare-cell">Answer "does this approach work?"</div>
+  <div class="compare-cell">Validate with real users</div>
+  <div class="compare-cell">Run the system at scale</div>
+  <div class="compare-cell">Timebox</div>
+  <div class="compare-cell">Strict (1–3 days)</div>
+  <div class="compare-cell">Moderate (1–2 weeks)</div>
+  <div class="compare-cell">Open</div>
+  <div class="compare-cell">Continuous</div>
+  <div class="compare-cell">Throwaway?</div>
+  <div class="compare-cell">Yes (branch deleted)</div>
+  <div class="compare-cell">Yes (code isolated)</div>
+  <div class="compare-cell">Becomes product</div>
+  <div class="compare-cell">Becomes legacy</div>
+  <div class="compare-cell">Artifact</div>
+  <div class="compare-cell">Slack thread / PR</div>
+  <div class="compare-cell">prototype-N.md</div>
+  <div class="compare-cell">user feedback</div>
+  <div class="compare-cell">runbook + SLAs</div>
+  <div class="compare-cell">What if it fails?</div>
+  <div class="compare-cell">Pivot to a different approach</div>
+  <div class="compare-cell">Pivot to a different approach</div>
+  <div class="compare-cell">Reconsider scope</div>
+  <div class="compare-cell">Reconsider architecture</div>
+</div>
+
+<p>Notice: <strong>spike and prototype both end in "pivot" if they fail.</strong> MVP and production end in "reconsider scope" or "reconsider architecture" — bigger, slower pivots. The cost of a wrong prototype is small. The cost of a wrong MVP is large. That's why the Prototype phase exists — to absorb the cheap pivots before the expensive ones happen.</p>
+
+<h2>The Three Questions a Prototype Can Answer</h2>
+
+<p>Most prototypes serve one of three purposes. Conflating them is a common mistake:</p>
+
+<h3>1. Approach prototype — "does this even work?"</h3>
+<p>You're unsure if the chosen approach is viable. The prototype tests whether the technology, library, or pattern does what research.md said it would. Example: <em>"Can Redis Streams handle 10K writes/sec on a single node?"</em> The proof is a benchmark, not a feature.</p>
+
+<h3>2. Interface prototype — "does this feel right?"</h3>
+<p>You're unsure if the API surface, UX pattern, or interaction model matches user expectations. The prototype tests <em>shape</em>, not <em>implementation</em>. Example: <em>"Does the export-progress UI feel like progress, or does it freeze?"</em> The proof is user feedback, not benchmarks.</p>
+
+<h3>3. Integration prototype — "do these two systems actually work together?"</h3>
+<p>You're unsure if two services, two libraries, or two clouds can talk. The prototype tests the integration edge. Example: <em>"Does Stripe's webhook signature verify correctly when our reverse proxy adds an extra header?"</em> The proof is end-to-end, not isolated.</p>
+
+<div class="callout">
+  <p><strong>One prototype, one question.</strong> Each prototype type answers a different question. If your prototype is trying to answer two of these, split it. Two parallel prototypes is cheaper than one prototype that proves nothing because it was spread too thin.</p>
+</div>
+
+<h2>Anatomy of a Prototype</h2>
+
+<p>Like a research.md, every prototype has a minimum viable structure. The artifact is called <code>prototype-N.md</code>:</p>
+
+<div class="research-template">
+  <h4>prototype-N.md — minimum viable template</h4>
+  <ul>
+    <li><strong>Question:</strong> One sentence. "Does X do Y?" Pass the 60-second test.</li>
+    <li><strong>Why this question matters:</strong> What decision gets made after the prototype?</li>
+    <li><strong>Risky assumption:</strong> What you believe is unknown. (If nothing's unknown, why are you prototyping?)</li>
+    <li><strong>Timebox:</strong> Hard deadline. No extensions without a manager call.</li>
+    <li><strong>Throwaway boundary:</strong> Which files / branches / paths will be deleted after?</li>
+    <li><strong>Location:</strong> <code>prototypes/[question-slug]/</code> in the repo root. Never merged to main directly.</li>
+    <li><strong>Success criteria:</strong> Specifically what you observe when the prototype proves the question (a number, a screen, a behavior).</li>
+    <li><strong>Failure criteria:</strong> What you observe if the prototype disproves the question.</li>
+    <li><strong>Decision after prototype:</strong> Proceed / Pivot / Abandon. Pre-filled, picked when the prototype concludes.</li>
+  </ul>
+</div>
+
+<div class="callout success">
+  <p><strong>The pre-filled decision field is the secret.</strong> Every prototype concludes with one of three decisions: Proceed (the approach works), Pivot (we need a different approach), Abandon (the idea is wrong). Writing all three options in the prototype-N.md upfront prevents post-hoc rationalization. If the prototype disproves the question, the team doesn't get to retroactively define success.</p>
+</div>
+
+<h2>The Throwaway Test</h2>
+
+<p>The most dangerous moment for a prototype is the moment it "kind of works." Engineers look at the code, think <em>"it's already written, why delete it?"</em> — and the prototype becomes the production system, complete with all the prototype-shaped decisions baked in.</p>
+
+<p><strong>The throwaway test:</strong> imagine deleting the prototype right now. What's the cost?</p>
+
+<div class="decision-matrix">
+  <div class="decision-matrix-header">
+    <div>If the cost of deletion is…</div>
+    <div>Then it is…</div>
+    <div>And you should…</div>
+  </div>
+  <div class="decision-matrix-row">
+    <div>0 days of effort</div>
+    <div>A real prototype</div>
+    <div>Delete it after the decision. Don't merge.</div>
+  </div>
+  <div class="decision-matrix-row">
+    <div>1–3 days of effort</div>
+    <div>A prototype that grew up</div>
+    <div>Stop. Re-architect. Delete the throwaway parts; revisit the question.</div>
+  </div>
+  <div class="decision-matrix-row">
+    <div>1+ weeks of effort</div>
+    <div>A production system pretending to be a prototype</div>
+    <div>Admit it's the production system. Add tests, error handling, observability. Move to phase 04 PRD retroactively.</div>
+  </div>
+</div>
+
+<div class="callout warning">
+  <p><strong>The "already written" trap.</strong> Engineers who say <em>"it's already written"</em> about prototype code are conflating two separate decisions: <em>"we built a thing"</em> and <em>"we shipped a thing."</em> A prototype is not shipped. It's a model. Models can be torn down. If deleting the prototype scares the team, the team has accidentally shipped a system without shipping a feature.</p>
+</div>
+
+<h2>Three Team Scenarios</h2>
+
+<h3>Scenario A — The prototype that became the product</h3>
+
+<p>The team builds an AI-powered search feature. Engineer Q writes a quick prototype over 4 days. It works. Engineering manager says <em>"ship it."</em> The prototype is merged to main. Six months later, it's the search feature. The team discovers it doesn't handle trailing slashes correctly, has no observability, and the AI model isn't version-pinned.</p>
+
+<p><strong>What went wrong:</strong> The throwaway test was never applied. The "prototype" had no specific question; it just <em>was</em> the feature. When it shipped, it inherited research-stage decisions: no observability, no model version pinning, no error handling. The cost of those inherited decisions is showing up 6 months late.</p>
+
+<p><strong>Diagnostic:</strong> No <code>prototype-N.md</code> existed. No throwaway boundary was defined. Question wasn't named.</p>
+
+<h3>Scenario B — The prototype that proved nothing</h3>
+
+<p>Engineer R wants to know if their team can use WebSockets for real-time updates. The WebSocket prototype runs in a separate branch. Engineer R tests it manually, decides it works, and shares the result in standup: <em>"WebSockets work."</em> Three weeks later, under load, the connection drops every 30 seconds.</p>
+
+<p><strong>What went wrong:</strong> The prototype proved "WebSockets work in my laptop for 5 minutes," but the question that mattered was "can WebSockets work for our production load for 8 hours?" The question wasn't specific. The success criteria were subjective.</p>
+
+<p><strong>Diagnostic:</strong> Question was <em>"does this work?"</em> — too vague. Success criteria missing from prototype-N.md. Failed to define what counts as proving the question.</p>
+
+<h3>Scenario C — The proof artifact that compounds value</h3>
+
+<p>Engineer S wants to know if Turso's edge replicas give sub-50ms reads globally. She writes:</p>
+
+<ul>
+  <li><strong>Question:</strong> "Do Turso edge replicas give p95 read latency &lt; 50ms for users in 5 regions?"</li>
+  <li><strong>Timebox:</strong> 5 days.</li>
+  <li><strong>Success criteria:</strong> p95 latency &lt; 50ms in 4/5 regions over 10K requests.</li>
+  <li><strong>Failure criteria:</strong> p95 latency &gt; 200ms in any region.</li>
+  <li><strong>Throwaway boundary:</strong> Only the files in <code>prototypes/turso-latency-test/</code>. Test data deleted.</li>
+  <li><strong>Post-prototype decision:</strong> Proceed with Turso / Pivot to Postgres / Abandon real-time feature.</li>
+</ul>
+
+<p>Engineer S runs the prototype in 4 days. Result: p95 is 65ms in 3 regions, 180ms in 2 regions. Question is answered: <strong>no</strong>. The team pivots to a hybrid model. The prototype code is deleted. The prototype-N.md lives as a decision record: <em>"we tried edge replicas, latency was too high, we're using Postgres + read replicas instead."</em></p>
+
+<p><strong>Why it works:</strong> Specific question. Numeric success criteria. Explicit failure criteria. Throwaway boundary enforced. Decision pre-filled. The prototype produced a *decision*, not code.</p>
+
+<h2>Prototype and the Phases Around It</h2>
+
+<h3>Prototype ← Research</h3>
+<p>If research.md has a Decision section (from lesson 0004), the prototype is testing that decision. The Decision becomes the prototype's success criteria. If research.md doesn't have a decision, the prototype is doing research's job — and your team is paying for the same exploration twice.</p>
+
+<h3>Prototype → PRD</h3>
+<p>The PRD (phase 04) is much cheaper to write after the prototype. The prototype answered: <em>"what's hard here? what's easy here? what are the gotchas?"</em> The PRD can now be written from real data, not imagination. A PRD written before the prototype is mostly fiction.</p>
+
+<h3>Prototype → Execution (only after the decision)</h3>
+<p>The prototype produces a decision: Proceed / Pivot / Abandon. Execution (phase 06) only starts after Proceed. Pivot means another prototype or another research.md. Abandon means back to phase 01 Idea. Phase 06 should never start with a prototype as its foundation.</p>
+
+<div class="callout">
+  <p><strong>The PRD-after-prototype insight.</strong> Most teams write PRDs first, then build, then test. Pocock inverts the order: prototype first, then PRD, then build. The PRD captures what the prototype taught. A PRD written without a prototype is engineering fiction. A PRD written after a prototype is a buildable spec. Same template, different inputs.</p>
+</div>
+
+<h2>7 Failure Modes</h2>
+
+<table>
+<thead>
+<tr><th>Symptom</th><th>What you actually missed</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Prototype becomes the product</td>
+<td>No throwaway boundary; no success/failure criteria</td>
+</tr>
+<tr>
+<td>Prototype proves nothing</td>
+<td>Question was too vague; no success criteria defined</td>
+</tr>
+<tr>
+<td>Engineer says "it's already written" about prototype</td>
+<td>Throwaway boundary never enforced; prototype merged to main</td>
+</tr>
+<tr>
+<td>Prototype runs but key behavior isn't tested</td>
+<td>Prototype not run end-to-end; only unit tests ran</td>
+</tr>
+<tr>
+<td>Prototype answers the wrong question</td>
+<td>Question wasn't specific; team's prototype tested what was easy, not what was risky</td>
+</tr>
+<tr>
+<td>Prototype cost more than the feature</td>
+<td>Gold-plating during exploration; no timebox enforced</td>
+</tr>
+<tr>
+<td>Multiple parallel prototypes never reconciled</td>
+<td>No pre-decision rule; pre-prototype decisions weren't aligned</td>
+</tr>
+</tbody>
+</table>
+
+<h2>The Manager Ritual for Prototype</h2>
+
+<div class="research-template">
+  <h4>Prototype phase ritual — 2 questions × 2 moments</h4>
+
+  <h4>Before approving a prototype</h4>
+  <ul>
+    <li>"Can the engineer write the question in one sentence?" (60-second test)</li>
+    <li>"What's the throwaway boundary? Which files will be deleted when it's done?"</li>
+  </ul>
+
+  <h4>At end of prototype</h4>
+  <ul>
+    <li>"Did the prototype-N.md get written? Is the decision pre-filled with proceed/pivot/abandon?"</li>
+    <li>"Was the throwaway boundary enforced? If not, what does the codebase now carry from the prototype?"</li>
+  </ul>
+</div>
+
+<div class="callout warning">
+  <p><strong>The manager's hardest question after a prototype.</strong> It's not "did the prototype work?" It's "did we delete the prototype code?" If your team answers "no, we kept some of it," your team has shipped prototype-grade code into production. That's a phase 04 PRD problem that nobody noticed — because the code was already merged.</p>
+</div>
+
+<details>
+  <summary>Recall exercise: audit your last 3 prototypes</summary>
+  <div style="margin-top: 0.5rem;">
+    <p>For your last 3 features that began with a prototype, answer:</p>
+    <ol>
+      <li>Was the question specific and one-sentence?</li>
+      <li>Did success criteria exist as numbers, screens, or behaviors?</li>
+      <li>Was a throwaway boundary defined?</li>
+      <li>Was the boundary enforced? (Is the prototype code still in main?)</li>
+      <li>Did the prototype-N.md get written?</li>
+      <li>Did the prototype produce a decision (proceed / pivot / abandon)?</li>
+      <li>Did the prototype prove something you'd have to spend more time re-proving without it?</li>
+    </ol>
+    <p>Score: each yes = 1 point. Below 4/7 → prototype phase is leaking into production. 4–5/7 → solid. 6+/7 → strong prototype discipline. Whatever the score, the value of measuring it is the same.</p>
+  </div>
+</details>
+
+<h2>Decision Tree for Lesson 0006</h2>
+
+<p>Five phases remain in Pocock's sequence:</p>
+
+<table>
+<thead>
+<tr><th>Phase</th><th>Pocock's description</th><th>Key manager question</th></tr>
+</thead>
+<tbody>
+<tr><td>04 PRD</td><td>"what the thing actually does"</td><td>How detailed must a PRD be to be useful vs. constraining?</td>
+</tr>
+<tr><td>05 Impl Plan</td><td>"break the thing into steps"</td><td>How detailed must the plan be before agents can execute?</td>
+</tr>
+<tr><td>06 Execution</td><td>"implement the thing"</td><td>When does the manager step in vs. let the agent run?</td>
+</tr>
+<tr><td>07 QA</td><td>"test the thing"</td><td>What does "done" look like when an agent built it?</td>
+</tr>
+<tr><td>(loopback)</td><td>Back to Idea when a phase proves the original idea is wrong</td><td>When should we kill a feature vs. keep patching it?</td>
+</tr>
+</tbody>
+</table>
+
+<p>The natural next is <strong>PRD (04)</strong> — Pocock's order places it directly after Prototype. The PRD deep-dive will introduce the <em>buildable spec</em> concept: a PRD that is <em>enough</em> but not <em>too much</em>. Most PRDs fail by being too long; the bigger failure is being too vague in the wrong places.</p>
+
+<div class="callout success">
+  <p><strong>Final note on this lesson.</strong> The Prototype phase is the first phase where <em>output is code, not documentation.</em> That changes the failure modes — documentation failures are silent (no one reads it), prototype failures are visible (broken behavior). Use the 60-second test as the entry gate. Use the throwaway test as the exit gate. Between those two gates, the prototype's only job is to prove one specific thing. If it proves nothing, the team is paying prototype costs without prototype benefits — and the next phase will need to re-prove what this prototype was meant to prove.</p>
+</div>
+
+<div class="lesson-nav">
+  <a href="0004-research-phase.html">← Lesson 0004: Research Phase</a>
+  <a href="0006-prd-phase.html">Lesson 0006: PRD Phase →</a>
+</div>
+
+</body>
+</html>
