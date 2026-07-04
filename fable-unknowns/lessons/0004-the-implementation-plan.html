@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 4 — The Implementation Plan</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>The Implementation Plan</h1>
+  <div class="lesson-meta">
+    <span class="num">L4</span>
+    Pre-implementation closeout &middot; ~10 min &middot; Lesson 4 of the Finding Your Unknowns series
+  </div>
+
+  <p>
+    Lessons 1&ndash;3 got you from a fuzzy problem to a chosen direction.
+    <strong>Lesson 4 turns that direction into a doc Fable can execute against.</strong>
+    This is where the pre-implementation phase closes. Once the plan is written, you
+    start a fresh session, paste it in, and let Fable run.
+  </p>
+
+  <p>
+    The plan is the most underestimated artifact in agentic coding. Skipped, the
+    implementation drifts: surprises aren't surfaced, decisions get re-made, the
+    finished work looks like a first draft. Written well, the plan lets Fable
+    <em>move fast without re-asking you</em> &mdash; the doc answers the questions
+    Fable would otherwise have to guess at.
+  </p>
+
+  <hr>
+
+  <h2>The shape of a useful plan</h2>
+
+  <p>
+    Wood's one-liner on the format: <em>"write an implementation plan in HTML, but
+    lead with the decisions I'm most likely to tweak with &mdash; data model
+    changes, new type interfaces, and anything user-facing. Bury the mechanical
+    refactoring at the bottom; I trust you on that part."</em> Three principles:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Lead with what you'll want to change</h3>
+      <span class="step-body">Above the fold of the plan doc &mdash; the first thing you read &mdash; goes
+        the load-bearing decisions. Things you'd want to revise after reading the implementation:
+        data model, type interfaces, public API, UX flows, anything user-facing. These are the
+        sections you'll re-read three times during implementation.</span>
+    </li>
+    <li>
+      <h3>Bury the mechanical</h3>
+      <span class="step-body">Renames, file moves, test scaffolding, internal helpers &mdash; all the work
+        that's tedious to read but doesn't need your judgment. Put these at the bottom. Wood's
+        "<em>I trust you on that part</em>" is doing real work: it tells Fable not to ask about
+        these decisions at all.</span>
+    </li>
+    <li>
+      <h3>Write it in HTML</h3>
+      <span class="step-body">Not markdown. The plan lives alongside your other lesson artifacts;
+        matching the format means it gets read like the rest of the docs. Wood: <em>"I've previously
+        written about using HTML with Claude, in almost all of these cases, a HTML artifact is the
+        best way to visualize and represent it."</em></span>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <div class="callout-label">Why HTML over markdown</div>
+    A markdown plan embeds into the chat scroll and disappears. An HTML plan is
+    addressable, can be linked, has structure you can skim, and rounds out the
+    artifact set the same way each lesson does in this workspace.
+  </div>
+
+  <hr>
+
+  <h2>What goes at the top of the plan</h2>
+
+  <p>
+    Your tweak-points are not all the same. Rank them. The order in the plan is the
+    order you'll re-read during implementation:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Section</th>
+        <th>What it covers</th>
+        <th>Why it goes first</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Data model</strong></td>
+        <td>Schema, migrations, indices, relationships</td>
+        <td>Wrong here means a costly rollback. The plan should describe the model as if
+          you were explaining it to a new teammate &mdash; names, types, the
+          invariants.</td>
+      </tr>
+      <tr>
+        <td><strong>Type interfaces / API shape</strong></td>
+        <td>Function signatures, request/response shapes, error contracts</td>
+        <td>Public surface. Changing a public type after the fact is a breaking change.</td>
+      </tr>
+      <tr>
+        <td><strong>UX flows</strong></td>
+        <td>Page flows, edge cases, error states, empty states, loading states</td>
+        <td>Anything user-facing lives here. The Unknown Knowns from Lesson 3 are usually
+          answered in this section.</td>
+      </tr>
+      <tr>
+        <td><strong>Behavior of uncertain edges</strong></td>
+        <td>Race conditions, retries, idempotency, concurrency</td>
+        <td>These don't always fit "data model" but are load-bearing &mdash; they go in
+          the same band as the model.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The pattern: <strong>tweak-points are above the line; mechanical is below.</strong>
+    If you read the plan top-to-bottom and want to skip ahead, the parts you'd skip
+    are the parts you should bury.
+  </p>
+
+  <hr>
+
+  <h2>The replayable plan</h2>
+
+  <p>
+    Two readers will look at your plan:
+  </p>
+
+  <ul>
+    <li><strong>Fable</strong>, during execution, treating the doc as a spec.</li>
+    <li><strong>You</strong>, two weeks later, trying to remember why you decided what you decided.</li>
+  </ul>
+
+  <p>
+    A good plan serves both. Three properties make that possible:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Decisions are explicit, not inferred</h3>
+      <span class="step-body">"Store users in a Postgres <code>users</code> table, indexed by
+        email; soft-delete via <code>deleted_at</code>" beats "users live in Postgres." The first
+        makes the decisions searchable; the second makes them guesses.</span>
+    </li>
+    <li>
+      <h3>Cross-references are URLs, not prose</h3>
+      <span class="step-body">"See Lesson 2's section 4 for the prototype" is fine in chat; in a doc
+        it's better as an anchor link. Fable can navigate it; you can re-find it.</span>
+    </li>
+    <li>
+      <h3>The plan names the verification step</h3>
+      <span class="step-body">"Tests pass" or "the dev server responds with 200 on /api/users" or "the
+        prototype renders identically in Safari and Chrome." The verification is the spec's exit
+        condition. Without it, the plan isn't done &mdash; it's a draft.</span>
+    </li>
+  </ol>
+
+  <div class="callout tip">
+    <div class="callout-label">The plan is a deliverable</div>
+    Wood calls the plan out as separate from the work: <em>"I make a new session and pass
+    any artifacts to the prompt."</em> The plan is one of the artifacts. It travels with
+    the prototype, the spec, and the implementation notes. You're handing Fable a small
+    bundle &mdash; not a chat history.
+  </div>
+
+  <hr>
+
+  <h2>A live plan: implementing Lesson 5</h2>
+
+  <p>
+    Below is the implementation plan for Lesson 5 &mdash; the next lesson in this series,
+    on shipping and closing the loop. Wood says lead with what you'll tweak. Read top-down
+    and notice where the load-bearing decisions sit.
+  </p>
+
+  <blockquote>
+    <p><em>If you're reading this later, the plan should still make sense &mdash; if it
+    doesn't, the plan failed the replay test. That's the failure mode to watch for.</em></p>
+  </blockquote>
+
+  <hr>
+
+  <h3>Plan for L5: Shipping and closing the loop</h3>
+
+  <div class="callout">
+    <div class="callout-label">Status</div>
+    Plan committed 4 Jul 2026. Tweak-points up top. Mechanical buried at the bottom.
+  </div>
+
+  <h4>Decisions you might want to revise</h4>
+
+  <h5>Lesson scope &mdash; one lesson, not two</h5>
+
+  <p>
+    L5 covers Wood's "during" (implementation notes) and "post" (pitch, explainer, quiz)
+    in a single lesson. This was the L3 rehearsal's commitment (Direction B in the
+    brainstorm). It is revisable: if you decide the post-material wants its own lesson
+    (because pitch and quiz are richer than I'm modeling here), L5 splits and L6 is born.
+    The cost: ~10 more minutes of reading and an extra quiz.
+  </p>
+
+  <h5>Unifying claim &mdash; the lesson's thesis sentence</h5>
+
+  <p>
+    <em>"Every surprise during execution deserves a log line; every shipped change
+    deserves an artifact the next person can pick up."</em> This sentence appears near the
+    top of the lesson and is what carries the connection between the two halves. If it
+    doesn't land, the lesson feels like two separate topics.
+  </p>
+
+  <h5>The implementation-notes artifact format</h5>
+
+  <p>
+    Two options under consideration: a literal <code>implementation-notes.md</code> file
+    (Wood's example uses <code>.md</code>), or a section of the lesson itself that
+    shows a representative notes file. I'm leaning toward the literal <code>.md</code>
+    because it makes the technique reusable across projects; the lesson then shows
+    what a representative one looks like. **This is the most likely thing you'll want
+    to revise.** Decide which.
+  </p>
+
+  <h5>The pitch artifact &mdash; in-lesson or separate?</h5>
+
+  <p>
+    Wood's post-implementation artifact is a separate HTML page (the "packaged doc for
+    Slack"). But the lesson in this workspace inherits the convention that artifacts
+    live inside lessons. Three options to consider:
+  </p>
+
+  <ol>
+    <li>Embed the pitch as a section of L5 (matches workspace convention; loses the
+      "reviewers can paste this in Slack" property).</li>
+    <li>Produce a separate <code>reference/ship-and-close-pitch.html</code> (matches Wood;
+      inconsistent with sibling workspaces).</li>
+    <li>Show a pitch <em>template</em> in L5 plus the actual lesson's working pitch as
+      an artifact &mdash; the lesson teaches the template, references the artifact.</li>
+  </ol>
+
+  <p>
+    <strong>My recommendation:</strong> option 3. Templates > artifacts for lessons,
+    artifacts > templates for shipped work. Decide which.
+  </p>
+
+  <h5>The quiz on the shipped change</h5>
+
+  <p>
+    Wood: <em>"I only merge after I pass the quiz perfectly."</em> L5 needs a quiz that
+    tests whether the user understands what happened, not just what they shipped.
+    Two design decisions:
+  </p>
+
+  <ul>
+    <li>How many quiz questions? Three (the minimum to validate understanding across
+      multiple cells of the 2&times;2) or five (L4 had five; L1&ndash;3 had four each).</li>
+    <li>Quiz on the lesson's example pitch (synthetic, easy to grade) or on the user's
+      own work (real, but harder to validate in a self-paced lesson)?</li>
+  </ul>
+
+  <p>
+    <strong>My recommendation:</strong> synthetic quiz on the lesson's own example
+    pitch (the "color grading launch video" Wood uses), grounded in the post-quiz Wood
+    describes for the Fable launch video. Decide.
+  </p>
+
+  <h4>Mechanical &mdash; buried</h4>
+
+  <ul>
+    <li>File: <code>lessons/0005-shipping-and-closing-the-loop.html</code></li>
+    <li>Stylesheet: <code>&lt;link rel="stylesheet" href="../assets/styles.css"&gt;</code></li>
+    <li>Quiz widget: reuse the JS at the bottom of L1&ndash;L4. No new code.</li>
+    <li>Footer nav: <code>Index &middot; &larr; L4</code> (no forward link; L5 is the end).</li>
+    <li>Cross-link from L4's <em>next-up</em> block to <code>./0005-shipping-and-closing-the-loop.html</code>.</li>
+    <li>Add L5 row to <code>index.html</code>.</li>
+    <li>Add <code>learning-records/0006-lesson-5-design-decisions.md</code> at the end.</li>
+    <li>Add the L5 entry to the working-notes log in <code>NOTES.md</code>.</li>
+  </ul>
+
+  <h4>Verification</h4>
+
+  <ul>
+    <li>Open <code>0005-shipping-and-closing-the-loop.html</code> in the browser:
+      it renders with the same Tufte aesthetic as L1&ndash;L4.</li>
+    <li>All four quizzes accept clicks, show feedback, and lock after one answer.</li>
+    <li>The pitch template in L5 references a real example (the launch-video example
+      from Wood's article) rather than a fabricated one.</li>
+    <li>The implementation-notes example uses <code>.md</code> as the file format and
+      shows what gets logged under <em>Deviations</em>.</li>
+  </ul>
+
+  <hr>
+
+  <h3>Reading this back</h3>
+
+  <p>
+    Notice four things about the plan above:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>The first paragraph of each section is a decision, not an instruction</h3>
+      <span class="step-body">"Lesson scope &mdash; one lesson, not two" is the
+        <em>decision</em>. The body of the section explains why and what's revisable. If
+        you start with "Write a lesson that..." you've written a task description, not a
+        plan.</span>
+    </li>
+    <li>
+      <h3>The decisions I labeled "most likely to revise"</h3>
+      <span class="step-body">Three sections: notes artifact format, pitch format, quiz
+        design. These are where I'd cut if I had to shorten the lesson. They're also
+        where I'd patch first if Fable's output didn't match my expectations.</span>
+    </li>
+    <li>
+      <h3>The mechanical section is a checklist, not a paragraph</h3>
+      <span class="step-body">No prose around file renames and footer updates. The work
+        is enumerated. Fable can take the list and do it; I don't have to re-decide
+        any of it.</span>
+    </li>
+    <li>
+      <h3>The verification is the spec's exit condition</h3>
+      <span class="step-body">"Open the HTML, the styles render, the quizzes respond"
+        are specific, observable, testable. The plan is done when the verification
+        passes &mdash; not when Fable says it's done.</span>
+    </li>
+  </ol>
+
+  <div class="callout warning">
+    <div class="callout-label">If the plan needs prose to explain the mechanical</div>
+    The mechanical should be a list. If you're writing prose around file renames,
+    the prose is hiding a decision you should have surfaced.
+  </div>
+
+  <hr>
+
+  <h2>How the four pre-implementation lessons compose</h2>
+
+  <p>
+    Lessons 1&ndash;4 form a sequence. Each closes a phase:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>L1: Map vs. Territory</h3>
+      <span class="step-body">Mental model. The 2&times;2 of unknowns. The iterate-don't-plan loop.</span>
+    </li>
+    <li>
+      <h3>L2: Blindspot pass + Interview</h3>
+      <span class="step-body">Populates the Unknown Unknowns cell. The two passes: broad, then narrow.</span>
+    </li>
+    <li>
+      <h3>L3: Brainstorm + Prototype + Reference</h3>
+      <span class="step-body">Populates the Unknown Knowns cell. The "see something before you commit" pattern.</span>
+    </li>
+    <li>
+      <h3>L4 (this): The Implementation Plan</h3>
+      <span class="step-body">Synthesizes everything. Turns the chosen direction into a doc Fable executes.</span>
+    </li>
+  </ol>
+
+  <p>
+    After L4, pre-implementation is done. <strong>You start a new session, paste the
+    plan (and prototype, if any), and let Fable run.</strong> That's where Wood's
+    "during implementation" lessons take over &mdash; Lesson 5.
+  </p>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">Wood says "lead with the decisions I'm most likely to tweak with." What goes at the bottom of the plan?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The references and footnotes &mdash; supporting material that doesn't drive the design</button>
+      <button class="quiz-opt" data-correct="false">The verification steps &mdash; the spec's exit conditions for the reader to skim</button>
+      <button class="quiz-opt" data-correct="true">The mechanical refactoring &mdash; renames, file moves, scaffolding; work tedious to read</button>
+      <button class="quiz-opt" data-correct="false">The lessons-learned &mdash; what didn't work in past attempts at this kind of work</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">You write a plan and notice it reads like a task list ("first do X, then Y, then Z"). What's the likely problem?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The plan is too short &mdash; task lists are a sign you've under-described the work</button>
+      <button class="quiz-opt" data-correct="true">The plan describes the work, not the decisions; Fable reads it as a script instead of a spec</button>
+      <button class="quiz-opt" data-correct="false">The plan needs the verification section &mdash; task lists without verification look incomplete</button>
+      <button class="quiz-opt" data-correct="false">The plan needs to be in HTML &mdash; task lists only work in markdown</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">Two weeks after writing the plan, you re-read it and don't remember why you chose the data model you did. What did you forget?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The verification &mdash; without it, the plan lacks an exit condition</button>
+      <button class="quiz-opt" data-correct="true">The reasoning for each decision &mdash; you wrote the decision but not why you made it</button>
+      <button class="quiz-opt" data-correct="false">The cross-references &mdash; without anchors, Fable can't navigate the plan</button>
+      <button class="quiz-opt" data-correct="false">The mechanical &mdash; without it, the plan can't be replayed by a different agent</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz4">
+    <div class="quiz-q">Wood says "I make a new session and pass any artifacts to the prompt." What does this teach about the plan's role?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The plan should be in the prompt history &mdash; new sessions lose the context otherwise</button>
+      <button class="quiz-opt" data-correct="true">The plan is a deliverable that travels; it's not the chat, it's one of the artifacts the new session reads</button>
+      <button class="quiz-opt" data-correct="false">The plan should be re-pasted every loop &mdash; new sessions need to see it fresh</button>
+      <button class="quiz-opt" data-correct="false">The plan is a backup &mdash; the new session is the source of truth</button>
+    </div>
+    <div class="quiz-feedback" id="quiz4-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    The implementation-plan technique is from Cat Wood, <em>A Field Guide to Fable:
+    Finding Your Unknowns</em> (X thread, 4 Jul 2026). The HTML-as-plan preference
+    comes from Wood's earlier writing on
+    <em>using HTML with Claude</em>, cited in the same thread.
+  </p>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      You have a plan. <a href="./0005-shipping-and-closing-the-loop.html">Lesson 5: Shipping and Closing the Loop</a>
+      covers the "during" (implementation notes &mdash; how to keep surprises cheap during
+      execution) and "post" (pitch, explainer, quiz &mdash; how to wrap a shipped change
+      in an artifact the next person can pick up). The plan in this lesson is the plan
+      for Lesson 5; if you find tweaks when you read it, those are the living edges of L5.
+    </p>
+    <p>&rarr; <a href="./0005-shipping-and-closing-the-loop.html">Lesson 5: Shipping and Closing the Loop</a></p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Finding Your Unknowns &middot; Lesson 4</span>
+    <span><a href="../index.html">Index</a> &middot; <a href="./0003-brainstorm-and-prototype.html">&larr; L3</a> &middot; <a href="./0005-shipping-and-closing-the-loop.html">L5 &rarr;</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Try it now</div>
+    Got a real task you're about to implement? Tell me about it in 2-3 sentences and
+    I'll draft a Wood-style plan with you: tweak-points first, mechanical at the bottom.
+    The conversation is the lesson.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. That\u2019s the right reading of the plan.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the relevant section above.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 2 — Blindspot Pass and Interview</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Blindspot Pass and Interview</h1>
+  <div class="lesson-meta">
+    <span class="num">L2</span>
+    Pre-implementation &middot; ~12 min &middot; Lesson 2 of the Finding Your Unknowns series
+  </div>
+
+  <p>
+    Lesson 1 left you with a 2&times;2 of unknowns. Most of your prompts will be loaded into the
+    <strong>Known Knowns</strong> cell before you send them &mdash; that's the part you typed.
+    The interesting work happens in the other three cells. This lesson teaches the two techniques
+    Wood pairs for the cell that matters most when you're entering new territory: <strong>Unknown
+    Unknowns</strong>.
+  </p>
+
+  <p>
+    Two techniques because they fire at different moments. <strong>Blindspot pass</strong> runs
+    early, when you're staring at a problem and don't even know what you don't know about it.
+    <strong>Interview</strong> runs after that, once you've done some scanning and need to land
+    the remaining ambiguities one question at a time.
+  </p>
+
+  <hr>
+
+  <h2>1. Blindspot pass &mdash; the early, broad pass</h2>
+
+  <p>
+    A blindspot pass is a request for Fable to enumerate the unknowns you should worry about
+    before you start. You are deliberately not asking for the answer. You are asking for the
+    shape of the territory.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The trigger phrase</div>
+    Use the literal words <strong>"blindspot pass"</strong> and <strong>"unknown unknowns"</strong>.
+    Wood is specific about this. The phrase is a trigger &mdash; Fable has been trained on
+    content where these words cluster with a particular behavior. Rephrasing ("explain my
+    blindspots," "what am I missing") produces a thinner pass.
+  </div>
+
+  <h3>The shape of a good blindspot prompt</h3>
+
+  <p>
+    Wood's worked example:
+  </p>
+
+  <pre data-lang="prompt"><code>I'm working on adding a new auth provider but I know nothing about the auth
+modules in this codebase. Can you do a blindspot pass to help me figure
+out my relevant unknown unknowns and help me prompt you better.</code></pre>
+
+  <p>
+    Three things to notice:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>It discloses the user's level.</h3>
+      <span class="step-body">"I know nothing about the auth modules in this codebase" tells Fable
+        how much it has to explain from scratch. Without this line, Fable assumes you know the
+        average amount for someone who asks about auth &mdash; usually wrong.</span>
+    </li>
+    <li>
+      <h3>It names the task, not the answer.</h3>
+      <span class="step-body">"Adding a new auth provider" is the territory. Fable is being
+        asked to map the unknowns <em>of the territory</em>, not to design the auth.</span>
+    </li>
+    <li>
+      <h3>It frames the output as input to the next loop.</h3>
+      <span class="step-body">"Help me prompt you better" makes the pass a draft of the next
+        map, not the final map. That's the iterate-don't-plan discipline from Lesson 1, made
+        explicit.</span>
+    </li>
+  </ol>
+
+  <h3>A second worked example &mdash; learning a new domain</h3>
+
+  <pre data-lang="prompt"><code>I don't know what color grading is but I need to grade this video. Can you
+teach me to understand my unknown unknowns about color grading, so that I
+can prompt better?</code></pre>
+
+  <p>
+    Same shape. <strong>Disclose</strong>, <strong>name the task</strong>, <strong>frame as
+    input to the next loop</strong>. Notice this prompt is asking for <em>teaching</em>, not
+    for the answer &mdash; that's the right framing when the Unknown Unknowns are about a domain
+    you don't yet operate in.
+  </p>
+
+  <div class="callout tip">
+    <div class="callout-label">Disclosure is part of the prompt</div>
+    The first sentence ("I don't know what color grading is") is doing real work. Without it,
+    Fable assumes you've heard of color grading and will give you a partial pass. With it,
+    Fable treats you as a beginner and gives a fuller one. Calibrate the disclosure to your
+    actual state.
+  </div>
+
+  <hr>
+
+  <h2>2. A real blindspot pass, run live</h2>
+
+  <p>
+    I just ran one on this very lesson &mdash; asking myself what unknowns I have about teaching
+    you the blindspot technique. The pass surfaced three findings, each one a real risk I'd
+    have shipped a thinner lesson without.
+  </p>
+
+  <h3>Finding 1: the literal phrase is the trigger</h3>
+
+  <p>
+    I'd assumed "do a blindspot pass" and "explain my blindspots" were interchangeable.
+    The pass forced me to check Wood's exact words. They're not interchangeable. "Blindspot
+    pass" is a memorized trigger; paraphrases dilute it.
+  </p>
+
+  <p>
+    <strong>Risk this lesson would have shipped without the pass:</strong> a softer warning
+    that said "you can ask Fable about your blindspots" &mdash; true, but useless, because
+    you wouldn't know which words actually move the answer.
+  </p>
+
+  <h3>Finding 2: disclosure of skill level changes the answer</h3>
+
+  <p>
+    I knew disclosure mattered in general (every Lesson 1 example pre-stated user knowledge).
+    I didn't realize how much it changes the depth of the pass. Saying "I'm a senior dev" vs.
+    "I'm new to this codebase" vs. "I know the system but not this module" produces three
+    different lists of unknowns.
+  </p>
+
+  <p>
+    <strong>Risk this lesson would have shipped without the pass:</strong> teaching disclosure
+    as a side note instead of as a load-bearing part of the prompt.
+  </p>
+
+  <h3>Finding 3: blindspot pass can backfire when you have strong priors</h3>
+
+  <p>
+    This one I did not have. It came out of the pass.
+  </p>
+
+  <p>
+    If you already half-believe the answer to a problem &mdash; if you have a guess about
+    which unknowns matter &mdash; then asking Fable for its list of unknowns can pull you
+    toward Fable's stock list of plausible unknowns. Fable's plausibility and <em>your</em>
+    plausibility are different things. The pass gives you a polished, confident list of the
+    things everyone worries about &mdash; and a quieter list of the things <em>you</em>
+    should worry about.
+  </p>
+
+  <p>
+    <strong>How to defend against it:</strong> when you read the pass output, look for items
+    that don't fit your priors. Items you think "that's obvious, why is it on the list"
+    are often the ones you most needed to see. If nothing in the pass feels uncomfortable,
+    the pass wasn't deep enough.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">When the pass is too comfortable</div>
+    A blindspot pass that confirms your priors isn't a pass &mdash; it's a press release.
+    The sign of a useful pass is at least one item that makes you stop and think "oh, I'd
+    missed that."
+  </div>
+
+  <hr>
+
+  <h2>3. Interview &mdash; the late, narrow pass</h2>
+
+  <p>
+    Once you've done a blindspot pass, you have a wider map but a still-noisy one. The
+    interview technique cleans up the noise by handing Fable a single ambiguous question
+    at a time and letting it pick the most consequential one to ask you first.
+  </p>
+
+  <pre data-lang="prompt"><code>Interview me one question at a time about anything ambiguous, prioritize
+questions where my answer would change the architecture.</code></pre>
+
+  <p>
+    Three parts, each one discipline:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>One question at a time</h3>
+      <span class="step-body">The most important part. A list of questions &mdash; even a numbered list
+        &mdash; is an interrogation, not an interview. Fable answers lists differently: it produces
+        generic clarifications. One question at a time forces Fable to surface its <em>best</em>
+        question first, the one with the most leverage.</span>
+    </li>
+    <li>
+      <h3>"Anything ambiguous"</h3>
+      <span class="step-body">No constraint on topic. Fable's job is to find the ambiguity, not to
+        decide which area it belongs to. Constraining the topic ("interview me about the API
+        shape") cuts out the ambiguities you didn't know to ask about.</span>
+    </li>
+    <li>
+      <h3>"Where my answer would change the architecture"</h3>
+      <span class="step-body">The prioritization heuristic. Fable has a long list of things it could
+        ask. This filter tells it to rank by architectural impact. A question about a variable name
+        ranks below a question about whether two services should share a database.</span>
+    </li>
+  </ol>
+
+  <h3>When to stop the interview</h3>
+
+  <p>
+    The interview has a cost &mdash; you're spending turns of your session to get Fable to ask
+    you questions instead of answering them. Stop when the cost of asking the next question
+    exceeds the value of its answer. Two signals that you've hit the stop condition:
+  </p>
+
+  <ul>
+    <li>Fable's question is about something you've already decided (Known Known).</li>
+    <li>Fable's question is about something you've decided to defer (a deliberate Known Unknown, not an ambiguity).</li>
+  </ul>
+
+  <p>
+    In both cases the answer doesn't change the map. Stop and start the next pre-implementation
+    step &mdash; usually the brainstorm-and-prototype loop in Lesson 3, or the implementation
+    plan in Lesson 4.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Interview vs. brainstorm</div>
+    Interview <strong>narrows</strong>: it removes ambiguities one at a time. Brainstorm
+    <strong>widens</strong>: it surfaces options you haven't considered. They feel similar
+    but the modes are opposite. Run them in that order &mdash; narrow first, then widen,
+    or you'll drown in options before you've fixed the framing.
+  </div>
+
+  <hr>
+
+  <h2>4. How the two techniques compose</h2>
+
+  <p>
+    In a typical pre-implementation loop, the order is:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Blindspot pass</h3>
+      <span class="step-body">A broad sweep. Fable enumerates unknowns in the territory. You read the list,
+        mark which items are real (most should be), discard which aren't, and patch the items that
+        genuinely change your map.</span>
+    </li>
+    <li>
+      <h3>Interview</h3>
+      <span class="step-body">A narrow pass. Fable asks one question at a time about remaining ambiguities.
+        You answer; Fable asks the next one. You stop when questions stop changing the architecture.</span>
+    </li>
+    <li>
+      <h3>Brainstorm / prototype &mdash; Lesson 3</h3>
+      <span class="step-body">Once you've narrowed, you widen: explore options, mock layouts, sketch
+        the unknown-knowns. This is the next lesson.</span>
+    </li>
+  </ol>
+
+  <p>
+    The two techniques are deliberately cheap. A blindspot pass costs one turn. An interview
+    is five to ten turns at most. Together they're roughly the cost of one medium-quality
+    implementation attempt. That's the trade Wood is pointing at: <strong>pay cheaply now,
+    or pay expensively later</strong>.
+  </p>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <p>
+    Each quiz targets a single cell of the 2&times;2 (Unknown Unknowns is the focus) or a
+    trade-off inside one of the two techniques.
+  </p>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">You paraphrase Wood's prompt: "Fable, explain what I might be missing about auth in this codebase." What's the likely failure mode?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Fable will refuse &mdash; it can't infer your skill level from a soft request</button>
+      <button class="quiz-opt" data-correct="false">Fable will run a blindspot pass but include fewer items than the literal phrase triggers</button>
+      <button class="quiz-opt" data-correct="true">"Blindspot pass" is a trigger; paraphrases produce thinner passes because the trigger doesn't fire</button>
+      <button class="quiz-opt" data-correct="false">Nothing &mdash; paraphrases produce equivalent output for any clear intent</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">Your blindspot pass output is a clean list of eight plausible unknowns, none of which surprise you. What's the right move?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Ship it &mdash; Fable's list is a useful summary; no surprises is fine</button>
+      <button class="quiz-opt" data-correct="true">Re-run with sharper priors disclosed; a pass that fits too comfortably may be Fable's stock list, not yours</button>
+      <button class="quiz-opt" data-correct="false">Skip the pass and start interviewing &mdash; you have enough to interview about</button>
+      <button class="quiz-opt" data-correct="false">Discard the pass entirely &mdash; it wasn't useful enough</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">You start an interview with Fable using a numbered list of seven questions instead of "one at a time." What changes?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Nothing &mdash; the list is just a faster version of the interview</button>
+      <button class="quiz-opt" data-correct="true">Fable answers generically across all seven; prioritization doesn't fire because no question is the next one</button>
+      <button class="quiz-opt" data-correct="false">Fable asks follow-ups on each item in parallel, which is more efficient</button>
+      <button class="quiz-opt" data-correct="false">Fable refuses the interview &mdash; the format is no longer recognized</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz4">
+    <div class="quiz-q">Fable has asked five interview questions; the sixth is "should the route handler live in users.ts or users-admin.ts?" When should you stop?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Never &mdash; always finish the interview to completion</button>
+      <button class="quiz-opt" data-correct="false">After ten questions, regardless of content</button>
+      <button class="quiz-opt" data-correct="true">Now &mdash; it's a file-name ambiguity, not architecture; the answer won't change the map</button>
+      <button class="quiz-opt" data-correct="false">Only after Fable asks a question you've already decided</button>
+    </div>
+    <div class="quiz-feedback" id="quiz4-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    Both techniques are from Cat Wood, <em>A Field Guide to Fable: Finding Your Unknowns</em>
+    (X thread, 4 Jul 2026). The "backfire with strong priors" warning is a finding from
+    a real blindspot pass run while building this lesson &mdash; it is not in Wood's text.
+    Recorded as such so you can pressure-test it against your own experience.
+  </p>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      Once you've narrowed with blindspot pass + interview, you're ready to widen.
+      <a href="./0003-brainstorm-and-prototype.html">Lesson 3: Brainstorm and Prototype</a>
+      covers the techniques for surfacing Unknown Knowns &mdash; the things you know but
+      wouldn't write down &mdash; by reacting to multiple directions before you commit to one.
+    </p>
+    <p>&rarr; <a href="./0003-brainstorm-and-prototype.html">Lesson 3: Brainstorm and Prototype</a></p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Finding Your Unknowns &middot; Lesson 2</span>
+    <span><a href="../index.html">Index</a> &middot; <a href="./0001-map-vs-territory.html">&larr; L1</a> &middot; <a href="./0003-brainstorm-and-prototype.html">L3 &rarr;</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Try it now</div>
+    Got a real task you're about to send to Fable? Tell me about it in 2-3 sentences.
+    I'll show you what a blindspot pass on it would look like, naming the disclosure,
+    the trigger phrase, and what to watch for in the output. Conversation is the lesson.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. That\u2019s the right reading of the technique.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the relevant section above.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

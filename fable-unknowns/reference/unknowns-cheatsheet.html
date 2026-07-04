@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unknowns Cheatsheet — Finding Your Unknowns</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    /* ---- Cheatsheet layout: 3 time-window columns on screen ---- */
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+      margin: 1.5rem 0;
+    }
+    @media (min-width: 720px) {
+      .cheat-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .cheat-col {
+      padding: 1rem 1.1rem;
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-top: 3px solid var(--accent);
+    }
+    .cheat-col h3 {
+      margin: 0 0 0.4rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      font-family: "SF Mono", Menlo, monospace;
+    }
+    .cheat-col .col-sub {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 0.7rem;
+    }
+    .cheat-col ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: tech;
+    }
+    .cheat-col ol li {
+      counter-increment: tech;
+      padding: 0.45rem 0 0.45rem 1.8rem;
+      position: relative;
+      border-bottom: 1px dashed var(--rule);
+      font-size: 0.88rem;
+    }
+    .cheat-col ol li:last-child { border-bottom: none; }
+    .cheat-col ol li::marker { content: ''; }
+    .cheat-col ol li::before {
+      content: counter(tech);
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      width: 1.3rem;
+      height: 1.3rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cheat-col .tech-name {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.05rem;
+    }
+    .cheat-col .tech-phrase {
+      display: block;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.74rem;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .cheat-col .tech-lesson {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--ink-dim);
+      font-family: "SF Mono", Menlo, monospace;
+      margin-top: 0.1rem;
+    }
+
+    /* ---- 2x2 mini matrix ---- */
+    .matrix2x2 {
+      display: grid;
+      grid-template-columns: auto repeat(2, 1fr);
+      grid-template-rows: auto repeat(2, 1fr);
+      gap: 0.4rem;
+      max-width: 480px;
+      margin: 1rem auto;
+      font-size: 0.82rem;
+    }
+    .matrix2x2 .corner { font-family: "SF Mono", Menlo, monospace; font-size: 0.7rem; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.06em; padding: 0.3rem; text-align: center; }
+    .matrix2x2 .row-label { font-family: "SF Mono", Menlo, monospace; font-size: 0.7rem; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.06em; padding: 0.3rem 0.6rem 0.3rem 0; text-align: right; }
+    .matrix2x2 .cell { padding: 0.5rem 0.6rem; background: #fff; border: 1px solid var(--rule); }
+    .matrix2x2 .cell strong { display: block; font-size: 0.85rem; margin-bottom: 0.1rem; }
+    .matrix2x2 .cell span { color: var(--ink-soft); font-size: 0.74rem; }
+    .matrix2x2 .cell-uu { border-top: 2px solid var(--accent); }
+    .matrix2x2 .cell-uk { border-top: 2px solid #d4920b; }
+
+    /* ---- Print: collapse to one page, hide chrome ---- */
+    @media print {
+      body {
+        padding: 0.5cm !important;
+        font-size: 8.5pt;
+        line-height: 1.35;
+        max-width: none;
+      }
+      h1 { font-size: 14pt; margin-bottom: 0.15rem; }
+      .lesson-meta { font-size: 7.5pt; padding-bottom: 0.3rem; margin-bottom: 0.6rem; }
+      hr { margin: 0.5rem 0; }
+      .cheat-grid { gap: 0.4rem; margin: 0.5rem 0; }
+      .cheat-col { padding: 0.3rem 0.5rem; break-inside: avoid; }
+      .cheat-col ol li { padding: 0.2rem 0 0.2rem 1.3rem; font-size: 7pt; border-bottom: 1px dotted var(--rule); }
+      .cheat-col h3 { font-size: 7pt; margin-bottom: 0.1rem; }
+      .cheat-col .col-sub { font-size: 6.5pt; margin-bottom: 0.25rem; }
+      .cheat-col .tech-phrase { font-size: 6pt; line-height: 1.25; }
+      .cheat-col .tech-lesson { font-size: 6pt; }
+      .matrix2x2 { font-size: 7pt; gap: 0.2rem; max-width: 100%; margin: 0.4rem 0; }
+      .matrix2x2 .cell { padding: 0.25rem 0.35rem; }
+      .matrix2x2 .cell strong { font-size: 7pt; }
+      .matrix2x2 .cell span { font-size: 6pt; }
+      blockquote { padding: 0.15rem 0 0.15rem 0.5rem; margin: 0.3rem 0; font-size: 7.5pt; }
+      .callout { padding: 0.25rem 0.5rem; margin: 0.4rem 0; font-size: 7.5pt; }
+      .callout-label { font-size: 6pt; }
+      .next-up, .footer-nav, .callout.info { display: none !important; }
+      h2 { font-size: 9pt; margin: 0.5rem 0 0.3rem; padding-bottom: 0.15rem; }
+      p { margin-bottom: 0.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Unknowns Cheatsheet</h1>
+  <div class="lesson-meta">
+    One page &middot; Print-friendly &middot; Finding Your Unknowns series
+  </div>
+
+  <p>
+    The mental model and the seven techniques, on a single page. Read this before
+    a session with Fable; print it if you want it on a wall.
+  </p>
+
+  <h2>The 2&times;2</h2>
+
+  <p style="font-size: 0.9rem; color: var(--ink-soft); text-align: center; margin-bottom: 0.5rem;">
+    Classify any task &mdash; which cell?
+  </p>
+
+  <div class="matrix2x2">
+    <div class="corner"></div>
+    <div class="corner">Known</div>
+    <div class="corner">Unknown</div>
+
+    <div class="row-label">Known</div>
+    <div class="cell">
+      <strong>Known Knowns</strong>
+      <span>Direct instructions in the prompt.</span>
+    </div>
+    <div class="cell">
+      <strong>Known Unknowns</strong>
+      <span>Explicit questions and constraints.</span>
+    </div>
+
+    <div class="row-label">Unknown</div>
+    <div class="cell cell-uk">
+      <strong>Unknown Knowns</strong>
+      <span>Brainstorm &middot; Prototype &middot; Reference &rarr; L3</span>
+    </div>
+    <div class="cell cell-uu">
+      <strong>Unknown Unknowns</strong>
+      <span>Blindspot pass &middot; Interview &rarr; L2</span>
+    </div>
+  </div>
+
+  <h2>The seven techniques &mdash; by time window</h2>
+
+  <div class="cheat-grid">
+
+    <div class="cheat-col">
+      <h3>Pre-implementation</h3>
+      <div class="col-sub">Before any code is written.</div>
+      <ol>
+        <li>
+          <span class="tech-name">Blindspot pass</span>
+          <span class="tech-phrase">"Run a blindspot pass on this."</span>
+          <span class="tech-lesson">&rarr; L2</span>
+        </li>
+        <li>
+          <span class="tech-name">Interview</span>
+          <span class="tech-phrase">"Interview me one question at a time."</span>
+          <span class="tech-lesson">&rarr; L2</span>
+        </li>
+        <li>
+          <span class="tech-name">Brainstorm</span>
+          <span class="tech-phrase">"Make me an HTML page with 4 wildly different design directions."</span>
+          <span class="tech-lesson">&rarr; L3</span>
+        </li>
+        <li>
+          <span class="tech-name">Prototype</span>
+          <span class="tech-phrase">"Before wiring anything up, make a single HTML file with fake data."</span>
+          <span class="tech-lesson">&rarr; L3</span>
+        </li>
+        <li>
+          <span class="tech-name">Reference</span>
+          <span class="tech-phrase">"Look at &lt;ref&gt; and reimplement X. Tell me what to look for."</span>
+          <span class="tech-lesson">&rarr; L3</span>
+        </li>
+        <li>
+          <span class="tech-name">Implementation plan</span>
+          <span class="tech-phrase">"Write a plan in HTML. Lead with tweak-points. Bury mechanical."</span>
+          <span class="tech-lesson">&rarr; L4</span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="cheat-col">
+      <h3>During implementation</h3>
+      <div class="col-sub">While the code runs.</div>
+      <ol>
+        <li>
+          <span class="tech-name">Implementation notes</span>
+          <span class="tech-phrase">"Log this to implementation-notes.md."</span>
+          <span class="tech-lesson">&rarr; L5</span>
+        </li>
+      </ol>
+      <p style="font-size: 0.78rem; color: var(--ink-soft); margin-top: 0.6rem; font-style: italic;">
+        Two sections in the notes file:
+        <strong>Surprises and decisions</strong> &mdash; what happened, why.
+        <strong>Deviations</strong> &mdash; what changed vs. the plan.
+      </p>
+    </div>
+
+    <div class="cheat-col">
+      <h3>Post-implementation</h3>
+      <div class="col-sub">After the code ships.</div>
+      <ol>
+        <li>
+          <span class="tech-name">Pitch</span>
+          <span class="tech-phrase">"Write a pitch: lede, problem, differentiator, push-back."</span>
+          <span class="tech-lesson">&rarr; L5</span>
+        </li>
+        <li>
+          <span class="tech-name">Explainer</span>
+          <span class="tech-phrase">"Write the longer explainer for context."</span>
+          <span class="tech-lesson">&rarr; L5</span>
+        </li>
+        <li>
+          <span class="tech-name">Post-quiz</span>
+          <span class="tech-phrase">"Quiz me. I only merge after I pass perfectly."</span>
+          <span class="tech-lesson">&rarr; L5</span>
+        </li>
+      </ol>
+    </div>
+
+  </div>
+
+  <h2>Two sentences to memorize</h2>
+
+  <blockquote>
+    <strong>Pre (L4):</strong> Lead with the decisions I'll tweak &mdash; data model,
+    type interfaces, user-facing. Bury the mechanical. The plan is a deliverable
+    that travels.
+  </blockquote>
+
+  <blockquote>
+    <strong>Post (L5):</strong> Every surprise during execution deserves a log line;
+    every shipped change deserves an artifact the next person can pick up.
+  </blockquote>
+
+  <div class="callout warning">
+    <div class="callout-label">If you only do one thing</div>
+    <strong>Iterate, don't plan.</strong> One more loop (blindspot, brainstorm,
+    prototype) is cheaper than getting the prompt wrong the first time. Default
+    to running one more technique, not to writing one more paragraph.
+  </div>
+
+  <div class="footer-nav">
+    <span>Finding Your Unknowns &middot; Cheatsheet</span>
+    <span><a href="../index.html">Index</a> &middot; <a href="glossary.html">Glossary</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2rem;">
+    <div class="callout-label">Print &amp; go</div>
+    This page is sized to fit on a single US-letter or A4 sheet in print preview
+    (Cmd/Ctrl-P). Margins, font size, and column widths all collapse to one page.
+    Use it as a session prep card.
+  </div>
+
+</body>
+</html>

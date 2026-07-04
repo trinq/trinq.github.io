@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 1 — The Map vs. The Territory</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>The Map vs. The Territory</h1>
+  <div class="lesson-meta">
+    <span class="num">L1</span>
+    Mental model · ~10 min · Lesson 1 of the Finding Your Unknowns series
+  </div>
+
+  <p>
+    There's an old idea — usually attributed to the cartographer Alfred Korzybski — that
+    <strong>the map is not the territory</strong>. The map is a representation; the territory
+    is what's actually there. A map of Paris is not Paris. A perfect map is still less
+    than the city.
+  </p>
+
+  <p>
+    When you work with a strong model, the same gap opens up. The <em>map</em> is what
+    you give Claude &mdash; the prompt, the skills you load, the context, the chat
+    history. The <em>territory</em> is where the work happens &mdash; the codebase,
+    the production environment, the real-world constraints of whoever will read
+    what you ship.
+  </p>
+
+  <p>
+    Fable 5 is the first model I find where <strong>the quality of the output is bottlenecked
+    by how well my map matches the territory</strong>. The model is good enough to do most
+    things. What it can't do is read my mind. Every place the map falls short of the territory,
+    Fable has to <em>guess</em>. Every guess can be wrong.
+  </p>
+
+  <h2>The gap between the two is what I call unknowns</h2>
+
+  <p>
+    An unknown is the difference between the map I gave Fable and the territory Fable
+    has to traverse. The more work being done, the more unknowns. The longer the chain,
+    the more guesses Fable makes on my behalf. The cumulative cost of those guesses is
+    why the same task can come back perfect once and broken the next time, with what
+    feels like the same prompt.
+  </p>
+
+  <p>
+    The name for what I just described is <strong>"surprise"</strong>. Surprise is the
+    unit of unmapped territory. If Fable returns something and I'm not surprised, my
+    map was good enough. If I'm surprised, my map had a hole.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Re-frame</div>
+    Working with Fable is not "write a good prompt and get output." It's
+    <strong>"write the best map you can, watch where Fable is surprised, update the map."</strong>
+    This is the loop. There's no fixed endpoint.
+  </div>
+
+  <hr>
+
+  <h2>The 2&times;2 of unknowns</h2>
+
+  <p>
+    Before I send a task to Fable, I split my own ignorance into four buckets. Reading
+    my own prompt through this lens takes about a minute. It's the diagnostic step
+    every technique in this series builds on.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>I know I know it</th>
+        <th>I know I don't</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Fable knows</strong></td>
+        <td>
+          <strong>Known Knowns.</strong>
+          Things I've put in the prompt. The "do X, then Y" part. The file paths,
+          the file content, the constraints. This is the visible map.
+        </td>
+        <td>
+          <strong>Known Unknowns.</strong>
+          Things I've deliberately left for Fable to figure out &mdash; but flagged
+          as gaps. "You decide the schema." "I don't know which library is best;
+          pick one."
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Fable doesn't</strong></td>
+        <td>
+          <strong>Unknown Knowns.</strong>
+          Things I know so deeply I'd never write them down &mdash; but I'd recognize
+          the wrong output instantly. House style, the codebase's de facto
+          conventions, the user's actual need behind a vague request.
+        </td>
+        <td>
+          <strong>Unknown Unknowns.</strong>
+          Things I haven't even considered. What I don't know that I don't know.
+          History in the codebase, potholes that "everyone here knows about," how
+          good the work could be if I knew what good looked like.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Read any prompt through this lens and you'll find most of it sits in Known Knowns
+    &mdash; that's the part you typed. The interesting parts are the other three cells.
+  </p>
+
+  <hr>
+
+  <h2>Where the best agentic coders sit on this 2&times;2</h2>
+
+  <p>
+    Wood describes watching senior practitioners like Boris Cherny and Jarred
+    Friedman prompt. The visible difference is that <strong>they have very few unknowns,
+    in any of the four cells</strong>. They know what they want, in detail, before they
+    ask. They're deeply in-sync with both the codebase and the model's behavior. Their
+    map is good.
+  </p>
+
+  <p>
+    That part can be learned. The part that's harder to copy is the second one: they
+    also assume their map <em>will have holes</em>. They plan for unknowns. They don't
+    try to write the perfect prompt first; they treat the prompt as an artifact that
+    gets revised. Every surprise is a hole they can name and patch.
+  </p>
+
+  <p>
+    The intuition Wood is pointing at, I think, is this: <strong>reducing and planning
+    for your unknowns is the skill of agentic coding</strong>. It's a learnable skill.
+    You build it by working with Fable &mdash; by getting surprised, naming the hole,
+    and updating the map.
+  </p>
+
+  <div class="callout tip">
+    <div class="callout-label">A useful target</div>
+    Don't aim for "no unknowns." Aim for a working map. The map is good enough when
+    the surprises are small, low-stakes, and within your tolerance for rework.
+  </div>
+
+  <hr>
+
+  <h2>Iterate, don't plan</h2>
+
+  <p>
+    Most prompt-advice assumes the question is "how do I write a better prompt
+    up front?" That's the wrong question. Fable is good enough that the prompt
+    doesn't need to be perfect the first time &mdash; it needs to be
+    <em>revisable</em>. The cheap thing isn't a perfect map, it's a fast loop.
+  </p>
+
+  <p>
+    Here's the loop, applied to a familiar task &mdash; adding a new slash command to
+    <code>CLAUDE.md</code> that compresses long sessions.
+  </p>
+
+  <h3>Loop 0 &mdash; my Known Knowns</h3>
+  <p>
+    I know the file path (<code>CLAUDE.md</code>). I know the rough structure of
+    other slash commands in there. I know Claude Code loads the file at session
+    start. I write a draft prompt and pass it to Fable.
+  </p>
+
+  <h3>Loop 1 &mdash; the surprise</h3>
+  <p>
+    Fable returns a working command but it triggers on the wrong prefix. I didn't
+    specify the conflict. That's a <strong>Known Unknown I forgot to flag</strong>
+    &mdash; I knew other slash commands existed in this file but didn't disclose them.
+  </p>
+
+  <h3>Loop 2 &mdash; a new Unknown Known surfaces</h3>
+  <p>
+    Reading the diff, I notice my "compress" command doesn't match the tone of the
+    other commands in the file. I <em>would</em> have recognized the wrong tone, but
+    I'd never think to write it down. I add "match the tone of /context-summarize
+    above" to the prompt. The next pass is correct.
+  </p>
+
+  <h3>Loop 3 &mdash; a smaller surprise</h3>
+  <p>
+    Fable's output is now correct in tone and trigger. There's one more thing I didn't
+    ask for but want &mdash; a way to test it. That's an <strong>Unknown Unknown
+    surfaced by the work itself</strong>: I didn't know I needed a test until I saw
+    the output. Worth capturing in a future loop.
+  </p>
+
+  <p>
+    Three maps, three loops. The first map wasn't <em>wrong</em>. It was the best I could
+    produce cold, with no surprises to work from. Each surprise named a hole I could patch.
+    The work was good at every loop, just increasingly good. That's the pattern.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">Common misread</div>
+    "Iterate, don't plan" does <em>not</em> mean "skip planning." It means planning
+    is the first loop, not a complete deliverable. The map is revisable. Planning
+    is the start of the loop, not a substitute for it.
+  </div>
+
+  <hr>
+
+  <h2>The lesson's only durable artifact</h2>
+
+  <p>
+    Everything above is preamble for this:
+  </p>
+
+  <blockquote>
+    <strong>Before sending a task to Fable, scan your map through the 2&times;2.</strong>
+    The cells aren't equal. Known Knowns take thirty seconds to write. The other three
+    cells are where your prompts will surprise you, and where the rest of this series
+    spends its time.
+  </blockquote>
+
+  <p>
+    That's the lesson. The rest is vocabulary. Wood's seven techniques &mdash; blindspot
+    pass, brainstorm and prototype, interview, reference, implementation plan, implementation
+    notes, pitch/explainer/quiz &mdash; are all moves to populate the second row of the 2&times;2.
+    We'll cover each in turn.
+  </p>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <p>
+    Each quiz below targets one cell of the 2&times;2. Answer from your reading above,
+    not from a guess about what "should be" right.
+  </p>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">You write "use the existing User model" in a prompt. Fable asks which fields exist. Which cell of the 2&times;2 did the prompt fail to populate?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Known Knowns &mdash; I should have listed the User model fields in the prompt instead</button>
+      <button class="quiz-opt" data-correct="true">Unknown Knowns &mdash; I'd recognize the right field set, but never wrote it; Fable has to ask</button>
+      <button class="quiz-opt" data-correct="false">Known Unknowns &mdash; I delegated "use the model" to Fable without listing the fields</button>
+      <button class="quiz-opt" data-correct="false">Unknown Unknowns &mdash; there's some User-model field I haven't considered at all</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">You ask Fable to "extract the auth flow from this codebase" with no other context. Fable finds three different auth flows and reports all three. Which cell did the prompt under-populate?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Known Knowns &mdash; "extract auth" should be enough on its own</button>
+      <button class="quiz-opt" data-correct="false">Unknown Knowns &mdash; I'd see the real flow the moment Fable showed me the three</button>
+      <button class="quiz-opt" data-correct="true">Known Unknowns &mdash; I knew there might be many, but didn't say "pick one"; Fable had to guess</button>
+      <button class="quiz-opt" data-correct="false">Unknown Unknowns &mdash; I didn't know there were three auth flows until Fable told me</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">You discover a "historical pothole" in your codebase &mdash; an old migration that everyone on the team knows about but is never written down. Fable writes code that collides with it. Which cell did your prompt fail to surface?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Known Knowns &mdash; the pothole is so well-known I should have typed it out</button>
+      <button class="quiz-opt" data-correct="false">Unknown Knowns &mdash; I'd spot the collision in the diff but never think to write a warning</button>
+      <button class="quiz-opt" data-correct="true">Unknown Unknowns &mdash; I had no idea the risk existed; the codebase carried knowledge I never had</button>
+      <button class="quiz-opt" data-correct="false">Known Unknowns &mdash; I knew there were historical potholes but didn't list them; Fable had to discover them</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz4">
+    <div class="quiz-q">Wood describes Boris and Jarred as having "relatively few unknowns." What's the most useful interpretation of that observation?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">They have a larger working memory than other developers, so they retain more Known Knowns</button>
+      <button class="quiz-opt" data-correct="true">Their prompts have very few holes across all four cells &mdash; they plan, write carefully, and re-map after each surprise</button>
+      <button class="quiz-opt" data-correct="false">They have access to private training data about this codebase that gives them Unknown Knowns others lack</button>
+      <button class="quiz-opt" data-correct="false">They were fortunate enough not to encounter Unknown Unknowns in the work they did</button>
+    </div>
+    <div class="quiz-feedback" id="quiz4-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    The whole series builds on Cat Wood, <em>A Field Guide to Fable: Finding Your
+    Unknowns</em> (X thread, 4 Jul 2026, &asymp;970K views). Read it before requesting
+    the next lesson; this lesson named the territory Wood walks through.
+  </p>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      Lessons 2-4 cover the <strong>pre-implementation</strong> tools: blindspot pass
+      and interview (L2, for new territory), brainstorm and prototype (L3, for
+      unknown knowns), and the implementation plan (L4, the synthesis before you
+      commit). Each adds one row of the 2&times;2 in a different way.
+    </p>
+    <p>&rarr; <a href="./0002-blindspot-pass-and-interview.html">Lesson 2: Blindspot Pass and Interview</a></p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Finding Your Unknowns &middot; Lesson 1</span>
+    <span><a href="../index.html">Index</a> &middot; <a href="./0002-blindspot-pass-and-interview.html">L2 &rarr;</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Questions?</div>
+    Come back to the agent anytime. Got a task you're about to send to Fable? Describe
+    it in 2-3 sentences. I'll walk you through scanning the 2&times;2 and point at
+    which cell is the biggest hole in your map. The conversation is the lesson.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. That\u2019s the right read of the cell.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the 2\u00d72 table above and the contrast between the four cells.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

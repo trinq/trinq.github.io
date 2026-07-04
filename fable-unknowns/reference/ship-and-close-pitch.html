@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pitch — Finding Your Unknowns</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Pitch: Finding Your Unknowns</h1>
+  <div class="lesson-meta">
+    A working pitch &middot; artifact for the Lesson 5 worked example &middot; self-titled "the launch video equivalent"
+  </div>
+
+  <p class="lede">
+    I shipped a 5-lesson series on the user-side of agentic coding &mdash; the techniques
+    that determine what the model is actually asked. Each lesson is short (~10&ndash;14 min),
+    self-contained, and ends in quizzes that test <em>your judgment</em> about the next prompt
+    you'll send, not trivia about the lesson.
+  </p>
+
+  <h2>The problem it solves</h2>
+
+  <p>
+    With Fable 5, the model's raw capability is no longer the bottleneck. The bottleneck is
+    the user's ability to surface unknowns before, during, and after implementation. Every
+    unknown left on the table becomes a guess the model has to make on the user's behalf,
+    and every guess can be wrong.
+  </p>
+
+  <p>
+    The series is built around Cat Wood's taxonomy (X thread, 4 Jul 2026): a 2&times;2 of
+    unknowns (known/unknown &times; known/unknown), with one technique class for each cell.
+    We ship all four classes in five lessons because the fourth class (synthesis) is rich
+    enough for its own lesson.
+  </p>
+
+  <h2>What's in the series</h2>
+
+  <table>
+    <thead>
+      <tr><th>L</th><th>Title</th><th>Cell</th><th>Minutes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>L1</td><td>Map vs. Territory, the 2&times;2 of unknowns</td><td>Mental model</td><td>10</td></tr>
+      <tr><td>L2</td><td>Blindspot Pass and Interview</td><td>Unknown Unknowns</td><td>12</td></tr>
+      <tr><td>L3</td><td>Brainstorm, Prototype, Reference</td><td>Unknown Knowns</td><td>14</td></tr>
+      <tr><td>L4</td><td>The Implementation Plan</td><td>Synthesis</td><td>10</td></tr>
+      <tr><td>L5</td><td>Shipping and Closing the Loop</td><td>During + post</td><td>~12</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Total: 5 lessons, ~58 minutes. Each lesson has 3&ndash;5 quizzes; balance-checked so
+    the correct answer doesn't visually stick out from the distractors. Every lesson
+    shows its work &mdash; the design decisions for each lesson live in matching
+    <code>learning-records/000N-…</code> files, so the reader can see what was cut and why.
+  </p>
+
+  <h2>What makes it different from a typical "how to use Fable" guide</h2>
+
+  <ul>
+    <li><strong>It teaches trigger phrases, not metaphors.</strong> "Blindspot pass" and
+      "interview me one question at a time" are literal prompt phrases. Paraphrasing
+      produces thinner output; L2 calls this out as the first thing to internalize.</li>
+    <li><strong>It runs live rehearsals in the lesson body.</strong> Each technique is
+      demonstrated against a real, unresolved problem &mdash; the curriculum arc itself,
+      the lesson plan, the pitch format decision. The demonstrations aren't
+      fabricated.</li>
+    <li><strong>It teaches the artifact format, not just the prompt.</strong> L4 teaches
+      the implementation plan as a deliverable (HTML, tweak-points first, mechanical
+      last, named verification). L5 teaches the implementation notes as a deliverable
+      (.md file in the project root, format-stable across runs).</li>
+    <li><strong>It flags inferences as inferences.</strong> The "blindspot pass can
+      backfire with strong priors" warning in L2 is not in Wood's text; it surfaced
+      during a self-blindspot and is labeled as such so the reader knows it's a
+      pressure-test item, not a cited claim.</li>
+  </ul>
+
+  <h2>Where it lives and how to read it</h2>
+
+  <p>
+    <code>/Users/trinq/Developer/learning/fable-unknowns/</code>. Open
+    <a href="../index.html">index.html</a> in a browser. The lessons are designed to be
+    read in order, but each is self-contained &mdash; if you already know the 2&times;2,
+    start with L2 or L3 depending on which cell you're trying to populate.
+  </p>
+
+  <p>
+    Sibling workspace: <code>claude-code-orchestration/</code> covers Wood's
+    <em>routing</em> techniques &mdash; which model to pick, when to escalate, how to
+    cost-optimize. This workspace covers Wood's <em>user-side</em> techniques &mdash; how
+    the user frames the work. The two workspaces are complementary, not redundant.
+  </p>
+
+  <h2>What I'd push back on if you challenge it</h2>
+
+  <ul>
+    <li><strong>"Five lessons is a lot."</strong> The arc could be four if we collapsed
+      L5 (combine during+post is what we did, but combining pre + during would be
+      too much). Five is the smallest number that preserves Wood's window structure
+      (before/during/after) without padding.</li>
+    <li><strong>"The quizzes test the lesson, not the next prompt."</strong> The quizzes
+      are calibrated to the next prompt the user will write &mdash; the output of L1 is
+      a reframed prompt; L2's quizzes ask what the right prompt shape is, not what
+      L2 said about prompt shape.</li>
+    <li><strong>"The technical risk is the live rehearsals."</strong> If Wood's taxonomy
+      turns out to be incomplete or wrong, the rehearsals age badly because they're
+      recorded in the lesson HTML. That's a real risk. Mitigation: the rehearsal in
+      L3 (curriculum arc) is the one most likely to age; if a future direction emerges,
+      L3's rehearsal shows its seams, not its failure.</li>
+  </ul>
+
+  <h2>Next steps if you want to extend</h2>
+
+  <ol>
+    <li><strong>Build the unknowns cheatsheet</strong> at
+      <code>reference/unknowns-cheatsheet.html</code>. Consolidates L1's 2&times;2 and
+      the trigger phrases from L2 and L3. Currently deferred (see
+      <code>implementation-notes.md</code>).</li>
+    <li><strong>Pressure-test the "backfire with strong priors" claim</strong> by running
+      2&ndash;3 blindspot passes against real work. If the warning doesn't hold up, log
+      it in <code>learning-records/0003-lesson-2-design-decisions.md</code> and revise L2.</li>
+    <li><strong>Watch for the L6 signal</strong>. If a new window emerges (multi-agent
+      orchestration, between-session friction, post-mortem reflexes), L6 rejoins.
+      Otherwise the series ends at L5.</li>
+  </ol>
+
+  <hr>
+
+  <p class="small" style="color: var(--ink-soft); font-size: 0.9rem;">
+    This pitch is the worked example for Lesson 5. Per Wood: the post-implementation
+    artifact is something the next person can paste into Slack; this file is built
+    for that. The cross-link from
+    <a href="../lessons/0005-shipping-and-closing-the-loop.html">Lesson 5</a>
+    points here so the lesson teaches the template while referencing the artifact.
+  </p>
+
+</body>
+</html>

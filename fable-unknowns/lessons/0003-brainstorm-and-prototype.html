@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3 — Brainstorm, Prototype, Reference</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Brainstorm, Prototype, Reference</h1>
+  <div class="lesson-meta">
+    <span class="num">L3</span>
+    Pre-implementation &middot; ~14 min &middot; Lesson 3 of the Finding Your Unknowns series
+  </div>
+
+  <p>
+    Lesson 2 taught you how to surface <strong>Unknown Unknowns</strong> &mdash; things you
+    haven't even considered. This lesson teaches the techniques for the cell next to it:
+    <strong>Unknown Knowns</strong> &mdash; things you know so deeply you'd never write them
+    down, but you'd recognize the wrong version of instantly.
+  </p>
+
+  <p>
+    The unifying idea is simple and uncomfortable: <strong>you have to see something to know
+    what you want</strong>. Most Unknown Knowns can't be articulated in a prompt. They can
+    only be recognized when shown a candidate. So the technique class for this cell is
+    "produce a candidate, react to it, refine."
+  </p>
+
+  <p>
+    Wood offers three moves in this cell: <strong>brainstorm</strong> to widen the option
+    space, <strong>prototype</strong> to make one direction concrete enough to react to,
+    and <strong>reference</strong> to point at an already-good version someone else made.
+    Each is cheap. Each runs before any wiring happens.
+  </p>
+
+  <hr>
+
+  <h2>1. Brainstorm &mdash; widen before you write</h2>
+
+  <p>
+    A brainstorm is a request for Fable to produce multiple directions for the same
+    problem, in a format you can react to. The reaction is the point &mdash; you are
+    gathering options you wouldn't have generated yourself, so you can prune them with
+    judgment you already have but can't articulate.
+  </p>
+
+  <h3>The pattern that matters</h3>
+
+  <pre data-lang="prompt"><code>I want a dashboard for this data but I have no visual taste and don't
+know what's possible. Make me an HTML page with 4 wildly different design
+directions so I can react to them.</code></pre>
+
+  <p>
+    Three things to notice:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>"Wildly different"</h3>
+      <span class="step-body">This is the load-bearing adjective. Without it, Fable produces
+        four minor variations on a theme &mdash; the same layout, the same color palette,
+        the same density. With it, Fable reaches for directions that don't share a
+        skeleton: a spartan data-dense table; a tile-based magazine; a story-driven
+        narrative; a controls-and-charts engineering view.</span>
+    </li>
+    <li>
+      <h3>Disclose what you don't know</h3>
+      <span class="step-body">"I have no visual taste and don't know what's possible" tells Fable
+        to explain <em>why</em> each direction exists, not just to render four pages. The
+        explanations are part of the artifact.</span>
+    </li>
+    <li>
+      <h3>"So I can react to them"</h3>
+      <span class="step-body">The framing matters. You're not asking for a recommendation; you're
+        asking for a set of stimuli. That framing changes how Fable calibrates confidence
+        &mdash; it's showing you options, not picking one.</span>
+    </li>
+  </ol>
+
+  <h3>Why brainstorm before implementation</h3>
+
+  <div class="callout">
+    <div class="callout-label">Wood's central claim</div>
+    Small changes in a feature or spec can cause drastically different implementations
+    in code, and it can be more difficult for your agent to revert previous changes.
+    A brainstorm is the cheapest place to make those changes. A prototype is the next
+    cheapest. Implementation is the most expensive.
+  </div>
+
+  <p>
+    The cost order is the discipline. You don't think from inside one direction and hope
+    it's right. You widen first, react, narrow, and only then commit to code.
+  </p>
+
+  <h3>Brainstorm as scope-setter</h3>
+
+  <p>
+    Wood also uses brainstorming at session start, even when there's no UI question:
+  </p>
+
+  <pre data-lang="prompt"><code>Here's my rough problem: users churn after onboarding. Search the codebase
+and brainstorm 10 places we could intervene, from cheapest to most ambitious.
+I'll tell you which ones resonate.</code></pre>
+
+  <p>
+    This is a different use of the technique. The brainstorm isn't about visual reactions;
+    it's about <strong>scope</strong>. The "from cheapest to most ambitious" axis gives you
+    a way to prune. The "which ones resonate" handoff keeps you in the loop without
+    forcing a premature decision.
+  </p>
+
+  <hr>
+
+  <h2>2. Prototype &mdash; make one direction concrete</h2>
+
+  <p>
+    A brainstorm gives you options. A prototype takes one option and makes it
+    <em>tangible</em> &mdash; concrete enough that you can react to specifics rather
+    than to abstractions. Wood's worked examples are mostly visual:
+  </p>
+
+  <pre data-lang="prompt"><code>Before wiring anything up, make a single HTML file mocking the new editor
+toolbar with fake data. I want to react to the layout before you touch
+the real app.</code></pre>
+
+  <p>
+    The shape: <strong>one file, fake data, no backend, no state</strong>. You are
+    isolating the unknown-known surface &mdash; the part you know when you see it but
+    can't articulate &mdash; from everything that's already known. The toolbar's
+    layout is the Unknown Known. The persistence layer, the state machine, the auth
+    flow &mdash; all knowns, all distractions.
+  </p>
+
+  <div class="callout tip">
+    <div class="callout-label">Why "single HTML file" is a useful constraint</div>
+    Fable can produce prototypes in many formats: a real component file, a Figma mock, a
+    Storybook story. Single-HTML-file is the cheapest constraint that still gives you
+    something you can open in a browser and react to. It strips away build systems,
+    routing, and state plumbing. The Unknown Known sits alone.
+  </div>
+
+  <p>
+    The prototype isn't a deliverable. It's a stimulus. You'll throw it away. What you
+    keep is the *reaction*: "I like the spacing but the typography is too dense," or
+    "this works for the home view but won't scale to the table view." Those reactions
+    are the start of the implementation plan &mdash; which is Lesson 4.
+  </p>
+
+  <hr>
+
+  <h2>3. Reference &mdash; point at something already good</h2>
+
+  <p>
+    Sometimes the Unknown Known can't be discovered by brainstorming; you only know it
+    when you see it, and what you have in mind is an existing thing. The reference
+    technique is: <strong>point Fable at that thing and tell it what to look for</strong>.
+  </p>
+
+  <pre data-lang="prompt"><code>This Rust crate in vendor/rate-limiter implements the exact backoff
+behavior I want. Read it and reimplement the same semantics in our
+TypeScript API client.</code></pre>
+
+  <p>
+    Three reasons this works better than describing the behavior in prose:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Code as ground truth</h3>
+      <span class="step-body">A prose description of backoff semantics is ambiguous. The Rust
+        crate has no ambiguity &mdash; the code is the spec. The fewer interpretive
+        steps between you and Fable, the fewer guesses Fable has to make.</span>
+    </li>
+    <li>
+      <h3>Cross-language reference is fine</h3>
+      <span class="step-body">Wood is explicit: <em>"you can point it at a folder and tell it
+        what to look for, even if it's in a different language."</em> Fable reads the
+        code, not the syntax. The reference transfers semantics, not syntax.</span>
+    </li>
+    <li>
+      <h3>"Tell it what to look for"</h3>
+      <span class="step-body">Unfocused reading produces shallow mimicry. Naming the specific
+        behavior ("the exponential backoff with jitter on lines 80&ndash;120") tells Fable
+        which part of the reference is load-bearing.</span>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <div class="callout-label">Claude Design works the same way</div>
+    Wood notes that Claude Design reads the underlying markup of pages you point it at,
+    not just the screenshot. The same principle: <em>code is richer than pixels</em>.
+    When you have a reference, point at the code.
+  </div>
+
+  <hr>
+
+  <h2>4. A live brainstorm + prototype, run on the rest of this series</h2>
+
+  <p>
+    The remaining lessons of this series &mdash; 4 and 5 &mdash; are themselves an
+    Unknown Knowns problem. I know roughly what they should cover, but the *shape* of
+    each lesson (how much content, what stays separate, what combines) is something
+    I'll only know when I see options. So I ran a brainstorm.
+  </p>
+
+  <h3>Brainstorm output: four directions</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Direction</th>
+        <th>Strong because</th>
+        <th>Weak because</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>A</strong></td>
+        <td>Mirror Wood 1:1 &mdash; L4 = plan, L5 = during, L6 = post</td>
+        <td>Cleanest taxonomy. One lesson per Wood section.</td>
+        <td>Six lessons is a lot. "During" content is thin (one prompt).</td>
+      </tr>
+      <tr>
+        <td><strong>B</strong></td>
+        <td>Compress during+post into one lesson</td>
+        <td>Honest about content density; the reader sees fewer lessons</td>
+        <td>One lesson carries implementation notes + pitch + quiz. Density.</td>
+      </tr>
+      <tr>
+        <td><strong>C</strong></td>
+        <td>Skip the implementation plan; the prototype <em>is</em> the plan</td>
+        <td>Pragmatic. Plan often subsumes the prototype in real work.</td>
+        <td>Drops "implementation plan" as a named technique. Loss of vocabulary.</td>
+      </tr>
+      <tr>
+        <td><strong>D</strong></td>
+        <td>Two-phase: build then close</td>
+        <td>Aligns with how work flows in practice.</td>
+        <td>Blurs plan vs. notes; both do different things.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Prototype step &mdash; what Direction B actually looks like</h3>
+
+  <p>
+    The brainstorm made me curious whether Direction B would survive a concrete mock.
+    So I prototyped it: one paragraph describing what Lesson 5 <em>would</em> be if I
+    combined during and post.
+  </p>
+
+  <blockquote>
+    <strong>Lesson 5 — Shipping and Closing the Loop.</strong> The last lesson of the
+    series. Two halves. First half: <em>implementation notes</em> &mdash; a small
+    file your agent keeps during execution so surprises are logged instead of lost.
+    Second half: <em>the post-ship artifacts</em> &mdash; a pitch/explainer for
+    reviewers, a quiz for yourself. The unifying claim: <em>every surprise during
+    execution deserves a log line; every shipped change deserves an artifact the
+    next person can pick up.</em>
+  </blockquote>
+
+  <p>
+    Reaction: <strong>that one paragraph has more content than L4 (plan) has on its
+    own</strong>. Direction B isn't just "compress to save a lesson" &mdash; it's
+    "the right lesson size for what these techniques actually contain." Direction A
+    would have produced two thin lessons instead of one good one.
+  </p>
+
+  <h3>Decision</h3>
+
+  <p>
+    Direction B. The series is now <strong>5 lessons</strong>, not 6. This is the
+    decision the brainstorm-and-prototype was designed to produce: a commitment to a
+    direction I could defend, made by reacting to a concrete option rather than thinking
+    from inside the problem.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">What the prototype wasn't</div>
+    The prototype was a single paragraph. It did <em>not</em> include the actual lesson
+    HTML. That's the discipline: prototype enough to react, not enough to ship. If I'd
+    written the full Lesson 5 HTML, I'd have over-committed and lost the ability to
+    change direction cheaply.
+  </div>
+
+  <hr>
+
+  <h2>5. How the three techniques compose</h2>
+
+  <p>
+    After Lesson 2's blindspot pass + interview (which populated Unknown Unknowns),
+    you have a narrower problem but a still-unclear criterion. Lesson 3's three moves
+    populate Unknown Knowns by giving you something to react to:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Brainstorm</h3>
+      <span class="step-body">Multiple directions, wildly different, in a format you can react to.
+        Best when you don't know what shape the answer should take.</span>
+    </li>
+    <li>
+      <h3>Prototype</h3>
+      <span class="step-body">One direction, one file, fake data, no wiring. Best when you know
+        roughly what you want but can't articulate the details until you see them.</span>
+    </li>
+    <li>
+      <h3>Reference</h3>
+      <span class="step-body">Point at code that already exists. Best when you have a model in mind
+        and want its semantics without its syntax.</span>
+    </li>
+  </ol>
+
+  <p>
+    Pick one. They don't all need to run on every task. The discipline is <strong>see
+    something before you commit</strong> &mdash; which one of the three you use depends on
+    what kind of "something" is available.
+  </p>
+
+  <p>
+    When you've reacted enough to commit to a direction, you're ready for Lesson 4: the
+    implementation plan. That's where the prototype (or the chosen brainstorm direction)
+    becomes an executable doc.
+  </p>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <p>
+    Each quiz targets the Unknown Knowns cell or a trade-off inside one of the three
+    techniques.
+  </p>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">You ask Fable for "four directions for the editor toolbar" but you don't say "wildly different." What goes wrong?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Nothing &mdash; "four directions" already implies enough variety on its own</button>
+      <button class="quiz-opt" data-correct="false">Fable refuses &mdash; the prompt is too vague without that adjective</button>
+      <button class="quiz-opt" data-correct="true">Four minor variations on one layout &mdash; you lose the chance to react to truly different directions</button>
+      <button class="quiz-opt" data-correct="false">Fable asks a clarifying question before producing anything concrete</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">A teammate asks Fable to prototype a dashboard by writing the real React component with mocked API responses. What does this cost them?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Nothing &mdash; mocked responses are equivalent to fake data in a prototype</button>
+      <button class="quiz-opt" data-correct="false">A slower prototype, but functionally the same as a single HTML file</button>
+      <button class="quiz-opt" data-correct="false">Build-system errors they would have hit during real implementation anyway</button>
+      <button class="quiz-opt" data-correct="true">The layout gets buried in props, state, and the existing component tree; reactions hit everything at once</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">You point Fable at a TypeScript library and tell it to "reimplement the rate-limiter logic." Without naming what to look for, what happens?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Fable produces a faithful reimplementation of the library, since the code is the spec</button>
+      <button class="quiz-opt" data-correct="false">Fable refuses &mdash; the prompt is too open-ended</button>
+      <button class="quiz-opt" data-correct="true">Reads the whole library and produces shallow mimicry; the load-bearing semantics get buried in boilerplate</button>
+      <button class="quiz-opt" data-correct="false">Fable picks the simplest part to mimic and skips the rest</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz4">
+    <div class="quiz-q">You ran a brainstorm and got four directions, then prototyped one. The prototype changed your mind about which direction was best. What did the prototype buy you?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">A concrete artifact you can ship &mdash; the prototype becomes the implementation</button>
+      <button class="quiz-opt" data-correct="false">A way to delegate the decision to Fable &mdash; Fable now knows which direction you prefer</button>
+      <button class="quiz-opt" data-correct="true">A reaction that distinguishes between options you can articulate and ones you only recognize when you see them</button>
+      <button class="quiz-opt" data-correct="false">A faster path to the implementation plan &mdash; you can skip Lesson 4 entirely</button>
+    </div>
+    <div class="quiz-feedback" id="quiz4-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    All three techniques are from Cat Wood, <em>A Field Guide to Fable: Finding Your
+    Unknowns</em> (X thread, 4 Jul 2026). The decision in section 4 &mdash; compress
+    during+post into one lesson &mdash; is from the live rehearsal on this very lesson
+    series; it changed the curriculum arc recorded in <code>MISSION.md</code>.
+  </p>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      You have a direction, narrowed from your brainstorm, made concrete by your prototype.
+      <a href="./0004-the-implementation-plan.html">Lesson 4: The Implementation Plan</a>
+      teaches the synthesis step that turns a chosen direction into an executable doc &mdash;
+      what gets implemented in which order, and where the architecture can still flex.
+    </p>
+    <p>&rarr; <a href="./0004-the-implementation-plan.html">Lesson 4: The Implementation Plan</a></p>
+  </div>
+
+  <div class="footer-nav">
+    <span>Finding Your Unknowns &middot; Lesson 3</span>
+    <span><a href="../index.html">Index</a> &middot; <a href="./0002-blindspot-pass-and-interview.html">&larr; L2</a> &middot; <a href="./0004-the-implementation-plan.html">L4 &rarr;</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Try it now</div>
+    Got a task in your head where you "know it when you see it" but can't articulate
+    it? Describe it in 2-3 sentences and I'll show you what a brainstorm + prototype
+    pass on it would look like &mdash; the four directions, the prototype, the reaction.
+    The conversation is the lesson.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. That\u2019s the right reading of the technique.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the relevant section above.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

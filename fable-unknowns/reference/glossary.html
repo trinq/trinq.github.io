@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossary — Finding Your Unknowns</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Glossary</h1>
+  <div class="lesson-meta">
+    Reference &middot; ~5 min skim &middot; One page &middot; All vocabulary across L1&ndash;L5
+  </div>
+
+  <p>
+    The five lessons ship ~30 terms worth knowing. Each entry below gives a short
+    definition, names the lesson(s) where the term is taught in depth, and (where
+    the term is a <em>technique</em>) the literal prompt phrase Wood uses for it.
+  </p>
+
+  <p>
+    Use this page two ways: as a check after finishing the series (did I miss any
+    vocabulary?) and as a lookup while working with Fable (what was that phrase
+    again?). The cross-references go in both directions &mdash; click through to the
+    lessons for technique, click back here for the one-line definition.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">What's here and what isn't</div>
+    <strong>In:</strong> technique names, trigger phrases, concept names (the 2&times;2,
+    the time windows), and the unifying claims. <strong>Out:</strong> generic English
+    words, terms used once and never defined in the lessons, and meta-vocabulary
+    about the curriculum itself.
+  </div>
+
+  <hr>
+
+  <h2>Mental model</h2>
+
+  <dl>
+    <dt>Known Knowns</dt>
+    <dd>
+      Things you know and can articulate. They go in the prompt as direct
+      instructions. The easy quadrant. <em>Source: L1.</em>
+    </dd>
+
+    <dt>Known Unknowns</dt>
+    <dd>
+      Things you know you don't know. They go in the prompt as explicit questions,
+      constraints, or "<em>find out X before implementing</em>" directives. Better
+      than Unknown Unknowns because they're at least visible. <em>Source: L1.</em>
+    </dd>
+
+    <dt>Unknown Knowns</dt>
+    <dd>
+      Things you'd recognize the wrong version of but can't articulate up front.
+      Visual taste, "good API ergonomics," the rhythm of a conversation. Populated
+      by reacting to candidates &mdash; brainstorm, prototype, or reference.
+      <em>Source: L1, L3.</em>
+    </dd>
+
+    <dt>Unknown Unknowns</dt>
+    <dd>
+      Things you haven't even considered. The biggest risk to shipped work because
+      they become guesses the model makes on your behalf. Populated by a broad pass
+      first (blindspot) and a narrow pass second (interview). <em>Source: L1, L2.</em>
+    </dd>
+
+    <dt>Map vs. Territory</dt>
+    <dd>
+      The core mental model. The prompt + context you hand the model is the
+      <em>map</em>. The codebase + real-world constraints it has to navigate are the
+      <em>territory</em>. The series teaches you to tighten the map when they
+      diverge. <em>Source: L1.</em>
+    </dd>
+
+    <dt>The 2&times;2</dt>
+    <dd>
+      The four-quadrant frame (Known/Known &times; Known/Unknown). The single most
+      useful diagnostic: where in the grid does this task sit? Different cells
+      warrant different techniques. <em>Source: L1.</em>
+    </dd>
+
+    <dt>Iterate, don't plan</dt>
+    <dd>
+      The core insight from L1: most prompts are under-iterated, not under-planned.
+      The cost of one more loop (blindspot, brainstorm, prototype) is much lower
+      than the cost of getting the prompt wrong on the first try.
+      <em>Source: L1.</em>
+    </dd>
+  </dl>
+
+  <hr>
+
+  <h2>Time windows</h2>
+
+  <dl>
+    <dt>Pre-implementation</dt>
+    <dd>
+      Before any code is written. The window for L2 (blindspot + interview) and L3
+      (brainstorm + prototype + reference). Also where L4 (the plan) closes the
+      window with a deliverable. <em>Source: L1&ndash;L4.</em>
+    </dd>
+
+    <dt>During implementation</dt>
+    <dd>
+      While the implementation runs. The window for <em>implementation notes</em>
+      &mdash; log surprises, deviations, judgment calls. <em>Source: L5.</em>
+    </dd>
+
+    <dt>Post-implementation</dt>
+    <dd>
+      After the code ships. The window for the <em>pitch</em> (artifact for the
+      next person), the <em>explainer</em>, and the <em>post-quiz</em>. The user
+      passes the quiz before merging. <em>Source: L5.</em>
+    </dd>
+  </dl>
+
+  <hr>
+
+  <h2>Techniques &mdash; pre-implementation</h2>
+
+  <dl>
+    <dt>Blindspot pass</dt>
+    <dd>
+      A broad, low-stakes pass that surfaces Unknown Unknowns before any code is
+      written. Cheap to run; high payoff if it surfaces anything.
+      <em>Source: L2.</em>
+    </dd>
+
+    <dt>Interview</dt>
+    <dd>
+      A narrow, targeted pass that asks one question at a time. Used after the
+      blindspot pass to resolve residual ambiguity. The <em>one question at a
+      time</em> framing matters &mdash; multi-question prompts produce thinner
+      answers. <em>Source: L2.</em>
+    </dd>
+
+    <dt>Brainstorm</dt>
+    <dd>
+      A request for multiple directions on the same problem, in a format you can
+      react to. The "wildly different" adjective is load-bearing &mdash; without
+      it, the result is four minor variations on one theme. The reaction is the
+      point. <em>Source: L3.</em>
+    </dd>
+
+    <dt>Prototype</dt>
+    <dd>
+      A single file (typically HTML) with fake data and no wiring, made to isolate
+      the unknown-known surface from the rest of the system. The artifact is a
+      stimulus, not a deliverable. <em>Source: L3.</em>
+    </dd>
+
+    <dt>Reference</dt>
+    <dd>
+      Pointing Fable at existing code (or a Claude Design page) that demonstrates
+      the desired behavior or style. Code is richer than pixels; cross-language
+      references transfer semantics. <em>Source: L3.</em>
+    </dd>
+
+    <dt>Implementation plan</dt>
+    <dd>
+      The synthesis artifact that turns a chosen direction into a doc Fable can
+      execute. Wood's ordering: lead with what you'll tweak (data model, type
+      interfaces, UX), bury the mechanical. <em>Source: L4.</em>
+    </dd>
+  </dl>
+
+  <hr>
+
+  <h2>Techniques &mdash; during implementation</h2>
+
+  <dl>
+    <dt>Implementation notes</dt>
+    <dd>
+      A literal <code>implementation-notes.md</code> file (or folder) kept open
+      during execution. Logs surprises, deviations, judgment calls. Functions as
+      a drift detector against the plan. <em>Source: L5.</em>
+    </dd>
+
+    <dt>Surprises and decisions</dt>
+    <dd>
+      Section of the notes file. Per-execution entries that capture what happened
+      and why. Judgment-call entries are written by the user, not the agent.
+      <em>Source: L5.</em>
+    </dd>
+
+    <dt>Deviations</dt>
+    <dd>
+      Section of the notes file. What changed vs. the plan, and why. The drift
+      detector against L4. <em>Source: L5.</em>
+    </dd>
+  </dl>
+
+  <hr>
+
+  <h2>Techniques &mdash; post-implementation</h2>
+
+  <dl>
+    <dt>Pitch</dt>
+    <dd>
+      An HTML artifact (in the project's <code>reference/</code> folder) a
+      teammate can paste into Slack to understand what shipped. Four blocks:
+      lede, problem, differentiator, push-back. <em>Source: L5.</em>
+    </dd>
+
+    <dt>Explainer</dt>
+    <dd>
+      A longer-form artifact (often a separate doc or video) for deeper context
+      on the shipped change. Distinct from the pitch: the pitch is for quick
+      context, the explainer is for full context. <em>Source: L5.</em>
+    </dd>
+
+    <dt>Post-quiz</dt>
+    <dd>
+      A short quiz the user takes before merging the work. Tests judgment on
+      what the user just shipped, not vocabulary about the project. Categories:
+      what surprised you, what would you change next, what would you push back
+      on. <em>Source: L5.</em>
+    </dd>
+  </dl>
+
+  <hr>
+
+  <h2>Trigger phrases</h2>
+
+  <p>
+    These are literal prompt phrases from Wood. Paraphrasing produces thinner
+    output &mdash; the literal phrasing is load-bearing.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Trigger phrase</th>
+        <th>Technique</th>
+        <th>Lesson</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>"Run a blindspot pass on this."</code></td>
+        <td>Blindspot pass</td>
+        <td>L2</td>
+      </tr>
+      <tr>
+        <td><code>"Interview me one question at a time."</code></td>
+        <td>Interview</td>
+        <td>L2</td>
+      </tr>
+      <tr>
+        <td><code>"Make me an HTML page with 4 wildly different design directions so I can react to them."</code></td>
+        <td>Brainstorm</td>
+        <td>L3</td>
+      </tr>
+      <tr>
+        <td><code>"Before wiring anything up, make a single HTML file mocking X with fake data."</code></td>
+        <td>Prototype</td>
+        <td>L3</td>
+      </tr>
+      <tr>
+        <td><code>"Look at &lt;reference&gt; and reimplement X. Tell me what to look for."</code></td>
+        <td>Reference</td>
+        <td>L3</td>
+      </tr>
+      <tr>
+        <td><code>"Write an implementation plan in HTML, but lead with the decisions I'm most likely to tweak with &mdash; data model changes, new type interfaces, and anything user-facing. Bury the mechanical refactoring at the bottom."</code></td>
+        <td>Implementation plan</td>
+        <td>L4</td>
+      </tr>
+      <tr>
+        <td><code>"Log this to implementation-notes.md."</code></td>
+        <td>Implementation notes</td>
+        <td>L5</td>
+      </tr>
+      <tr>
+        <td><code>"I only merge after I pass the quiz perfectly."</code></td>
+        <td>Post-quiz</td>
+        <td>L5</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-label">Why "literally"</div>
+    The L2 lesson surfaces this as the first lesson in the series: paraphrasing
+    the blindspot-pass phrase produces a model that skims rather than scans.
+    The same applies to the other phrases above. Treat them as recipes, not
+    summaries.
+  </div>
+
+  <hr>
+
+  <h2>Unifying claims</h2>
+
+  <p>
+    Two sentences that anchor the series. If you remember these, the rest of the
+    vocabulary hangs together.
+  </p>
+
+  <blockquote>
+    <p><strong>L4's unifying claim (about the plan):</strong> Tweak-points first,
+    mechanical last, HTML over markdown, named verification. The plan is a
+    deliverable that travels &mdash; not the chat, one of the bundle of artifacts
+    the next session reads.</p>
+  </blockquote>
+
+  <blockquote>
+    <p><strong>L5's unifying claim (about shipping):</strong> Every surprise
+    during execution deserves a log line; every shipped change deserves an
+    artifact the next person can pick up.</p>
+  </blockquote>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <p>
+    Two quizzes. The first tests trigger-phrase recall (the highest-value
+    vocabulary to internalize); the second tests the time-window mapping.
+  </p>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">You're about to ask Fable for a narrow, one-question-at-a-time pass after a broader blindspot pass. Which literal phrase is the right trigger?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false"><code>"Ask me clarifying questions."</code></button>
+      <button class="quiz-opt" data-correct="true"><code>"Interview me one question at a time."</code></button>
+      <button class="quiz-opt" data-correct="false"><code>"Run a brainstorm on the open questions."</code></button>
+      <button class="quiz-opt" data-correct="false"><code>"Walk me through the unknowns."</code></button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">A teammate asks: "where in the lesson series does the pitch get taught?" What's the right answer?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">L3 &mdash; it's an unknown-knowns technique for the user's own reactions</button>
+      <button class="quiz-opt" data-correct="false">L4 &mdash; it travels with the plan as part of the pre-implementation bundle</button>
+      <button class="quiz-opt" data-correct="true">L5 &mdash; it's a post-implementation artifact for the next person in Slack</button>
+      <button class="quiz-opt" data-correct="false">L2 &mdash; it's the next step after a blindspot pass for a reviewer who wasn't in the room</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>How this glossary relates to the lessons</h2>
+
+  <p>
+    The glossary is a <em>reference</em>, not a substitute. Each lesson teaches its
+    technique with worked examples, live rehearsals, and quizzes; the glossary
+    compresses the vocabulary into one page. If a term here feels unfamiliar, the
+    linked lesson is where the unfamiliarity gets resolved.
+  </p>
+
+  <p>
+    The glossary is also the seed for the cheatsheet that
+    <a href="../implementation-notes.md#open-follow-up-items">implementation-notes.md</a>
+    defers. When this glossary stops being enough &mdash; when the user wants
+    something printable, one page, that fits on a wall &mdash; the cheatsheet is
+    the next iteration. For now, the glossary plus the index is enough.
+  </p>
+
+  <hr>
+
+  <div class="footer-nav">
+    <span>Finding Your Unknowns &middot; Glossary</span>
+    <span><a href="../index.html">Index</a> &middot; <a href="../lessons/0005-shipping-and-closing-the-loop.html">Last lesson</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Suggest an entry</div>
+    Found a term used in the lessons that isn't here? Tell me the term and where
+    it shows up; I'll add it. The glossary ages with the series.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the relevant section above.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

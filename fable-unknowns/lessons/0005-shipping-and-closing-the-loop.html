@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 5 — Shipping and Closing the Loop</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+  <h1>Shipping and Closing the Loop</h1>
+  <div class="lesson-meta">
+    <span class="num">L5</span>
+    During + post &middot; ~12 min &middot; Lesson 5 (final) of the Finding Your Unknowns series
+  </div>
+
+  <p>
+    You've spent the four prior lessons turning a fuzzy problem into a plan. Now you're
+    going to ship the thing. This lesson covers two halves of the same discipline:
+  </p>
+
+  <blockquote>
+    <p><strong>Every surprise during execution deserves a log line; every shipped change
+    deserves an artifact the next person can pick up.</strong></p>
+  </blockquote>
+
+  <p>
+    The first half &mdash; <em>implementation notes</em> &mdash; keeps execution honest by
+    surfacing surprises while you still have the context. The second half &mdash;
+    <em>pitch, explainer, quiz</em> &mdash; closes the loop by handing off the result to
+    everyone who wasn't in the room.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Why the two halves share a lesson</div>
+    They share a unifying claim: surprises and shipped changes deserve artifacts. The
+    claim only works if the two halves live together &mdash; in isolation, the
+    implementation-notes lesson would feel like process hygiene and the post-ship
+    lesson would feel like marketing.
+  </div>
+
+  <hr>
+
+  <h2>1. Implementation notes &mdash; the during-execution log</h2>
+
+  <p>
+    Wood keeps a notes file open during execution. New entries when you make a
+    decision that wasn't in the plan, hit a wrong assumption, or take a path the
+    plan didn't foresee. The notes are appended, not edited. The file isn't
+    structured prose &mdash; it's a log.
+  </p>
+
+  <h3>The format</h3>
+
+  <p>
+    A literal <code>implementation-notes.md</code> file in the project root (or in a
+    <code>notes/</code> directory for larger projects). Sections are loose and may
+    evolve. Two sections deserve to be there:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Surprises and decisions</h3>
+      <span class="step-body">Per-execution entries. Date + topic + what happened.
+        "We thought OAuth was already wired; it wasn't. Added <code>auth.ts</code>
+        with the standard config." Fable can write these during execution if you
+        ask, but you write the load-bearing ones yourself because they're judgment.</span>
+    </li>
+    <li>
+      <h3>Deviations from the plan</h3>
+      <span class="step-body">What changed vs. <a href="./0004-the-implementation-plan.html">the plan</a>
+        and why. "Plan said Postgres triggers; switched to a worker because the
+        trigger would block the request path." Deviations are tracked because the
+        next time someone asks "why isn't this a trigger?" the answer is in the log.</span>
+    </li>
+  </ol>
+
+  <div class="callout tip">
+    <div class="callout-label">What goes in the notes (and what doesn't)</div>
+    <strong>In:</strong> surprises, judgment calls, deviations, architectural decisions
+    that landed during execution. <strong>Out:</strong> routine progress ("wrote
+    tests"), bug-fix bookkeeping, things already in the plan. The notes file is a
+    *trail of decisions*, not a journal.
+  </div>
+
+  <h3>A live example: this very series</h3>
+
+  <p>
+    The implementation of L1&ndash;L5 in this workspace is itself a worked example.
+    The notes file is at <a href="../implementation-notes.md"><code>implementation-notes.md</code></a>
+    at the workspace root. Browse it: every lesson ships with a notes entry that
+    captures the deviations and surprises that happened during its build.
+  </p>
+
+  <p>
+    What's in there is small but load-bearing: the "no forward links to lessons
+    that don't exist yet" rule discovered during L2, the "blindspot pass can backfire
+    with strong priors" inference flagged in L3, the plan-vs-execution drift test
+    in L4. None of these are in the lessons themselves &mdash; they're in the notes,
+    where the next session can pick them up.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The drift detector</div>
+    Wood's notes function isn't just a deviation log &mdash; it's a drift detector.
+    When L5's plan said "notes as a literal <code>.md</code> file" and L5 shipped
+    with notes as a literal <code>.md</code> file, the drift was zero. That's a
+    win for the plan, not the notes. When implementation diverges from plan, the
+    notes show the seam.
+  </div>
+
+  <hr>
+
+  <h2>2. Pitch &mdash; the artifact for the next person</h2>
+
+  <p>
+    When the implementation is done, you produce a pitch: a small document someone
+    who wasn't in the room can read and understand what shipped and why. Wood keeps
+    these as HTML pages in the project's <code>reference/</code> folder &mdash; separate
+    from the work, not buried inside it.
+  </p>
+
+  <h3>The template</h3>
+
+  <p>
+    A pitch has a recognizable shape. Four blocks, in order:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>The lede</h3>
+      <span class="step-body">One or two sentences. What is this, for whom, and why
+        does it matter. If the lede doesn't make someone want to read the next
+        paragraph, the lede is wrong.</span>
+    </li>
+    <li>
+      <h3>The problem it solves</h3>
+      <span class="step-body">What was the user pain or the missing capability?
+        Ground in observable behavior, not in feature lists. "Users churn after
+        onboarding because we don't show them what's missing" not "We added a
+        progress bar."</span>
+    </li>
+    <li>
+      <h3>What makes it different</h3>
+      <span class="step-body">The 2&ndash;4 properties that distinguish this work from
+        the obvious solution. Keep them concrete. If you can't articulate the
+        difference, the work isn't differentiated.</span>
+    </li>
+    <li>
+      <h3>What you'd push back on if challenged</h3>
+      <span class="step-body">Pre-empt the strongest objections. "Five lessons is a
+        lot" / "The quizzes test the lesson not the next prompt" / "The live
+        rehearsals are a technical risk." Honesty about the limits makes the
+        assertions about the strengths credible.</span>
+    </li>
+  </ol>
+
+  <h3>A live example: the pitch for this lesson series</h3>
+
+  <p>
+    The pitch for the Finding Your Unknowns series is at
+    <a href="../reference/ship-and-close-pitch.html"><code>reference/ship-and-close-pitch.html</code></a>.
+    It demonstrates all four blocks on the work you just spent five lessons learning.
+    Useful as a concrete ref &mdash; especially the "what I'd push back on" section,
+    which is the block most pitches skip and most pitches need.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Template + real artifact, not either alone</div>
+    This is the L4 plan's "template + real artifact" decision, executed. The lesson
+    teaches the template; the artifact demonstrates the template used on the work
+    the lesson ships. The cross-link between the two is the technique.
+  </div>
+
+  <hr>
+
+  <h2>3. The quiz &mdash; judgment under memory</h2>
+
+  <p>
+    Wood's discipline: <em>"I only merge after I pass the quiz perfectly."</em>
+    A post-implementation quiz is the test that the user understood <em>what shipped</em>,
+    not just that they shipped it. Under memory pressure, the things the user
+    remembers are the things they'd defend in a code review. The quiz probes
+    exactly those things.
+  </p>
+
+  <h3>What the quiz tests</h3>
+
+  <p>
+    Not vocabulary. Not "what did the plan say." The quiz tests the user's
+    judgment on the next prompt they'll write. Wood's example: after launching a
+    color-grading feature video, the post-quiz asks "what would you want the next
+    loop to feel like?" &mdash; not "what was the prompt phrase?"
+  </p>
+
+  <p>
+    For implementation work, three categories of questions are usually enough:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>What surprised you</h3>
+      <span class="step-body">The user lists the surprises they logged. The quiz
+        validates that the user can recall and rank them &mdash; if they can't,
+        they probably don't own the lessons the surprises taught.</span>
+    </li>
+    <li>
+      <h3>What would you change in the next loop</h3>
+      <span class="step-body">The user describes the next iteration. The quiz validates
+        that the user has a forward-looking model of the work &mdash; if they don't,
+        they're not done, they're paused.</span>
+    </li>
+    <li>
+      <h3>What would you push back on if the work were challenged</h3>
+      <span class="step-body">The user names the limits. The quiz validates that the
+        user can defend the work honestly &mdash; if they can't, the pitch above is
+        lying and the user knows it.</span>
+    </li>
+  </ol>
+
+  <div class="callout tip">
+    <div class="callout-label">The quiz is for the user, not for the team</div>
+    Wood passes the quiz *before merging*. The audience is the user in a future
+    moment, not a reviewer. The questions are uncomfortable by design &mdash;
+    they surface things the user hoped they'd forgotten. That's the test.
+  </div>
+
+  <hr>
+
+  <h2>4. How the four artifacts of a shipped change relate</h2>
+
+  <p>
+    A shipped change produces four artifacts in Wood's loop:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Artifact</th>
+        <th>When</th>
+        <th>Who reads it</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>The plan</strong> (<a href="./0004-the-implementation-plan.html">L4</a>)</td>
+        <td>Before</td>
+        <td>Fable during execution; you, two weeks later, wondering why you decided what you decided</td>
+      </tr>
+      <tr>
+        <td><strong>Implementation notes</strong> (<a href="../implementation-notes.md"><code>implementation-notes.md</code></a>)</td>
+        <td>During</td>
+        <td>You, when you wonder "why isn't this a trigger?"; the next session; a teammate reviewing the diff</td>
+      </tr>
+      <tr>
+        <td><strong>The pitch</strong> (<a href="../reference/ship-and-close-pitch.html"><code>ship-and-close-pitch.html</code></a>)</td>
+        <td>After</td>
+        <td>The next person in Slack; reviewers; teammates who weren't in the room</td>
+      </tr>
+      <tr>
+        <td><strong>The quiz</strong></td>
+        <td>After</td>
+        <td>You, before merging; the future you defending the work in a code review</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    These are four <em>different</em> artifacts for <em>different</em> audiences. The
+    mistake is collapsing them &mdash; the plan becomes the notes, the notes become
+    the pitch, the pitch becomes the quiz. Each one needs to be written in its own
+    voice for its own reader.
+  </p>
+
+  <hr>
+
+  <h2>5. How the five lessons compose</h2>
+
+  <p>
+    A complete loop, in five lessons:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>L1 — Map vs. Territory</h3>
+      <span class="step-body">Mental model. The 2&times;2 of unknowns. The iterate-don't-plan loop.</span>
+    </li>
+    <li>
+      <h3>L2 — Blindspot Pass + Interview</h3>
+      <span class="step-body">Populate Unknown Unknowns. Broad pass, then narrow questions.</span>
+    </li>
+    <li>
+      <h3>L3 — Brainstorm + Prototype + Reference</h3>
+      <span class="step-body">Populate Unknown Knowns. See something before you commit.</span>
+    </li>
+    <li>
+      <h3>L4 — The Implementation Plan</h3>
+      <span class="step-body">Synthesize everything. A doc Fable can execute and you can re-read.</span>
+    </li>
+    <li>
+      <h3>L5 (this) — Shipping and Closing the Loop</h3>
+      <span class="step-body">Log surprises. Hand off the work. Quizzes the user on what they shipped.</span>
+    </li>
+  </ol>
+
+  <p>
+    The first three lessons are pre-implementation. L4 closes pre-implementation.
+    L5 covers during + post. <strong>The curriculum is complete.</strong>
+  </p>
+
+  <hr>
+
+  <h2>Knowledge check</h2>
+
+  <p>
+    Three quizzes, each testing judgment on what the user's next loop should look
+    like. Pass them before you consider the lesson finished.
+  </p>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">You're shipping a small bug fix and wondering whether it deserves an entry in implementation-notes.md. What's the right call?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Skip it &mdash; bug fixes aren't worth the log entry, only judgment calls are</button>
+      <button class="quiz-opt" data-correct="true">Log it if the fix changed a plan decision, exposed a wrong assumption, or would surprise the next reader</button>
+      <button class="quiz-opt" data-correct="false">Always log it &mdash; consistent notes are better than selective ones, every fix deserves a line</button>
+      <button class="quiz-opt" data-correct="false">Defer the decision to Fable &mdash; the agent owns the notes file, not you</button>
+    </div>
+    <div class="quiz-feedback" id="quiz1-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">You wrote a pitch and someone on the team asks "what's the strongest objection to this work?" You can name one. What does that tell you about the pitch?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The pitch is too negative &mdash; the objections are leaking through in ways the author didn't intend</button>
+      <button class="quiz-opt" data-correct="false">The pitch is incomplete &mdash; you forgot to include a separate strengths block</button>
+      <button class="quiz-opt" data-correct="true">The pitch is honest &mdash; the "push back" block is doing its job and you can defend the work</button>
+      <button class="quiz-opt" data-correct="false">The team is hostile &mdash; the objections signal that the audience isn't the right one</button>
+    </div>
+    <div class="quiz-feedback" id="quiz2-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">After shipping, you fail the post-implementation quiz on "what would you change in the next loop?" You have a real answer. What now?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Update the pitch &mdash; the next-loop answer belongs in the artifact that the team reads</button>
+      <button class="quiz-opt" data-correct="false">Re-run the implementation &mdash; you don't know the work well enough to ship it cleanly</button>
+      <button class="quiz-opt" data-correct="true">Re-take the quiz after writing down the answer in prose; the quiz probes memory under pressure, so seed the memory first</button>
+      <button class="quiz-opt" data-correct="false">Skip the quiz &mdash; the real answer exists in your head, the format is the problem</button>
+    </div>
+    <div class="quiz-feedback" id="quiz3-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Primary source</h2>
+
+  <p>
+    The during-and-post techniques are from Cat Wood, <em>A Field Guide to Fable:
+    Finding Your Unknowns</em> (X thread, 4 Jul 2026), combining the
+    "during implementation" and "post-implementation" sections under the unifying
+    claim of this lesson. The pitch template is adapted from Wood's
+    post-implementation artifact pattern (an HTML doc a teammate can paste into Slack).
+  </p>
+
+  <div class="next-up">
+    <div class="label">What's next</div>
+    <p>
+      <strong>Nothing in this series.</strong> The arc is complete: mental model,
+      Unknown Unknowns, Unknown Knowns, plan, ship + close. The next session's
+      job is to <em>use</em> the series &mdash; run a blindspot pass on a real task,
+      draft a real plan, log implementation notes &mdash; rather than to author
+      a sixth lesson.
+    </p>
+    <p>
+      Open artifacts you can use right now:
+    </p>
+    <ul>
+      <li><a href="../implementation-notes.md"><code>implementation-notes.md</code></a> &mdash; the template and a worked example you can copy into your own project.</li>
+      <li><a href="../reference/ship-and-close-pitch.html">the pitch for this series</a> &mdash; a worked example of the four-block template in flight.</li>
+      <li><a href="../reference/glossary.html">the glossary</a> &mdash; every term in the series, organized for lookup. Use this as a refresher before a real session.</li>
+      <li><a href="../index.html">the workspace index</a> &mdash; re-read any lesson you want to internalize.</li>
+    </ul>
+  </div>
+
+  <div class="footer-nav">
+    <span>Finding Your Unknowns &middot; Lesson 5 (final)</span>
+    <span><a href="../index.html">Index</a> &middot; <a href="./0004-the-implementation-plan.html">&larr; L4</a></span>
+  </div>
+
+  <div class="callout info" style="margin-top: 2.5rem;">
+    <div class="callout-label">Series complete</div>
+    You've read five lessons on the user-side of agentic coding. The test is what
+    you do with them. Next time you sit down with Fable, run the series against
+    a real task in this workspace or any other: blindspot pass, interview, brainstorm,
+    plan, ship, log. The conversation is the lesson.
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (quiz.dataset.answered) return;
+          quiz.dataset.answered = 'true';
+          var isCorrect = opt.dataset.correct === 'true';
+          opts.forEach(function(o) {
+            o.disabled = true;
+            if (o.dataset.correct === 'true') o.classList.add('correct');
+            else if (o === opt && !isCorrect) o.classList.add('incorrect');
+          });
+          fb.classList.add('show');
+          if (isCorrect) {
+            fb.classList.add('ok');
+            fb.textContent = '✓ Correct. That\u2019s the right reading of the technique.';
+          } else {
+            fb.classList.add('bad');
+            fb.textContent = '✗ Not quite. Re-read the relevant section above.';
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
