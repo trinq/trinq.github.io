@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossary &mdash; Harden Windows Security</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+  <style>
+    .glossary-letter {
+      font-family: "SF Mono", Menlo, monospace;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin: 1.5rem 0 0.5rem;
+      letter-spacing: 0.06em;
+    }
+    .glossary-entry {
+      padding: 0.7rem 0 0.7rem 1rem;
+      border-left: 2px solid var(--rule);
+      margin: 0 0 0.6rem 0;
+      padding-left: 1rem;
+    }
+    .glossary-entry:hover { border-left-color: var(--accent); }
+    .glossary-term {
+      font-weight: 700;
+      font-size: 0.98rem;
+      display: inline-block;
+    }
+    .glossary-tag {
+      display: inline-block;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+      background: var(--code-bg);
+      padding: 0.05rem 0.4rem;
+      border-radius: 3px;
+      margin-left: 0.4rem;
+      letter-spacing: 0.03em;
+    }
+    .glossary-def {
+      margin-top: 0.3rem;
+      color: var(--ink);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .glossary-link {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Glossary</h1>
+  <div class="lesson-meta">
+    Vocabulary for the Harden Windows Security on-prem series. One sentence per term, lesson links where the term is taught. Read once, refer back often.
+  </div>
+
+  <p>
+    Every term in the series vocabulary sits in one of three buckets:
+    <strong>architecture</strong> (Windows / AD / kernel concepts),
+    <strong>policy surface</strong> (the GPOs, ADMX settings, baselines, and rules),
+    <strong>telemetry / IR</strong> (logs, event IDs, forensics habits).
+    Tags in the glossary entries mark the bucket; lesson links in each entry
+    point to the lesson that teaches the term in operational context.
+  </p>
+
+  <div class="callout info">
+    <div class="callout-label">How to use this card</div>
+    During a real admin session — a Tuesday ticket, a staging review, an
+    incident call — this is the lookup surface. Use the term-index (below)
+    or Ctrl-F. Every entry links forward to the lesson where the term is
+    developed; the lesson&rsquo;s design-decisions record is the deeper
+    rationale when the one-sentence definition isn't enough.
+  </div>
+
+  <hr>
+
+  <h2>Architecture &amp; concepts</h2>
+
+  <div class="glossary-letter">A</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">AC (Active Directory)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">Microsoft&rsquo;s on-prem directory service (LDAP / Kerberos / Group Policy); the single forest is the assumed scope for this series.</div>
+    <div class="glossary-link">Taught in <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">ACL (Access Control List)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The discretionary access list on an AD object, a file, a registry key, or a share; &ldquo;who can do what&rdquo; enforcement at the boundary.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a> (boundary 5 misconfiguration path).</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Administrator &mdash; the L1 anchor</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">A user account with the local Administrators group membership on a Windows machine; <em>there is no security boundary between this and the kernel</em>, which collapses every layer below it (L1, L2, L5).</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0001-defense-in-depth-2x2.html">L1</a>; revisited in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">AppContainer</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">A sandboxed process capability profile used by UWP / Store apps; L2 boundary row 6.</div>
+    <div class="glossary-link">Defined in <a href="../lessons/0002-security-boundaries.html">L2</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">AppLocker</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">Legacy user-mode allow-listing system; the modern replacement is WDAC user-mode policy (L6).</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0006-wdac-on-prem.html">L6</a> for trade-off comparison.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">ASR rule (Attack Surface Reduction rule)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">A behavior policy in Microsoft Defender that blocks specific process behaviors (Office spawning children, scripts launching executables, etc.) without needing a signature.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0005-attack-surface-reduction-rules.html">L5</a>; cross-referenced in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a> (BYOVD bypasses ASR).</div>
+  </div>
+
+  <div class="glossary-letter">B</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Baseline (Microsoft Security Compliance Toolkit baseline)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The curated, downloadable, ADMX-backed set of GPO settings Microsoft publishes per Windows release; a starting point, not a checklist.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0004-microsoft-security-baselines.html">L4</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">BitLocker</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">Disk-volume encryption with TPM-anchored key sealing; mandatory for any hardened endpoint, covered by L4&rsquo;s storage baseline category.</div>
+    <div class="glossary-link">Listed in <a href="../lessons/0004-microsoft-security-baselines.html">L4</a>'s five baseline categories; referenced in <a href="baselines-cheatsheet.html">baselines cheatsheet</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Boundaries &mdash; the seven L2 boundaries</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">CPU ring, process, user (Standard vs Admin), network, AD domain, AppContainer, VBS; the architecture rows where Windows enforces privilege separation.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0002-security-boundaries.html">L2</a>; mapped to enforcement layers in <a href="../lessons/0005-attack-surface-reduction-rules.html">L5</a>, <a href="../lessons/0006-wdac-on-prem.html">L6</a>, and <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">BYOVD (Bring Your Own Vulnerable Driver)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">An attack class using a real, signed, kernel-mode driver with a publicly known vulnerability; the driver does exactly what it was signed to do &mdash; L5 and L6 do not stop it.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+
+  <div class="glossary-letter">C</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Capcom.sys class</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The canonical BYOVD reference example &mdash; a signed &ldquo;Capcom&rdquo; test driver with a kill-any-process IOCTL.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>'s BYOVD history table.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">CIM (Code Integrity Module)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The kernel-side module that consults WDAC policy and decides whether a binary loads; consults at every driver / executable load.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0006-wdac-on-prem.html">L6</a>; telemetry events live in the CodeIntegrity log.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Code Integrity / `CodeIntegrity/Operational` log</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">The kernel-owned Event Log channel where WDAC and HVCI decisions are recorded; events 3076 / 3077 / 3099 / 3091 are the load-bearing telemetry.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a>; revisited in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>'s IR playbook.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Credential Guard</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">A VBS-isolated region that stores Kerberos TGTs and NTLM hashes out of reach from the running kernel; L2 boundary row 7 made practical.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Cpu ring</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The hardware privilege separation between Ring 0 (kernel) and Ring 3 (user mode); L2 boundary row 1; the ring that WDAC and HVCI enforce.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0002-security-boundaries.html">L2</a>; configured by <a href="../lessons/0006-wdac-on-prem.html">L6</a> and <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+
+  <div class="glossary-letter">D</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">DC (Domain Controller)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The Active Directory role that hosts the Kerberos KDC and the AD database; tier-0; never first in a kernel-mode rollout.</div>
+    <div class="glossary-link">Rolled-out-last discipline in <a href="../lessons/0006-wdac-on-prem.html">L6</a>'s breakages section.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">DFCI (Device Firmware Configuration Interface)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">UEFI-level settings management from Windows; out of scope for the on-prem junior-admin series.</div>
+    <div class="glossary-link">Listed in MISSION.md as a deferred vocabulary term.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">DRTM (Dynamic Root of Trust Measurement)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">Late-launch measured-boot root of trust; tier-4 posture, mentioned in L1's threat-actor table, out of scope for the on-prem curriculum.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0001-defense-in-depth-2x2.html">L1</a>.</div>
+  </div>
+
+  <div class="glossary-letter">E</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">EDR (Endpoint Detection and Response)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">A class of security product (Defender for Endpoint, CrowdStrike, etc.) that aggregates process / network / file telemetry centrally; ASR can run <em>without</em> it.</div>
+    <div class="glossary-link">Distinguished from ASR in <a href="../lessons/0005-attack-surface-reduction-rules.html">L5</a>'s opening table.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Event ID 3076 (CodeIntegrity)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">A binary was allowed in Audit, or would have been blocked &mdash; the load-bearing WDAC telemetry event.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Event ID 3077 (CodeIntegrity)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">A binary was actually blocked from launching (Enforced mode); the 3076 / 3077 ratio is the WDAC leading indicator.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Event ID 3091 (CodeIntegrity)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">WDAC policy load summary &mdash; shows which base / supplemental policies applied at boot.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Event ID 3099 (CodeIntegrity)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">An &ldquo;allow&rdquo; event was triggered &mdash; an allowed binary launched under the WDAC audit policy.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Event ID 1121 (Defender ASR)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">An ASR rule fired in <strong>Audit</strong> mode; the rule &ldquo;would have blocked but allowed.&rdquo;</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0005-attack-surface-reduction-rules.html">L5</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Event ID 1122 (Defender ASR)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">An ASR rule fired in <strong>Block</strong> or <strong>Warn</strong> mode; the rule actually stopped something.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0005-attack-surface-reduction-rules.html">L5</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">ETW (Event Tracing for Windows)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">The kernel-side trace facility; <code>tracelog -start</code> with the CodeIntegrity provider enabled is the L7 IR playbook for kernel-depth forensics.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a> (mentioned) and <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a> (operational).</div>
+  </div>
+
+  <div class="glossary-letter">F</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Floor / Choice / Disable (L4 taxonomy)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The per-setting decision vocabulary: <strong>floor</strong> (apply by default), <strong>choice</strong> (adopt per environment context), <strong>disable</strong> (record and opt out).</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0004-microsoft-security-baselines.html">L4</a>; applied per ASR rule in <a href="../lessons/0005-attack-surface-reduction-rules.html">L5</a>.</div>
+  </div>
+
+  <div class="glossary-letter">G</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">GPO (Group Policy Object)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The AD-authoritative policy container &mdash; configuration + security filtering + WMI filter, linked to OUs / sites / the domain root; the on-prem distribution mechanism.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">GPMC (Group Policy Management Console)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The MMC snap-in for authoring, linking, and modeling Group Policy; the on-prem admin&rsquo;s main GPO interface.</div>
+    <div class="glossary-link">Referenced throughout <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">`gpupdate /force`</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The client-side command that refreshes all applied GPOs immediately (skipping the 90-minute background cycle); use during staging, never as a habit.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a> and <a href="../lessons/0004-microsoft-security-baselines.html">L4</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">`gpresult /h`</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">The verification command that produces an HTML report of which GPOs applied to a machine and in what order; the &ldquo;did my GPO apply?&rdquo; first-line tool.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+
+  <div class="glossary-letter">H</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">HotCakeX / Harden-Windows-Security</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The series&rsquo; anchor text &mdash; a curated public compilation of official-Microsoft Windows hardening methods; cloud-first framing, translated to on-prem by this series.</div>
+    <div class="glossary-link">Cited throughout; full citation in RESOURCES.md.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">HVCI (Hypervisor-protected Code Integrity)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">Kernel-mode memory-integrity enforcement that runs inside the VBS hypervisor; blocks kernel code modification even from allowed identities; hardware prerequisites apply.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+
+  <div class="glossary-letter">I</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">IOMMU (Input-Output Memory Management Unit)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The hardware virtualization layer (Intel VT-d / AMD-Vi) used by the VBS hypervisor for memory isolation between normal and VBS-isolated kernels; required for HVCI and Credential Guard.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a> hardware prerequisites section.</div>
+  </div>
+
+  <div class="glossary-letter">K</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Kernel-mode driver</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">A driver that runs in Ring 0 with direct hardware / kernel access; the BYOVD attack surface; configured by L6's WDAC kernel-mode and L7's HVCI.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a>; threat-modeled in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">KRBTGT</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The AD account whose hash signs every Kerberos TGT; compromising it = compromising the entire domain (boundary 5 collapse).</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a> and <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+
+  <div class="glossary-letter">L</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">LAPS (Local Administrator Password Solution)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The Microsoft mechanism for rotating local Administrator passwords automatically per machine; breaks credential reuse at L2 boundary 4.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a> (boundary 3 floor decision) and <a href="../lessons/0004-microsoft-security-baselines.html">L4</a> (account category).</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">LGPO.exe</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">Microsoft&rsquo;s command-line tool for applying registry-based policy without AD &mdash; and, just as importantly, for <em>verifying</em> what policy a machine actually has applied.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0004-microsoft-security-baselines.html">L4</a>; reframed as a verification tool there.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">LOLDrivers</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">The public security-research catalog of disclosed-vulnerable Windows drivers; the substrate the Microsoft recommended driver block list is curated from.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">LSASS (Local Security Authority Subsystem Service)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The Windows process that holds live logon credentials in memory; the credential-theft target for Mimikatz-class tools; isolated by Credential Guard.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0002-security-boundaries.html">L2</a> and <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-term">LSDOU (Local / Site / Domain / OU)</span>
+    <div class="glossary-def">The Group Policy processing order; Local policies first, then Site, then Domain, then OU (link-order ties at each level). Junior-admin mistake: assume lower-numbered = higher-priority.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+
+  <div class="glossary-letter">M</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">MitM (Man-in-the-Middle)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">An attack that sits between two trust endpoints; SMB-signing and Kerberos-authenticated RDP are the relevant network MitM mitigations in the series scope.</div>
+    <div class="glossary-link">Touched in <a href="../lessons/0002-security-boundaries.html">L2</a>'s boundary 4 row.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">MOTW (Mark-of-the-Web)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The zone-identifier attached to files downloaded from the Internet; consumed by SmartScreen and a small subset of ASR rules.</div>
+    <div class="glossary-link">Listed in MISSION.md as vocabulary deferred to glossary.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">MSCT (Microsoft Security Compliance Toolkit)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The Microsoft-published toolkit containing the Windows / Office / Edge baselines (ADMX + GPO backup), Policy Analyzer, LGPO.exe, and Set-RegistryPolicy; the canonical artifact source.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0004-microsoft-security-baselines.html">L4</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">MSIX</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The modern Windows app packaging format with AppContainer support; L2 boundary row 6 surface.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a>.</div>
+  </div>
+
+  <div class="glossary-letter">N</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">NTLM</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The legacy Windows authentication protocol; vulnerable to credential-theft and relay attacks; mitigations are blocking or restricting NTLM via GPO, and the Protected Users group.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a> and <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a> (Credential Guard breakage).</div>
+  </div>
+
+  <div class="glossary-letter">O</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">OU (Organizational Unit)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The AD container used to scope GPO application; the load-bearing GPO-placement primitive (link at the lowest OU that makes sense).</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+
+  <div class="glossary-letter">P</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">PAW (Privileged Access Workstation)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">A workstation dedicated to tier-0 administration; tier-0 isolation is architectural, not GPO-configurable.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a>'s scenario A.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Policy Analyzer</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">The MSCT tool that compares a machine&rsquo;s effective policy against a baseline; the &ldquo;did my GPO apply correctly across the fleet?&rdquo; tool.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0004-microsoft-security-baselines.html">L4</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">PPL (Protected Process Light)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">A Windows process-protection designation that restricts which processes can open a handle to it; the protection LSASS uses when Credential Guard is enabled.</div>
+    <div class="glossary-link">Listed in MISSION.md as deferred vocabulary term.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Protected Users</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">A built-in AD group whose members cannot use NTLM, DES, or Kerberos delegation; one of L2 boundary 5's GPO-configurable defenses.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a>'s scenario C.</div>
+  </div>
+
+  <div class="glossary-letter">R</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Realtek audio driver class (BYOVD example)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">OEM-shipped audio drivers whose vulnerable IOCTLs are a published BYOVD example; demonstrates that <em>drivers you have already deployed</em> are the attack surface.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>'s BYOVD history table.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Recommended Driver Block List (Microsoft)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">The pre-built, signed, kernel-mode WDAC policy Microsoft ships and updates automatically; the floor decision for BYOVD-class defenses.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a> (as policy); revisited in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a> (as BYOVD mitigation).</div>
+  </div>
+
+  <div class="glossary-letter">S</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Secure Launch / DRTM</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">Hardware-rooted measured-boot (DRTM); tier-4 posture, out of scope for the on-prem junior-admin curriculum.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0001-defense-in-depth-2x2.html">L1</a>'s threat-actor table.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Security boundary (L2 definition)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">A privilege-separation line an attacker at a lower privilege level cannot cross without first breaking the line itself; the row concept in L2's table.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0002-security-boundaries.html">L2</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">SLAT (Second-Level Address Translation)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The hardware-virtualization CPU feature used by the VBS hypervisor; required along with IOMMU for HVCI and Credential Guard.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a> hardware prerequisites section.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">SMB signing</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">Cryptographic signing of SMB packets to prevent relay attacks; L2 boundary 4's GPO-configurable primary defense.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a>'s scenario B.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">SmartScreen</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">Microsoft's URL / file reputation service; user-mode check (not a security boundary); covered by L4's app execution category.</div>
+    <div class="glossary-link">Listed in <a href="../lessons/0001-defense-in-depth-2x2.html">L1</a>'s tier-1 defense.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">SYSVOL</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The AD-distributed file share that hosts GPO ADMX templates and scripts; one of L3's failure modes (SYSVOL lag).</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+
+  <div class="glossary-letter">T</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">Threat-actor hierarchy (tiers 1&ndash;4)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">Script kiddie (tier 1) → organized crime (tier 2) → hacktivist/insider (tier 3) → nation-state (tier 4); calibration target for hardening investments.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0001-defense-in-depth-2x2.html">L1</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-term">Tier-0 / Tier-1 / Tier-2 (AD admin model)</span>
+    <div class="glossary-def">The privilege-tiering model for AD administration: tier-0 = DCs and identity management; tier-1 = servers; tier-2 = workstations.</div>
+    <div class="glossary-link">Referenced in <a href="../lessons/0002-security-boundaries.html">L2</a>'s scenario A and <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>'s OU pattern.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">TPM 2.0</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The hardware root-of-trust chip; required for Credential Guard; recommended for HVCI; anchors BitLocker key sealing.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+
+  <div class="glossary-letter">U</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">UAC (User Account Control)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The Windows elevation-prompt mechanism; the L2 row-3 boundary's enforcement layer (when configured correctly).</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0002-security-boundaries.html">L2</a>.</div>
+  </div>
+
+  <div class="glossary-letter">V</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">VBS (Virtualization-Based Security)</span>
+    <span class="glossary-tag">architecture</span>
+    <div class="glossary-def">The Windows feature that uses the Hyper-V hypervisor to isolate a kernel-region from the normal kernel; the substrate for Credential Guard and HVCI; L2 boundary row 7.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0002-security-boundaries.html">L2</a> and <a href="../lessons/0007-byovd-and-kernel-integrity.html">L7</a>.</div>
+  </div>
+
+  <div class="glossary-letter">W</div>
+  <div class="glossary-entry">
+    <span class="glossary-term">WDAC (Windows Defender Application Control)</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">Policy-driven executable-identity enforcement; kernel-mode blocks unsigned / blocked drivers, user-mode blocks unallowed applications; complements ASR, does not replace it.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0006-wdac-on-prem.html">L6</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">WEF (Windows Event Forwarding)</span>
+    <span class="glossary-tag">telemetry / IR</span>
+    <div class="glossary-def">The Windows mechanism for forwarding event logs from source machines to a central collector; the minimum-viable on-prem path for ASR / WDAC telemetry without a SIEM.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0005-attack-surface-reduction-rules.html">L5</a> and <a href="../lessons/0006-wdac-on-prem.html">L6</a>.</div>
+  </div>
+  <div class="glossary-entry">
+    <span class="glossary-term">WMI filter</span>
+    <span class="glossary-tag">policy surface</span>
+    <div class="glossary-def">A WQL query attached to a GPO; the GPO applies only to machines whose WMI query returns true; an alternative to security filtering.</div>
+    <div class="glossary-link">Anchored in <a href="../lessons/0003-gpo-as-hardening-pipeline.html">L3</a>.</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Cross-reference</div>
+    For the printable one-page cheat sheet &mdash; ASR rule list with attack-class labels, the recommended driver block list deployment summary, HVCI / Credential Guard GPO locations, the seven-day rule, and the L4 floor / choice / disable taxonomy &mdash; see the <a href="baselines-cheatsheet.html">baselines cheatsheet</a>.
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; Glossary</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="baselines-cheatsheet.html">Baselines cheatsheet</a></span>
+  </div>
+
+</body>
+</html>

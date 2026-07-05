@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 7 &mdash; BYOVD &amp; Kernel Integrity</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+</head>
+<body>
+
+  <h1>BYOVD &amp; Kernel Integrity</h1>
+  <div class="lesson-meta">
+    <span class="num">L7</span>
+    Capstone &middot; ~18 min &middot; Lesson 7 of the Harden Windows Security series
+  </div>
+
+  <p>
+    Six lessons ago you accepted that L1&rsquo;s 2&times;2 is incomplete without
+    every row populated; four lessons ago you learned that GPO <em>configures</em>
+    boundaries rather than <em>creating</em> them; two lessons ago you added an
+    <em>identity</em> enforcement layer (WDAC) that runs in the kernel. This
+    final lesson ties the series together: <strong>what the kernel-side
+    attacker looks like, what stops them, and what to do in the first hour when
+    one gets through</strong>.
+  </p>
+
+  <p>
+    The mental model: <strong>kernel integrity is the layer below identity and
+    behavior, where the OS itself trusts the running code.</strong> Where L5
+    blocked <em>behaviors of allowed user-mode executables</em> and L6 blocked
+    <em>executable identities that were not on the allow-list</em>, L7 covers
+    the attack class that uses <em>allowed identities doing exactly what they
+    were signed to do</em>. This is the BYOVD class &mdash; Bring Your Own
+    Vulnerable Driver &mdash; and it is the only attack family in the series
+    that bypasses L5 and L6 simultaneously by design.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The capstone claim</div>
+    HotCakeX&rsquo;s &ldquo;98% / 99%&rdquo; claim from L1 is anchored on
+    <em>no local admin + standard user + App Control + hardening baseline</em>.
+    L7 makes that claim concrete: <strong>no local admin + WDAC identity layer +
+    recommended driver block list + HVCI + Credential Guard</strong> is the
+    series-wide defense posture. Each component is the load-bearing piece of
+    one slice of the 2&times;2; remove any of them and the 98% number collapses
+    by a measurable amount.
+  </div>
+
+  <hr>
+
+  <h2>What BYOVD actually is</h2>
+
+  <p>
+    A <em>Bring Your Own Vulnerable Driver</em> attack uses a real, signed,
+    Microsoft-accepted kernel-mode driver that has a publicly known
+    vulnerability. The attacker does not need to write a driver; they need to
+    find one. Microsoft distributes known-vulnerable driver hashes in a
+    regularly updated public list &mdash; LOLDrivers, maintained by the
+    security research community. The attacker picks a driver whose vulnerable
+    function does something useful (read arbitrary kernel memory, terminate a
+    protected process, allocate executable kernel memory) and they load it.
+  </p>
+
+  <p>
+    Why L5 does not help: ASR rules are a user-mode behavior policy. They run
+    in Defender in Ring 3. A kernel-mode driver loads below the layer ASR
+    inspects. The driver never trips an ASR check.
+  </p>
+
+  <p>
+    Why L6 partially helps: WDAC kernel-mode is exactly the layer that should
+    block these drivers. The catch is that the signed-but-vulnerable driver is
+    <em>legitimately signed</em>; the kernel-mode policy must include a
+    <em>block rule for that specific hash or signer</em> to stop it. The default
+    policy does not enumerate ~80 vulnerable drivers; the Microsoft
+    recommended driver block list does.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">The reminder L1 set up</div>
+    Every layer in this lesson assumes the running user is <em>not</em> local
+    Administrator. A BYOVD attack from a Standard user is a tier&nbsp;2
+    incident. A BYOVD attack from a logged-in Administrator is a tier&nbsp;3 or
+    tier&nbsp;4 incident because the attacker inherits every driver they can
+    name. The no-local-admin rule from L1 is the assumption behind everything
+    that follows.
+  </div>
+
+  <div class="quiz" data-quiz-id="q1">
+    <div class="quiz-q">Compared with ASR and WDAC, what makes a BYOVD attack distinct?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">ASR adds Office child-process blocking as a user-mode defense layer</button>
+      <button class="quiz-opt" data-correct="false">BYOVD is unsigned malware arriving inside an Office macro attachment</button>
+      <button class="quiz-opt" data-correct="true">BYOVD uses signed-but-vulnerable drivers that cleanly bypass ASR behavior rules</button>
+      <button class="quiz-opt" data-correct="false">BYOVD needs Intune because on-prem telemetry cannot reliably detect drivers</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Why BYOVD is tier&nbsp;3&ndash;4 territory</h2>
+
+  <p>
+    The attacker who lands BYOVD on your network has done one of three things:
+    bought a subscription to an access broker that delivers BYOVD payloads as
+    part of the initial-access toolchain; tricked a Standard user into running
+    a loader that pulls a known-vulnerable driver from disk; or escalated from
+    a Standard user to a local Administrator first, and is now leveraging admin
+    to load the driver. The first is organized crime (tier&nbsp;2). The second
+    is an opportunistic tier&nbsp;1 with a public BYOVD wrapper. The third is
+    the path most APT playbooks describe &mdash; tier&nbsp;3 or 4 depending
+    on the post-exploitation objective.
+  </p>
+
+  <p>
+    The published BYOVD history is short and instructive. Three reference
+    examples every defender should be able to name:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Example</th>
+        <th>Driver</th>
+        <th>What it gave the attacker</th>
+        <th>Why it matters here</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Capcom.sys class (capcom)</td>
+        <td>A legitimate-looking &ldquo;Capcom&rdquo; driver shipped as a test loader; signed by a real cert at the time.</td>
+        <td><code>zwterminatestub</code> &mdash; ability to terminate any process, including protected-antimalware processes.</td>
+        <td>The canonical example used to teach the attack pattern. Demonstrates that <em>any</em> legitimately signed driver with an execute-anything IOCTL is enough.</td>
+      </tr>
+      <tr>
+        <td>Realtek audio driver class</td>
+        <td>Signed audio drivers shipped by OEMs; vulnerable IOCTLs in the wildcard.</td>
+        <td>Kernel read/write primitives from a driver that is on most Windows machines.</td>
+        <td>Demonstrates that <em>drivers you have already deployed</em> are the attack surface. Removing them is not an option; blocking them via WDAC is.</td>
+      </tr>
+      <tr>
+        <td>MSI / Gdrv class</td>
+        <td>AfterBurner / MSI&rsquo;s Gdrv; signed; vulnerable.</td>
+        <td>Read/write kernel memory, allocate executable pages.</td>
+        <td>Demonstrates that gaming / utility software is a frequent BYOVD vector. The recommended driver block list includes it for a reason.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The common thread: each driver was <em>legitimately signed</em>, used in
+    production for years, and had a vulnerable IOCTL that the security research
+    community disclosed publicly. The fix was not a Microsoft Windows patch; the
+    fix was adding the driver hash to a block list. That is what the Microsoft
+    recommended driver block list is for.
+  </p>
+
+  <div class="callout info">
+    <div class="callout-label">LOLDrivers catalog</div>
+    The public repository <strong>LOLDrivers</strong> tracks every disclosed
+    vulnerable driver. It is the reference catalog for any team operating
+    a WDAC kernel-mode block-list policy. The Microsoft recommended driver
+    block list (covered in L6) is the curated subset of LOLDrivers that
+    Microsoft deems actively exploitable. The two are related: Microsoft&rsquo;s
+    list is automatically updated; LOLDrivers is the exhaustive set you would
+    audit manually.
+  </div>
+
+  <hr>
+
+  <h2>HVCI &mdash; the second enforcement layer beneath WDAC</h2>
+
+  <p>
+    WDAC kernel-mode blocks <em>drivers whose identity is on the block
+    list</em>. Hypervisor-protected Code Integrity (HVCI) blocks
+    <em>kernel code that does not satisfy Microsoft&rsquo;s WHQL signature
+    plus memory-integrity checks</em>. The two are complementary.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>What it stops</th>
+        <th>Where it runs</th>
+        <th>Failure when bypassed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>WDAC kernel-mode</strong></td>
+        <td>Specific driver identities on the block list (signed-but-vulnerable).</td>
+        <td>CodeIntegrity module; consulted at driver load.</td>
+        <td>Attacker uses a vulnerable driver not yet on the block list.</td>
+      </tr>
+      <tr>
+        <td><strong>HVCI</strong></td>
+        <td>Any kernel code that tries to allocate executable memory, write to executable pages, or inject code into running kernel modules.</td>
+        <td>Inside the VBS-isolated hypervisor (L2 row 7).</td>
+        <td>Attacker uses a class-of-attack, not a specific known-bad driver.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    HVCI is what stops <em>the class</em> of BYOVD attacks: the attacker may
+    land a fresh, not-yet-blocked driver, but the moment that driver tries to
+    modify kernel code or allocate executable memory, HVCI trips. Blocked
+    behavior, even from a passed-identity driver.
+  </p>
+
+  <h3>Hardware prerequisites</h3>
+
+  <p>
+    HVCI requires the same hardware building block that Credential Guard does:
+    the VBS hypervisor. Which means:
+  </p>
+
+  <ul>
+    <li><strong>UEFI with Secure Boot enabled</strong> (firmware-level root of trust).</li>
+    <li><strong>IOMMU virtualization support</strong> in the CPU &mdash; on Intel this is VT-d, on AMD it is AMD-Vi. The IOMMU is what the VBS hypervisor uses to enforce memory isolation between the normal kernel and the VBS-isolated kernel.</li>
+    <li><strong>Second-Level Address Translation (SLAT)</strong> support.</li>
+    <li><strong>TPM 2.0</strong> &mdash; required by Credential Guard, not strictly by HVCI alone, but the two ship together as a posture.</li>
+  </ul>
+
+  <p>
+    The GPO that flips HVCI on lives at:
+    <code>Computer Configuration &gt; Administrative Templates &gt; System &gt;
+    Device Guard &gt; Turn On Virtualization Based Security &gt; Select
+    Platform Security Level: Secure Boot and DMA Protection</code>. The setting
+    requires a reboot. After the reboot, <code>msinfo32</code> under
+    <em>Virtualization-based security</em> shows whether the kernel is running
+    HVCI-eligible memory.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">Hardware floor</div>
+    If your fleet includes machines without virtualization support &mdash;
+    older desktops, low-end laptops, OT shop-floor hardware &mdash; HVCI will
+    silently not engage on those machines. The GPO does not error; the layer
+    is just absent. This is the same &ldquo;no patch = no rollout&rdquo;
+    pattern from L5 and L6: document the machine floor in your L4 floor/choice
+    /disable decision, and accept that the layer is unavailable on that subset.
+  </div>
+
+  <hr>
+
+  <h2>Credential Guard &mdash; L2 row 7 made practical</h2>
+
+  <p>
+    L2&rsquo;s row 7 is the VBS boundary: a hypervisor-isolated kernel that
+    keeps secrets out of reach from the normal kernel. Credential Guard is the
+    version of that boundary specifically for logon credentials. Where the
+    L1 attack class was a phishing attachment that dumps LSASS memory from
+    user space, Credential Guard moves the credential material out of LSASS
+    entirely &mdash; into the VBS-isolated kernel.
+  </p>
+
+  <p>
+    The attacker who lands Mimikatz against a Credential Guard-protected host
+    gets nothing useful: the LSASS handle does not actually contain the
+    Kerberos TGTs or NTLM hashes anymore. They are sealed inside the
+    hypervisor. Even kernel-mode attackers (with or without BYOVD) cannot
+    read them, because the VBS isolation is enforced by the hypervisor itself
+    &mdash; which is below the kernel that BYOVD lands in.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>What it isolates</td>
+        <td>Kerberos TGTs, NTLM hashes, Kerberos service tickets.</td>
+      </tr>
+      <tr>
+        <td>Where the secrets live</td>
+        <td>Inside the VBS-isolated kernel &mdash; not accessible to the running OS kernel.</td>
+      </tr>
+      <tr>
+        <td>What breaks if you enable it</td>
+        <td>Legacy NTLM authentication in many configurations; Kerberos
+        delegation; any SSO provider that pulls credentials from LSASS
+        directly. Test in a pilot OU before broad rollout.</td>
+      </tr>
+      <tr>
+        <td>Hardware prerequisite</td>
+        <td>Same as HVCI: UEFI Secure Boot, IOMMU virtualization (VT-d or AMD-Vi), SLAT, TPM 2.0.</td>
+      </tr>
+      <tr>
+        <td>GPO location</td>
+        <td><code>Computer Configuration &gt; Administrative Templates &gt; System &gt; Device Guard &gt; Turn On Virtualization Based Security &gt; Credential Guard Options: Enabled with UEFI lock</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-label">L2 row 7 &mdash; the rare boundary GPO enables</div>
+    L2 row 7 is the only boundary in the table that does not require
+    administrative separation (tier&nbsp;0 isolation) to enforce. The other
+    rows are administrative (remove local admin, isolate tier&nbsp;0) or
+    network-level (SMB signing, NTLM restrictions). Row 7 is the one boundary
+    where a single GPO toggle plus supported hardware turns on a layer that
+    earlier generations of Windows could not provide. Use it.
+  </div>
+
+  <div class="quiz" data-quiz-id="q2">
+    <div class="quiz-q">What is the hardware prerequisite for Credential Guard on Windows 11 today?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The device needs Defender real-time protection enabled with SmartScreen filtering today</button>
+      <button class="quiz-opt" data-correct="true">The device needs VBS hardware support including IOMMU virtualization and TPM</button>
+      <button class="quiz-opt" data-correct="false">TPM 2.0 is sufficient for Credential Guard to function properly today</button>
+      <button class="quiz-opt" data-correct="false">All Windows 11 devices enable VBS because Hyper-V runs underneath everything</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>The recommended driver block list, from a BYOVD angle</h2>
+
+  <p>
+    L6 introduced the Microsoft recommended driver block list as the
+    load-bearing pre-built, signed, kernel-mode WDAC policy. This lesson
+    revisits the same artifact from a different angle: <strong>it is the
+    specific BYOVD mitigation</strong>. Each rule in the list corresponds to
+    a driver whose vulnerability has been publicly disclosed and likely
+    exploited. The list is the operational answer to the LOLDrivers catalog;
+    rather than audit every LOLDriver yourself, deploy Microsoft&rsquo;s
+    curated subset.
+  </p>
+
+  <p>
+    The deployment shape is the L6 staging pattern verbatim: audit for seven
+    days, look at the would-have-been-blocked entries, classify by app
+    (genuine BYOVD attack vs. legacy hardware driver an OEM requires), flip
+    to enforced after the audit stabilizes. The staging cadence is the same
+    as L5 and L6 because the pattern is the same &mdash; audit, classify,
+    enforce &mdash; only the rule surface differs.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Attack</th>
+        <th>Stops it</th>
+        <th>Does not stop it</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Driver on the recommended block list</td>
+        <td>Yes &mdash; WDAC denies the load at boot.</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>Newly discovered driver not yet on the block list</td>
+        <td>No &mdash; WDAC accepts the load; HVCI is the backstop.</td>
+        <td>Yes &mdash; until Microsoft updates the list.</td>
+      </tr>
+      <tr>
+        <td>Driver class with no known vulnerability</td>
+        <td>No &mdash; driver loads; HVCI backstops behavior.</td>
+        <td>Yes &mdash; HVCI applies to all kernel code.</td>
+      </tr>
+      <tr>
+        <td>Signed driver with novel vulnerability not in LOLDrivers</td>
+        <td>No &mdash; until disclosure, the driver is a hidden attack surface.</td>
+        <td>Yes &mdash; the BYOVD-attack window is the disclosure-to-patch window.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The takeaway: the recommended driver block list is the floor for known
+    BYOVD. HVCI is the floor for unknown BYOVD. L1&rsquo;s no-local-admin rule
+    is the floor for Standard users running a loader that pulls a driver from
+    disk. Three independent layers &mdash; none of them is alone sufficient.
+  </p>
+
+  <hr>
+
+  <h2>Reading kernel-mode alerts &mdash; first-hour IR playbook</h2>
+
+  <p>
+    Defenders reading this series want to know what to do when EDR fires on
+    the things L6 and L7 prevent. The first hour is the operational window.
+    These are the habits that separate a good IR outcome from a six-week
+    rebuild.
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Do not reboot the affected host</h3>
+      <span class="step-body">A kernel-mode driver that loaded is still loaded in volatile memory. Rebooting clears it &mdash; but also clears every forensic artifact that would have told you what the driver did once it ran. The driver&rsquo;s payload is the question; clearing it removes the answer.</span>
+    </li>
+    <li>
+      <h3>Preserve volatile memory</h3>
+      <span class="step-body">Use a memory acquisition tool (WinPmem, FTK Imager, or Magnet RAM Capture) to image the host&rsquo;s RAM <em>before</em> touching disk. Memory holds the kernel driver&rsquo;s payload, decrypted C2 configuration, and any in-process LSASS / Kerberos material the driver touched. Disk forensics recover file state; memory captures driver state.</span>
+    </li>
+    <li>
+      <h3>Pull an ETW trace of the CodeIntegrity provider</h3>
+      <span class="step-body"><code>tracelog -start</code> with the CodeIntegrity provider enabled gives you the would-have-blocked and was-actually-blocked log around the alert. ETW is the only source for the kernel-load order if the driver blocked silently. The L6 ETW-trace note applies here in force.</span>
+    </li>
+    <li>
+      <h3>Pull the Microsoft-Windows-CodeIntegrity/Operational log</h3>
+      <span class="step-body">Event IDs 3076 (would-have-blocked), 3077 (actually-blocked), 3099 (audit allow), 3091 (policy load). Cross-reference against the recommended driver block list version to identify the rule that fired.</span>
+    </li>
+    <li>
+      <h3>Identify the driver and the loader process</h3>
+      <span class="step-body">From the ETW trace and the CodeIntegrity log, find: which driver hash was attempted, which signed it, what executable loaded it, which user it ran as. This tells you whether the loader was a user-mode phishing payload (Standard user) or a privilege-escalation post-exploitation step (Admin).</span>
+    </li>
+    <li>
+      <h3>Pull the audit log for the same host, same time window</h3>
+      <span class="step-body">Look for the user-mode chain that led to the load: process creation, logon events, scheduled-task creation. The kernel-mode alert is the symptom; the user-mode chain is the cause.</span>
+    </li>
+    <li>
+      <h3>Treat the loader host as compromised regardless of block outcome</h3>
+      <span class="step-body">A blocked attempt is evidence someone on that machine tried to load BYOVD. That is enough to consider the host compromised and start a parallel investigation of how the loader got there &mdash; regardless of whether the kernel-mode block succeeded.</span>
+    </li>
+  </ol>
+
+  <div class="callout warning">
+    <div class="callout-label">What not to do in the first hour</div>
+    Three habits that produce bad outcomes: reimage the host first (you destroy
+    evidence before analyzing it), broadcast the alert before you know the
+    loader chain (you tip off operators), or trust the WDAC block as
+    &ldquo;fixed&rdquo; (the block stopped the driver; it did not stop the
+    user-mode loader that brought it). Block is not containment.
+  </div>
+
+  <div class="quiz" data-quiz-id="q3">
+    <div class="quiz-q">EDR fires a kernel-mode driver load alert. What is the first-hour IR action?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="true">Preserve volatile memory, pull ETW trace, do not reboot the affected host</button>
+      <button class="quiz-opt" data-correct="false">Reboot the host immediately to clear the malicious driver and run scans</button>
+      <button class="quiz-opt" data-correct="false">Image the disk, then re-image the host because the alert is conclusive</button>
+      <button class="quiz-opt" data-correct="false">Disconnect from the network, wipe the host, restore from a known-good backup</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Where each lesson sits in the series</h2>
+
+  <p>
+    This lesson closes the seven-lesson arc. Read the table once; the column
+    on the left is the layer; the column on the right is the boundary row
+    from L2 that the layer configures.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Lesson</th>
+        <th>The layer</th>
+        <th>What it configures</th>
+        <th>L2 row</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>L1</td>
+        <td>Mental model</td>
+        <td>Threat tier; cell of the 2&times;2.</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>L2</td>
+        <td>Boundaries</td>
+        <td>Seven boundaries; the decision rule that GPO configures, not creates.</td>
+        <td>All</td>
+      </tr>
+      <tr>
+        <td>L3</td>
+        <td>GPO pipeline</td>
+        <td>OU hierarchy, LSDOU, security and WMI filtering, the four placement strategies.</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>L4</td>
+        <td>Baselines</td>
+        <td>MSCT as a tool; floor / choice / disable taxonomy; seven-day rule.</td>
+        <td>All</td>
+      </tr>
+      <tr>
+        <td>L5</td>
+        <td>Behavior policy</td>
+        <td>16 ASR rules; behavior blockers not signatures; 1121 / 1122 telemetry.</td>
+        <td>2, 3, 4, 1 (partial)</td>
+      </tr>
+      <tr>
+        <td>L6</td>
+        <td>Identity policy</td>
+        <td>WDAC kernel- and user-mode; signed vs. unsigned; recommended driver block list.</td>
+        <td>1, 2</td>
+      </tr>
+      <tr>
+        <td><strong>L7</strong></td>
+        <td><strong>Kernel integrity</strong></td>
+        <td><strong>BYOVD mitigation; HVCI; Credential Guard; first-hour IR for kernel alerts.</strong></td>
+        <td><strong>7</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The series-wide claim, restated: the highest-leverage posture a junior
+    on-prem AD admin can deploy is <strong>no local admin + standard user +
+    signed kernel drivers + HVCI on supported hardware + Credential Guard on
+    supported hardware + the recommended driver block list + ASR rule
+    audit-then-block</strong>. Every component is documented in this series.
+    Removing any single one of them has a measurable effect on the
+    Hardening Score.
+  </p>
+
+  <hr>
+
+  <h2>What this lesson gives you</h2>
+
+  <ol>
+    <li><strong>BYOVD is a tier&nbsp;2&ndash;4 attack class that L5 and L6 do not fully cover by themselves.</strong> It uses signed identities doing exactly what they were signed to do. WDAC blocks known identities; HVCI blocks unknown-bad kernel code.</li>
+    <li><strong>The Microsoft recommended driver block list is the BYOVD floor.</strong> Same artifact as L6, viewed from the attack-class angle. Same audit-then-enforce discipline as L5 and L6.</li>
+    <li><strong>HVCI is the second kernel-mode enforcement.</strong> It blocks kernel-code modification regardless of identity. Requires UEFI Secure Boot + IOMMU + SLAT + (recommended) TPM 2.0.</li>
+    <li><strong>Credential Guard is L2 row 7 made practical.</strong> It moves credentials out of LSASS into the VBS-isolated kernel; even an admin who lands on the box via BYOVD cannot read them.</li>
+    <li><strong>The first hour of a kernel-mode alert is a memory-preservation window.</strong> Do not reboot. Capture volatile memory. Pull ETW. Cross-reference CodeIntegrity log. The loader process is evidence of compromise even when the block succeeded.</li>
+    <li><strong>The series-wide posture</strong> (no local admin + standard user + signed kernel drivers + HVCI + Credential Guard + recommended driver block list + ASR audit-then-block) is the capstone answer to the L1 98% claim.</li>
+  </ol>
+
+  <div class="next-up">
+    <div class="label">Series complete</div>
+    <p>This is the seventh and final lesson of the Harden Windows Security on-prem series. From here the natural follow-on artifacts are the <a href="../reference/glossary.html"><strong>glossary</strong></a> (vocabulary built from all seven lessons: BYOVD, HVCI, Credential Guard, DRTM, VBS, ETW, CIM, ...) and the <a href="../reference/baselines-cheatsheet.html"><strong>baselines cheatsheet</strong></a> (one-page printable: every ASR rule, every recommended GPO setting, every layer covered &mdash; the session-prep card for the next rollout). For a recap, jump back to <a href="0001-defense-in-depth-2x2.html"><strong>L1</strong></a>.</p>
+    <p>Primary source for the kernel-integrity material: Microsoft Learn &mdash; <em>Hypervisor-protected Code Integrity (HVCI)</em> + <em>Credential Guard overview</em> + Microsoft&rsquo;s <em>Recommended Driver Block List</em> documentation.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-label">Ask your teacher</div>
+    Anything unclear? Open the lesson in a browser and ask. The agent can walk
+    through enabling HVCI on a sample OU, draft a Credential Guard policy with
+    the documented exceptions for legacy NTLM, sketch the recommended driver
+    block list deployment on top of an L6 audit, or simulate the first-hour IR
+    playbook against a hypothetical CodeIntegrity 3077 alert.
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; L7</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="../reference/glossary.html">Glossary</a> &middot; <a href="../reference/baselines-cheatsheet.html">Baselines cheatsheet</a></span>
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (opt.disabled) return;
+          opts.forEach(function(o) { o.disabled = true; });
+          var correct = opt.getAttribute('data-correct') === 'true';
+          if (correct) {
+            opt.classList.add('correct');
+            fb.classList.add('show', 'ok');
+            fb.textContent = 'Correct. Move on, or revisit the section above if it was new to you.';
+          } else {
+            opt.classList.add('incorrect');
+            fb.classList.add('show', 'bad');
+            fb.textContent = 'Not quite. Re-read the section just above this question and try again later.';
+            setTimeout(function() {
+              opts.forEach(function(o) {
+                if (!o.classList.contains('correct')) {
+                  o.disabled = false;
+                  o.classList.remove('incorrect');
+                }
+              });
+              fb.classList.remove('show', 'bad');
+              fb.textContent = '';
+            }, 1800);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baselines Cheatsheet &mdash; Harden Windows Security</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+  <style>
+    @media print {
+      .no-print { display: none; }
+      .cheat-section { break-inside: avoid; page-break-inside: avoid; }
+      h2 { break-after: avoid; }
+    }
+    .cheat-section {
+      margin: 1.5rem 0;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      background: #fff;
+    }
+    .cheat-section h2 {
+      margin: 0 0 0.6rem;
+      padding: 0;
+      border-bottom: none;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .cheat-section p, .cheat-section li { font-size: 0.88rem; }
+    .cheat-tag {
+      display: inline-block;
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.65rem;
+      background: var(--code-bg);
+      color: var(--ink-soft);
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      margin-right: 0.3rem;
+      letter-spacing: 0.04em;
+    }
+    .cheat-tag.floor { background: #eaf3eb; color: #3d6b3f; }
+    .cheat-tag.choice { background: #f6efe3; color: #8a6a1d; }
+    .cheat-tag.disable { background: #f4e3e0; color: #8a3a30; }
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+    }
+    @media (min-width: 600px) {
+      .cheat-grid.two { grid-template-columns: repeat(2, 1fr); }
+    }
+    .cheat-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      padding: 0.3rem 0;
+      border-bottom: 1px dashed var(--rule);
+    }
+    .cheat-row:last-child { border-bottom: none; }
+    .cheat-row .label { font-weight: 700; min-width: 8rem; }
+    .cheat-row .body { flex: 1; color: var(--ink-soft); }
+  </style>
+</head>
+<body>
+
+  <h1>Baselines Cheatsheet</h1>
+  <div class="lesson-meta">
+    One-page printable. The session-prep card for the next rollout. Every layer covered in the Harden Windows Security on-prem series, consolidated.
+  </div>
+
+  <div class="callout info no-print">
+    <div class="callout-label">How to use this card</div>
+    Print this page (or save as PDF). Pin it next to the keyboard during a
+    rollout, an audit, or an incident review. The cards below cover, in order,
+    the L4 floor / choice / disable taxonomy, L5&rsquo;s 16 ASR rules grouped
+    by attack class, L6&rsquo;s recommended driver block list, L7&rsquo;s HVCI
+    and Credential Guard GPO locations, and the cross-references back to each
+    lesson for full context.
+  </div>
+
+  <hr>
+
+  <div class="cheat-section">
+    <h2>L4 &mdash; The floor / choice / disable taxonomy</h2>
+    <p>Every setting in every baseline maps to one of three postures. Walk every setting you change through this decision and record the choice somewhere search-able.</p>
+    <div class="cheat-grid">
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag floor">FLOOR</span></div>
+        <div class="body">Apply by default to every machine in the OU. No documented exception. Examples: SmartScreen filter, disable SMBv1, require Secure Boot, audit-Logon subcategory.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag choice">CHOICE</span></div>
+        <div class="body">Apply per environment context. Choice rules require per-OU documentation. Examples: PSExec / WMI command launch (IT automation depends), unsigned processes from USB (offline patch flow).</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag disable">DISABLE</span></div>
+        <div class="body">Document, opt out, and revisit later. Recording the disabling matters more than the disabling itself. Example: &ldquo;Credential Guard: disabled on the X OU pending hardware refresh.&rdquo;</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">The seven-day rule</div>
+        <div class="body">For any change &mdash; at any layer &mdash; allow seven days between Audit and Enforced. The seven-day window is the buffer for legitimate frequency to surface in the telemetry.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="cheat-section">
+    <h2>L5 &mdash; The 16 ASR rules, grouped by attack class</h2>
+    <p>Configured at <code>Computer Configuration &gt; Administrative Templates &gt; Microsoft Defender Antivirus &gt; Windows Defender Exploit Guard &gt; Attack Surface Reduction</code>. Telemetry events: 1121 (audit), 1122 (block / warn).</p>
+    <div class="cheat-grid">
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag floor">Office</span></div>
+        <div class="body">5 rules. <span class="cheat-tag floor">FLOOR</span>. Office app spawning child processes, injecting code into other processes, loading unsigned add-ins, using macros to call Win32. Default: Block all 5.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag floor">Credential</span></div>
+        <div class="body">1 rule: Block LSASS credential stealing. <span class="cheat-tag floor">FLOOR</span>. Stops Mimikatz-class tools at the process layer. One of L2 boundary 3&rsquo;s defenses.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag floor">Script</span></div>
+        <div class="body">3 rules covering script abuse and obfuscated script execution. <span class="cheat-tag floor">FLOOR</span> for obfuscation; <span class="cheat-tag choice">CHOICE</span> for the &ldquo;persisted through PSExec&rdquo; rule.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag floor">Email</span></div>
+        <div class="body">1 rule: block executable content from email and webmail clients. <span class="cheat-tag floor">FLOOR</span> with disable-by-exception-OU if a documented workflow needs signed EXEs by email.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag choice">Lateral</span></div>
+        <div class="body">2 rules: PSExec / WMI command launch; unsigned processes from USB. <span class="cheat-tag choice">CHOICE</span>. Both depend on whether IT uses PSExec and whether OT / IT uses USB for offline patch flows.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><span class="cheat-tag floor">Persistence</span></div>
+        <div class="body">2 rules: WMI event subscription persistence; Adobe Reader child processes. <span class="cheat-tag floor">FLOOR</span> for both. Legitimate software does not need to subscribe WMI events or spawn Reader children.</div>
+      </div>
+    </div>
+    <p style="margin-top: 0.7rem; font-size: 0.85rem; color: var(--ink-soft);"><strong>Staging pattern:</strong> Audit &rarr; Warn &rarr; Block, per OU, seven days between each flip. The 1121 / 1122 ratio across the staging period is your leading indicator.</p>
+  </div>
+
+  <hr>
+
+  <div class="cheat-section">
+    <h2>L6 &mdash; WDAC + Microsoft recommended driver block list</h2>
+    <p>Configured at <code>Computer Configuration &gt; Administrative Templates &gt; System &gt; Device Guard &gt; Deploy Windows Defender Application Control</code>. Telemetry events: 3076, 3077, 3099, 3091 in <code>Microsoft-Windows-CodeIntegrity/Operational</code>.</p>
+    <div class="cheat-grid">
+      <div class="cheat-row">
+        <div class="label">Recommended list</div>
+        <div class="body">Pre-built, signed, kernel-mode WDAC policy. Delivered as a <code>.p7b</code> file. Source: Microsoft Documentation (auto-updates via Windows Update).</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">Authoring workflow</div>
+        <div class="body"><code>New-CIPolicy</code> (enumerate) &rarr; <code>Merge-CIPolicy</code> (combine) &rarr; <code>ConvertFrom-CIPolicy</code> (XML &rarr; <code>.p7b</code>) &rarr; sign with internal code-signing cert &rarr; deploy via GPO &rarr; verify with <code>gpresult</code>.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">Modes</div>
+        <div class="body">Audit / Enforced / Disabled. <strong>No Warn</strong> &mdash; kernel-mode enforcement happens before user-mode UI exists. Staging: Audit &rarr; Enforced (skip Warn).</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">Multi-policy</div>
+        <div class="body">Base policy (the recommended block list) at higher priority; supplemental policy (your LOB apps, IT utilities) at lower. Base blocks known-bad drivers anywhere; supplement loosens per-OU.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">Known breakages</div>
+        <div class="body">Unsigned LOB apps (sign them or supplemental carve-out); single-policy-for-forest (use multi-policy); DCs in stage one (stage on member servers first); old hardware drivers (audit full seven-day cycle); no signing pipeline (deploy Audit only, document as DISABLE per L4).</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="cheat-section">
+    <h2>L7 &mdash; HVCI + Credential Guard (L2 boundary row 7 made practical)</h2>
+    <p>Configured at <code>Computer Configuration &gt; Administrative Templates &gt; System &gt; Device Guard &gt; Turn On Virtualization Based Security</code>. Verify with <code>msinfo32</code> under <em>Virtualization-based security</em>.</p>
+    <div class="cheat-grid">
+      <div class="cheat-row">
+        <div class="label">HVCI</div>
+        <div class="body">Platform Security Level: <strong>Secure Boot and DMA Protection</strong>. Blocks kernel-code modification regardless of driver identity &mdash; backstops the recommended block list for unknown-bad drivers.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">Credential Guard</div>
+        <div class="body">Credential Guard Options: <strong>Enabled with UEFI lock</strong>. Moves Kerberos TGTs and NTLM hashes out of LSASS into the VBS-isolated kernel. Even BYOVD-affected hosts cannot read them.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">Hardware floor</div>
+        <div class="body">All four required: UEFI with Secure Boot enabled; IOMMU virtualization (Intel VT-d / AMD AMD-Vi); SLAT; TPM 2.0. Hardware floor &mdash; older machines are below the threshold; document as DISABLE per L4.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">Documented breakages</div>
+        <div class="body">Legacy NTLM authentication paths; Kerberos delegation; SSO providers that pull credentials from LSASS directly. Test in a pilot OU first; carve out per-OU as needed.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="cheat-section">
+    <h2>Series-wide defense posture (the capstone claim)</h2>
+    <p>This is the single sentence a junior admin should be able to recall to defend the investment in the seven layers above:</p>
+    <blockquote style="border-left: 3px solid var(--accent); padding-left: 1rem; margin: 0.5rem 0; font-style: italic;">
+      <strong>No local admin + standard user + signed kernel drivers + HVCI on supported hardware + Credential Guard on supported hardware + Microsoft recommended driver block list + ASR audit-then-block</strong> is the series-wide defense posture. Removing any one of them has a measurable effect on the Hardening Score.
+    </blockquote>
+  </div>
+
+  <hr>
+
+  <div class="cheat-section">
+    <h2>Cross-references back to lessons (and to the deferred glossary)</h2>
+    <div class="cheat-grid two">
+      <div class="cheat-row">
+        <div class="label"><strong>L1</strong></div>
+        <div class="body"><a href="../lessons/0001-defense-in-depth-2x2.html">Defense-in-depth 2&times;2</a>: mental model, threat-actor tiers, why local admin is the highest-leverage rule.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><strong>L2</strong></div>
+        <div class="body"><a href="../lessons/0002-security-boundaries.html">Security boundaries</a>: the seven rows, the decision rule (GPO configures, doesn&rsquo;t create), the per-row GPO action map.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><strong>L3</strong></div>
+        <div class="body"><a href="../lessons/0003-gpo-as-hardening-pipeline.html">GPO pipeline</a>: LSDOU, placement strategies, OU pattern, four failure modes.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><strong>L4</strong></div>
+        <div class="body"><a href="../lessons/0004-microsoft-security-baselines.html">Microsoft baselines</a>: MSCT as a tool, ingest &rarr; verify, floor / choice / disable, the seven-day rule.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><strong>L5</strong></div>
+        <div class="body"><a href="../lessons/0005-attack-surface-reduction-rules.html">ASR rules</a>: the 16 rules grouped by attack class, audit &rarr; warn &rarr; block, 1121/1122 ratio.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><strong>L6</strong></div>
+        <div class="body"><a href="../lessons/0006-wdac-on-prem.html">WDAC on-prem</a>: identity enforcement, two scopes, two types, three modes (no Warn), recommended driver block list.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label"><strong>L7</strong></div>
+        <div class="body"><a href="../lessons/0007-byovd-and-kernel-integrity.html">BYOVD &amp; kernel integrity</a>: capstone, HVCI, Credential Guard, first-hour IR playbook.</div>
+      </div>
+      <div class="cheat-row">
+        <div class="label">Glossary</div>
+        <div class="body"><a href="glossary.html">Series vocabulary</a>: architecture, policy surface, and telemetry / IR terms &mdash; one sentence per term, lesson-linked.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout no-print">
+    <div class="callout-label">Other workspace docs</div>
+    <a href="../index.html">Workspace hub</a> &middot;
+    <a href="glossary.html">Glossary</a>
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; Baselines cheatsheet</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="glossary.html">Glossary</a></span>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 1 — The Defense-in-Depth 2&times;2</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+</head>
+<body>
+
+  <h1>The Defense-in-Depth 2&times;2</h1>
+  <div class="lesson-meta">
+    <span class="num">L1</span>
+    Mental model &middot; ~12 min &middot; Lesson 1 of the Harden Windows Security series
+  </div>
+
+  <p>
+    You administer a Windows domain with 500&ndash;5000 endpoints. There are roughly
+    <em>thousands</em> of security settings you could flip: GPO objects, registry keys,
+    ASR rules, WDAC policies, BitLocker policies, LAPS settings, SmartScreen toggles,
+    and on. Nobody can deploy all of them at once. The question this lesson answers is:
+    <strong>where do you start, and what mental model tells you which layer a given
+    setting belongs to?</strong>
+  </p>
+
+  <p>
+    HotCakeX's anchor text for this series is built around one idea: <strong>no single
+    setting makes you secure</strong>. Defense in depth is not a slogan &mdash; it's an
+    architectural claim. If one layer fails, the next layer catches the attacker. If the
+    next layer also fails, the next one catches. And so on, until either the attacker
+    runs out of layers or you do.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">HotCakeX's claim</div>
+    Use the <em>Harden System Security</em> app to apply the hardening measures it offers,
+    and your system is secure against at least ~98% of the threats when you use a Standard
+    (non-Privileged) account for everyday work. Then use the <em>AppControl Manager</em>
+    to deploy an App Control policy and have even more control. <strong>Together, you get
+    ~99% protection.</strong> [HotCakeX / Harden-Windows-Security &mdash; <em>How Do You Make the Right Choice?</em>]
+  </div>
+
+  <p>
+    That 98% / 99% claim sounds like marketing. It's not. It's a statement about
+    <em>who you are defending against</em>. To use it correctly, you need to first name
+    the threat actors you actually face. That's the first axis of the 2&times;2.
+  </p>
+
+  <hr>
+
+  <h2>The threat-actor hierarchy</h2>
+
+  <p>
+    Not all attackers are equal. The defenses you need against a script kiddie running
+    a downloaded tool are not the defenses you need against a motivated nation-state
+    actor with a zero-day. Most enterprise compromises &mdash; roughly 70&ndash;80% per
+    Microsoft's annual Digital Defense Report &mdash; involve one of three lower
+    tiers, not the top tier. HotCakeX's "98%" is calibrated against the lower tiers.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th>Actor</th>
+        <th>What they bring</th>
+        <th>Defense that stops them</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tier 1</strong></td>
+        <td>Script kiddie</td>
+        <td>Public tools, known CVEs, social engineering scripts.</td>
+        <td>Patched OS + SmartScreen + Standard user + Defender.</td>
+      </tr>
+      <tr>
+        <td><strong>Tier 2</strong></td>
+        <td>Organized cybercrime</td>
+        <td>Ransomware affiliates, access brokers, commodity malware.</td>
+        <td>ASR rules + WDAC + LAPS + credential hygiene.</td>
+      </tr>
+      <tr>
+        <td><strong>Tier 3</strong></td>
+        <td>Hacktivist / insider</td>
+        <td>Credential abuse, lateral movement, data theft.</td>
+        <td>PAW tiering + tier-0 isolation + audit logging.</td>
+      </tr>
+      <tr>
+        <td><strong>Tier 4</strong></td>
+        <td>Motivated nation-state</td>
+        <td>Zero-days, supply-chain attacks, BYOVD, long-dwell intrusions.</td>
+        <td>Kernel-mode WDAC + HVCI + Confidential Computing + DRTM.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Calibrate your hardening to tiers 1&ndash;3 first.</strong> Tier 4 is a
+    different problem with a different budget (think Microsoft DART / GHOST engagements
+    and Secured-Core PC fleet, not GPO). HotCakeX's 98% holds for tiers 1&ndash;3.
+    Pushing for tier 4 without first solidifying tier 1&ndash;3 is a common mistake.
+  </p>
+
+  <div class="quiz" data-quiz-id="q1">
+    <div class="quiz-q">An attacker running a public Mimikatz variant against a domain-joined workstation &mdash; which tier?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Tier 1: script kiddie with public tooling</button>
+      <button class="quiz-opt" data-correct="true">Tier 2: organized crime access broker</button>
+      <button class="quiz-opt" data-correct="false">Tier 3: hacktivist with inside knowledge</button>
+      <button class="quiz-opt" data-correct="false">Tier 4: nation-state with a zero-day</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>The 2&times;2: prevention vs detection, baseline vs ongoing</h2>
+
+  <p>
+    Every Windows hardening setting falls into one of four buckets. Two axes:
+  </p>
+
+  <ul>
+    <li><strong>Vertical axis: prevention vs detection.</strong> Does this setting <em>stop</em> an attack, or does it <em>notice</em> one?</li>
+    <li><strong>Horizontal axis: baseline vs ongoing.</strong> Is this a one-time configuration (a "baseline") or something that needs to keep running (a "control")?</li>
+  </ul>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Baseline (one-time config)</th>
+        <th>Ongoing (must keep running)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Prevention</strong></td>
+        <td>
+          <strong>Hardened config.</strong>
+          Disable SMBv1, disable guest account, require SMB signing, disable autorun,
+          set UAC to highest, require Secure Boot. Set once via GPO; verify with Policy Analyzer.
+        </td>
+        <td>
+          <strong>Active enforcement.</strong>
+          ASR rules, WDAC policies, attack-surface-reduction telemetry, LAPS password rotation,
+          account lockout, EDR in real-time. These must run, log, and react.
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Detection</strong></td>
+        <td>
+          <strong>Audit policy.</strong>
+          Enable advanced audit policy subcategories, configure Event Log size, ship logs
+          to a SIEM. Set once; verify the channel exists and is populated.
+        </td>
+        <td>
+          <strong>Monitoring.</strong>
+          SIEM correlation rules, Defender alerts, scheduled task to detect GPO drift,
+          honey-token files, periodic policy compliance scans.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Most junior admins default to the <strong>top-left cell</strong> (hardened config)
+    because it's the easiest to deploy: download a Microsoft baseline, import it, link
+    the GPO, walk away. But that cell alone is insufficient &mdash; it doesn't notice
+    when an attacker compromises a machine after the baseline is applied. The right
+    answer is at least one cell from each row.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">Common drift</div>
+    Deploying a Microsoft Security Compliance Toolkit baseline and considering the
+    domain "hardened." The baseline configures the <em>prevention</em> cell but
+    leaves the <em>detection</em> row empty. When an attacker compromises a workstation
+    six months later, there is no log of how they got in. Always pair prevention with detection.
+  </div>
+
+  <div class="quiz" data-quiz-id="q2">
+    <div class="quiz-q">ASR rule "Block Office applications from creating executable content" &mdash; which cell?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Prevention baseline: one-time config</button>
+      <button class="quiz-opt" data-correct="true">Prevention ongoing: must keep enforcing</button>
+      <button class="quiz-opt" data-correct="false">Detection baseline: audit policy setup</button>
+      <button class="quiz-opt" data-correct="false">Detection ongoing: SIEM correlation rule</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>The one rule that buys you the most: no local admin</h2>
+
+  <p>
+    Of every setting in every Microsoft baseline, the single highest-leverage change
+    is also the simplest: <strong>domain users do not have local administrator on
+    their workstations</strong>. This is the rule HotCakeX explicitly anchors its
+    98% claim to.
+  </p>
+
+  <p>
+    Why this rule matters so much is a Windows-architecture fact, not a policy choice.
+    Read it carefully &mdash; it's the load-bearing mental model for the rest of the
+    series.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The Windows security boundary</div>
+    There is <strong>no security boundary between Administrator and Kernel</strong>.
+    Any process running with local Administrator privileges on a Windows machine can
+    load a kernel driver, modify system files, dump LSASS memory, and disable security
+    software. Once a user has local admin, every other security layer below them is
+    <em>bypassable from user space</em>. This is by design &mdash; it's how Microsoft
+    expects Administrators to manage their machines. [Microsoft Security Servicing Criteria for Windows]
+  </div>
+
+  <p>
+    In other words: every other protection layer in Windows &mdash; ASR rules, WDAC
+    policies, Defender real-time protection, credential guard, BitLocker &mdash; was
+    designed assuming the running user is <em>not</em> a local administrator. The
+    moment an attacker gets local admin, those protections stop being trustworthy.
+  </p>
+
+  <p>
+    That's why HotCakeX says "when you use a Standard (non-Privileged) account for
+    everyday work" &mdash; the 98% claim is conditional on the user not being admin.
+    Without that condition, the 98% collapses to something much lower. The single
+    most leveraged change you can make in your domain is to <strong>remove local
+    administrators from your standard users' workstations</strong>.
+  </p>
+
+  <div class="quiz" data-quiz-id="q3">
+    <div class="quiz-q">A user runs a phishing attachment as local admin. Which statement is most accurate?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">ASR rules still block the malicious behavior reliably</button>
+      <button class="quiz-opt" data-correct="false">Defender real-time protection stops the payload cleanly</button>
+      <button class="quiz-opt" data-correct="true">The attacker has admin-to-kernel reach and can disable EDR</button>
+      <button class="quiz-opt" data-correct="false">SmartScreen flags the file before it executes anyway</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>What this lesson gives you</h2>
+
+  <p>
+    Three things to take away:
+  </p>
+
+  <ol>
+    <li><strong>Calibrate to tiers 1&ndash;3 first.</strong> Tier 4 is a different problem with different tools. HotCakeX's 98% holds for the bottom three tiers; tier 4 needs DRTM, kernel-mode WDAC, and Secured-Core hardware.</li>
+    <li><strong>Every setting lives in one cell of the 2&times;2.</strong> Prevention vs detection, baseline vs ongoing. If your deployment only has settings from one row or one column, you have a hole.</li>
+    <li><strong>No local admin is the single highest-leverage rule.</strong> Every other protection in Windows assumes the user is not Administrator. The moment you give that up, the rest of the stack becomes advisory.</li>
+  </ol>
+
+  <div class="next-up">
+    <div class="label">Next lesson</div>
+    <p><a href="0002-security-boundaries.html"><strong>L2 &mdash; Security Boundaries in Windows.</strong></a> Where GPO can and cannot enforce. Why "no boundary between Admin and Kernel" matters, what boundary does exist (network, ring, process), and how AD domain boundaries interact with OS-level trust.</p>
+    <p>Primary source: HotCakeX's <em>Important Considerations</em> + Microsoft Security Servicing Criteria for Windows.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-label">Ask your teacher</div>
+    Anything unclear? Open the lesson in a browser and ask. The agent can re-explain
+    any cell, re-derive the threat hierarchy, or walk through how to identify which
+    tier a recent incident in your domain was.
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; L1</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="../reference/glossary.html">Glossary</a> &middot; <a href="../reference/baselines-cheatsheet.html">Baselines cheatsheet</a></span>
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (opt.disabled) return;
+          opts.forEach(function(o) { o.disabled = true; });
+          var correct = opt.getAttribute('data-correct') === 'true';
+          if (correct) {
+            opt.classList.add('correct');
+            fb.classList.add('show', 'ok');
+            fb.textContent = 'Correct. Move on, or revisit the section above if it was new to you.';
+          } else {
+            opt.classList.add('incorrect');
+            fb.classList.add('show', 'bad');
+            fb.textContent = 'Not quite. Re-read the section just above this question and try again later.';
+            // Re-enable so the user can retry with a different choice
+            setTimeout(function() {
+              opts.forEach(function(o) {
+                if (!o.classList.contains('correct')) {
+                  o.disabled = false;
+                  o.classList.remove('incorrect');
+                }
+              });
+              fb.classList.remove('show', 'bad');
+              fb.textContent = '';
+            }, 1800);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

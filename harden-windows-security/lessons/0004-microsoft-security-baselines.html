@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 4 &mdash; Microsoft Security Baselines &amp; LGPO.exe</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+</head>
+<body>
+
+  <h1>Microsoft Security Baselines &amp; LGPO.exe</h1>
+  <div class="lesson-meta">
+    <span class="num">L4</span>
+    Tooling &middot; ~15 min &middot; Lesson 4 of the Harden Windows Security series
+  </div>
+
+  <p>
+    L1 gave you the 2&times;2 of defense in depth. L2 gave you the boundary map
+    &mdash; seven places where Windows can stop an attacker, and which GPO
+    configurations configure each. L3 gave you the policy tree &mdash; how AD
+    expresses placement. This lesson is the bridge from those frameworks to <em>an
+    actual, deployable hardening policy</em>, by way of the official Microsoft
+    toolchain.
+  </p>
+
+  <p>
+    The mental model: <strong>a baseline is a starting point you adapt, not a
+    checklist you install.</strong> Microsoft ships the Windows 11 security
+    baseline with ~300 settings. Deploying all of them unmodified gives you a
+    &ldquo;Microsoft said so&rdquo; answer to every audit question &mdash; and that
+    answer doesn&rsquo;t survive a real review. The lesson is how to ingest the
+    baseline, audit it category by category, and decide which settings stay,
+    which get modified, and which get disabled because your environment cannot
+    support them.
+  </p>
+
+  <hr>
+
+  <h2>The Microsoft Security Compliance Toolkit</h2>
+
+  <p>
+    The MSCT is a free download from Microsoft. It is the source of truth for
+    every Windows hardening baseline Microsoft itself recommends. The box has
+    four tools:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>What it does</th>
+        <th>When you reach for it</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Baselines</strong></td>
+        <td>ADMX/ADML + GPO backups + PolicyRules for Windows, Office, Edge, etc.</td>
+        <td>When you want the source artifact. The baseline is updated quarterly.</td>
+      </tr>
+      <tr>
+        <td><strong>Policy Analyzer</strong></td>
+        <td>Compares a machine&rsquo;s effective policy against a baseline and reports drift.</td>
+        <td>When you want to know <em>what the machine actually has set</em>. The audit tool.</td>
+      </tr>
+      <tr>
+        <td><strong>LGPO.exe</strong></td>
+        <td>Command-line tool to import/export local GPO and apply registry-based policy.</td>
+        <td>When you want to test a baseline on a single machine before deploying via GPO. Also used in build images.</td>
+      </tr>
+      <tr>
+        <td><strong>Set-RegistryPolicy</strong></td>
+        <td>PowerShell module to write registry-backed policy outside of GPO.</td>
+        <td>When you want to script a baseline into an OS image or a non-domain-joined host.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    For an enterprise AD admin, the workflow is roughly: download the MSCT, take
+    the Windows 11 baseline&rsquo;s GPO backup, restore it into a new GPO in your
+    domain, audit it, link it where L3 says it should live (domain root for the
+    floor, child OU for the rest), verify with Policy Analyzer on a sample
+    machine.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Why a baseline GPO is not a destination</div>
+    Microsoft&rsquo;s baseline is opinionated. Some settings assume an enterprise
+    context (TPM 2.0, Secure Boot, Pro/Enterprise edition). Some assume a
+    particular threat model (Azure-AD joined). Some are <em>policy choice</em>
+    rather than <em>floor</em> &mdash; Microsoft picks a value, but the value is
+    yours to set. The baseline is a starting point, not a destination. L4 is
+    about adapting it, not applying it.
+  </div>
+
+  <hr>
+
+  <h2>The two workflows: ingest and verify</h2>
+
+  <h3>Workflow A &mdash; Ingest the baseline into a domain GPO</h3>
+  <ol class="steps">
+    <li>
+      <h3>Download the MSCT</h3>
+      <span class="step-body">From <code>microsoft.com/download/details.aspx?id=55319</code>. Extract the ZIP. Inside: <code>Windows 11\Baseline\BaselineLocalInstall.admx</code> and the matching GPO backup folder.</span>
+    </li>
+    <li>
+      <h3>Stage a new GPO in your domain</h3>
+      <span class="step-body">In GPMC, create a GPO named <em>MS Windows 11 Baseline (Staging)</em>. Do not link it yet. Restore the baseline GPO backup into it.</span>
+    </li>
+    <li>
+      <h3>Inspect the contents category by category</h3>
+      <span class="step-body">Open the staged GPO. Walk through Account, Audit, Network, Kernel, App Execution sections. Mark each setting as <em>floor</em>, <em>choice</em>, or <em>disable (incompatible with my environment)</em>.</span>
+    </li>
+    <li>
+      <h3>Apply the decisions</h3>
+      <span class="step-body">Disable or modify the settings you marked. The result is <em>your</em> baseline, not Microsoft&rsquo;s, on top of Microsoft&rsquo;s recommendations.</span>
+    </li>
+    <li>
+      <h3>Link per L3</h3>
+      <span class="step-body">Floor settings live at the domain root (L3 strategy 1). Per-OU overrides live at child OUs (strategy 2). Hardware-class variations live behind WMI filters (strategy 3).</span>
+    </li>
+  </ol>
+
+  <h3>Workflow B &mdash; Verify the deployed baseline</h3>
+  <ol class="steps">
+    <li>
+      <h3>Pick a sample machine</h3>
+      <span class="step-body">One per OU you care about. For a 500&ndash;5000 endpoint fleet, that means at minimum: one Tier 0 server, one file server, one Tier 1 workstation, one kiosk, one Domain Controller.</span>
+    </li>
+    <li>
+      <h3>Run <code>gpresult /h gp-report.html</code></h3>
+      <span class="step-body">Confirm the GPO is in the <em>Applied GPOs</em> list with the right precedence.</span>
+    </li>
+    <li>
+      <h3>Run Policy Analyzer against that machine</h3>
+      <span class="step-body">Point Policy Analyzer at the same baseline GPO backup you ingested. It will report every drift &mdash; settings where the machine&rsquo;s effective state differs from the baseline. Investigate each drift. Some are legitimate overrides (per-OU exceptions); others are bugs.</span>
+    </li>
+    <li>
+      <h3>Repeat on the next sample machine</h3>
+      <span class="step-body">Until you have coverage. Then schedule the same audit weekly and alert on new drift.</span>
+    </li>
+  </ol>
+
+  <div class="callout info">
+    <div class="callout-label">The audit is the lesson</div>
+    The most important step in Workflow B is not the gpresult &mdash; it is the
+    Policy Analyzer diff. A gpresult tells you <em>which GPOs applied</em>.
+    Policy Analyzer tells you <em>what effective setting each policy produced,
+    and whether it matches the baseline</em>. These are different questions.
+    Use both.
+  </div>
+
+  <hr>
+
+  <h2>The five baseline categories</h2>
+
+  <p>
+    The Windows 11 baseline organizes ~300 settings into roughly five
+    categories. Each maps to a row in L2&rsquo;s boundary table.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>What it covers</th>
+        <th>L2 boundary</th>
+        <th>Example settings</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Account</strong></td>
+        <td>Password policy, account lockout, Kerberos, Protected Users.</td>
+        <td>Row 5 (AD domain) + Row 3 (user/admin)</td>
+        <td>Min password length, lockout threshold, NTLM restrictions.</td>
+      </tr>
+      <tr>
+        <td><strong>Audit</strong></td>
+        <td>Advanced audit policy subcategories, Event Log size, retention.</td>
+        <td>Row 5 (AD domain) + the detection row of the 2&times;2</td>
+        <td>Audit logon, audit privilege use, audit process creation.</td>
+      </tr>
+      <tr>
+        <td><strong>Network</strong></td>
+        <td>SMB, RDP, WinRM, Windows Firewall, NTLM, Kerberos, Wi-Fi.</td>
+        <td>Row 4 (network)</td>
+        <td>Disable SMBv1, require SMB signing, RDP NLA, WinRM hardening.</td>
+      </tr>
+      <tr>
+        <td><strong>Kernel</strong></td>
+        <td>Secure Boot, HVCI, Credential Guard, driver block list, VBS.</td>
+        <td>Row 1 (CPU ring) + Row 7 (VBS)</td>
+        <td>Require Secure Boot, enable HVCI, opt into Credential Guard.</td>
+      </tr>
+      <tr>
+        <td><strong>App execution</strong></td>
+        <td>ASR rules, SmartScreen, AppLocker, WDAC, MOTW enforcement.</td>
+        <td>Row 2 (process) + Row 6 (AppContainer)</td>
+        <td>Enable SmartScreen, configure ASR rules (L5 territory), block Office child processes.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The mapping is the load-bearing concept. When you audit a baseline setting
+    and ask &ldquo;do I need this on a 500&ndash;5000 endpoint on-prem domain?&rdquo;
+    the answer starts with &ldquo;which boundary row does it touch, and what&rsquo;s
+    my threat posture there?&rdquo; If you can&rsquo;t answer that, you don&rsquo;t
+    have the audit trail to keep the setting &mdash; or to disable it.
+  </p>
+
+  <hr>
+
+  <h2>Floor vs choice vs disable</h2>
+
+  <p>
+    This is the single most useful distinction for adapting a baseline. Every
+    setting is one of three types:
+  </p>
+
+  <h3>Floor</h3>
+  <p>
+    Microsoft-recommended <em>across all environments</em>. You should not disable
+    this without a documented business reason and compensating controls. These
+    are the L3 domain-root policies:
+  </p>
+  <ul>
+    <li>Disable SMBv1.</li>
+    <li>Disable the guest account.</li>
+    <li>Require Secure Boot (when hardware supports it).</li>
+    <li>Require SMB signing at the server side.</li>
+    <li>Disable autorun.</li>
+    <li>Enable LSA Protection (PPL).</li>
+  </ul>
+  <p>
+    If you find yourself considering disabling any of these, you should be writing
+    a document explaining why and what compensates. &ldquo;Microsoft said so&rdquo;
+    is not a floor; <em>Microsoft&rsquo;s recommendation is well-justified by these
+    three CVEs</em> is a floor.
+  </p>
+
+  <h3>Choice</h3>
+  <p>
+    Microsoft recommends a value, but the value is yours to set. The baseline
+    gives you Microsoft&rsquo;s opinion; you set yours. These are policy choices:
+  </p>
+  <ul>
+    <li>Minimum password length (Microsoft picks 14; you may pick 12 or 16).</li>
+    <li>Account lockout threshold (Microsoft picks 10; you may pick 5).</li>
+    <li>Audit retention size and rollover behavior.</li>
+    <li>BitLocker recovery key rotation period.</li>
+    <li>ASR rule audit/warn/block posture (Microsoft ships in audit; you decide when to flip to block).</li>
+  </ul>
+  <p>
+    These are documented in your hardening policy, not in the baseline. They get
+    applied via child-OU GPOs (L3 strategy 2) where they need to vary by
+    business unit or role.
+  </p>
+
+  <h3>Disable (incompatible with environment)</h3>
+  <p>
+    The setting cannot apply in your environment &mdash; missing hardware, missing
+    OS feature, business application breaks. Examples:
+  </p>
+  <ul>
+    <li>Credential Guard requires VBS-capable hardware. If 30% of your fleet is
+        five-year-old desktops, you can&rsquo;t enforce it everywhere; you enforce
+        it where supported and document the gap elsewhere.</li>
+    <li>HVCI requires recent drivers; a line-of-business app from 2019 may
+        not have HVCI-compatible drivers. Document the exception.</li>
+    <li>Some ASR rules (L5) break specific Office workflows; in audit mode, you
+        see which machines need exceptions, then disable per-OU.</li>
+  </ul>
+  <p>
+    Disable is <em>not</em> a permanent state. It is a documented exception with
+    a re-evaluation date. Treat it like an architectural decision record.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">Audit-trail discipline</div>
+    Every floor setting you disable, every choice you change from Microsoft&rsquo;s
+    value, every environment-incompatibility you accept &mdash; all three must be
+    in a written document with a date, an owner, and a re-evaluation trigger.
+    This is the document that survives a CISO audit, an incident, or a new hire&rsquo;s
+    first week.
+  </div>
+
+  <div class="quiz" data-quiz-id="q1">
+    <div class="quiz-q">The MSCT baseline recommends disabling SMBv1. Which category does it belong to?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Choice &mdash; Microsoft picks a value you may override</button>
+      <button class="quiz-opt" data-correct="true">Floor &mdash; recommended across every environment</button>
+      <button class="quiz-opt" data-correct="false">Disable &mdash; incompatible with most line-of-business apps</button>
+      <button class="quiz-opt" data-correct="false">It does not appear in the Windows 11 baseline at all</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Why LGPO.exe is still load-bearing even on AD-joined machines</h2>
+
+  <p>
+    LGPO.exe is Microsoft&rsquo;s command-line tool for managing local GPO and
+    registry-based policy. It is not a replacement for GPO &mdash; it is a
+    <em>verification</em> and <em>build-image</em> tool.
+  </p>
+
+  <p>
+    Three uses for an on-prem AD admin:
+  </p>
+
+  <ol>
+    <li><strong>Pre-deployment testing.</strong> Before linking a baseline GPO to
+        a production OU, run <code>LGPO.exe /r baseline-backup</code> on a test
+        machine. Verify the resulting registry state with
+        <code>secedit /export</code>. If the test machine still works,
+        the baseline is safe to link.</li>
+    <li><strong>Build image authoring.</strong> When you build a Windows image
+        (MDT, WDS, or hand-rolled), LGPO.exe writes the baseline into the image
+        so that a freshly-imaged machine has the floor even before it joins the
+        domain. This buys you security during the pre-join window.</li>
+    <li><strong>Audit &amp; diff.</strong> <code>LGPO.exe /b snapshot-folder</code>
+        captures the local GPO&rsquo;s effective state as a backup. Diff this
+        against a baseline backup with Policy Analyzer to find what the machine
+        actually has.</li>
+  </ol>
+
+  <p>
+    LGPO.exe is the most-misunderstood tool in the MSCT. Junior admins treat it
+    as &ldquo;the script that deploys the baseline.&rdquo; It is not. It is the
+    tool that <em>tells you what&rsquo;s deployed</em>. Use it accordingly.
+  </p>
+
+  <hr>
+
+  <h2>The first-time-baseline checklist</h2>
+
+  <p>
+    The first time you bring a baseline into a domain, the workflow that works:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Stage and audit</h3>
+      <span class="step-body">Create the GPO, restore the baseline, walk every category, classify each setting as floor/choice/disable. Document the classification in a spreadsheet.</span>
+    </li>
+    <li>
+      <h3>Test on five machines</h3>
+      <span class="step-body">Run <code>LGPO.exe /r</code> on a Tier 0 server, a file server, a workstation, a kiosk, and a Domain Controller. Verify each.</span>
+    </li>
+    <li>
+      <h3>Link at domain root, audit only</h3>
+      <span class="step-body">Link the <em>floor</em> subset at the domain root in audit-equivalent mode. Wait two weeks. Check <code>gpresult</code> and Policy Analyzer drift reports on the test machines.</span>
+    </li>
+    <li>
+      <h3>Move floor subset to enforce mode</h3>
+      <span class="step-body">If no L1/L2/L3 breakage during the audit period, flip the floor subset to enforce mode. The choice and disable settings still live in their respective OUs.</span>
+    </li>
+    <li>
+      <h3>Hand the choice subsets to business owners</h3>
+      <span class="step-body">Each business unit owns its choice subset. The IT team is not in the business of deciding password length for HR; HR is. Provide them the baseline category and ask for the value with rationale.</span>
+    </li>
+    <li>
+      <h3>Schedule weekly drift reports</h3>
+      <span class="step-body">Run Policy Analyzer weekly against a sample of machines per OU. Alert on new drift. Drift is the leading indicator of either compromise or unauthorized change.</span>
+    </li>
+  </ol>
+
+  <div class="callout warning">
+    <div class="callout-label">The seven-day rule</div>
+    After you link a new baseline GPO at the domain root, do not flip it to
+    <em>Enforced</em> for at least seven days. The audit period is your buffer
+    against the line-of-business app that breaks every Tuesday at 09:00.
+  </div>
+
+  <div class="quiz" data-quiz-id="q2">
+    <div class="quiz-q">A floor setting is breaking a line-of-business app on five machines. What is the right next move?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Disable the setting immediately on the domain-root GPO</button>
+      <button class="quiz-opt" data-correct="true">Move the five machines to an exception OU with a documented exception</button>
+      <button class="quiz-opt" data-correct="false">Wait until the vendor patches the app and re-enforce next quarter</button>
+      <button class="quiz-opt" data-correct="false">File a bug and ignore the breakage for the audit window</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>What this lesson gives you</h2>
+
+  <ol>
+    <li><strong>The MSCT is a tool, not a checklist.</strong> Baselines, Policy Analyzer, LGPO.exe. The baseline is starting material; the toolchain is the verification apparatus.</li>
+    <li><strong>Two workflows.</strong> Ingest (restore the baseline into a GPO, audit per category, link per L3) and verify (gpresult + Policy Analyzer on a sample of machines, drift reports weekly).</li>
+    <li><strong>Five baseline categories mapped to L2&rsquo;s boundary table.</strong> Account (rows 5/3), Audit (row 5 + detection), Network (row 4), Kernel (rows 1/7), App execution (rows 2/6). The mapping is the audit trail.</li>
+    <li><strong>Floor vs choice vs disable.</strong> Floor applies everywhere with rationale; choice is documented per-OU; disable is an exception with a re-evaluation trigger.</li>
+    <li><strong>The seven-day rule.</strong> Audit, then enforce. Always. The audit window is your buffer against silent breakage.</li>
+  </ol>
+
+  <div class="next-up">
+    <div class="label">Next lesson</div>
+    <p><a href="0005-attack-surface-reduction-rules.html"><strong>L5 &mdash; Attack Surface Reduction (ASR) Rules.</strong></a> The 16 ASR rules, what each blocks, the rule modes (Block / Audit / Warn / Off). On-prem deployment: audit &rarr; warn &rarr; block, staged by OU, using exactly the floor / choice / disable audit discipline from L4.</p>
+    <p>Primary source: Microsoft Learn &mdash; <em>ASR rules reference</em>.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-label">Ask your teacher</div>
+    Anything unclear? Open the lesson in a browser and ask. The agent can walk
+    through Policy Analyzer on a sample machine, classify a real baseline
+    setting as floor or choice, or sketch the spreadsheet for the first-time
+    audit.
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; L4</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="../reference/glossary.html">Glossary</a> &middot; <a href="../reference/baselines-cheatsheet.html">Baselines cheatsheet</a></span>
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (opt.disabled) return;
+          opts.forEach(function(o) { o.disabled = true; });
+          var correct = opt.getAttribute('data-correct') === 'true';
+          if (correct) {
+            opt.classList.add('correct');
+            fb.classList.add('show', 'ok');
+            fb.textContent = 'Correct. Move on, or revisit the section above if it was new to you.';
+          } else {
+            opt.classList.add('incorrect');
+            fb.classList.add('show', 'bad');
+            fb.textContent = 'Not quite. Re-read the section just above this question and try again later.';
+            setTimeout(function() {
+              opts.forEach(function(o) {
+                if (!o.classList.contains('correct')) {
+                  o.disabled = false;
+                  o.classList.remove('incorrect');
+                }
+              });
+              fb.classList.remove('show', 'bad');
+              fb.textContent = '';
+            }, 1800);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

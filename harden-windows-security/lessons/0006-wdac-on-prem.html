@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 6 &mdash; App Control for Business (WDAC) On-Prem</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+</head>
+<body>
+
+  <h1>App Control for Business (WDAC) On-Prem</h1>
+  <div class="lesson-meta">
+    <span class="num">L6</span>
+    Kernel-mode identity &middot; ~16 min &middot; Lesson 6 of the Harden Windows Security series
+  </div>
+
+  <p>
+    L5 was about <em>behavior</em>: ASR rules that ask &ldquo;is this process trying to
+    do something bad?&rdquo; This lesson is about <em>identity</em>: a kernel-mode
+    enforcement that asks &ldquo;is this executable allowed to start at all?&rdquo;
+    Together they are defense in depth at the process boundary &mdash; and the
+    identity layer is the one attackers cannot talk their way past, because the
+    check happens before user-mode code is even loaded.
+  </p>
+
+  <p>
+    The mental model: <strong>WDAC is policy-driven executable-identity
+    enforcement, not behavior blocking.</strong> Where ASR rules decide
+    <em>what an allowed executable is allowed to do</em>, WDAC decides
+    <em>who is allowed to run</em>. The two are complementary, not redundant.
+    A defense-in-depth posture runs both; an attacker has to defeat
+    <em>identity</em> (kernel-level) <em>and</em> behavior (user-level) before
+    getting a single instruction executed.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The load-bearing concept</div>
+    ASR + WDAC together = a process boundary that requires both an allowed
+    <em>identity</em> (kernel-mode WDAC) and acceptable <em>behavior</em>
+    (user-mode ASR) before user code runs. Without WDAC, ASR is your only
+    line at the process boundary; without ASR, WDAC allows anything any
+    signed binary wants to do.
+  </div>
+
+  <hr>
+
+  <h2>How WDAC differs from ASR</h2>
+
+  <p>
+    Three differences that matter for an admin. Each of them is the answer to
+    a question you would have asked during a Tuesday-morning ticket.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ASR (L5)</th>
+        <th>WDAC (L6)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Targets <em>behaviors</em> &mdash; what an already-running process tries to do.</td>
+        <td>Targets <em>identities</em> &mdash; which executables are allowed to start at all.</td>
+      </tr>
+      <tr>
+        <td>User-mode enforcement; runs in Defender; the policy is in the Defender workload.</td>
+        <td>Kernel-mode enforcement; runs in the Windows kernel; the policy is in <code>CodeIntegrity</code>.</td>
+      </tr>
+      <tr>
+        <td>Four modes &mdash; Not configured / Audit / Warn / Block.</td>
+        <td>Three modes &mdash; Audit / Enforced / Disabled. <em>No Warn mode.</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The <em>no Warn mode</em> row is not a gap; it is a deliberate consequence of
+    where WDAC runs. WDAC is a kernel-mode enforcement. The kernel decides whether
+    to load an executable before any user-mode UI is even available. There is no
+    screen to draw a prompt onto. So the modes are: <em>Audit</em> (let it
+    through and log), <em>Enforced</em> (block it), <em>Disabled</em> (no rule
+    check runs). The transition is binary.
+  </p>
+
+  <ul>
+    <li><strong>Identity</strong> &mdash; signer, hash, file path, or family of an executable. The check answers &ldquo;is this file on the allow-list?&rdquo;.</li>
+    <li><strong>Mode</strong> &mdash; what to do when the answer is &ldquo;no&rdquo;. Audit logs it. Enforced blocks it silently at launch. Disabled ignores the policy entirely.</li>
+    <li><strong>Scope</strong> &mdash; kernel-mode (drivers, boot components) or user-mode (applications, scripts). Two separate policies.</li>
+  </ul>
+
+  <div class="callout warning">
+    <div class="callout-label">Enforced is silent</div>
+    When WDAC is Enforced and blocks an executable, the user sees the OS
+    &ldquo;this app has been blocked by your system administrator&rdquo; dialog.
+    There is no Warn-style &ldquo;ask the user whether they really want to run
+    it.&rdquo; Make sure staging covers your line-of-business apps before
+    flipping to Enforced.
+  </div>
+
+  <hr>
+
+  <h2>The two policy scopes: kernel-mode vs. user-mode</h2>
+
+  <p>
+    A WDAC policy is either <em>kernel-mode</em> or <em>user-mode</em>. They
+    are separate artifacts; each has its own deployment target. Junior admins
+    conflate them; the distinction matters.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Scope</th>
+        <th>What it enforces</th>
+        <th>Where it runs</th>
+        <th>Real-world target</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Kernel-mode</strong></td>
+        <td>Drivers and early-start boot components.</td>
+        <td>Before the user session exists; in the kernel itself.</td>
+        <td>BYOVD (Bring Your Own Vulnerable Driver) attacks.</td>
+      </tr>
+      <tr>
+        <td><strong>User-mode</strong></td>
+        <td>Applications, DLLs, scripts launched after the user signs in.</td>
+        <td>In the user session, in concert with <code>CodeIntegrity</code>.</td>
+        <td>Unsigned line-of-business apps, malware-as-signed-binary.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="quiz" data-quiz-id="q1">
+    <div class="quiz-q">Compared with ASR rules, what does a WDAC policy additionally enforce?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">WDAC adds user-mode process blocking that ASR rules never reach today</button>
+      <button class="quiz-opt" data-correct="false">WDAC adds file-hash signer blocking that ASR rules never reach today</button>
+      <button class="quiz-opt" data-correct="true">WDAC adds kernel driver blocking that ASR rules never reach today</button>
+      <button class="quiz-opt" data-correct="false">WDAC adds Intune-only deployment options that ASR rules never reach today</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>The two policy types: signed vs. unsigned</h2>
+
+  <p>
+    WDAC policies come in two flavors, distinguished by whether the policy
+    itself is cryptographically signed.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Signed WDAC policy</th>
+        <th>Unsigned WDAC policy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Trust root</td>
+        <td>Code-signing certificate embedded in the policy.</td>
+        <td>No trust root. Whoever can write the policy can rewrite it.</td>
+      </tr>
+      <tr>
+        <td>Deployment</td>
+        <td>Deployable from any source, including a read-only network share.</td>
+        <td>Must be deployed from the local machine&rsquo;s own <code>CiPolicy</code> folder.</td>
+      </tr>
+      <tr>
+        <td>Mutability</td>
+        <td>A user with administrator rights cannot stop or modify it.</td>
+        <td>A user with administrator rights can disable it via registry.</td>
+      </tr>
+      <tr>
+        <td>HotCakeX recommendation</td>
+        <td><strong>Yes &mdash; this is the recommended path.</strong></td>
+        <td>Initial policy authoring only &mdash; never the production target.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>HotCakeX&rsquo;s framing:</strong> unsigned policy is for the
+    <em>first draft</em> (you build a policy on a test box, audit it, see what
+    breaks, then re-issue as a signed policy for production). The default
+    Windows policy and the Microsoft recommended driver block list are
+    both signed. Your final production policy should be signed too &mdash;
+    otherwise, you have shipped a kernel-mode enforcement that any local
+    administrator can disable.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Why signed matters on-prem</div>
+    If your WDAC policy is unsigned, then any user with local administrator
+    can disable it via a single registry key &mdash; which means anyone who
+    escalates to local admin (your L1 row-3 adversary from L2) has defeated
+    the kernel-mode layer. Signed policy closes the registry door. It is
+    the difference between &ldquo;policy&rdquo; and &ldquo;policy that
+    attackers cannot turn off.&rdquo;
+  </div>
+
+  <hr>
+
+  <h2>The three modes &mdash; audit &rarr; enforce, no warn step</h2>
+
+  <p>
+    WDAC has three modes per policy. The staging sequence mirrors ASR except
+    it skips Warn.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Mode</th>
+        <th>What happens on a disallowed launch</th>
+        <th>What you see</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Audit</strong></td>
+        <td>Rule check runs. The file is <em>allowed</em>, but the event is logged.</td>
+        <td>Event Log entry <code>3076</code> (would-be-blocked). No user-visible impact.</td>
+      </tr>
+      <tr>
+        <td><strong>Enforced</strong></td>
+        <td>Rule check runs. The file is <em>blocked</em> from launching.</td>
+        <td>&ldquo;This app has been blocked by your system administrator.&rdquo; Event <code>3076</code> + <code>3077</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Disabled</strong></td>
+        <td>No rule check runs.</td>
+        <td>Nothing. Default Windows behavior.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Notice the absence of Warn. The reason is operational, not pedagogical.
+    A user-mode Warn prompt requires Windows to draw a UI &mdash; and the
+    kernel-mode decision happens <em>before</em> the user session exists. There
+    is no place to put a Warn prompt during a boot-time driver check, and no
+    time to draw one during a fast app launch. So Warn is omitted by design.
+  </p>
+
+  <p>
+    The staging sequence reuses L4&rsquo;s seven-day rule:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Build an unsigned policy in Audit on a test box</h3>
+      <span class="step-body">Use the <code>New-CIPolicy</code> PowerShell cmdlet (part of the WDAC policy authoring toolset) to enumerate signed apps that should run in your environment. Save the policy to <code>C:\Windows\System32\CodeIntegrity\CiPolicy\Active\&lt;GUID&gt;\CiPolicy.{p7b}</code>. Do not deploy yet.</span>
+    </li>
+    <li>
+      <h3>Convert to signed, Audit, deploy to one OU</h3>
+      <span class="step-body">Sign the policy with a code-signing cert from your internal CA. Deploy to a single pilot OU. Wait seven days. Pull CodeIntegrity event log 3076 &mdash; you will see what would-have-been-blocked.</span>
+    </li>
+    <li>
+      <h3>Pull the audit events; classify by app</h3>
+      <span class="step-body">For each event, ask: is this an attacker trying to launch a known-bad executable, or is it a legitimate line-of-business app we forgot to enumerate? Each legitimate hit becomes a supplemental policy rule, or a carve-out OU per L4.</span>
+    </li>
+    <li>
+      <h3>When audit is clean for seven days, flip to Enforced</h3>
+      <span class="step-body">Switch the policy mode from Audit to Enforced. The same policy &mdash; now the would-be-blocks become real blocks. Telemetry now records <em>real</em> blocks (events 3076/3077) instead of would-have-blocked events.</span>
+    </li>
+    <li>
+      <h3>Roll forward to the next OU</h3>
+      <span class="step-body">Repeat. The seven-day rule per OU is the buffer; do not skip it. A wrong Enforced policy on a production OU is a domain-wide outage waiting to happen &mdash; blue screens on devices that needed an app the policy didn&rsquo;t allow.</span>
+    </li>
+  </ol>
+
+  <div class="callout warning">
+    <div class="callout-label">No patch = no rollback</div>
+    Unlike ASR rules, a wrong WDAC Enforced policy cannot be undone remotely
+    in real time if it blocks a critical boot component on a domain
+    controller. There is no &ldquo;tell GPO to ignore&rdquo; button. Plan for
+    the rollback path <em>before</em> flipping: a WinPE USB, an offline editor,
+    a Safe Mode boot, or a known-good supplemental policy you can deploy to
+    undo the bad one. Three of these in your pocket is the recommended
+    posture.
+  </div>
+
+  <div class="quiz" data-quiz-id="q2">
+    <div class="quiz-q">ASR has audit &rarr; warn &rarr; block staging. What is the WDAC equivalent?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Audit for fourteen days then Enforced; there is no Warn step in WDAC</button>
+      <button class="quiz-opt" data-correct="false">Audit for seven days then Warn; there is no Enforced step in WDAC</button>
+      <button class="quiz-opt" data-correct="true">Audit for seven days then Enforced; there is no Warn step in WDAC</button>
+      <button class="quiz-opt" data-correct="false">Audit for seven days then Disabled; there is no Enforced step in WDAC</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Where WDAC sits in the L2 boundary map</h2>
+
+  <p>
+    Walk L2&rsquo;s seven boundaries again. WDAC is the kernel-side enforcement
+    for two of them, and the perfect complement to ASR&rsquo;s user-side role.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>L2 row</th>
+        <th>Boundary</th>
+        <th>ASR &mdash; user side</th>
+        <th>WDAC &mdash; kernel side</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>CPU ring</td>
+        <td>No (user-mode only).</td>
+        <td>Yes &mdash; signed kernel-mode policy blocks unsigned drivers at load.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Process</td>
+        <td>Yes &mdash; ASR blocks behaviors of allowed processes.</td>
+        <td>Yes &mdash; WDAC blocks unsigned user-mode binaries at launch.</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Network (lateral via PsExec)</td>
+        <td>Yes &mdash; the &ldquo;Block PsExec&rdquo; ASR rule.</td>
+        <td>Indirectly &mdash; if PsExec itself is unsigned, WDAC kernel-mode blocks the driver.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Rows 3, 5, 6, 7 are not WDAC&rsquo;s job (WDAC does not move boundaries
+    &mdash; it configures them, per the L2 decision rule). Boundary 7 (VBS) is
+    covered in L7 alongside Credential Guard and HVCI.
+  </p>
+
+  <hr>
+
+  <h2>The Microsoft recommended driver block list</h2>
+
+  <p>
+    The single highest-leverage on-prem win in this lesson ships as a
+    pre-built, signed, kernel-mode WDAC policy &mdash; the
+    <strong>Microsoft Recommended Driver Block List</strong>. It blocks
+    drivers known to be vulnerable to BYOVD attacks &mdash; the same class of
+    risk covered in L7. You do not author it; you deploy it.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>What</td>
+        <td>A pre-built WDAC <code>.p7b</code> file maintained by Microsoft.</td>
+      </tr>
+      <tr>
+        <td>Scope</td>
+        <td>Kernel-mode only; blocks specific known-bad drivers.</td>
+      </tr>
+      <tr>
+        <td>Signed</td>
+        <td>Yes &mdash; signed by a Microsoft-controlled code-signing cert.</td>
+      </tr>
+      <tr>
+        <td>Update cadence</td>
+        <td>Microsoft updates the list as new BYOVD-discoverable drivers are found; published through Windows Update and a public GitHub repository.</td>
+      </tr>
+      <tr>
+        <td>Staging method</td>
+        <td>Deploy in Audit first (count would-be blocks); flip to Enforced once the count stabilizes.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Why it matters:</strong> the alternative is hand-curating your own
+    block list of ~80 known-vulnerable drivers, which means a junior admin
+    must (a) know about every CVE-disclosed driver, (b) map each CVE to a
+    specific file hash, (c) keep the list current as Microsoft publishes new
+    ones. The Microsoft list is the same set, curated by Microsoft, updated
+    automatically. Use theirs. It is the L4 &ldquo;floor&rdquo; decision applied
+    to driver-block rules.
+  </p>
+
+  <div class="callout info">
+    <div class="callout-label">Updated 2026 baseline</div>
+    As of the Windows 11 24H2 baseline, the recommended driver block list
+    covers roughly 80 active block rules for drivers with disclosed
+    exploitation in the wild. The list does not enumerate &ldquo;unused&rdquo;
+    drivers or historical CVEs &mdash; it is targeted at the BYOVD-class
+    attackers L7 covers. Audit logs for the list are dominated by
+    security-research and EDR tooling, not production workloads.
+  </div>
+
+  <hr>
+
+  <h2>Authoring a custom WDAC policy on-prem</h2>
+
+  <p>
+    The recommended driver block list is the floor. Everything else
+    (your line-of-business apps, your IT automation tools, your internal
+    signed binaries) lives in <em>your</em> custom policy, layered on top.
+    Authoring on-prem is a PowerShell workflow.
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Enumerate the executables you want to allow</h3>
+      <span class="step-body">Run <code>New-CIPolicy -Audit -FilePath C:\Policy\p_baseline.xml -Level Publisher</code> on a representative endpoint. This generates an Audit-mode policy in XML listing everything currently signed that the machine runs.</span>
+    </li>
+    <li>
+      <h3>Merge multiple reference machines into one policy</h3>
+      <span class="step-body">Different OUs run different apps. Use <code>Merge-CIPolicy -PolicyPaths .\p1.xml,.\p2.xml,.\p3.xml -OutputFilePath .\merged.xml</code> to combine per-machine policy snapshots into a domain-wide allow-list.</span>
+    </li>
+    <li>
+      <h3>Convert the XML policy to a binary <code>.p7b</code></h3>
+      <span class="step-body"><code>ConvertFrom-CIPolicy .\merged.xml .\SignedPolicy.p7b</code> produces the binary, signed policy artifact. Sign with your internal code-signing cert before the next step.</span>
+    </li>
+    <li>
+      <h3>Deploy via GPO</h3>
+      <span class="step-body">Computer Configuration &gt; Administrative Templates &gt; System &gt; Device Guard &gt; <em>Deploy Windows Defender Application Control</em>. Point at the path where the signed <code>.p7b</code> lives (UNC path or local file). Link the GPO at the target OU in Audit first.</span>
+    </li>
+    <li>
+      <h3>Verify via <code>gpresult</code> and the CodeIntegrity log</h3>
+      <span class="step-body">On a target machine, <code>gpupdate /force</code>, then <code>gpresult /h gp.html</code>. Confirm the WDAC policy is listed. Pull <code>Microsoft-Windows-CodeIntegrity/Operational</code> &mdash; 3076 events are the would-have-blocked trail during Audit.</span>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <div class="callout-label">Multi-policy stacking</div>
+    Real AD domains rarely have a single WDAC policy. The recommended driver
+    block list (signed, kernel-mode) is the base; your custom LOB policy
+    (signed, kernel- and/or user-mode) is supplemental. Windows merges them
+    by priority: the more specific policy wins. The supplemental custom policy
+    can be looser (allow your LOB apps) without re-allowing the vulnerable
+    drivers &mdash; because the recommended block list blocks them at base
+    priority.
+  </div>
+
+  <hr>
+
+  <h2>Telemetry without Defender for Endpoint</h2>
+
+  <p>
+    WDAC events land in <code>Microsoft-Windows-CodeIntegrity/Operational</code>.
+    Unlike ASR (Defender Operational log), this log is owned by the kernel.
+    It is on by default. The events to watch:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Event ID</th>
+        <th>Mode</th>
+        <th>Meaning</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>3076</strong></td>
+        <td>Audit or Enforced</td>
+        <td>A binary was allowed in Audit, or would have been blocked.</td>
+      </tr>
+      <tr>
+        <td><strong>3077</strong></td>
+        <td>Enforced</td>
+        <td>A binary was actually blocked from launching.</td>
+      </tr>
+      <tr>
+        <td><strong>3099</strong></td>
+        <td>Audit</td>
+        <td>An &ldquo;allow&rdquo; event was triggered &mdash; an allowed binary launched.</td>
+      </tr>
+      <tr>
+        <td><strong>3091</strong></td>
+        <td>Audit</td>
+        <td>Policy load summary &mdash; shows which base policies applied.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The <strong>3076 / 3077 ratio</strong> across staging periods is your
+    WDAC analogue of the L5 1121/1122 ratio. If 3076 (Audit would-have-been-blocked)
+    is high and 3077 (Enforced actually-blocked) is low, the rule is hitting real
+    attacks or legitimate outliers. If 3077 is much larger than 3076 was, you
+    have stopped normal work and need more supplemental rules.
+  </p>
+
+  <p>
+    Minimum-viable telemetry without Defender for Endpoint: forward the
+    <code>Microsoft-Windows-CodeIntegrity/Operational</code> log via Windows
+    Event Forwarding to a central collector, alongside the Defender Operational
+    log from L5. Same WEF subscription infrastructure; both event channels
+    require forwarding. The log wraps at 1&nbsp;MB by default &mdash; schedule
+    a weekly export before staging at scale.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">ETW tracing for kernel depth</div>
+    Forensics during a BYOVD-class incident requires the process tree at
+    kernel level &mdash; not just &ldquo;this driver was blocked&rdquo; but
+    &ldquo;this driver tried to load with this stack and was blocked at
+    this kernel module.&rdquo; That depth requires <code>tracelog -start</code>
+    with the CodeIntegrity provider enabled. Out of scope for L6; the
+    audit-and-block trail from 3076/3077 is your operational baseline.
+  </div>
+
+  <div class="quiz" data-quiz-id="q3">
+    <div class="quiz-q">Microsoft&rsquo;s recommended driver block list arrives as which kind of WDAC policy?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="true">A pre-built signed kernel-mode policy in binary form ready for deployment today</button>
+      <button class="quiz-opt" data-correct="false">A pre-built unsigned user-mode policy in XML form requiring additional signing afterward</button>
+      <button class="quiz-opt" data-correct="false">A pre-built signed user-mode policy in XML form requiring Office child targeting</button>
+      <button class="quiz-opt" data-correct="false">A pre-built unsigned kernel-mode policy in textual form requiring manual signing later</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Common breakages and how to avoid them</h2>
+
+  <p>
+    Five failure modes dominate the &ldquo;I deployed WDAC and now everyone is
+    broken&rdquo; tickets. Knowing them in advance saves a week of rollback
+    planning.
+  </p>
+
+  <h3>Unsigned line-of-business apps &mdash; the biggest on-prem pitfall</h3>
+  <p>
+    Most enterprises with a 10-year-old line-of-business app have at least
+    one or two executables that have never been code-signed. WDAC Enforced
+    silently blocks them. <strong>Mitigation:</strong> sign the binaries with
+    your internal code-signing cert (the cost is real, not enormous); or
+    carve out a supplemental policy rule per binary (path-based, not
+    recommended; or hash-based, which is brittle). The Microsoft recommended
+    block list does <em>not</em> cover your LOB apps &mdash; only known-bad
+    drivers.
+  </p>
+
+  <h3>The &ldquo;single policy for the whole forest&rdquo; trap</h3>
+  <p>
+    Authoring a single policy for the entire domain is the wrong shape. The
+    IT OU runs different apps than the Finance OU; the production line OU
+    runs different apps than the call-center OU. <strong>Mitigation:</strong>
+    use multi-policy stacking &mdash; one base policy (the Microsoft block
+    list) and multiple supplemental policies per OU. The base blocks
+    known-bad drivers everywhere; the supplements allow LOB apps per
+    function.
+  </p>
+
+  <h3>Staging on domain controllers</h3>
+  <p>
+    A WDAC Enforced policy that blocks a critical boot component on a DC
+    blue-screens the DC. DCs do not recover from kernel-mode errors during
+    boot the way member servers do. <strong>Mitigation:</strong> stage on
+    member servers first; DCs last; have a rollback plan (WinPE USB,
+    Safe Mode with the policy disabled, a known-good supplemental policy).
+  </p>
+
+  <h3>Itanium-era drivers and old hardware</h3>
+  <p>
+    The recommended driver block list sometimes includes drivers needed by
+    old hardware (printers, plotters, ancient USB-to-serial adapters). Audit
+    mode catches this before Enforced &mdash; but only if Audit was
+    actually run. <strong>Mitigation:</strong> audit for at least the
+    full seven-day rule across all your hardware profiles before
+    flipping. Hardware that&rsquo;s only used on Tuesdays is the
+    classic miss.
+  </p>
+
+  <h3>The &ldquo;no patch = no rollout&rdquo; pressure</h3>
+  <p>
+    Sometimes the correct answer is &ldquo;do not enforce WDAC today.&rdquo;
+    If your line-of-business apps are unsigned and cannot be signed in the
+    rollout window, the floor of the recommended driver block list (Audit)
+    is your realistic posture. <strong>Mitigation:</strong> deploy Audit
+    only; record this as a floor/choice/disable decision per L4; revisit
+    when signing has shipped.
+  </p>
+
+  <hr>
+
+  <h2>What this lesson gives you</h2>
+
+  <ol>
+    <li><strong>WDAC is identity enforcement; ASR is behavior enforcement.</strong> They are complementary, not redundant. Together they form defense in depth at the process boundary (L2 row 2 + boundary 1 support).</li>
+    <li><strong>Two scopes:</strong> kernel-mode (drivers, the BYOVD surface) and user-mode (applications, the unsigned-binary surface). Separate policies for each.</li>
+    <li><strong>Two types:</strong> signed (production) vs. unsigned (initial authoring). HotCakeX recommends signed for production; the recommended driver block list is signed.</li>
+    <li><strong>Three modes, no Warn:</strong> Audit / Enforced / Disabled. Warn is omitted because kernel-mode enforcement happens before user-mode UI exists. Staging is audit &rarr; enforce, not audit &rarr; warn &rarr; block.</li>
+    <li><strong>The Microsoft recommended driver block list</strong> is the canonical on-prem win &mdash; pre-built, signed, kernel-mode. Deploy this before authoring custom policies.</li>
+    <li><strong>Authoring workflow:</strong> <code>New-CIPolicy</code> &rarr; <code>Merge-CIPolicy</code> &rarr; <code>ConvertFrom-CIPolicy</code> &rarr; <code>.p7b</code> &rarr; GPO at target OU.</li>
+    <li><strong>Telemetry</strong> in <code>Microsoft-Windows-CodeIntegrity/Operational</code>. Events 3076 (would-have-blocked), 3077 (actually-blocked), 3099 (allowed audit), 3091 (policy load). The 3076/3077 ratio is your leading indicator.</li>
+    <li><strong>Known breakages:</strong> unsigned LOB apps, single-policy-forest, DCs in stage one, old hardware drivers, &ldquo;no signing pipeline yet.&rdquo; Each has a documented mitigation.</li>
+  </ol>
+
+  <div class="next-up">
+    <div class="label">Next lesson</div>
+    <p><a href="0007-byovd-and-kernel-integrity.html"><strong>L7 &mdash; BYOVD &amp; Kernel Integrity.</strong></a> Now that you know WDAC enforces kernel-mode identity, the next question is: what is the attack class it protects against? BYOVD &mdash; Bring Your Own Vulnerable Driver &mdash; is the highest-tier lateral-movement technique a Windows admin must understand. HVCI as the second enforcement. Credential Guard and the L2 row 7 boundary. The Microsoft recommended driver block list and the recommended-driver-block-list-receipt Event ID pattern.</p>
+    <p>Primary source: Microsoft Learn &mdash; <em>Application Control for Windows</em> + <em>Hypervisor-protected Code Integrity (HVCI)</em>.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-label">Ask your teacher</div>
+    Anything unclear? Open the lesson in a browser and ask. The agent can
+    walk through the recommended-driver-block-list deployment on a sample OU,
+    draft a custom LOB supplemental policy for a specific line-of-business app
+    in your environment, or sketch the WEF collector subscription for the
+    CodeIntegrity log alongside the Defender Operational one.
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; L6</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="../reference/glossary.html">Glossary</a> &middot; <a href="../reference/baselines-cheatsheet.html">Baselines cheatsheet</a></span>
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (opt.disabled) return;
+          opts.forEach(function(o) { o.disabled = true; });
+          var correct = opt.getAttribute('data-correct') === 'true';
+          if (correct) {
+            opt.classList.add('correct');
+            fb.classList.add('show', 'ok');
+            fb.textContent = 'Correct. Move on, or revisit the section above if it was new to you.';
+          } else {
+            opt.classList.add('incorrect');
+            fb.classList.add('show', 'bad');
+            fb.textContent = 'Not quite. Re-read the section just above this question and try again later.';
+            setTimeout(function() {
+              opts.forEach(function(o) {
+                if (!o.classList.contains('correct')) {
+                  o.disabled = false;
+                  o.classList.remove('incorrect');
+                }
+              });
+              fb.classList.remove('show', 'bad');
+              fb.textContent = '';
+            }, 1800);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

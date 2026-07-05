@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 2 &mdash; Security Boundaries in Windows</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+</head>
+<body>
+
+  <h1>Security Boundaries in Windows</h1>
+  <div class="lesson-meta">
+    <span class="num">L2</span>
+    Architecture &middot; ~14 min &middot; Lesson 2 of the Harden Windows Security series
+  </div>
+
+  <p>
+    L1 gave you the 2&times;2 of defense in depth and the rule that local admin
+    collapses the rest of the stack. This lesson explains <em>why</em> that rule is
+    true. The answer is a single Windows-architecture fact, restated in three
+    layers, then translated into where GPO can and cannot enforce.
+  </p>
+
+  <p>
+    The fact: <strong>Group Policy does not create security boundaries. Group Policy
+    configures them.</strong> If the boundary itself is bypassed, the GPO configuration
+    is bypassed with it. This is the single most useful thing to internalize when
+    debugging a deployment that &ldquo;isn&rsquo;t working.&rdquo;
+  </p>
+
+  <hr>
+
+  <h2>The boundary hierarchy, top down</h2>
+
+  <p>
+    A <em>security boundary</em> in Windows is a line that an attacker at a lower
+    privilege level cannot cross to reach a higher privilege level, without first
+    breaking the boundary itself. The interesting ones for an enterprise admin are
+    seven. Each is enforced by a different mechanism. Each can be bypassed in a
+    different way. Each is configured by a different set of GPO settings &mdash;
+    or by no GPO at all.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Boundary</th>
+        <th>What it separates</th>
+        <th>What enforces it</th>
+        <th>What bypasses it</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td>CPU ring</td>
+        <td>Ring 0 (kernel) from Ring 3 (user mode)</td>
+        <td>Hardware + Windows kernel</td>
+        <td>Local Administrator (no boundary &mdash; by design)</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td>Process</td>
+        <td>One process from another&rsquo;s memory</td>
+        <td>Windows memory manager</td>
+        <td>Code running with the target process&rsquo;s privilege</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>User (Standard vs Admin)</td>
+        <td>Standard user from local Administrator</td>
+        <td>UAC + token filter</td>
+        <td>User who is local Administrator</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>Network</td>
+        <td>One machine from another over the wire</td>
+        <td>Windows firewall, SMB signing, NTLM/Kerberos, WinRM, RDP</td>
+        <td>Credential theft, BYOVD, exposed management port</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td>AD domain</td>
+        <td>One AD realm from another</td>
+        <td>Kerberos, ACLs on AD objects, DCOM/RPC auth</td>
+        <td>KRBTGT compromise, DC compromise, ACL misconfiguration</td>
+      </tr>
+      <tr>
+        <td><strong>6</strong></td>
+        <td>AppContainer (sandbox)</td>
+        <td>UWP / Store app from rest of system</td>
+        <td>AppContainer capability profile</td>
+        <td>Capability grant, broker escape (rare)</td>
+      </tr>
+      <tr>
+        <td><strong>7</strong></td>
+        <td>Virtualization (VBS)</td>
+        <td>Normal kernel from VBS-isolated kernel (Credential Guard, HVCI)</td>
+        <td>Hyper-V hypervisor on supported hardware</td>
+        <td>Hypervisor exploit (extremely rare, Tier&nbsp;4 territory)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Read this table once. The lesson that follows is just a restatement of it.
+    Boundaries 1&ndash;3 are OS-level on a single machine. Boundaries 4&ndash;5 are
+    network and AD. Boundary 6 is for Store / MSIX apps. Boundary 7 is the new
+    hypervisor-enforced layer that arrived with Windows 10 and is the foundation
+    Credential Guard and HVCI sit on.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The load-bearing row</div>
+    Row 1: <strong>there is no security boundary between Administrator and Kernel</strong>.
+    That sentence appears in Microsoft&rsquo;s own <em>Security Servicing Criteria for
+    Windows</em>. It is not a quirk. It is by design &mdash; Administrators are
+    expected to be able to install drivers, modify system files, and load kernel
+    software. The cost is that any code running as Administrator can, too.
+  </div>
+
+  <hr>
+
+  <h2>Why &ldquo;no local admin&rdquo; matters &mdash; in boundary terms</h2>
+
+  <p>
+    Read the table again with this question: <em>at which row does a phishing
+    attachment stop being dangerous?</em>
+  </p>
+
+  <ul>
+    <li><strong>User as Admin.</strong> The attachment runs in Ring 3 (boundary 1), but Admin tokens can load kernel drivers, so boundary 1 is advisory. It can read other processes&rsquo; memory (boundary 2 bypass). It can impersonate other users on the box (boundary 3 absent). It can pivot via SMB (boundary 4 depends on credentials). It can request Kerberos tickets (boundary 5 depends on ACLs). The attacker has effectively crossed every row except 5 (AD) and 7 (VBS, if enabled).</li>
+    <li><strong>User as Standard.</strong> The attachment runs in Ring 3 but cannot load drivers. It cannot read LSASS without an elevation prompt. It can still run, but every protection below it &mdash; ASR rules, WDAC, Defender real-time, SmartScreen &mdash; gets a chance to fire because the attachment has not bypassed boundary 1.</li>
+  </ul>
+
+  <p>
+    The 98% from L1 is the gap between those two paragraphs. Same attachment, same
+    OS, same domain. The only difference is whether boundary 3 exists.
+  </p>
+
+  <div class="quiz" data-quiz-id="q1">
+    <div class="quiz-q">A phishing attachment runs as a Standard user. Which row of the boundary table is doing the heavy lifting?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Row 1: CPU ring keeps the payload in user mode</button>
+      <button class="quiz-opt" data-correct="true">Row 3: the user is not Administrator so tokens stay filtered</button>
+      <button class="quiz-opt" data-correct="false">Row 4: the network blocks the callback connection</button>
+      <button class="quiz-opt" data-correct="false">Row 5: the AD domain rejects the impersonation ticket</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Where GPO can and cannot enforce</h2>
+
+  <p>
+    Now the part that matters for your day job. <strong>GPO configures boundaries.
+    It does not create them.</strong> This distinction shows up in two failure modes
+    that look identical but aren&rsquo;t:
+  </p>
+
+  <ul>
+    <li><strong>&ldquo;My GPO isn&rsquo;t applying.&rdquo;</strong> Almost always a GPO problem: scope, security filtering, WMI filter, replication. Fixable with <code>gpresult /h</code> on the target machine.</li>
+    <li><strong>&ldquo;My GPO applies but the attack still works.&rdquo;</strong> Usually a boundary problem: the user is Admin (boundary 3 absent), so the GPO setting that &ldquo;blocks&rdquo; Office from spawning executables is bypassable. Fixable only by fixing the boundary (remove local admin), not by writing another GPO.</li>
+  </ul>
+
+  <p>
+    The second failure is the more dangerous one because it looks like GPO is broken
+    when actually GPO is doing exactly what it was told. The boundary was already
+    gone before the GPO ran.
+  </p>
+
+  <h3>Per-boundary GPO action map</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Boundary</th>
+        <th>What GPO <em>can</em> configure</th>
+        <th>What GPO <em>cannot</em> do</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 &mdash; CPU ring</td>
+        <td>Driver block rules (WDAC), HVCI policy.</td>
+        <td>Stop an Admin from loading a driver it didn&rsquo;t block.</td>
+      </tr>
+      <tr>
+        <td>2 &mdash; Process</td>
+        <td>ASR rules (Office child process, etc.), Attack Surface Reduction.</td>
+        <td>Stop a process running with that process&rsquo;s own privileges.</td>
+      </tr>
+      <tr>
+        <td>3 &mdash; User / Admin</td>
+        <td>LAPS rotation, &ldquo;Add administrator&rdquo; rights removal, UAC level.</td>
+        <td>Prevent an account that is in the local Administrators group from acting as Administrator.</td>
+      </tr>
+      <tr>
+        <td>4 &mdash; Network</td>
+        <td>Windows Firewall rules, SMB signing, NTLM restrictions, RDP NLA, WinRM hardening.</td>
+        <td>Stop a stolen credential from being used by an attacker who has it.</td>
+      </tr>
+      <tr>
+        <td>5 &mdash; AD domain</td>
+        <td>Restricted Groups, ACL templates on OUs, GPO delegation, Protected Users group.</td>
+        <td>Recover from KRBTGT hash theft; reset trust with a compromised domain.</td>
+      </tr>
+      <tr>
+        <td>6 &mdash; AppContainer</td>
+        <td>AppLocker / WDAC user-mode policy targeting MSIX apps.</td>
+        <td>Force arbitrary Win32 binaries into a sandbox they were not designed for.</td>
+      </tr>
+      <tr>
+        <td>7 &mdash; VBS</td>
+        <td>Credential Guard policy, HVCI opt-in, kernel DMA protection.</td>
+        <td>Run on hardware without a hypervisor; recover a leaked VBS-protected secret.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <div class="callout-label">Failure mode to memorize</div>
+    <strong>GPO applies correctly, attack still succeeds.</strong> The fix is not
+    a stronger GPO. The fix is restoring the missing boundary &mdash; which usually
+    means removing local admin, isolating tier&nbsp;0, or enabling Credential Guard.
+    If you respond to &ldquo;GPO isn&rsquo;t blocking this&rdquo; by writing a new
+    GPO, you are debugging the wrong layer.
+  </div>
+
+  <div class="quiz" data-quiz-id="q2">
+    <div class="quiz-q">An attacker dumps LSASS memory despite your WDAC and ASR rules. Which boundary has been bypassed?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Row 1: CPU ring was crossed by a malicious driver</button>
+      <button class="quiz-opt" data-correct="true">Row 2 or 3: process or user boundary was already absent</button>
+      <button class="quiz-opt" data-correct="false">Row 4: the network allowed the exfiltration channel</button>
+      <button class="quiz-opt" data-correct="false">Row 5: the AD domain handed out the cache tickets</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Three scenarios from your domain</h2>
+
+  <p>
+    Three realistic incidents and what boundary reasoning says about each.
+  </p>
+
+  <h3>Scenario A &mdash; &ldquo;Phishing got an admin.&rdquo;</h3>
+  <p>
+    A user in <em>Domain Admins</em> clicks a phishing link. The attachment runs
+    in their elevated context. Every boundary except AD (row 5) collapses. <strong>Fix
+    is not GPO.</strong> Fix is tier-0 isolation: separate <em>Domain Admins</em>
+    from everyday accounts (a <em>PAW</em>, Privileged Access Workstation), require
+    separate credentials for tier&nbsp;0. HotCakeX recommends this for the same
+    reason &mdash; GPO cannot enforce &ldquo;do not browse the web as a domain
+    admin.&rdquo; Only an architectural separation can.
+  </p>
+
+  <h3>Scenario B &mdash; &ldquo;Workstation compromised, attacker moves laterally.&rdquo;</h3>
+  <p>
+    A workstation user runs a malicious attachment as Standard. ASR blocks one
+    exploit chain; the attacker pivots to a different chain that ASR did not cover.
+    They reuse a credential to access a file server via SMB. <strong>The fix is
+    at boundary 4.</strong> Require SMB signing (GPO: <em>Microsoft network server:
+    Digitally sign communications (always)</em>), block NTLM where possible, rotate
+    the local admin password with LAPS so the credential reuse fails. GPO is the
+    right tool here.
+  </p>
+
+  <h3>Scenario C &mdash; &ldquo;Service account is Domain Admin.&rdquo;</h3>
+  <p>
+    A SQL service account has been a member of <em>Domain Admins</em> since 2017
+    because someone needed it to &ldquo;just work.&rdquo; An attacker who SQL-injects
+    the web app inherits those rights. <strong>Fix is at boundary 5.</strong> GPO
+    can use the <em>Protected Users</em> group (no NTLM, no DES, no Kerberos
+    delegation) for the human admin account, but the service account needs a
+    separate fix: remove from Domain Admins, give it only the rights it needs
+    (least privilege), and audit with BloodHound or equivalent. GPO cannot
+    demote a service account; that is an AD object ACL edit.
+  </p>
+
+  <div class="quiz" data-quiz-id="q3">
+    <div class="quiz-q">Which scenario is most directly fixed by a GPO setting?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Scenario A: tier-0 isolation needs PAW architecture</button>
+      <button class="quiz-opt" data-correct="true">Scenario B: SMB signing is a configurable GPO setting</button>
+      <button class="quiz-opt" data-correct="false">Scenario C: service account ACL is not a GPO task</button>
+      <button class="quiz-opt" data-correct="false">All three equally &mdash; every boundary fix uses GPO</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>What this lesson gives you</h2>
+
+  <ol>
+    <li><strong>The seven boundaries.</strong> CPU ring, process, user, network, AD, AppContainer, VBS. Each is enforced differently and bypassed differently.</li>
+    <li><strong>The decision rule.</strong> GPO configures boundaries; it does not create them. If the boundary is gone, GPO cannot bring it back.</li>
+    <li><strong>The failure-mode vocabulary.</strong> &ldquo;GPO isn&rsquo;t applying&rdquo; is a GPO problem. &ldquo;GPO applies but the attack works&rdquo; is a boundary problem. The second is the dangerous one to misdiagnose.</li>
+    <li><strong>The per-row GPO action map.</strong> When you get a hardening request, identify which row it lives on before you start writing GPO.</li>
+  </ol>
+
+  <div class="next-up">
+    <div class="label">Next lesson</div>
+    <p><a href="0003-gpo-as-hardening-pipeline.html"><strong>L3 &mdash; Group Policy as the Hardening Pipeline.</strong></a> Now that you know GPO configures boundaries, the next question is: how do you design the GPO structure to do that at 500&ndash;5000 endpoints without breaking anything? OU hierarchy, security filtering, WMI filters, LSDOU processing order, loopback processing. Why some GPOs belong at the domain root, some at child OUs, and some at the workstation tier only.</p>
+    <p>Primary source: Microsoft Learn &mdash; <em>Group Policy architecture</em> + <em>Security filtering vs WMI filtering</em>.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-label">Ask your teacher</div>
+    Anything unclear? Open the lesson in a browser and ask. The agent can re-derive
+    any boundary row, walk through what &ldquo;credential theft against boundary 4&rdquo;
+    actually means, or map a specific incident in your domain to the row it bypassed.
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; L2</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="../reference/glossary.html">Glossary</a> &middot; <a href="../reference/baselines-cheatsheet.html">Baselines cheatsheet</a></span>
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(goog) {
+        goog.addEventListener('click', function() {
+          if (goog.disabled) return;
+          opts.forEach(function(o) { o.disabled = true; });
+          var correct = goog.getAttribute('data-correct') === 'true';
+          if (correct) {
+            goog.classList.add('correct');
+            fb.classList.add('show', 'ok');
+            fb.textContent = 'Correct. Move on, or revisit the section above if it was new to you.';
+          } else {
+            goog.classList.add('incorrect');
+            fb.classList.add('show', 'bad');
+            fb.textContent = 'Not quite. Re-read the section just above this question and try again later.';
+            setTimeout(function() {
+              opts.forEach(function(o) {
+                if (!o.classList.contains('correct')) {
+                  o.disabled = false;
+                  o.classList.remove('incorrect');
+                }
+              });
+              fb.classList.remove('show', 'bad');
+              fb.textContent = '';
+            }, 1800);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

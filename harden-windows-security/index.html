@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All Lessons — Harden Windows Security</title>
+<link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <a href="/harden-windows-security/" class="site-logo">Harden Windows Security</a>
+    <div class="site-nav">
+      <a href="/">Home</a>
+      <a href="/harden-windows-security/">Lessons</a>
+      <a href="/harden-windows-security/reference/glossary.html">Glossary</a>
+      <a href="/harden-windows-security/reference/baselines-cheatsheet.html">Baselines cheatsheet</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<div class="crumbs">
+  <a href="/">Home</a> &nbsp;·&nbsp;
+  <a href="/harden-windows-security/">All Lessons</a>
+</div>
+
+<h1>All Lessons</h1>
+
+<p>This course teaches you to harden a pure on-prem Active Directory domain (500–5000+ endpoints) using only official Microsoft methods, distributed via Group Policy. Translated from HotCakeX's cloud-first framing into GPO-native lessons for the enterprise AD admin.</p>
+
+<p class="section-label">Lessons</p>
+
+<div class="lesson-grid">
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0001</span>
+    <span class="card-category-badge">harden-windows-security</span>
+    <span class="card-time">2026-07-05</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0001-defense-in-depth-2x2.html">The Defense-in-Depth 2×2</a>
+  </h2>
+  <p class="card-desc">Mental model. Threat-actor tiers, the prevention/detection × baseline/ongoing grid, why local admin is the highest-leverage rule.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0002</span>
+    <span class="card-category-badge">harden-windows-security</span>
+    <span class="card-time">2026-07-05</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0002-security-boundaries.html">Security Boundaries in Windows</a>
+  </h2>
+  <p class="card-desc">Where GPO can and cannot enforce. Admin/kernel boundary, network/domain boundary, what the security servicing criteria actually say.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0003</span>
+    <span class="card-category-badge">harden-windows-security</span>
+    <span class="card-time">2026-07-05</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0003-gpo-as-hardening-pipeline.html">Group Policy as the Hardening Pipeline</a>
+  </h2>
+  <p class="card-desc">OU hierarchy, security filtering, WMI filters, loopback processing. Why some GPOs live at the domain root, some at child OUs.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0004</span>
+    <span class="card-category-badge">harden-windows-security</span>
+    <span class="card-time">2026-07-05</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0004-microsoft-security-baselines.html">Microsoft Security Baselines & LGPO.exe</a>
+  </h2>
+  <p class="card-desc">The Microsoft Security Compliance Toolkit. Ingesting the Windows 11 baseline. What's policy choice vs. baseline floor.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0005</span>
+    <span class="card-category-badge">harden-windows-security</span>
+    <span class="card-time">2026-07-05</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0005-attack-surface-reduction-rules.html">Attack Surface Reduction (ASR) Rules</a>
+  </h2>
+  <p class="card-desc">The 16 ASR rules, what each blocks, the rule modes. On-prem deployment: audit → warn → block, staged by OU.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0006</span>
+    <span class="card-category-badge">harden-windows-security</span>
+    <span class="card-time">2026-07-05</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0006-wdac-on-prem.html">App Control for Business (WDAC) On-Prem</a>
+  </h2>
+  <p class="card-desc">Kernel-mode zero-trust without Intune. Signed vs. unsigned policies. Audit mode. The Microsoft recommended driver block list.</p>
+</article>
+
+<article class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0007</span>
+    <span class="card-category-badge">harden-windows-security</span>
+    <span class="card-time">2026-07-05</span>
+  </div>
+  <h2 class="card-title">
+    <a href="lessons/0007-byovd-and-kernel-integrity.html">BYOVD & Kernel Integrity</a>
+  </h2>
+  <p class="card-desc">What BYOVD is. HVCI. Credential Guard. Reading kernel-mode Event Log alerts when EDR fires.</p>
+</article>
+</div>
+
+</main>
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="/harden-windows-security/">Lessons</a></li>
+        <li><a href="/harden-windows-security/reference/glossary.html">Glossary</a></li>
+        <li><a href="/harden-windows-security/reference/baselines-cheatsheet.html">Baselines cheatsheet</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Source</h4>
+      <ul>
+        <li><a href="https://github.com/HotCakeX/Harden-Windows-Security" target="_blank" rel="noopener">HotCakeX / Harden-Windows-Security</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    Harden Windows Security &mdash; an on-prem GPO-native translation.
+  </div>
+</footer>
+<script src="/harden-windows-security/assets/i18n.js" data-source="en" data-target="vi"></script>
+</body>
+</html>

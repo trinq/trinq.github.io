@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 5 &mdash; Attack Surface Reduction (ASR) Rules</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+</head>
+<body>
+
+  <h1>Attack Surface Reduction (ASR) Rules</h1>
+  <div class="lesson-meta">
+    <span class="num">L5</span>
+    Process behavior &middot; ~15 min &middot; Lesson 5 of the Harden Windows Security series
+  </div>
+
+  <p>
+    L4 ended with the MSCT toolchain and the floor / choice / disable taxonomy. This
+    lesson is a deep dive on the largest single category of that baseline &mdash;
+    <em>App execution</em> &mdash; using the only setting class in Windows that
+    can block a malicious behavior without a signature, without an EDR agent, and
+    without ever seeing the malware before.
+  </p>
+
+  <p>
+    The mental model: <strong>ASR rules are policy-driven process-blockers, not
+    signatures.</strong> They target <em>behaviors</em> &mdash; Office spawning
+    child processes, scripts downloading executables, USB running unsigned code
+    &mdash; rather than specific malware. A signature-based AV waits until it has
+    seen the file; an ASR rule blocks the <em>trick</em>, regardless of which
+    file is trying to use it. That makes ASR rules the single highest-leverage
+    setting on the baseline against opportunistic attack.
+  </p>
+
+  <hr>
+
+  <h2>How ASR rules differ from antivirus</h2>
+
+  <p>
+    Three differences that matter for an admin:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Antivirus / EDR</th>
+        <th>ASR rules</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Targets <em>files</em> &mdash; hashes, signatures, behaviors per-machine.</td>
+        <td>Targets <em>process behaviors</em> &mdash; what Office, scripts, USB, WMI are allowed to do.</td>
+      </tr>
+      <tr>
+        <td>Needs to have seen the file (or run an ML model on it) to block.</td>
+        <td>Blocks the trick before the file is even fully written.</td>
+      </tr>
+      <tr>
+        <td>Configured per-machine (Defender preferences) or per-tenant (Defender for Endpoint).</td>
+        <td>Configured <em>centrally via GPO</em>, applied to Ring 0&ndash;Ring 3 user and kernel processes.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    ASR rules are part of Microsoft Defender, but the rules engine ships with
+    Windows 10/11 Pro+ regardless of Defender for Endpoint licensing. You do not
+    need an EDR product to deploy them. You need:
+  </p>
+
+  <ul>
+    <li>Real-time protection enabled in Defender (this is the engine that runs the rules).</li>
+    <li>A GPO with the ASR rule ADMX imported (Microsoft ships the ADMX in the MSCT).</li>
+    <li>Telemetry to confirm the rules are firing (L4&rsquo;s verification discipline).</li>
+  </ul>
+
+  <div class="callout">
+    <div class="callout-label">The cost of &ldquo;Defender is off&rdquo;</div>
+    If real-time protection is off on a machine, ASR rules silently do nothing.
+    That is the most common &ldquo;I deployed ASR rules but they aren&rsquo;t
+    firing&rdquo; failure mode. Check Defender&rsquo;s real-time status first.
+  </div>
+
+  <hr>
+
+  <h2>The 16 ASR rules, grouped by attack class</h2>
+
+  <p>
+    There are 16 rules as of the Windows 11 2025 baseline. Trying to memorize all
+    16 is the wrong shape of effort. The right shape is <em>group them by attack
+    class</em> and know the pattern each class targets.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Attack class</th>
+        <th>What it covers</th>
+        <th>Rules</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Office abuse</strong></td>
+        <td>Office apps spawning processes, injecting code, loading unsigned add-ins, using macros to call Win32.</td>
+        <td>5 rules</td>
+        <td>Word document macro spawns <code>powershell.exe</code> &mdash; the classic phishing payload.</td>
+      </tr>
+      <tr>
+        <td><strong>Script abuse</strong></td>
+        <td>JavaScript / VBScript launching executables, obfuscated script execution, copied/impersonated system tools.</td>
+        <td>3 rules</td>
+        <td>Obfuscated PowerShell from a phishing site lands and runs.</td>
+      </tr>
+      <tr>
+        <td><strong>Email-based delivery</strong></td>
+        <td>Executable content from email and webmail clients.</td>
+        <td>1 rule</td>
+        <td>Outlook HTML attachment tries to launch an EXE.</td>
+      </tr>
+      <tr>
+        <td><strong>Credential theft</strong></td>
+        <td>LSASS memory dumping from non-Microsoft processes.</td>
+        <td>1 rule</td>
+        <td>Mimikatz tries to read LSASS &mdash; L2 row 3 bypassed.</td>
+      </tr>
+      <tr>
+        <td><strong>Lateral movement</strong></td>
+        <td>PSExec / WMI command launch; unsigned processes from USB.</td>
+        <td>2 rules</td>
+        <td>Attacker pivots via <code>PsExec.exe</code> or via a USB drive with a renamed <code>mimikatz.exe</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Persistence &amp; ransomware</strong></td>
+        <td>WMI event subscription; Adobe Reader child processes.</td>
+        <td>2 rules</td>
+        <td>Macro installs a WMI event subscription for re-entry; ransomware spawns Adobe child process.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Notice the map: every attack class corresponds to a row in L2&rsquo;s
+    boundary table.
+  </p>
+
+  <ul>
+    <li>Office abuse, script abuse, email-delivery &rarr; L2 row 2 (process boundary).</li>
+    <li>Credential theft &rarr; L2 row 3 (user/admin boundary &mdash; LSASS is a per-user boundary).</li>
+    <li>Lateral movement via PSExec/WMI/USB &rarr; L2 row 4 (network / removable media boundary).</li>
+    <li>Persistence via WMI subscription &rarr; L2 row 1 (CPU ring &mdash; WMI is a privileged surface).</li>
+  </ul>
+
+  <p>
+    ASR rules are the policy configuration of L2&rsquo;s row 2 (and partly rows
+    1, 3, 4). They are exactly what the L2 per-row GPO action map promised for
+    &ldquo;process-level&rdquo; enforcement.
+  </p>
+
+  <hr>
+
+  <h2>The four rule modes</h2>
+
+  <p>
+    Each rule has four modes. The mode is set per GPO, per OU. You stage
+    deployment by changing modes over time, not by adding rules all at once.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Mode</th>
+        <th>What happens when a process tries the action</th>
+        <th>What you see</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Not configured</strong></td>
+        <td>No rule check runs. Default Windows behavior.</td>
+        <td>Nothing.</td>
+      </tr>
+      <tr>
+        <td><strong>Audit</strong></td>
+        <td>Rule check runs. Action is <em>allowed</em>, but the event is logged.</td>
+        <td>Event Log entry (1121), no user-visible impact.</td>
+      </tr>
+      <tr>
+        <td><strong>Warn</strong></td>
+        <td>Action is <em>blocked</em>, but the user gets a dismissal option.</td>
+        <td>User sees a Defender prompt; Event Log 1122 entry.</td>
+      </tr>
+      <tr>
+        <td><strong>Block</strong></td>
+        <td>Action is <em>blocked</em>; no user option to dismiss.</td>
+        <td>Silent block from the user&rsquo;s perspective; Event Log 1122 entry.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <div class="callout-label">Audit does not block</div>
+    The most common junior-admin mistake: deploy ASR rules in Audit mode, see
+    no telemetry, conclude the rules aren&rsquo;t firing. They are firing &mdash;
+    they are just not blocking. Audit means &ldquo;let it through and tell us.&rdquo;
+    Block means &ldquo;stop it.&rdquo; The two are entirely different
+    operational states.
+  </div>
+
+  <hr>
+
+  <h2>The on-prem deployment pattern: audit &rarr; warn &rarr; block</h2>
+
+  <p>
+    The deployment pattern reuses the seven-day rule from L4, applied per OU and
+    per rule. The sequence:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Stage a single GPO with the full ASR rule set in Audit mode</h3>
+      <span class="step-body">Create a GPO named <em>ASR Baseline - Audit</em>. Import the ASR ADMX from the MSCT. Set all 16 rules to <em>Audit</em> (mode 2). Do not link yet.</span>
+    </li>
+    <li>
+      <h3>Link per OU, starting with the lowest-risk</h3>
+      <span class="step-body">Link at one OU first &mdash; say, a non-production pilot OU or an IT test OU. Wait seven days. Run <code>Get-WinEvent -LogName "Microsoft-Windows-Windows Defender/Operational"</code> on a sample machine. Confirm Event IDs 1121 are arriving.</span>
+    </li>
+    <li>
+      <h3>Classify each rule per L4</h3>
+      <span class="step-body">For each rule, walk through the L4 floor / choice / disable taxonomy. <em>Block Office child processes</em> is almost always floor. <em>Block executable content from email</em> depends on whether your org receives signed EXEs by email (rare; usually floor). <em>Block LSASS credential stealing</em> is floor on any machine that uses Windows logon.</span>
+    </li>
+    <li>
+      <h3>Document the exceptions</h3>
+      <span class="step-body">For each rule that broke a legitimate workflow during audit, create an exception OU per L4&rsquo;s discipline. Move the affected machine(s) to the exception OU with written documentation.</span>
+    </li>
+    <li>
+      <h3>Flip to Warn per OU</h3>
+      <span class="step-body">Once audit is clean, link a <em>ASR Baseline - Warn</em> GPO at one OU. Wait seven days. The Warn mode produces user-visible Defender prompts. Track the dismissal rate &mdash; high dismissal means the rule is blocking normal work, not malicious work.</span>
+    </li>
+    <li>
+      <h3>Flip to Block per OU</h3>
+      <span class="step-body">Once Warn is stable for seven days, link <em>ASR Baseline - Block</em> at the same OU. The rule now silently blocks. Track Event 1122 (block events). Compare 1122 count to 1121 (audit count) from earlier &mdash; if 1122 is much smaller, you stopped real attacks; if it&rsquo;s similar, you stopped normal work and need more exceptions.</span>
+    </li>
+    <li>
+      <h3>Roll forward to the next OU</h3>
+      <span class="step-body">Repeat the cycle for the next OU. The seven-day rule per mode is the buffer; do not skip it.</span>
+    </li>
+  </ol>
+
+  <div class="callout info">
+    <div class="callout-label">1121 vs 1122</div>
+    Event ID 1121 = &ldquo;ASR rule fired in Audit mode.&rdquo;
+    Event ID 1122 = &ldquo;ASR rule fired in Block or Warn mode.&rdquo;
+    The ratio of these two across the staging period is your leading indicator
+    of whether the rule is hitting real attacks or hitting normal work.
+  </div>
+
+  <div class="quiz" data-quiz-id="q1">
+    <div class="quiz-q">A new ASR rule is set to Audit mode and deployed. What happens when a malicious script tries to launch?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The action is blocked silently and logged for review</button>
+      <button class="quiz-opt" data-correct="false">The action is blocked and the user sees a Defender prompt</button>
+      <button class="quiz-opt" data-correct="true">The action is allowed to run but the event is logged</button>
+      <button class="quiz-opt" data-correct="false">The action is blocked and the machine reboots for safety</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Telemetry without Defender for Endpoint</h2>
+
+  <p>
+    Defender for Endpoint gives you a centralized dashboard for ASR events. On
+    pure on-prem without DfE, you can still get the data:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Source</th>
+        <th>How to query</th>
+        <th>What it gives you</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Microsoft-Windows-Windows Defender/Operational</code></td>
+        <td><code>Get-WinEvent -LogName "Microsoft-Windows-Windows Defender/Operational" -FilterXPath "*[System[EventID=1121 or EventID=1122]]"</code></td>
+        <td>The full ASR audit / block trail.</td>
+      </tr>
+      <tr>
+        <td><code>Microsoft-Windows-Windows Defender/WHC</code></td>
+        <td>Same approach; this log has higher-fidelity details for block events.</td>
+        <td>Block-mode events with process tree.</td>
+      </tr>
+      <tr>
+        <td>ETW tracing (<code>tracelog -start</code>)</td>
+        <td>Higher-effort; used when you need process-tree details that the Defender log doesn&rsquo;t capture.</td>
+        <td>Full process genealogy and module loads.</td>
+      </tr>
+      <tr>
+        <td>Forwarded events</td>
+        <td>Windows Event Forwarding (WEF) collects from machines and lands in a central collector.</td>
+        <td>Centralized archive of Defender events without SIEM.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The minimum-viable on-prem telemetry for ASR is: turn on Windows Event
+    Forwarding, subscribe to the Defender Operational log, and ship the events
+    to a central collector. This gives you a single query path to answer
+    &ldquo;how many times did this rule fire last week?&rdquo; without DfE.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Audit events roll off</div>
+    The Defender Operational log rolls over at 1&nbsp;MB by default. Without WEF
+    or a SIEM, your audit events disappear when the log wraps. Schedule a
+    weekly export of the Defender logs to a network share before staging
+    &ldquo;ASR - Audit&rdquo; at scale.
+  </div>
+
+  <hr>
+
+  <h2>The floor / choice / disable classification per rule</h2>
+
+  <p>
+    L4&rsquo;s taxonomy applied to the 16 ASR rules. This is the working
+    classification that a junior admin can audit and defend.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rule class</th>
+        <th>Default classification</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Office abuse (5 rules)</td>
+        <td><strong>Floor</strong></td>
+        <td>Phishing-as-entry-point is the dominant attack pattern. Office child-process spawning is the most-abused behavior.</td>
+      </tr>
+      <tr>
+        <td>LSASS credential stealing (1 rule)</td>
+        <td><strong>Floor</strong></td>
+        <td>Blocks Mimikatz-class attacks at the process level. The L2 row 3 boundary needs every layer of defense.</td>
+      </tr>
+      <tr>
+        <td>WMI event subscription persistence (1 rule)</td>
+        <td><strong>Floor</strong></td>
+        <td>Persistence via WMI is rare for legitimate software. Block-by-default with rare exception.</td>
+      </tr>
+      <tr>
+        <td>Script obfuscation (1 rule)</td>
+        <td><strong>Floor</strong></td>
+        <td>Legitimate scripts are not obfuscated. Block is reasonable for almost every environment.</td>
+      </tr>
+      <tr>
+        <td>PSExec / WMI command launch (1 rule)</td>
+        <td><strong>Choice</strong></td>
+        <td>IT departments legitimately use PSExec. Floor if your IT team uses only Intune / WinRM; choice otherwise.</td>
+      </tr>
+      <tr>
+        <td>Executable from email (1 rule)</td>
+        <td><strong>Floor</strong> &mdash; with disable exceptions for IT scripts.</td>
+        <td>Almost no legitimate org receives EXE attachments. Disable per L4 only if a documented workflow needs it.</td>
+      </tr>
+      <tr>
+        <td>Unsigned processes from USB (1 rule)</td>
+        <td><strong>Choice</strong></td>
+        <td>If your org uses USB drives for offline patch deployment, the rule breaks it. Audit first.</td>
+      </tr>
+      <tr>
+        <td>Adobe Reader child processes</td>
+        <td><strong>Floor</strong></td>
+        <td>Acrobat Reader should not be spawning child processes. Block.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The exact per-rule classification depends on your environment &mdash; the
+    table is the starting point, not the destination. The principle: <em>classify
+    every rule, document every choice, record every disable</em>, exactly per
+    L4&rsquo;s discipline.
+  </p>
+
+  <div class="quiz" data-quiz-id="q2">
+    <div class="quiz-q">An ASR rule is in Audit mode for a week. The telemetry shows it firing on a legitimate line-of-business script daily. What next?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Disable the rule globally &mdash; if it breaks one app, it breaks others</button>
+      <button class="quiz-opt" data-correct="false">Flip directly to Block &mdash; legitimate scripts should not exist</button>
+      <button class="quiz-opt" data-correct="true">Move the affected machine(s) to an exception OU per L4 discipline</button>
+      <button class="quiz-opt" data-correct="false">Leave the rule in Audit mode permanently so work continues</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>Breakage patterns to expect per rule</h2>
+
+  <p>
+    Each rule has a known set of legitimate apps that it will break. Knowing
+    these ahead of time saves a week of &ldquo;why is Finance complaining&rdquo;
+    tickets.
+  </p>
+
+  <h3>Office child-process rules &mdash; breaks software updaters inside Office</h3>
+  <p>
+    Some line-of-business apps install a small updater inside Word or Excel that
+    spawns a child process to check for new versions. Block mode breaks the
+    updater. <strong>Mitigation:</strong> audit first; identify the updaters;
+    move those machines to an exception OU; or fix the updater to use a
+    scheduled task instead of an Office child process.
+  </p>
+
+  <h3>PSExec / WMI command launch &mdash; breaks IT automation</h3>
+  <p>
+    If your IT team uses PSExec or WMI command launch as part of standard
+    remediation scripts, Block mode breaks the entire script. <strong>Mitigation:</strong>
+    rewrite the script to use WinRM / PowerShell Remoting, which is on a
+    different ASR rule surface; or carve out an exception OU for IT machines.
+  </p>
+
+  <h3>Executable content from email &mdash; breaks IT distribution</h3>
+  <p>
+    If your IT team distributes signed EXEs by email to staff (rare but
+    happens), Block mode breaks that channel. <strong>Mitigation:</strong> move
+    distribution off email and onto a download portal; the Block rule becomes
+    floor.
+  </p>
+
+  <h3>Unsigned processes from USB &mdash; breaks offline patch deployment</h3>
+  <p>
+    Some OT / IT shop floors use USB drives for offline patch deployment to
+    air-gapped machines. The unsigned-process rule breaks that. <strong>Mitigation:</strong>
+    sign the patch payloads with a code-signing cert; or carve out an
+    exception OU for the air-gapped machines.
+  </p>
+
+  <div class="quiz" data-quiz-id="q3">
+    <div class="quiz-q">You want to know whether an ASR rule is hitting real attacks or legitimate work. What is the leading indicator?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The 1121 event count from the audit period, alone</button>
+      <button class="quiz-opt" data-correct="false">The 1122 event count from the block period, alone</button>
+      <button class="quiz-opt" data-correct="true">The ratio of 1122 to 1121 events across staging periods</button>
+      <button class="quiz-opt" data-correct="false">The number of users who opened Defender prompts in warn mode</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>What this lesson gives you</h2>
+
+  <ol>
+    <li><strong>ASR rules are behavior-blockers, not signatures.</strong> They target tricks, not files. They run on real-time protection in Defender, configured centrally via GPO.</li>
+    <li><strong>The 16 rules grouped by attack class.</strong> Office abuse, script abuse, credential theft, email delivery, lateral movement, persistence. Each maps to a row in L2.</li>
+    <li><strong>Four modes: Not configured / Audit / Warn / Block.</strong> Audit means &ldquo;let it through and tell us.&rdquo; The staging sequence is Audit &rarr; Warn &rarr; Block, with the L4 seven-day rule between each.</li>
+    <li><strong>Floor / choice / disable classification per rule.</strong> Reuse L4&rsquo;s taxonomy. Most Office, LSASS, WMI, and script rules are floor. PSExec and USB rules are usually choice. Document every exception.</li>
+    <li><strong>Telemetry without Defender for Endpoint.</strong> Defender Operational log, Event IDs 1121 (audit) and 1122 (block). Forward via WEF to a central collector. The ratio of 1122 to 1121 is your leading indicator.</li>
+    <li><strong>Known breakage patterns per rule.</strong> Office child processes break software updaters. PSExec breaks IT automation. USB breaks offline patch deployment. Each has a documented mitigation.</li>
+  </ol>
+
+  <div class="next-up">
+    <div class="label">Next lesson</div>
+    <p><a href="0006-wdac-on-prem.html"><strong>L6 &mdash; App Control for Business (WDAC) On-Prem.</strong></a> Move from process-behavior blocking (ASR, L5) to executable-identity enforcement (WDAC, L6). The Microsoft recommended driver block list. Signed vs unsigned policies. Audit mode. Where WDAC lives in the L2 boundary map &mdash; row 1 (CPU ring) and row 7 (VBS).</p>
+    <p>Primary source: Microsoft Learn &mdash; <em>Application Control for Windows</em>.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-label">Ask your teacher</div>
+    Anything unclear? Open the lesson in a browser and ask. The agent can walk
+    through the audit &rarr; warn &rarr; block pattern on a sample OU, classify
+    a specific rule for your environment, or sketch the WEF forwarding
+    collector.
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; L5</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="../reference/glossary.html">Glossary</a> &middot; <a href="../reference/baselines-cheatsheet.html">Baselines cheatsheet</a></span>
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (opt.disabled) return;
+          opts.forEach(function(o) { o.disabled = true; });
+          var correct = opt.getAttribute('data-correct') === 'true';
+          if (correct) {
+            opt.classList.add('correct');
+            fb.classList.add('show', 'ok');
+            fb.textContent = 'Correct. Move on, or revisit the section above if it was new to you.';
+          } else {
+            opt.classList.add('incorrect');
+            fb.classList.add('show', 'bad');
+            fb.textContent = 'Not quite. Re-read the section just above this question and try again later.';
+            setTimeout(function() {
+              opts.forEach(function(o) {
+                if (!o.classList.contains('correct')) {
+                  o.disabled = false;
+                  o.classList.remove('incorrect');
+                }
+              });
+              fb.classList.remove('show', 'bad');
+              fb.textContent = '';
+            }, 1800);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

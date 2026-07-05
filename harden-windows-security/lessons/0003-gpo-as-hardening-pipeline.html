@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3 &mdash; Group Policy as the Hardening Pipeline</title>
+  <link rel="stylesheet" href="/harden-windows-security/assets/styles.css">
+</head>
+<body>
+
+  <h1>Group Policy as the Hardening Pipeline</h1>
+  <div class="lesson-meta">
+    <span class="num">L3</span>
+    GPO design &middot; ~14 min &middot; Lesson 3 of the Harden Windows Security series
+  </div>
+
+  <p>
+    L2 ended with a map: seven boundaries in Windows, each with its own GPO action
+    column. L1 ended with a single rule: no local admin. This lesson is the bridge
+    between the two &mdash; how to take a boundary-layer policy you want to deploy and
+    actually <em>place</em> it in Active Directory so it lands on the right
+    machines, in the right order, without breaking everything else.
+  </p>
+
+  <p>
+    The mental model for the lesson: <strong>Active Directory is a policy tree,
+    not just an object tree</strong>. The OU hierarchy is the spine; the GPOs are
+    nodes that cascade down the spine in a specific order; the user objects at the
+    bottom inherit whatever the cascade says. If you treat the tree as only an
+    object tree, you will misplace policies. Treat it as a policy tree, and
+    placement decisions become obvious.
+  </p>
+
+  <hr>
+
+  <h2>LSDOU: the four-layer cascade</h2>
+
+  <p>
+    When a user logs in, GPOs are evaluated in this order, and the <em>last</em>
+    one that applies wins on any setting that conflicts:
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>Local GPO</h3>
+      <span class="step-body">Each machine has one. Applies first. Use it for &ldquo;this machine is special&rdquo; overrides, never for fleet-wide hardening.</span>
+    </li>
+    <li>
+      <h3>Site GPO</h3>
+      <span class="step-body">Linked to an AD Site (a subnet grouping). Use it rarely &mdash; only for site-bound things like WAN-friendly SMB defaults.</span>
+    </li>
+    <li>
+      <h3>Domain GPO</h3>
+      <span class="step-body">Linked at the domain root. Applies to every machine and user in the domain. The home of &ldquo;must apply everywhere&rdquo; hardening.</span>
+    </li>
+    <li>
+      <h3>OU GPO</h3>
+      <span class="step-body">Linked to an OU. Applies to everything in that OU (and below, until something blocks it). Where most of your hardening lives.</span>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <div class="callout-label">The order matters</div>
+    &ldquo;Last writer wins&rdquo; is the rule. If a domain-root GPO disables SMBv1
+    and a child OU GPO enables it for legacy file servers, the child OU setting
+    wins for machines in that OU. Layer your policies from broad (domain root) to
+    narrow (deep OU), then test by running <code>gpresult /h gp-report.html</code>
+    on a target machine.
+  </div>
+
+  <p>
+    Note what is <em>not</em> in the list: site OUs, group OUs, dynamic OUs. Group
+    Policy doesn&rsquo;t care about group membership as a primary targeting
+    mechanism &mdash; it cares about <em>where the object lives in the tree</em>.
+    Targeting <em>who</em> in a GPO is done by security filtering on the GPO, not
+    by where the user object sits.
+  </p>
+
+  <div class="quiz" data-quiz-id="q1">
+    <div class="quiz-q">A workstation is in <code>OU=Finance,OU=Workstations</code>. Which GPO applies last?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Local GPO on the workstation itself</button>
+      <button class="quiz-opt" data-correct="false">Domain-root GPO disables SMBv1 across the domain</button>
+      <button class="quiz-opt" data-correct="true">OU-linked GPO at Finance: Workstations overrides everything</button>
+      <button class="quiz-opt" data-correct="false">Site GPO linked to the subnet of that workstation</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>The four placement strategies (mapped to L2&rsquo;s boundaries)</h2>
+
+  <p>
+    For each boundary-level policy you want to deploy, you have four placement
+    options. Each option has a different reach, a different debugging path, and
+    a different L2-boundary implication.
+  </p>
+
+  <h3>1. Domain-root placement &mdash; &ldquo;must apply everywhere&rdquo;</h3>
+  <p>
+    Linked at the domain root. Inherits down every OU in the domain. Use this for
+    policies that <em>every</em> machine and user must follow &mdash; the L1 baseline
+    &ldquo;floor&rdquo; of your hardening. Typical contents:
+  </p>
+  <ul>
+    <li>Disable SMBv1.</li>
+    <li>Disable guest account.</li>
+    <li>Require SMB signing (at the server side).</li>
+    <li>Require Secure Boot.</li>
+    <li>Disable autorun.</li>
+  </ul>
+  <p>
+    These all target boundary 4 (network) and boundary 1 (CPU ring via Secure Boot).
+    They are reversible per-OU if a child OU needs an exception, but should not
+    need to be.
+  </p>
+
+  <h3>2. Single-OU placement &mdash; &ldquo;this business unit only&rdquo;</h3>
+  <p>
+    Linked to one OU and its descendants. Use this for policies that vary by
+    business unit &mdash; finance has different software from engineering, so
+    finance&rsquo;s smart-screen and ASR-default-app rules differ. Also used for
+    site-specific things like DNS suffix or NTP server.
+  </p>
+
+  <h3>3. WMI-filtered placement &mdash; &ldquo;this hardware class only&rdquo;</h3>
+  <p>
+    You can filter a GPO by hardware: laptops only, desktops only, machines with
+    TPM 2.0 only, machines with at least 8&nbsp;GB of RAM. <strong>This is the
+    right tool for hardware-class targeting</strong> &mdash; if your laptops and
+    desktops need different BitLocker policies, use WMI filtering at the same
+    link target, not separate OUs. Useful because you do not have to maintain
+    parallel OU trees for &ldquo;laptops&rdquo; and &ldquo;desktops.&rdquo;
+  </p>
+  <p>
+    The trade-off: WMI evaluation runs at every gpupdate and on every boot. A
+    WMI query that touches the registry or WMI repository can be slow. Keep WMI
+    filters to a half-dozen classes per filter, and pre-test them with
+    <code>Get-WmiObject</code> from a sample machine.
+  </p>
+
+  <h3>4. Loopback-replaced placement &mdash; &ldquo;this machine owns this user&rdquo;</h3>
+  <p>
+    By default, User Configuration in a GPO applies to the user at logon, no
+    matter which machine they log onto. Loopback processing <em>replaces</em>
+    that: User Configuration from the GPO applies to whichever user logs onto
+    the machine the GPO is linked to. <strong>The use case is kiosk or terminal
+    server</strong> &mdash; the workstation, not the user, decides what the user
+    can do. This is how a call-center OU can lock down what a call-center
+    employee sees <em>only</em> when they log onto a call-center machine; their
+    normal-account GPO still applies when they log in elsewhere.
+  </p>
+
+  <div class="callout warning">
+    <div class="callout-label">Don&rsquo;t loopback by accident</div>
+    Loopback Processing is set in the GPO under <em>Computer Configuration &raquo;
+    Administrative Templates &raquo; System &raquo; Group Policy &raquo; User
+    Group Policy loopback processing mode</em>. The default is <em>Not
+    configured</em>. Leave it that way unless you have an explicit kiosk / RDS
+    requirement &mdash; misconfigured loopback has caused every junior admin in
+    history to chase their tail for a week.
+  </div>
+
+  <hr>
+
+  <h2>Security filtering vs WMI filtering</h2>
+
+  <p>
+    Two mechanisms narrow a GPO&rsquo;s effective scope. They are not
+    interchangeable.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Security filtering</th>
+        <th>WMI filtering</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Targets</strong></td>
+        <td><em>Who</em> the GPO applies to (users, computers, groups)</td>
+        <td><em>What</em> the machine looks like (hardware class, OS, features)</td>
+      </tr>
+      <tr>
+        <td><strong>Configured by</strong></td>
+        <td>The <em>Security</em> tab on the GPO</td>
+        <td>The <em>WMI Filter</em> dropdown on the GPO</td>
+      </tr>
+      <tr>
+        <td><strong>Default state</strong></td>
+        <td>Only <em>Authenticated Users</em> &mdash; effectively &ldquo;everyone&rdquo;</td>
+        <td>No filter &mdash; effectively &ldquo;all machines&rdquo;</td>
+      </tr>
+      <tr>
+        <td><strong>Typical use</strong></td>
+        <td>Narrow to a security group, e.g. &ldquo;HR-Workstations&rdquo;</td>
+        <td>Narrow to laptops, TPM-2.0 machines, etc.</td>
+      </tr>
+      <tr>
+        <td><strong>Footgun</strong></td>
+        <td>Leaving Authenticated Users on the GPO and adding a deny elsewhere; the GPO will still apply to most users.</td>
+        <td>WMI query that returns no rows on some machines &mdash; silent non-application.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    A pattern I have seen work at 500&ndash;5000 endpoints: create a security
+    group per OU (<em>GG_Finance_Workstations_Apply</em>, etc.), put the
+    computer objects in the group, set the GPO&rsquo;s security filter to that
+    group, and never touch Authenticated Users. The GPO has explicit, auditable
+    targeting.
+  </p>
+
+  <div class="quiz" data-quiz-id="q2">
+    <div class="quiz-q">A hardening GPO must apply only to laptops, no matter the OU. Which filter?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">Security filter on the Domain Computers group only</button>
+      <button class="quiz-opt" data-correct="true">WMI filter on chassis type equals laptop</button>
+      <button class="quiz-opt" data-correct="false">Block inheritance on the OU for desktop computers</button>
+      <button class="quiz-opt" data-correct="false">Loopback processing in Replace mode applied domain-wide</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>OU hierarchy at 500&ndash;5000 endpoints</h2>
+
+  <p>
+    At your scale, the OU tree stops being decorative. The pattern most admins
+    converge on is a 2&times;2 of axes: <em>tier</em> (security isolation) and
+    <em>function</em> (what the machines are for).
+  </p>
+
+  <pre data-lang="plaintext">domain.local
+&middot;
+&middot;&mdash; Domain Controllers           (Tier 0, has GPO: DCSecBaseline)
+&middot;&middot;   &middot;&mdash; DC01
+&middot;&middot;   &middot;&mdash; DC02
+&middot;
+&middot;&mdash; Tier 0 Servers               (PAW, identity, secrets)
+&middot;&middot;   &middot;&mdash; ...
+&middot;
+&middot;&mdash; Servers
+&middot;&middot;   &middot;&mdash; FilePrintServers
+&middot;&middot;   &middot;&mdash; AppServers
+&middot;&middot;   &middot;&mdash; DatabaseServers
+&middot;
+&middot;&mdash; Workstations
+&middot;&middot;   &middot;&mdash; BYOD
+&middot;&middot;   &middot;&mdash; Standard
+&middot;&middot;   &middot;&mdash; PrivilegedAccess (loopback policy here)
+&middot;
+&middot;&mdash; Kiosks                       (loopback policy here)</pre>
+
+  <p>
+    The two axes:
+  </p>
+  <ul>
+    <li><strong>Tier</strong> expresses <em>trust</em> &mdash; a Domain Controller in tier&nbsp;0 only ever talks to other tier&nbsp;0 systems. The GPO at that tier enforces the trust boundary; not the network firewall alone.</li>
+    <li><strong>Function</strong> expresses <em>role</em> &mdash; a file server, a workstation, a kiosk. The GPOs at each function express what that role is allowed to do.</li>
+  </ul>
+  <p>
+    Three rules for keeping this tree healthy at scale:
+  </p>
+  <ol>
+    <li><strong>Never nest by both tier and function at the same depth.</strong> <em>Workstations / PrivilegedAccess</em> is fine because the privileged-access workstation is still a workstation. <em>Tier0 / Workstations / PrivilegedAccess</em> is bad because it has two truths about trust.</li>
+    <li><strong>Move objects, don&rsquo;t edit GPOs.</strong> If <em>FINANCE01</em> needs a different policy, move the computer object to a different OU. Editing GPO filters every time is how GPOs drift.</li>
+    <li><strong>Block inheritance is a strong statement.</strong> Use it on tier&nbsp;0 OUs (so workstation GPOs cannot accidentally reach DCs). Never on user OUs. Always pair it with <em>Enforced</em> on the GPOs you do want.</li>
+  </ol>
+
+  <div class="callout info">
+    <div class="callout-label">The Enforced flag</div>
+    When a GPO is set to <em>Enforced</em> on its link target, no child OU can
+    block inheritance from stopping it. Enforced is the one-way valve: it
+    guarantees a policy makes it through. Use it sparingly on tier&nbsp;0
+    policies; never on user-facing ones.
+  </div>
+
+  <hr>
+
+  <h2>The four things that go wrong at scale</h2>
+
+  <p>
+    At 500&ndash;5000 endpoints, these four failure modes cause roughly 90%
+    of GPO debugging tickets. Knowing them saves hours.
+  </p>
+
+  <ol class="steps">
+    <li>
+      <h3>SYSVOL replication lag</h3>
+      <span class="step-body">You edit a GPO on DC01 at 14:00. DC02 may not have it until the DFS-R sync finishes &mdash; five minutes later on healthy links, never on broken ones. Machines serviced by DC02 will run with the old GPO until the next sync. Check <code>Get-DfsrState</code> if a policy &ldquo;isn&rsquo;t applying&rdquo; on a subset of machines.</span>
+    </li>
+    <li>
+      <h3>Block Inheritance without audit</h3>
+      <span class="step-body">Someone enabled block inheritance on an OU for a real reason. Six months later, a domain-root GPO silently stops applying to that OU and nobody notices. Treat block inheritance as a documented event &mdash; if you cannot defend it in a review, remove it.</span>
+    </li>
+    <li>
+      <h3>Security-filter sprawl</h3>
+      <span class="step-body">A GPO has 14 groups in its security filter, six deny entries, two WMI filters, and is enforced on three OUs. Diagnosing why one machine is mis-applying it is archaeology. Force the security filter down to one or two groups; force WMI to one filter; force linkage to one OU. Make the GPO boring.</span>
+    </li>
+    <li>
+      <h3>Computer vs User configuration confusion</h3>
+      <span class="step-body">Settings placed under <em>User Configuration</em> apply at logon. Settings placed under <em>Computer Configuration</em> apply at boot. If you put &ldquo;disable autorun&rdquo; under User Configuration when the computer boots before any user logs in, the setting won&rsquo;t apply during boot. Match the section to the moment you need enforcement.</span>
+    </li>
+  </ol>
+
+  <div class="quiz" data-quiz-id="q3">
+    <div class="quiz-q">A workstation in finance says &ldquo;no SMBv1&rdquo; is not set, but other finance workstations are fine. What is the most likely cause?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" data-correct="false">The local Administrator disabled it on that machine</button>
+      <button class="quiz-opt" data-correct="false">The workstation is on a different AD site than DC01</button>
+      <button class="quiz-opt" data-correct="true">SYSVOL has not replicated the GPO edit to that workstation&rsquo;s DC yet</button>
+      <button class="quiz-opt" data-correct="false">The WMI filter excluded that specific hardware model</button>
+    </div>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <hr>
+
+  <h2>What this lesson gives you</h2>
+
+  <ol>
+    <li><strong>AD is a policy tree.</strong> OU hierarchy is the spine; GPOs cascade down it; <em>last writer wins</em>. Plan placement from broad (domain root) to narrow (deep OU), and verify with <code>gpresult /h</code> on a target.</li>
+    <li><strong>Four placement strategies.</strong> Domain-root for &ldquo;must apply everywhere.&rdquo; Single-OU for business-unit or site variation. WMI-filtered for hardware-class targeting. Loopback-replaced for kiosk / RDS scenarios.</li>
+    <li><strong>Two filtering mechanisms.</strong> Security filtering narrows by <em>who</em>; WMI filtering narrows by <em>what the machine looks like</em>. Keep both simple. Aim for one target.</li>
+    <li><strong>The tier &times; function OU pattern.</strong> Trust plus role. Tier&nbsp;0 isolated, workstations split by privilege, block-inheritance audited.</li>
+    <li><strong>The four things that go wrong.</strong> SYSVOL lag, block inheritance without audit, security-filter sprawl, computer-vs-user confusion. Memorize these.</li>
+  </ol>
+
+  <div class="next-up">
+    <div class="label">Next lesson</div>
+    <p><a href="0004-microsoft-security-baselines.html"><strong>L4 &mdash; Microsoft Security Baselines &amp; LGPO.exe.</strong></a> The Microsoft Security Compliance Toolkit. How to ingest the Windows 11 baseline. How to convert an ADMX-backed baseline into deployable GPOs. What&rsquo;s policy choice and what&rsquo;s the floor that L1&rsquo;s 2&times;2 is asking you to set.</p>
+    <p>Primary source: Microsoft Security Compliance Toolkit + Microsoft Learn &mdash; <em>Windows security baselines</em>.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-label">Ask your teacher</div>
+    Anything unclear? Open the lesson in a browser and ask. The agent can re-derive
+    any part of LSDOU, walk through a real <code>gpresult /h</code> report, or map
+    your OU tree onto the tier &times; function pattern.
+  </div>
+
+  <div class="footer-nav">
+    <span>Harden Windows Security &middot; L3</span>
+    <span><a href="../index.html">Workspace hub</a> &middot; <a href="../reference/glossary.html">Glossary</a> &middot; <a href="../reference/baselines-cheatsheet.html">Baselines cheatsheet</a></span>
+  </div>
+
+  <script>
+    document.querySelectorAll('.quiz').forEach(function(quiz) {
+      var opts = quiz.querySelectorAll('.quiz-opt');
+      var fb = quiz.querySelector('.quiz-feedback');
+      opts.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (opt.disabled) return;
+          opts.forEach(function(o) { o.disabled = true; });
+          var correct = opt.getAttribute('data-correct') === 'true';
+          if (correct) {
+            opt.classList.add('correct');
+            fb.classList.add('show', 'ok');
+            fb.textContent = 'Correct. Move on, or revisit the section above if it was new to you.';
+          } else {
+            opt.classList.add('incorrect');
+            fb.classList.add('show', 'bad');
+            fb.textContent = 'Not quite. Re-read the section just above this question and try again later.';
+            setTimeout(function() {
+              opts.forEach(function(o) {
+                if (!o.classList.contains('correct')) {
+                  o.disabled = false;
+                  o.classList.remove('incorrect');
+                }
+              });
+              fb.classList.remove('show', 'bad');
+              fb.textContent = '';
+            }, 1800);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
