@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0003: The grill-me Skill</title>
+    <style>
+        :root {
+            --bg: #fefefe;
+            --text: #2d2d2d;
+            --accent: #4a5568;
+            --highlight: #edf2f7;
+            --border: #e2e8f0;
+            --code-bg: #f7fafc;
+            --good: #276749;
+            --bad: #c53030;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+        
+        h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--accent); font-size: 1.1rem; margin-bottom: 2rem; }
+        h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        p { margin-bottom: 1rem; }
+        code { background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; font-family: "SF Mono", Monaco, monospace; }
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem; }
+        
+        .principle {
+            background: var(--highlight);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .principle strong { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); }
+        
+        .invocation {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .invocation code { background: rgba(255,255,255,0.2); padding: 0.25em 0.75em; border-radius: 6px; font-size: 1.25rem; }
+        
+        .tip { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+        .tip::before { content: "💡 Tip:"; font-weight: 600; color: #92400e; margin-right: 0.5rem; }
+        
+        .questions {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .question {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .question h4 {
+            font-family: "SF Mono", Monaco, monospace;
+            color: #e53e3e;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        .question p { font-size: 0.9rem; color: var(--accent); margin: 0; }
+        
+        .dialogue {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        .dialogue .user { color: #38a169; margin-bottom: 0.75rem; }
+        .dialogue .user::before { content: "User: "; font-weight: 600; }
+        .dialogue .agent { color: #e53e3e; }
+        .dialogue .agent::before { content: "Grill: "; font-weight: 600; }
+        
+        .comparison { display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .comparison > div { flex: 1; min-width: 250px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+        .comparison h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        .comparison ul { margin: 0.5rem 0 0.5rem 1.25rem; font-size: 0.9rem; }
+        .comparison li { margin-bottom: 0.5rem; }
+        
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .meta { font-size: 0.85rem; color: var(--accent); margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        a { color: #4c51bf; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        ul, ol { margin: 1rem 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <h1>The grill-me Skill</h1>
+    <p class="subtitle">Stress-test any plan until it breaks</p>
+
+    <div class="invocation">
+        <p>To invoke:</p>
+        <p><code>/grill-me</code> <em>[plan or idea]</em></p>
+    </div>
+
+    <div class="principle">
+        <strong>The Core Idea</strong>
+        <strong>No idea survives first contact with reality.</strong> Grill-me interrogates your plan relentlessly — exposing flaws, assumptions, and edge cases before you build.
+    </div>
+
+    <h2>The Questions to Ask</h2>
+
+    <div class="questions">
+        <div class="question">
+            <h4>Why?</h4>
+            <p>Why is this the right solution? What problem does it solve? Why now?</p>
+        </div>
+        <div class="question">
+            <h4>What?</h4>
+            <p>What exactly are we building? What are the acceptance criteria? What does success look like?</p>
+        </div>
+        <div class="question">
+            <h4>Who?</h4>
+            <p>Who benefits? Who builds it? Who maintains it? Who does this hurt?</p>
+        </div>
+        <div class="question">
+            <h4>How?</h4>
+            <p>How do we implement it? How long? How much? How do we measure success?</p>
+        </div>
+        <div class="question">
+            <h4>What if?</h4>
+            <p>What if it fails? What if scale 10x? What if the team changes? What if requirements change?</p>
+        </div>
+    </div>
+
+    <h2>The Dialogue Pattern</h2>
+
+    <div class="dialogue">
+        <div class="user">/grill-me I'm going to add Redis caching to speed up our API</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="agent">Why Redis specifically over in-memory caching?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="user">We need it to be distributed across instances.</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="agent">What happens when Redis goes down? Do you have a fallback? What's your cache invalidation strategy? What keys need invalidation? What about cache stampede?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="agent">How will you measure if this works? What's your baseline latency? What p95/p99 are you targeting? How will you know if cache is actually hit?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="agent">Who's going to maintain this? What's the oncall story if Redis has issues at 3am? Do they know Redis?</div>
+    </div>
+
+    <h2>Grilling vs Debating</h2>
+
+    <div class="comparison">
+        <div>
+            <h4 style="color:var(--good);">✓ Grill-Me</h4>
+            <ul>
+                <li>Questions expose gaps</li>
+                <li>Uncover assumptions</li>
+                <li>Find edge cases</li>
+                <li>Strengthen the plan</li>
+                <li>Shared understanding</li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color:var(--bad);">✗ Debate</h4>
+            <ul>
+                <li>Arguments prove superiority</li>
+                <li>Defend a position</li>
+                <li>Win/lose dynamic</li>
+                <li>May reject good ideas</li>
+                <li>No shared understanding</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>When to Grill</h2>
+
+    <ul>
+        <li>Before building anything significant</li>
+        <li>When you feel uncertain about a decision</li>
+        <li>After brainstorming — before implementation</li>
+        <li>When someone says "let's just build it"</li>
+        <li>When requirements feel incomplete</li>
+    </ul>
+
+    <div class="tip">
+        Grill yourself first. Before invoking /grill-me, try to answer these questions yourself. If you can't, that's where to focus.
+    </div>
+
+    <div class="tip">
+        Grill the best option, not every option. After brainstorming, pick the best idea and grill that one hard.
+    </div>
+
+    <h2>The Output</h2>
+
+    <p>After grilling, you should have:</p>
+    <ul>
+        <li><strong>Clear requirements</strong> — what success looks like</li>
+        <li><strong>Known unknowns</strong> — what you still need to figure out</li>
+        <li><strong>Edge cases</strong> — what could go wrong</li>
+        <li><strong>Success metrics</strong> — how to measure success</li>
+        <li><strong>Shared understanding</strong> — everyone aligned</li>
+    </ul>
+
+    <div class="cta">
+        <p><strong>Next: Lesson 0004 — The grill-with-docs Skill</strong></p>
+        <p>Challenge plans against your project's domain model.</p>
+    </div>
+
+    <div class="meta">
+        <strong>Previous:</strong> <a href="0002-teach-skill.html">Lesson 0002: The teach Skill</a><br>
+        <strong>Next:</strong> <a href="0004-grill-with-docs-skill.html">Lesson 0004: The grill-with-docs Skill</a><br>
+        <strong>Source:</strong> <a href="https://github.com/mattpocock/skills">mattpocock/skills</a>
+    </div>
+</body>
+</html>

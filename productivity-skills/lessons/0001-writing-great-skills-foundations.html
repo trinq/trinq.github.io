@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0001: Writing Great Skills — Foundations</title>
+    <style>
+        :root {
+            --bg: #fefefe;
+            --text: #2d2d2d;
+            --accent: #4a5568;
+            --highlight: #edf2f7;
+            --border: #e2e8f0;
+            --code-bg: #f7fafc;
+            --primary: #805ad5;
+            --primary-light: #e9d8fd;
+            --good: #276749;
+            --good-bg: #f0fff4;
+            --bad: #c53030;
+            --bad-bg: #fff5f5;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+        
+        h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        .subtitle { color: var(--accent); font-size: 1.1rem; margin-bottom: 2rem; }
+        h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        p { margin-bottom: 1rem; }
+        code { background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; font-family: "SF Mono", Monaco, monospace; }
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem; overflow-x: auto; }
+        pre code { background: none; padding: 0; }
+        
+        .principle {
+            background: var(--highlight);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .principle strong { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); }
+        
+        .invocation {
+            background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .invocation code { background: rgba(255,255,255,0.2); padding: 0.25em 0.75em; border-radius: 6px; font-size: 1.1rem; }
+        
+        .tip { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+        .tip::before { content: "💡 Tip:"; font-weight: 600; color: #92400e; margin-right: 0.5rem; }
+        
+        .component-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .component-card h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .component-card h3 .badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .badge-required { background: #feb2b2; color: #c53030; }
+        .badge-optional { background: #c6f6d5; color: #276749; }
+        .component-card .example {
+            background: var(--code-bg);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .component-card .example h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .component-card .example pre {
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+        
+        .anatomy {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .anatomy-part {
+            background: var(--primary-light);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .anatomy-part h4 {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+        .anatomy-part p {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin: 0;
+        }
+        
+        .good-bad {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        @media (max-width: 600px) {
+            .good-bad { grid-template-columns: 1fr; }
+        }
+        .good-bad > div {
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        .good-bad .good {
+            background: var(--good-bg);
+            border: 1px solid #9ae6b4;
+        }
+        .good-bad .bad {
+            background: var(--bad-bg);
+            border: 1px solid #feb2b2;
+        }
+        .good-bad h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+        .good-bad .good h4 { color: var(--good); }
+        .good-bad .bad h4 { color: var(--bad); }
+        .good-bad ul { margin: 0; padding-left: 1.25rem; font-size: 0.9rem; }
+        .good-bad li { margin-bottom: 0.5rem; }
+        
+        .checklist {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .checklist h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .checklist ul {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+        .checklist li {
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+        .checklist li code {
+            font-size: 0.85em;
+        }
+        
+        .skill-example {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .skill-example h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .skill-example pre {
+            margin: 0;
+            border: none;
+            padding: 0;
+            background: transparent;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .meta { font-size: 0.85rem; color: var(--accent); margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        a { color: #4c51bf; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        ul, ol { margin: 1rem 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <h1>Writing Great Skills — Foundations</h1>
+    <p class="subtitle">The anatomy of effective agent skills</p>
+
+    <div class="invocation">
+        <p>Before you invoke skills, learn to write them.</p>
+        <p>Understanding how skills are built makes you better at using them.</p>
+    </div>
+
+    <div class="principle">
+        <strong>The Core Idea</strong>
+        <strong>A skill is a structured prompt that activates a specific mode of thinking.</strong> The best skills are clear, focused, and produce consistent results. Writing great skills is a craft.
+    </div>
+
+    <h2>What Makes a Skill?</h2>
+
+    <p>A skill has three essential components:</p>
+
+    <div class="anatomy">
+        <div class="anatomy-part">
+            <h4>Trigger</h4>
+            <p>What activates the skill</p>
+        </div>
+        <div class="anatomy-part">
+            <h4>Instructions</h4>
+            <p>What the skill does</p>
+        </div>
+        <div class="anatomy-part">
+            <h4>Output</h4>
+            <p>What the skill produces</p>
+        </div>
+    </div>
+
+    <h2>The Three Components</h2>
+
+    <div class="component-card">
+        <h3>1. Trigger <span class="badge badge-required">Required</span></h3>
+        <p>The invocation pattern that activates the skill. This is how users call the skill into action.</p>
+        <div class="example">
+            <h4>Examples</h4>
+            <pre><code>/teach React hooks
+/grill-me the authentication flow
+/brainstorm onboarding improvements</code></pre>
+        </div>
+    </div>
+
+    <div class="component-card">
+        <h3>2. Instructions <span class="badge badge-required">Required</span></h3>
+        <p>Clear, specific guidance on what to do. The instructions define the skill's behavior and constraints.</p>
+        <div class="example">
+            <h4>Good Instruction</h4>
+            <pre><code>Assess the user's current knowledge first. Ask what they 
+already know before explaining. Bridge gaps with analogies.
+End by checking understanding.</code></pre>
+        </div>
+    </div>
+
+    <div class="component-card">
+        <h3>3. Output Format <span class="badge badge-optional">Optional</span></h3>
+        <p>How the results should be structured. Not always needed, but helpful for consistency.</p>
+        <div class="example">
+            <h4>Example</h4>
+            <pre><code>Output a JSON object with:
+- topic: what was taught
+- gaps_identified: what needs more work  
+- key_takeaways: 3-5 bullet points</code></pre>
+        </div>
+    </div>
+
+    <h2>Skill File Structure</h2>
+
+    <div class="skill-example">
+        <h4>Typical Skill File</h4>
+<pre><code># File: skills/teach/SKILL.md
+
+name: teach
+description: Learn by assessing first using the Feynman Technique
+triggers:
+  - "/teach"
+  - "/learn"
+  
+instructions: |
+  Before explaining any concept, assess what the user already knows.
+  Ask targeted questions to identify gaps. Build explanations that
+  bridge from known to unknown. End by checking understanding.
+  
+output: |
+  Structure output as:
+  - Assessed knowledge level
+  - Key gaps identified
+  - Concept explanation (bridged)
+  - Comprehension check
+
+examples:
+  - input: "/teach closures"
+    behavior: "Ask what they know first"</code></pre>
+    </div>
+
+    <h2>Writing Principles</h2>
+
+    <div class="good-bad">
+        <div class="good">
+            <h4>✓ Do</h4>
+            <ul>
+                <li>Be specific about the behavior</li>
+                <li>Give concrete examples</li>
+                <li>State the phase/mode clearly</li>
+                <li>Include constraints when needed</li>
+                <li>Match tone to purpose</li>
+                <li>Test with real usage</li>
+            </ul>
+        </div>
+        <div class="bad">
+            <h4>✗ Don't</h4>
+            <ul>
+                <li>Be vague or generic</li>
+                <li>Include every possible case</li>
+                <li>Use conflicting instructions</li>
+                <li>Assume too much context</li>
+                <li>Over-complicate the structure</li>
+                <li>Skip testing</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>Phases and Modes</h2>
+
+    <p>Skills work by putting the agent in a specific <strong>mode</strong>. Each mode has a distinct purpose:</p>
+
+    <ul>
+        <li><strong>Learning mode</strong> — absorbing, understanding, gap analysis</li>
+        <li><strong>Ideation mode</strong> — generating, exploring, quantity over quality</li>
+        <li><strong>Evaluation mode</strong> — questioning, challenging, stress-testing</li>
+        <li><strong>Execution mode</strong> — building, implementing, structured delivery</li>
+        <li><strong>Diagnosis mode</strong> — investigating, troubleshooting, evidence-based</li>
+    </ul>
+
+    <div class="principle">
+        <strong>The Mode Rule</strong>
+        <strong>One skill, one mode.</strong> Don't mix learning and evaluation in the same skill. Keep modes pure for predictable results.
+    </div>
+
+    <h2>Trigger Design</h2>
+
+    <p>Triggers should be:</p>
+
+    <ul>
+        <li><strong>Short</strong> — one or two words maximum</li>
+        <li><strong>Intuitive</strong> — matches what users would naturally type</li>
+        <li><strong>Distinct</strong> — doesn't conflict with other skills</li>
+        <li><strong>Flexible</strong> — works with or without arguments</li>
+    </ul>
+
+    <div class="tip">
+        The trigger is the contract with users. Make it memorable and intuitive. "/teach" beats "/run-feynman-technique-with-gap-analysis".
+    </div>
+
+    <h2>Testing Your Skills</h2>
+
+    <p>Before finalizing a skill, test it:</p>
+
+    <div class="checklist">
+        <h4>Skill Testing Checklist</h4>
+        <ul>
+            <li><strong>Activation:</strong> Does the trigger reliably activate the skill?</li>
+            <li><strong>Consistency:</strong> Does it behave the same way each time?</li>
+            <li><strong>Clarity:</strong> Is the output clear and actionable?</li>
+            <li><strong>Edge cases:</strong> Does it handle unexpected inputs gracefully?</li>
+            <li><strong>Mode purity:</strong> Does it stay in one mode?</li>
+            <li><strong>User understanding:</strong> Can users predict what it will do?</li>
+        </ul>
+    </div>
+
+    <h2>Common Patterns</h2>
+
+    <h3>The Assessment Pattern</h3>
+    <p>Before doing X, assess Y. This prevents jumping to conclusions.</p>
+    <pre><code>Before explaining [topic], first assess what the user 
+already knows about [topic]. Ask specific questions to 
+identify gaps. Only then proceed with instruction.</code></pre>
+
+    <h3>The Loop Pattern</h3>
+    <p>Repeat a process until a condition is met.</p>
+    <pre><code>Run the following loop until the plan is solid:
+  1. Present the current plan
+  2. Identify the weakest assumption
+  3. Challenge that assumption
+  4. Update the plan
+  5. Repeat from step 1</code></pre>
+
+    <h3>The Output Pattern</h3>
+    <p>Structure results for easy consumption.</p>
+    <pre><code>Format your output as:
+  ## Summary
+  [One paragraph]
+  ## Key Points
+  - [Point 1]
+  - [Point 2]
+  ## Next Steps
+  1. [Step 1]
+  2. [Step 2]</code></pre>
+
+    <h2>Skill Quality Indicators</h2>
+
+    <p>A great skill is:</p>
+
+    <ul>
+        <li><strong>Predictable</strong> — users know what they'll get</li>
+        <li><strong>Focused</strong> — does one thing well</li>
+        <li><strong>Consistent</strong> — same input, same mode</li>
+        <li><strong>Self-documenting</strong> — the instructions explain themselves</li>
+        <li><strong>Composable</strong> — works well with other skills</li>
+    </ul>
+
+    <div class="principle">
+        <strong>The Composition Principle</strong>
+        <strong>Skills should chain naturally.</strong> A skill that can't combine with others is limited. Design skills that work as building blocks.
+    </div>
+
+    <div class="cta">
+        <p><strong>Next: Lesson 0002 — The teach Skill</strong></p>
+        <p>Apply these foundations to writing the first skill.</p>
+    </div>
+
+    <div class="meta">
+        <strong>Next:</strong> <a href="0002-teach-skill.html">Lesson 0002: The teach Skill</a><br>
+        <strong>Course:</strong> <a href="../index.html">Back to Course Index</a>
+    </div>
+</body>
+</html>

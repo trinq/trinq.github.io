@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0004: The grill-with-docs Skill</title>
+    <style>
+        :root {
+            --bg: #fefefe;
+            --text: #2d2d2d;
+            --accent: #4a5568;
+            --highlight: #edf2f7;
+            --border: #e2e8f0;
+            --code-bg: #f7fafc;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+        
+        h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--accent); font-size: 1.1rem; margin-bottom: 2rem; }
+        h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        p { margin-bottom: 1rem; }
+        code { background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; font-family: "SF Mono", Monaco, monospace; }
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem; }
+        
+        .principle {
+            background: var(--highlight);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .principle strong { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); }
+        
+        .invocation {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .invocation code { background: rgba(255,255,255,0.2); padding: 0.25em 0.75em; border-radius: 6px; font-size: 1.1rem; }
+        
+        .tip { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+        .tip::before { content: "💡 Tip:"; font-weight: 600; color: #92400e; margin-right: 0.5rem; }
+        
+        .doc-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .doc-type {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .doc-type h4 {
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 0.85rem;
+            color: #dd6b20;
+            margin-bottom: 0.25rem;
+        }
+        .doc-type p { font-size: 0.85rem; color: var(--accent); margin: 0; }
+        
+        .dialogue {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        .dialogue .user { color: #38a169; margin-bottom: 0.75rem; }
+        .dialogue .user::before { content: "User: "; font-weight: 600; }
+        .dialogue .agent { color: #dd6b20; }
+        .dialogue .agent::before { content: "Grill: "; font-weight: 600; }
+        
+        .comparison { display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .comparison > div { flex: 1; min-width: 250px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+        .comparison h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        .comparison ul { margin: 0.5rem 0 0.5rem 1.25rem; font-size: 0.9rem; }
+        .comparison li { margin-bottom: 0.5rem; }
+        
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .meta { font-size: 0.85rem; color: var(--accent); margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        a { color: #4c51bf; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        ul, ol { margin: 1rem 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <h1>The grill-with-docs Skill</h1>
+    <p class="subtitle">Challenge plans against your project's domain model</p>
+
+    <div class="invocation">
+        <p>To invoke:</p>
+        <p><code>/grill-with-docs</code> <em>[plan or idea]</em></p>
+    </div>
+
+    <div class="principle">
+        <strong>The Core Idea</strong>
+        <strong>Your project has a language. Does the plan speak it?</strong> grill-with-docs challenges plans against your project's documented decisions, domain model, and conventions.
+    </div>
+
+    <h2>What Gets Challenged</h2>
+
+    <div class="doc-types">
+        <div class="doc-type">
+            <h4>CONTEXT.md</h4>
+            <p>Why things are the way they are</p>
+        </div>
+        <div class="doc-type">
+            <h4>ADRs</h4>
+            <p>Architecture decisions</p>
+        </div>
+        <div class="doc-type">
+            <h4>Domain Model</h4>
+            <p>Terms, concepts, relationships</p>
+        </div>
+        <div class="doc-type">
+            <h4>Coding Standards</h4>
+            <p>Conventions and patterns</p>
+        </div>
+    </div>
+
+    <h2>The Dialogue Pattern</h2>
+
+    <div class="dialogue">
+        <div class="user">/grill-with-docs Let's add a "like" feature to posts</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="agent">Let me check your domain model... You have "reactions" defined in CONTEXT.md, not "likes". Why a new term instead of using reactions?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="user">I didn't know reactions existed. What's the difference?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="agent">Your ADR-012 says reactions are aggregated counts, not per-user records. Does "like" need to track who liked, or just count?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="agent">Your domain model defines User -> Reaction -> Post. Does this new feature fit that relationship, or extend it?</div>
+    </div>
+
+    <h2>grill-with-docs vs grill-me</h2>
+
+    <div class="comparison">
+        <div>
+            <h4>grill-with-docs</h4>
+            <ul>
+                <li>Challenges against existing docs</li>
+                <li>Checks terminology</li>
+                <li>Validates against ADRs</li>
+                <li>Preserves decisions made</li>
+                <li>Checks domain consistency</li>
+            </ul>
+        </div>
+        <div>
+            <h4>grill-me</h4>
+            <ul>
+                <li>Challenges with questions</li>
+                <li>Exposes assumptions</li>
+                <li>Validates feasibility</li>
+                <li>Creates new decisions</li>
+                <li>Checks logical consistency</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>Why It Matters</h2>
+
+    <ul>
+        <li><strong>Consistency</strong> — Same terms, same patterns across the codebase</li>
+        <li><strong>Preserves decisions</strong> — Don't re-litigate what was already decided</li>
+        <li><strong>Prevents drift</strong> — Catch deviations early</li>
+        <li><strong>Knowledge transfer</strong> — Learn what others already learned</li>
+    </ul>
+
+    <div class="tip">
+        If grill-with-docs finds a conflict, you have options: update the plan to match docs, update docs (with reason), or document why this is an exception.
+    </div>
+
+    <div class="tip">
+        Use after grill-me. grill-me challenges the logic, grill-with-docs challenges against your project. Together they cover most bases.
+    </div>
+
+    <h2>When to Use</h2>
+
+    <ul>
+        <li>After brainstorming, before implementation</li>
+        <li>When introducing new concepts or terms</li>
+        <li>When plans might conflict with existing decisions</li>
+        <li>When onboarding to a new codebase</li>
+        <li>Before creating new documentation</li>
+    </ul>
+
+    <div class="cta">
+        <p><strong>Next: Lesson 0005 — The teach Skill Deep Dive</strong></p>
+        <p>Master the Feynman Technique for deep learning.</p>
+    </div>
+
+    <div class="meta">
+        <strong>Previous:</strong> <a href="0003-grill-me-skill.html">Lesson 0003: The grill-me Skill</a><br>
+        <strong>Next:</strong> <a href="0005-teach-skill-deep-dive.html">Lesson 0005: The teach Skill Deep Dive</a><br>
+        <strong>Source:</strong> <a href="https://github.com/mattpocock/skills">mattpocock/skills</a>
+    </div>
+</body>
+</html>

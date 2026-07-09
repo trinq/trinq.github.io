@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0007: Combining Skills</title>
+    <style>
+        :root {
+            --bg: #fefefe;
+            --text: #2d2d2d;
+            --accent: #4a5568;
+            --highlight: #edf2f7;
+            --border: #e2e8f0;
+            --code-bg: #f7fafc;
+            --good: #276749;
+            --good-bg: #f0fff4;
+            --bad: #c53030;
+            --bad-bg: #fff5f5;
+            --chain-bg: #ebf8ff;
+            --chain-border: #4299e1;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+        
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        code {
+            background: var(--code-bg);
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: "SF Mono", Monaco, monospace;
+        }
+        
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .chain-box {
+            background: var(--chain-bg);
+            border: 2px solid var(--chain-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .chain-box h3 {
+            color: #2b6cb0;
+            margin-top: 0;
+        }
+        
+        .invocation {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .invocation code {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25em 0.75em;
+            border-radius: 6px;
+            font-size: 1.1rem;
+        }
+        
+        .workflow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        
+        .workflow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            min-width: 100px;
+        }
+        
+        .workflow-step .num {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        
+        .workflow-step .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+        
+        .workflow-arrow {
+            color: var(--accent);
+            font-size: 1.25rem;
+        }
+        
+        .workflow-result {
+            background: var(--good-bg);
+            border-color: #9ae6b4;
+        }
+        
+        .workflow-result .name {
+            color: var(--good);
+        }
+        
+        .principle {
+            background: var(--highlight);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .principle strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        
+        .dialogue {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        
+        .dialogue .user {
+            color: #38a169;
+            margin-bottom: 0.75rem;
+        }
+        
+        .dialogue .user::before {
+            content: "User: ";
+            font-weight: 600;
+        }
+        
+        .dialogue .agent {
+            color: #805ad5;
+            margin-bottom: 0.75rem;
+        }
+        
+        .dialogue .agent::before {
+            content: "Agent: ";
+            font-weight: 600;
+        }
+        
+        .dialogue .system {
+            color: #718096;
+            font-style: italic;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: var(--highlight);
+            border-radius: 4px;
+        }
+        
+        .chain-visual {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        
+        .chain-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        
+        .chain-item .icon {
+            flex-shrink: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .chain-item .content {
+            flex: 1;
+        }
+        
+        .chain-item .content h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .chain-item .content p {
+            font-size: 0.9rem;
+            margin: 0;
+            color: var(--accent);
+        }
+        
+        .chain-item .arrow {
+            display: flex;
+            align-items: center;
+            color: var(--accent);
+        }
+        
+        .use-case {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .use-case h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .use-case .scenario {
+            background: var(--highlight);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .use-case .scenario strong {
+            color: var(--accent);
+        }
+        
+        .use-case .steps {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .use-case .step {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+        
+        .use-case .step code {
+            padding: 0;
+            background: none;
+        }
+        
+        .tip {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .tip::before {
+            content: "💡 Tip:";
+            font-weight: 600;
+            color: #92400e;
+            margin-right: 0.5rem;
+        }
+        
+        .comparison {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .comparison > div {
+            flex: 1;
+            min-width: 280px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        
+        .comparison h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comparison ul {
+            margin: 0.5rem 0 0.5rem 1.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .comparison li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        
+        .skill-pill {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .meta {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        a {
+            color: #4c51bf;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Combining Skills</h1>
+    <p class="subtitle">Chain skills together for powerful, intentional workflows</p>
+
+    <div class="invocation">
+        <p>The power of skills isn't just individual capabilities — it's how they compose.</p>
+    </div>
+
+    <div class="chain-box">
+        <h3>The Core Insight</h3>
+        <p>Skills are building blocks. Individually useful, but when combined intentionally, they create workflows that are greater than the sum of their parts. The skill you use <em>next</em> shapes what you get from the one you use <em>now</em>.</p>
+    </div>
+
+    <div class="principle">
+        <strong>The Rule</strong>
+        <strong>Match the skill to the phase.</strong> Don't brainstorm when you should be grilling. Don't build when you should be learning. Know where you are in the process.
+    </div>
+
+    <h2>Pre-Built Workflows</h2>
+
+    <p>These proven chains solve common problems:</p>
+
+    <h3>1. The Creation Workflow</h3>
+
+    <div class="workflow">
+        <div class="workflow-step">
+            <span class="num">Step 1</span>
+            <span class="name">/brainstorm</span>
+        </div>
+        <span class="workflow-arrow">→</span>
+        <div class="workflow-step">
+            <span class="num">Step 2</span>
+            <span class="name">/grill-me</span>
+        </div>
+        <span class="workflow-arrow">→</span>
+        <div class="workflow-step workflow-result">
+            <span class="num">Result</span>
+            <span class="name">/build</span>
+        </div>
+    </div>
+
+    <p><strong>Use for:</strong> New features, projects, or initiatives. Start with wild ideas, stress-test the best one, then execute.</p>
+
+    <h3>2. The Learning Workflow</h3>
+
+    <div class="workflow">
+        <div class="workflow-step">
+            <span class="num">Step 1</span>
+            <span class="name">/teach</span>
+        </div>
+        <span class="workflow-arrow">→</span>
+        <div class="workflow-step">
+            <span class="num">Step 2</span>
+            <span class="name">/brainstorm</span>
+        </div>
+        <span class="workflow-arrow">→</span>
+        <div class="workflow-step workflow-result">
+            <span class="num">Result</span>
+            <span class="name">/build</span>
+        </div>
+    </div>
+
+    <p><strong>Use for:</strong> Learning new tech, then applying it. First understand, then generate ideas for application, then implement.</p>
+
+    <h3>3. The Review Workflow</h3>
+
+    <div class="workflow">
+        <div class="workflow-step">
+            <span class="num">Step 1</span>
+            <span class="name">/grill-me</span>
+        </div>
+        <span class="workflow-arrow">→</span>
+        <div class="workflow-step">
+            <span class="num">Step 2</span>
+            <span class="name">/build</span>
+        </div>
+        <span class="workflow-arrow">→</span>
+        <div class="workflow-step workflow-result">
+            <span class="num">Result</span>
+            <span class="name">/review</span>
+        </div>
+    </div>
+
+    <p><strong>Use for:</strong> Implementation with verification. Plan thoroughly, build confidently, then review against requirements.</p>
+
+    <h3>4. The Debug Workflow</h3>
+
+    <div class="workflow">
+        <div class="workflow-step">
+            <span class="num">Step 1</span>
+            <span class="name">/systematic-debugging</span>
+        </div>
+        <span class="workflow-arrow">→</span>
+        <div class="workflow-step">
+            <span class="num">Step 2</span>
+            <span class="name">/grill-me</span>
+        </div>
+        <span class="workflow-arrow">→</span>
+        <div class="workflow-step workflow-result">
+            <span class="num">Result</span>
+            <span class="name">/fix</span>
+        </div>
+    </div>
+
+    <p><strong>Use for:</strong> Hard bugs. Diagnose systematically, validate understanding with grilling, then implement the fix.</p>
+
+    <h2>The Skill Matrix</h2>
+
+    <p>Each skill maps to a phase:</p>
+
+    <div class="skill-grid">
+        <div class="skill-pill">/teach</div>
+        <div class="skill-pill">/learn</div>
+        <div class="skill-pill">/research</div>
+    </div>
+    <p style="margin-top:0.5rem;font-size:0.9rem;color:var(--accent);">Learning Phase — understanding</p>
+
+    <div class="skill-grid">
+        <div class="skill-pill">/brainstorm</div>
+        <div class="skill-pill">/ideate</div>
+        <div class="skill-pill">/explore</div>
+    </div>
+    <p style="margin-top:0.5rem;font-size:0.9rem;color:var(--accent);">Ideation Phase — generating options</p>
+
+    <div class="skill-grid">
+        <div class="skill-pill">/grill-me</div>
+        <div class="skill-pill">/grilling</div>
+        <div class="skill-pill">/evaluate</div>
+    </div>
+    <p style="margin-top:0.5rem;font-size:0.9rem;color:var(--accent);">Evaluation Phase — stress-testing</p>
+
+    <div class="skill-grid">
+        <div class="skill-pill">/build</div>
+        <div class="skill-pill">/implement</div>
+        <div class="skill-pill">/tdd</div>
+    </div>
+    <p style="margin-top:0.5rem;font-size:0.9rem;color:var(--accent);">Execution Phase — making it real</p>
+
+    <div class="skill-grid">
+        <div class="skill-pill">/review</div>
+        <div class="skill-pill">/test</div>
+        <div class="skill-pill">/verify</div>
+    </div>
+    <p style="margin-top:0.5rem;font-size:0.9rem;color:var(--accent);">Verification Phase — checking quality</p>
+
+    <h2>How to Combine Skills</h2>
+
+    <h3>Sequential Chaining</h3>
+
+    <p>Use one skill, then another in sequence:</p>
+
+    <div class="dialogue">
+        <div class="user">/brainstorm ways to improve our onboarding flow</div>
+        
+        <div class="system">Brainstorming mode</div>
+        
+        <div class="agent">[generates 15 ideas]</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="user">The personalized email sequence looks promising. /grill-me</div>
+        
+        <div class="system">Grilling mode — stress-testing the idea</div>
+        
+        <div class="agent">[interviews about implementation, edge cases, success metrics]</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="user">Let's build it. /tdd</div>
+        
+        <div class="system">TDD mode — test-driven implementation</div>
+        
+        <div class="agent">[writes tests first, then implements]</div>
+    </div>
+
+    <h3>Parallel Execution</h3>
+
+    <p>Some skills work together simultaneously:</p>
+
+    <div class="dialogue">
+        <div class="user">I want to understand both React hooks and Vue composition API at the same time. /teach</div>
+        
+        <div class="system">Teach mode — alternating between frameworks to highlight differences</div>
+        
+        <div class="agent">Let's compare them side-by-side. Starting with state management...</div>
+    </div>
+
+    <h2>Use Case Examples</h2>
+
+    <div class="use-case">
+        <h4>Building a New Feature</h4>
+        <div class="scenario">
+            <strong>Scenario:</strong> "We need a dark mode toggle for our app."
+        </div>
+        <div class="steps">
+            <span class="step"><code>/brainstorm</code> implementation approaches</span>
+            <span class="step"><code>/grill-me</code> chosen approach</span>
+            <span class="step"><code>/tdd</code> build with tests</span>
+            <span class="step"><code>/review</code> verify implementation</span>
+        </div>
+    </div>
+
+    <div class="use-case">
+        <h4>Learning a New Framework</h4>
+        <div class="scenario">
+            <strong>Scenario:</strong> "I want to learn Next.js and build a portfolio."
+        </div>
+        <div class="steps">
+            <span class="step"><code>/teach</code> Next.js fundamentals</span>
+            <span class="step"><code>/brainstorm</code> portfolio features</span>
+            <span class="step"><code>/grill-me</code> scope the MVP</span>
+            <span class="step"><code>/build</code> implement incrementally</span>
+        </div>
+    </div>
+
+    <div class="use-case">
+        <h4>Writing a Skill</h4>
+        <div class="scenario">
+            <strong>Scenario:</strong> "I need a skill to automate my standups."
+        </div>
+        <div class="steps">
+            <span class="step"><code>/brainstorm</code> what it should do</span>
+            <span class="step"><code>/grill-me</code> refine the design</span>
+            <span class="step"><code>/teach</code> (optional) learn from existing skills</span>
+            <span class="step"><code>/build</code> write the skill</span>
+        </div>
+    </div>
+
+    <div class="use-case">
+        <h4>Fixing a Bug</h4>
+        <div class="scenario">
+            <strong>Scenario:</strong> "Memory leak in production, need to diagnose and fix."
+        </div>
+        <div class="steps">
+            <span class="step"><code>/systematic-debugging</code> find root cause</span>
+            <span class="step"><code>/grill-me</code> validate understanding</span>
+            <span class="step"><code>/tdd</code> write regression test first</span>
+            <span class="step"><code>/fix</code> implement the solution</span>
+        </div>
+    </div>
+
+    <h2>Anti-Patterns</h2>
+
+    <div class="comparison">
+        <div>
+            <h4 style="color:var(--good);">✓ Do</h4>
+            <ul>
+                <li>Match skill to phase</li>
+                <li>End one skill before starting another</li>
+                <li>Use the result of one as input to next</li>
+                <li>Stay in the same mode until done</li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color:var(--bad);">✗ Don't</h4>
+            <ul>
+                <li>Switch skills mid-phase</li>
+                <li>Evaluate while brainstorming</li>
+                <li>Build before understanding</li>
+                <li>Skip the grilling step</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>Choosing the Right Chain</h2>
+
+    <div class="principle">
+        <strong>The Decision Tree</strong>
+        <ul style="margin-top:1rem;">
+            <li><strong>Need ideas?</strong> → Start with /brainstorm</li>
+            <li><strong>Have an idea?</strong> → Follow with /grill-me</li>
+            <li><strong>Need to learn?</strong> → Start with /teach</li>
+            <li><strong>Ready to build?</strong> → Use /tdd or /build</li>
+            <li><strong>Something broken?</strong> → Start with /systematic-debugging</li>
+        </ul>
+    </div>
+
+    <h2>Pro Tips</h2>
+
+    <div class="tip">
+        Name your workflows. "The Creation Workflow" is memorable. "That thing where I brainstorm then grill then build" is not.
+    </div>
+
+    <div class="tip">
+        Default to the simplest chain first. /brainstorm → /grill-me → /build handles 80% of cases. Add more steps only when needed.
+    </div>
+
+    <div class="tip">
+        If stuck, go back a phase. If you're building and feel lost, you probably skipped grilling. Back up and validate.
+    </div>
+
+    <div class="tip">
+        Document your custom chains. Write them down somewhere accessible so you can repeat successful patterns.
+    </div>
+
+    <h2>Create Your Own Workflows</h2>
+
+    <p>The real power: combine skills in ways that fit <em>your</em> process. The best chain is the one that works for you.</p>
+
+    <div class="chain-box">
+        <h3>Try It Now</h3>
+        <p>What's something you're working on? Pick a chain and try it:</p>
+        <ul style="margin-top:1rem;margin-bottom:0;">
+            <li><code>/brainstorm</code> → <code>/grill-me</code> → <code>/build</code></li>
+            <li><code>/teach</code> → <code>/brainstorm</code> → <code>/build</code></li>
+            <li><code>/systematic-debugging</code> → <code>/grill-me</code> → <code>/fix</code></li>
+        </ul>
+    </div>
+
+    <div class="cta">
+        <p><strong>Next: Lesson 0008 — Skill Summary</strong></p>
+        <p>A complete reference guide to all skills covered in this course.</p>
+    </div>
+
+    <div class="meta">
+        <strong>Previous:</strong> <a href="0006-brainstorming-skill.html">Lesson 0006: The brainstorming Skill</a><br>
+        <strong>Next:</strong> <a href="0008-skill-summary.html">Lesson 0008: Skill Summary</a><br>
+        <strong>Course:</strong> <a href="../index.html">Back to Course Index</a>
+    </div>
+</body>
+</html>

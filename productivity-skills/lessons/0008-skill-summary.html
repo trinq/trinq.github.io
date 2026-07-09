@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0008: Skill Summary</title>
+    <style>
+        :root {
+            --bg: #fefefe;
+            --text: #2d2d2d;
+            --accent: #4a5568;
+            --highlight: #edf2f7;
+            --border: #e2e8f0;
+            --code-bg: #f7fafc;
+            --good: #276749;
+            --good-bg: #f0fff4;
+            --bad: #c53030;
+            --bad-bg: #fff5f5;
+            --summary-bg: #faf5ff;
+            --summary-border: #9f7aea;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+        
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        code {
+            background: var(--code-bg);
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: "SF Mono", Monaco, monospace;
+        }
+        
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .summary-box {
+            background: var(--summary-bg);
+            border: 2px solid var(--summary-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .summary-box h3 {
+            color: #6b46c1;
+            margin-top: 0;
+        }
+        
+        .invocation {
+            background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .invocation code {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25em 0.75em;
+            border-radius: 6px;
+            font-size: 1.1rem;
+        }
+        
+        .skill-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .skill-card h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .skill-card h3 .icon {
+            font-size: 1.25rem;
+        }
+        
+        .skill-card h3 .name {
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 1rem;
+            color: #805ad5;
+        }
+        
+        .skill-card .description {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .skill-card .details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .skill-card .detail-item {
+            background: var(--code-bg);
+            border-radius: 6px;
+            padding: 0.75rem;
+        }
+        
+        .skill-card .detail-item h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+        
+        .skill-card .detail-item p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .workflow-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .workflow-card h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .workflow-card .chain {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .workflow-card .chain code {
+            background: var(--code-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .workflow-card .chain .arrow {
+            color: var(--accent);
+        }
+        
+        .workflow-card .use-for {
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+        
+        .workflow-card .use-for strong {
+            color: var(--text);
+        }
+        
+        .principle {
+            background: var(--highlight);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .principle strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        
+        .matrix {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .matrix .header {
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .matrix .phase {
+            background: var(--code-bg);
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .matrix .skills {
+            background: white;
+            padding: 0.5rem 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .matrix .skill-tag {
+            background: var(--highlight);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.8rem;
+            font-family: "SF Mono", Monaco, monospace;
+        }
+        
+        .cheatsheet {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .cheatsheet h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .cheatsheet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .cheatsheet-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+        
+        .cheatsheet-item code {
+            font-size: 0.8rem;
+            color: #805ad5;
+        }
+        
+        .cheatsheet-item span {
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .meta {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        a {
+            color: #4c51bf;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Skill Summary</h1>
+    <p class="subtitle">Complete reference guide to all skills covered in this course</p>
+
+    <div class="summary-box">
+        <h3>Course Complete</h3>
+        <p>You've learned 6 essential skills for working with AI agents. This reference guide summarizes each skill, its key principles, and how to use them effectively.</p>
+        <p style="margin-bottom:0;"><strong>Skills mastered:</strong> 6</p>
+    </div>
+
+    <h2>Skills Reference</h2>
+
+    <div class="skill-card">
+        <h3><span class="icon">🎓</span><span class="name">/teach</span></h3>
+        <p class="description">The meta-skill for learning anything clearly by checking understanding first. Uses the Feynman Technique: if you can't explain it simply, you don't understand it well enough.</p>
+        <div class="details">
+            <div class="detail-item">
+                <h4>When to Use</h4>
+                <p>Learning something new, reviewing fundamentals, gap analysis</p>
+            </div>
+            <div class="detail-item">
+                <h4>Key Principle</h4>
+                <p>Assess before explaining — ask what they know first</p>
+            </div>
+            <div class="detail-item">
+                <h4>The Loop</h4>
+                <p>Assess → Bridge → Explain → Check</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="skill-card">
+        <h3><span class="icon">🔥</span><span class="name">/grill-me</span></h3>
+        <p class="description">The stress-testing skill. Interrogate a plan relentlessly until reaching shared understanding, exposing flaws and assumptions.</p>
+        <div class="details">
+            <div class="detail-item">
+                <h4>When to Use</h4>
+                <p>Before building anything, validating decisions, finding gaps</p>
+            </div>
+            <div class="detail-item">
+                <h4>Key Principle</h4>
+                <p>No idea survives contact with relentless questioning</p>
+            </div>
+            <div class="detail-item">
+                <h4>Questions Cover</h4>
+                <p>Why, what, who, how, edge cases, failure modes</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="skill-card">
+        <h3><span class="icon">💡</span><span class="name">/brainstorming</span></h3>
+        <p class="description">Generate ideas collaboratively with quantity over quality. Defer judgment, build on ideas, welcome wild concepts.</p>
+        <div class="details">
+            <div class="detail-item">
+                <h4>When to Use</h4>
+                <p>Need options, exploring possibilities, creative blocks</p>
+            </div>
+            <div class="detail-item">
+                <h4>Key Principle</h4>
+                <p>"Yes, and..." not "Yes, but..."</p>
+            </div>
+            <div class="detail-item">
+                <h4>Rules</h4>
+                <p>Quantity, build on ideas, wild welcome, no criticism</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="skill-card">
+        <h3><span class="icon">🛠️</span><span class="name">/build</span></h3>
+        <p class="description">Implementation with structure. Plans first, then builds incrementally with verification at each step.</p>
+        <div class="details">
+            <div class="detail-item">
+                <h4>When to Use</h4>
+                <p>Ready to implement, need structure, want checkpoints</p>
+            </div>
+            <div class="detail-item">
+                <h4>Key Principle</h4>
+                <p>Plan, then build — not the other way around</p>
+            </div>
+            <div class="detail-item">
+                <h4>Approach</h4>
+                <p>Incremental builds with verification</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="skill-card">
+        <h3><span class="icon">🔧</span><span class="name">/systematic-debugging</span></h3>
+        <p class="description">Diagnosis loop for hard bugs and performance regressions. Gather evidence, form hypothesis, test systematically.</p>
+        <div class="details">
+            <div class="detail-item">
+                <h4>When to Use</h4>
+                <p>Something broken/throwing/failing/slow</p>
+            </div>
+            <div class="detail-item">
+                <h4>Key Principle</h4>
+                <p>Evidence before hypotheses — never guess</p>
+            </div>
+            <div class="detail-item">
+                <h4>Loop</h4>
+                <p>Gather → Hypothesis → Test → Repeat</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="skill-card">
+        <h3><span class="icon">🔗</span><span class="name">/tdd</span></h3>
+        <p class="description">Test-driven development. Write the test first, watch it fail, then write code to make it pass.</p>
+        <div class="details">
+            <div class="detail-item">
+                <h4>When to Use</h4>
+                <p>Building features, fixing bugs, ensuring quality</p>
+            </div>
+            <div class="detail-item">
+                <h4>Key Principle</h4>
+                <p>Red → Green → Refactor</p>
+            </div>
+            <div class="detail-item">
+                <h4>Benefits</h4>
+                <p>Better design, fewer bugs, living documentation</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>Skill Matrix</h2>
+
+    <p>Each skill maps to a phase in the problem-solving process:</p>
+
+    <div class="matrix">
+        <div class="header">Phase</div>
+        <div class="header">Skills</div>
+        
+        <div class="phase">Learning</div>
+        <div class="skills">
+            <span class="skill-tag">/teach</span>
+            <span class="skill-tag">/learn</span>
+            <span class="skill-tag">/research</span>
+        </div>
+        
+        <div class="phase">Ideation</div>
+        <div class="skills">
+            <span class="skill-tag">/brainstorm</span>
+            <span class="skill-tag">/ideate</span>
+            <span class="skill-tag">/explore</span>
+        </div>
+        
+        <div class="phase">Evaluation</div>
+        <div class="skills">
+            <span class="skill-tag">/grill-me</span>
+            <span class="skill-tag">/grilling</span>
+            <span class="skill-tag">/evaluate</span>
+        </div>
+        
+        <div class="phase">Execution</div>
+        <div class="skills">
+            <span class="skill-tag">/build</span>
+            <span class="skill-tag">/implement</span>
+            <span class="skill-tag">/tdd</span>
+        </div>
+        
+        <div class="phase">Verification</div>
+        <div class="skills">
+            <span class="skill-tag">/review</span>
+            <span class="skill-tag">/test</span>
+            <span class="skill-tag">/verify</span>
+        </div>
+        
+        <div class="phase">Diagnosis</div>
+        <div class="skills">
+            <span class="skill-tag">/systematic-debugging</span>
+            <span class="skill-tag">/debug</span>
+        </div>
+    </div>
+
+    <h2>Pre-Built Workflows</h2>
+
+    <div class="workflow-card">
+        <h3>🎯 Creation Workflow</h3>
+        <div class="chain">
+            <code>/brainstorm</code>
+            <span class="arrow">→</span>
+            <code>/grill-me</code>
+            <span class="arrow">→</span>
+            <code>/build</code>
+        </div>
+        <p class="use-for"><strong>Use for:</strong> New features, projects, initiatives</p>
+    </div>
+
+    <div class="workflow-card">
+        <h3>📚 Learning Workflow</h3>
+        <div class="chain">
+            <code>/teach</code>
+            <span class="arrow">→</span>
+            <code>/brainstorm</code>
+            <span class="arrow">→</span>
+            <code>/build</code>
+        </div>
+        <p class="use-for"><strong>Use for:</strong> Learning new tech, then applying it</p>
+    </div>
+
+    <div class="workflow-card">
+        <h3>✅ Review Workflow</h3>
+        <div class="chain">
+            <code>/grill-me</code>
+            <span class="arrow">→</span>
+            <code>/build</code>
+            <span class="arrow">→</span>
+            <code>/review</code>
+        </div>
+        <p class="use-for"><strong>Use for:</strong> Implementation with verification</p>
+    </div>
+
+    <div class="workflow-card">
+        <h3>🐛 Debug Workflow</h3>
+        <div class="chain">
+            <code>/systematic-debugging</code>
+            <span class="arrow">→</span>
+            <code>/grill-me</code>
+            <span class="arrow">→</span>
+            <code>/tdd</code>
+        </div>
+        <p class="use-for"><strong>Use for:</strong> Hard bugs and regressions</p>
+    </div>
+
+    <h2>Quick Reference Cheatsheet</h2>
+
+    <div class="cheatsheet">
+        <h4>Skill Commands</h4>
+        <div class="cheatsheet-grid">
+            <div class="cheatsheet-item">
+                <code>/teach</code> <span>topic</span>
+            </div>
+            <div class="cheatsheet-item">
+                <code>/grill-me</code> <span>plan</span>
+            </div>
+            <div class="cheatsheet-item">
+                <code>/brainstorm</code> <span>topic</span>
+            </div>
+            <div class="cheatsheet-item">
+                <code>/brainstorming</code> <span>topic</span>
+            </div>
+            <div class="cheatsheet-item">
+                <code>/build</code> <span>feature</span>
+            </div>
+            <div class="cheatsheet-item">
+                <code>/systematic-debugging</code> <span>issue</span>
+            </div>
+            <div class="cheatsheet-item">
+                <code>/tdd</code> <span>feature</span>
+            </div>
+            <div class="cheatsheet-item">
+                <code>/grilling</code> <span>topic</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cheatsheet">
+        <h4>Decision Guide</h4>
+        <ul style="margin:0;">
+            <li><strong>Need to learn?</strong> → <code>/teach</code></li>
+            <li><strong>Need ideas?</strong> → <code>/brainstorm</code></li>
+            <li><strong>Have an idea?</strong> → <code>/grill-me</code></li>
+            <li><strong>Ready to build?</strong> → <code>/build</code> or <code>/tdd</code></li>
+            <li><strong>Something broken?</strong> → <code>/systematic-debugging</code></li>
+        </ul>
+    </div>
+
+    <h2>Core Principles</h2>
+
+    <div class="principle">
+        <strong>The Meta-Skill</strong>
+        <strong>Know where you are.</strong> Before choosing a skill, identify your phase: learning, ideation, evaluation, execution, or verification. Match the skill to the phase.
+    </div>
+
+    <div class="principle">
+        <strong>The Combination Rule</strong>
+        <strong>Chain skills intentionally.</strong> The power is in composition. Brainstorm → Grill → Build handles most situations. Add more steps only when needed.
+    </div>
+
+    <div class="principle">
+        <strong>The Judgment Rule</strong>
+        <strong>Defer evaluation during ideation.</strong> Generate first, judge later. "Yes, and..." beats "Yes, but..." during brainstorming.
+    </div>
+
+    <div class="principle">
+        <strong>The Evidence Rule</strong>
+        <strong>Evidence before hypotheses.</strong> Never guess at root causes. Gather data, form hypotheses, test systematically.
+    </div>
+
+    <div class="summary-box">
+        <h3>You're Ready</h3>
+        <p>You now have a complete toolkit for working effectively with AI agents. Use these skills individually or combine them into workflows. The more you use them, the more natural they become.</p>
+        <p style="margin-bottom:0;"><strong>Next step:</strong> Pick a project and try a workflow.</p>
+    </div>
+
+    <div class="cta">
+        <p><strong>Course Complete!</strong></p>
+        <p>You've learned 6 essential skills for AI-powered productivity.</p>
+        <p style="margin-top:1rem;margin-bottom:0;">Return to <a href="../index.html" style="color:white;text-decoration:underline;">Course Index</a></p>
+    </div>
+
+    <div class="meta">
+        <strong>Previous:</strong> <a href="0007-combining-skills.html">Lesson 0007: Combining Skills</a><br>
+        <strong>Course:</strong> <a href="../index.html">Back to Course Index</a><br>
+        <strong>Skills Source:</strong> <a href="https://github.com/mattpocock/skills">mattpocock/skills</a>
+    </div>
+</body>
+</html>

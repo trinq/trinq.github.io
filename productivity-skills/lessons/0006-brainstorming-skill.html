@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0006: The brainstorming Skill</title>
+    <style>
+        :root {
+            --bg: #fefefe;
+            --text: #2d2d2d;
+            --accent: #4a5568;
+            --highlight: #edf2f7;
+            --border: #e2e8f0;
+            --code-bg: #f7fafc;
+            --good: #276749;
+            --good-bg: #f0fff4;
+            --bad: #c53030;
+            --bad-bg: #fff5f5;
+            --brainstorm-bg: #fff5ff;
+            --brainstorm-border: #d53f8c;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+        
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        code {
+            background: var(--code-bg);
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: "SF Mono", Monaco, monospace;
+        }
+        
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .brainstorm-box {
+            background: var(--brainstorm-bg);
+            border: 2px solid var(--brainstorm-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .brainstorm-box h3 {
+            color: #97266d;
+            margin-top: 0;
+        }
+        
+        .invocation {
+            background: linear-gradient(135deg, #ed64a6 0%, #d53f8c 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .invocation code {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25em 0.75em;
+            border-radius: 6px;
+            font-size: 1.25rem;
+        }
+        
+        .principle {
+            background: var(--highlight);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .principle strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        
+        .rules {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .rule-card {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .rule-card .icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .rule-card h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .rule-card p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .dialogue {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        
+        .dialogue .user {
+            color: #38a169;
+            margin-bottom: 0.75rem;
+        }
+        
+        .dialogue .user::before {
+            content: "User: ";
+            font-weight: 600;
+        }
+        
+        .dialogue .agent {
+            color: #805ad5;
+            margin-bottom: 0.75rem;
+        }
+        
+        .dialogue .agent::before {
+            content: "Agent: ";
+            font-weight: 600;
+        }
+        
+        .dialogue .system {
+            color: #718096;
+            font-style: italic;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: var(--highlight);
+            border-radius: 4px;
+        }
+        
+        .example {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+        
+        .example h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        
+        .example ul {
+            margin: 0.5rem 0 0.5rem 1.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .example li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .comparison {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .comparison > div {
+            flex: 1;
+            min-width: 280px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        
+        .comparison h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .brainstorming .comparison h4 {
+            color: var(--good);
+        }
+        
+        .debate .comparison h4 {
+            color: var(--bad);
+        }
+        
+        .comparison ul {
+            margin: 0.5rem 0 0.5rem 1.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .comparison li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .timeline-phase {
+            flex: 1;
+            min-width: 150px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .timeline-phase h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-phase p {
+            font-size: 0.85rem;
+            margin: 0;
+            color: var(--accent);
+        }
+        
+        .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.25rem;
+        }
+        
+        .anti-pattern {
+            background: var(--bad-bg);
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .anti-pattern::before {
+            content: "✗ Anti-pattern";
+            display: block;
+            font-weight: 600;
+            color: var(--bad);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .tip {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .tip::before {
+            content: "💡 Tip:";
+            font-weight: 600;
+            color: #92400e;
+            margin-right: 0.5rem;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .meta {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        a {
+            color: #4c51bf;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>The brainstorming Skill</h1>
+    <p class="subtitle">Generate ideas collaboratively — quantity over quality, no judgment</p>
+
+    <div class="invocation">
+        <p>To invoke:</p>
+        <p><code>/brainstorm</code> <em>[topic]</em></p>
+        <p>or</p>
+        <p><code>/brainstorming</code> <em>[topic]</em></p>
+    </div>
+
+    <div class="brainstorm-box">
+        <h3>The Core Idea</h3>
+        <p>Brainstorming is a creative technique for generating many ideas quickly, without judgment. The goal is quantity — the more ideas, the more likely you find a gem. Judgment kills creativity; permission enables it.</p>
+    </div>
+
+    <div class="principle">
+        <strong>The Golden Rule</strong>
+        <strong>Defer judgment.</strong> In brainstorming mode, every idea is valid. Criticism, even "that's interesting but...", is banned. Save evaluation for after.
+    </div>
+
+    <h2>The Brainstorming Rules</h2>
+
+    <div class="rules">
+        <div class="rule-card">
+            <div class="icon">⚡</div>
+            <h4>Go for Quantity</h4>
+            <p>10 ideas is better than 3. The goal is options, not perfection.</p>
+        </div>
+        <div class="rule-card">
+            <div class="icon">🔀</div>
+            <h4>Build on Ideas</h4>
+            <p>"Yes, and..." not "Yes, but..." Stack ideas like building blocks.</p>
+        </div>
+        <div class="rule-card">
+            <div class="icon">🌊</div>
+            <h4>Wild Ideas Welcome</h4>
+            <p>The crazy idea leads to the clever idea. Let go of feasibility temporarily.</p>
+        </div>
+        <div class="rule-card">
+            <div class="icon">🚫</div>
+            <h4>No Criticism</h4>
+            <p>No "that's impossible", "we tried that", or even subtle doubt. Judgment is off.</p>
+        </div>
+    </div>
+
+    <h2>How /brainstorm Works</h2>
+
+    <div class="timeline">
+        <div class="timeline-phase">
+            <h4>1. Context</h4>
+            <p>State the problem or goal</p>
+        </div>
+        <div class="arrow">→</div>
+        <div class="timeline-phase">
+            <h4>2. Generate</h4>
+            <p>Rapid idea generation</p>
+        </div>
+        <div class="arrow">→</div>
+        <div class="timeline-phase">
+            <h4>3. Build</h4>
+            <p>Combine and remix</p>
+        </div>
+        <div class="arrow">→</div>
+        <div class="timeline-phase">
+            <h4>4. Evaluate</h4>
+            <p>Prioritize and decide</p>
+        </div>
+    </div>
+
+    <h2>The Dialogue Pattern</h2>
+
+    <div class="dialogue">
+        <div class="user">/brainstorm ways to reduce meeting fatigue</div>
+        
+        <div class="system">Brainstorming mode activated — defer judgment, build on ideas</div>
+        
+        <div class="agent">Let's brainstorm ways to reduce meeting fatigue. What's the core problem?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="user">We have too many recurring meetings and people are burned out.</div>
+        
+        <div class="agent">Got it. Let's generate ideas — no judgment yet. Some directions to explore:
+
+- Meeting-free days (Slack Friday)
+- Async standups instead of synchronous
+- "Walking meetings" for 1:1s
+- No-meeting blocks on calendars
+- AI-generated summaries instead of attending
+- Mandatory camera-off option
+- "20% time" protected blocks
+
+What resonates? What should we build on?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="user">I like the AI summaries idea. What if we could have an AI attend, take notes, and ask questions on our behalf?</div>
+        
+        <div class="agent">Yes! The AI proxy concept. Building on that:
+- AI attends, summarizes, flags action items
+- AI asks pre-submitted questions on your behalf
+- AI raises hand when your input is critical
+- AI schedules "micro-check-ins" instead of hour-long meetings
+
+What else could we add to the AI proxy angle?</div>
+    </div>
+
+    <div class="dialogue">
+        <div class="agent">We're building a rich idea set. Ready to evaluate, or generate more first?</div>
+        
+        <div class="user">Let's evaluate. What are the top 3 most impactful?</div>
+        
+        <div class="system">Mode shift: brainstorm → evaluate</div>
+    </div>
+
+    <h2>Brainstorming vs Debating</h2>
+
+    <div class="comparison brainstorm">
+        <div>
+            <h4>Brainstorming</h4>
+            <ul>
+                <li>Generate ideas first</li>
+                <li>"Yes, and..."</li>
+                <li>Defer judgment</li>
+                <li>Build on others</li>
+                <li>Quantity mindset</li>
+                <li>Creative, open</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="comparison debate">
+        <div>
+            <h4>Debating</h4>
+            <ul>
+                <li>Evaluate as you go</li>
+                <li>"Yes, but..."</li>
+                <li>Criticize constantly</li>
+                <li>Refute others</li>
+                <li>Quality mindset</li>
+                <li>Critical, closed</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="anti-pattern">
+        <strong>Criticizing mid-brainstorm</strong>
+        <p>"The AI proxy idea is interesting, but we don't have the budget for that right now."</p>
+        <p style="margin-top:0.5rem;font-size:0.9rem;color:var(--bad);">Budget is valid — but later. Keep generating first.</p>
+    </div>
+
+    <h2>Example: Building a Skill</h2>
+
+    <div class="example">
+        <h4>Brainstorming a Code Review Skill</h4>
+        <ul>
+            <li><strong>Idea:</strong> Automated linting on PR open</li>
+            <li><strong>Build on:</strong> Add auto-formatting too</li>
+            <li><strong>Idea:</strong> AI comments with style suggestions</li>
+            <li><strong>Build on:</strong> + severity levels (nit, warn, block)</li>
+            <li><strong>Idea:</strong> Summary comment at PR close</li>
+            <li><strong>Build on:</strong> Diff view of changes over time</li>
+            <li><strong>Wild idea:</strong> PR review game with points</li>
+            <li><strong>Build on:</strong> Leaderboard, badges, streak counts</li>
+            <li><strong>Idea:</strong> Reviewer recommendation based on code ownership</li>
+        </ul>
+    </div>
+
+    <h2>Pro Tips</h2>
+
+    <div class="tip">
+        Start with "How might we..." questions. "How might we reduce meeting fatigue?" is more generative than "How do we reduce meetings?"
+    </div>
+
+    <div class="tip">
+        Use prompts to push past obvious ideas. "What are 10 completely different approaches?" forces lateral thinking.
+    </div>
+
+    <div class="tip">
+        Set a timer. 10-15 minutes of pure generation, then evaluate. The clock creates urgency and prevents perfectionism.
+    </div>
+
+    <div class="tip">
+        Capture everything. Even bad ideas have seeds. Write them all down — you can filter later.
+    </div>
+
+    <h2>Connection to Other Skills</h2>
+
+    <div class="brainstorm-box">
+        <h3>Brainstorm → Grill → Build</h3>
+        <p><strong>1. Brainstorm:</strong> Generate many ideas, no judgment</p>
+        <p><strong>2. Grill:</strong> Pick the best idea, stress-test it</p>
+        <p><strong>3. Build:</strong> Execute with shared understanding</p>
+        <p style="margin-top:1rem;margin-bottom:0;"><em>The workflow: wild ideas → sharp focus → solid execution</em></p>
+    </div>
+
+    <div class="brainstorm-box">
+        <h3>Try It Now</h3>
+        <p>Type <code>/brainstorm</code> followed by something you want to generate ideas about. Let's see what we can create together.</p>
+    </div>
+
+    <div class="cta">
+        <p><strong>Next: Lesson 0007 — Combining Skills</strong></p>
+        <p>Learn how to chain skills together for powerful workflows.</p>
+    </div>
+
+    <div class="meta">
+        <strong>Previous:</strong> <a href="0005-teach-skill-deep-dive.html">Lesson 0005: The teach Skill Deep Dive</a><br>
+        <strong>Next:</strong> <a href="0007-combining-skills.html">Lesson 0007: Combining Skills</a><br>
+        <strong>Source:</strong> <a href="https://github.com/mattpocock/skills/tree/main/skills/productivity/brainstorming">brainstorming — mattpocock/skills</a>
+    </div>
+</body>
+</html>
