@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0012 — The to-spec Skill: From Conversation to Published Spec</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --ink: #1a1a1a;
+      --ink-soft: #666;
+      --rule: #e8e4df;
+      --accent: #c0392b;
+      --code-bg: #f4efe9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    pre, code { font-family: "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    pre code { background: none; padding: 0; }
+    .callout {
+      background: #fff3e0;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid var(--accent);
+    }
+    .callout.success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .callout.warning {
+      background: #fdecea;
+      border-left-color: var(--accent);
+    }
+    .meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .meta .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .exercise {
+      background: #f0f4f8;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+      border-left: 3px solid #2c5282;
+    }
+    .exercise h4 {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 0.9rem;
+      color: #2c5282;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .step { margin-bottom: 0.5rem; }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.9rem;
+    }
+    .nav a { color: var(--accent); text-decoration: none; }
+    .nav a:hover { text-decoration: underline; }
+    details { margin: 1rem 0; }
+    summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 600;
+      padding: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="meta">
+    <span class="badge">engineering</span>
+    <span>Lesson 0012</span>
+    <span>~12 min</span>
+  </div>
+
+  <h1>The <code>to-spec</code> Skill</h1>
+  <p class="subtitle">From conversation to published spec — no interview, just synthesis.</p>
+
+  <p>Lesson 0006 taught you <code>write-a-prd</code>. That skill still exists in spirit, but Matt Pocock renamed and tightened it in mid-2026: <a href="https://github.com/mattpocock/skills/commit/386d4ff719a7c420ad1454232d0436b01f1b8c17"><code>to-spec</code></a>. Same job — turn a conversation into a written artifact — but the new framing draws a sharper line between <em>interviewing</em> and <em>synthesizing</em>, and the chain it sits in is now <code>/grill-with-docs</code> &rarr; <code>/to-spec</code> &rarr; <code>/to-tickets</code> &rarr; <code>/implement</code>.</p>
+
+  <p>This lesson is the upgrade. You already know the destination (a written spec). This lesson teaches you the new vocabulary, the new chain, and three concrete behaviors that make <code>to-spec</code> produce better specs than <code>write-a-prd</code> did.</p>
+
+  <h2>1. The rename and the reframe</h2>
+
+  <p>Three things changed in the same commit that introduced <code>to-spec</code>:</p>
+
+  <ol>
+    <li><strong><code>write-a-prd</code> &rarr; <code>to-spec</code></strong>. The artifact is still a spec — the skill opens with "you may know this document as a PRD" for discoverability — but <em>spec</em> is now the through-line term. PRDs felt like a corporate artifact; specs feel like a code artifact. The rename is small, the framing shift is large.</li>
+    <li><strong><code>create-issues</code> &rarr; <code>to-tickets</code></strong>. The decomposition skill absorbed the old <code>to-plan</code> skill and is now medium-agnostic: it emits a set of tickets that read as a sequential plan (a local <code>tickets.md</code>, edges as text) <em>or</em> as a parallelisable DAG (a real tracker with native blocking links). The medium only decides whether anything acts on the dependencies in parallel.</li>
+    <li><strong>The chain is now explicit.</strong> <code>ask-matt</code> routes idea &rarr; <code>to-spec</code> &rarr; <code>to-tickets</code> &rarr; <code>implement</code>. The intermediate PRD step and the issues step are both gone in name. The work is the same; the seams are cleaner.</li>
+  </ol>
+
+  <div class="callout">
+    <strong>Why the rename matters for you.</strong> If you keep using <code>write-a-prd</code> in prompts, agents that have the new skill loaded will misroute. Pin <code>to-spec</code> in your vocabulary. Update your team docs. The word matters because the skill name is the trigger.
+  </div>
+
+  <h2>2. The skill, in skeleton</h2>
+
+  <p>The full <a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md"><code>SKILL.md</code></a> is 38 lines. Here is the structure that matters:</p>
+
+  <pre><code>---
+name: to-spec
+description: Turn the current conversation into a spec
+  and publish it to the project issue tracker — no
+  interview, just synthesis of what you've already discussed.
+disable-model-invocation: true
+---
+
+This skill takes the current conversation context and
+codebase understanding and produces a spec. Do NOT
+interview the user — just synthesize what you already know.
+
+1. Explore the repo to understand the current state of the
+   codebase, if you haven't already. Use the project's
+   domain glossary vocabulary throughout the spec, and
+   respect any ADRs in the area you're touching.
+
+2. Sketch the seams at which you're going to test the
+   feature. Existing seams should be preferred to new
+   ones. Use the highest seam possible. If new seams are
+   needed, propose them at the highest point you can.
+   The fewer seams across the codebase, the better — the
+   ideal number is one.
+
+3. Write the spec using the template below, then publish
+   it to the project issue tracker. Apply the
+   `ready-for-agent` triage label — no need for
+   additional triage.</code></pre>
+
+  <p>Three instructions. That's the whole skill. The rest of the <code>SKILL.md</code> is a template for the spec body.</p>
+
+  <h2>3. The "no interview" rule is the whole point</h2>
+
+  <p>This is the single most important behavior, and the one most likely to drift if you don't pin it.</p>
+
+  <p>Lesson 0006 taught you <code>write-a-prd</code>, which <em>used to</em> interview you and write the document. That coupling is gone. <code>to-spec</code> assumes the interview already happened — in <code>grill-me</code> or <code>grill-with-docs</code> — and that the domain language is settled. It will not ask you another round of questions. It will not pause to confirm scope. It will read the conversation, read the repo, sketch the seams, and write the spec.</p>
+
+  <div class="callout warning">
+    <strong>If you find <code>to-spec</code> asking you questions, your grill step was incomplete.</strong> Stop, go back to <code>grill-me</code> or <code>grill-with-docs</code>, finish the interview, then re-invoke <code>to-spec</code> in the same conversation. The interview context is what the skill is synthesising — clear the context and you've erased the input.
+  </div>
+
+  <p>The reason this rule exists is the same reason <code>write-a-prd</code> was split in the first place: <em>interviewing</em> and <em>synthesizing</em> are different modes, and mixing them in one skill produces mediocre output of both. <code>grill-me</code> interviews; <code>to-spec</code> writes. Trying to merge them is the regression the Matt Pocock team explicitly rejected.</p>
+
+  <h2>4. The seam sketch is the new behavior</h2>
+
+  <p>This is the part <code>write-a-prd</code> did not do. Before writing the spec, <code>to-spec</code> <strong>sketches the seams</strong> at which the feature will be tested. It prefers:</p>
+
+  <ol>
+    <li><strong>Existing seams to new ones.</strong> If the repo already has a test seam (a port, a fake, a public test surface), use it. Don't add a second one.</li>
+    <li><strong>The highest seam possible.</strong> Higher = closer to the user-facing surface. A test at the API boundary catches more than a test at the utility function.</li>
+    <li><strong>Fewer seams across the codebase, the better — the ideal number is one.</strong> Every new seam is a permanent cost. If the change can be tested through one seam, it should be.</li>
+  </ol>
+
+  <p>After sketching, <code>to-spec</code> checks with you: <em>do these seams match your expectations?</em> That is the only question it asks. Once you confirm, it writes the spec with those seams as the testing decisions.</p>
+
+  <div class="callout success">
+    <strong>Why this matters.</strong> A spec that names its seams in advance produces tickets that the implementer can actually verify. A spec that says "add a dark mode toggle" produces tickets where the implementer has to invent the test surface, which is where scope creep hides. The seam sketch is what makes the spec <em>implementable</em> rather than just <em>describable</em>.
+  </div>
+
+  <h2>5. The spec template</h2>
+
+  <p>The body of every <code>to-spec</code> artifact has the same six sections. Memorize the order; the order is the workflow.</p>
+
+  <h3>Problem Statement</h3>
+  <p>The problem the user is facing, from the user's perspective. Not the technical problem. Not the system problem. <em>What is the user trying to do, and what's stopping them?</em></p>
+
+  <h3>Solution</h3>
+  <p>The solution to the problem, from the user's perspective. One or two paragraphs. The user should be able to read this section alone and understand what the feature will do for them.</p>
+
+  <h3>User Stories</h3>
+  <p>A <strong>LONG</strong>, numbered list. Each story in the format <code>As a [role], I want [capability], so that [outcome]</code>. The list is intentionally exhaustive — it should cover every aspect of the feature, not just the happy path.</p>
+
+  <h3>Implementation Decisions</h3>
+  <p>The technical decisions that were made during the grill. Modules touched, interfaces changed, schema migrations, API contracts, architectural decisions. The rule: <strong>no specific file paths or code snippets</strong>, because they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose (a state machine, a reducer, a schema), inline it and note that it came from a prototype.</p>
+
+  <h3>Testing Decisions</h3>
+  <p>What makes a good test (only external behavior, not implementation details), which modules will be tested, and prior art — similar tests already in the codebase. The seams from step 2 live here.</p>
+
+  <h3>Out of Scope</h3>
+  <p>What the spec explicitly is not doing. This is the most-skipped section in any spec, and the one that prevents the most scope creep. The agent's job is to maximize "done" given a fixed context; without explicit non-goals, the agent will infer scope from its training data — which is slightly wrong — and produce a PR that solves adjacent problems you didn't ask for.</p>
+
+  <h2>6. The new chain, in one diagram</h2>
+
+  <pre><code>      /grill-with-docs          /to-spec             /to-tickets        /implement
+  ┌──────────────────┐      ┌──────────────┐      ┌──────────────┐     ┌────────────┐
+  │ Interview you    │ ───▶ │ Synthesise   │ ───▶ │ Decompose    │ ──▶ │ Build the  │
+  │ until every      │      │ the spec     │      │ into tickets │     │ tickets    │
+  │ branch of the    │      │ from the     │      │ that name    │     │ in order   │
+  │ decision tree is │      │ conversation │      │ their edges  │     │ or in      │
+  │ resolved.        │      │ + repo.      │      │ (parallel or │     │ parallel   │
+  │                  │      │              │      │ sequential). │     │            │
+  └──────────────────┘      └──────────────┘      └──────────────┘     └────────────┘
+        Stateful                Stateless             Stateless           Stateless
+        writes ADRs            writes 1 issue        writes N issues     writes N PRs
+        + glossary             with `ready-for-      with blocking       with green
+        as side effect.        agent` label.         edges.              tests.</code></pre>
+
+  <p>The four skills are all <code>disable-model-invocation: true</code>. None of them will fire on the agent's own initiative. You drive. The agent synthesises. The chain is the workflow.</p>
+
+  <h2>7. Exercise: rewrite your lesson-0006 PRD as a spec</h2>
+
+  <div class="exercise">
+    <h4>Take the PRD from lesson 0006 and run it through the new skill</h4>
+    <ol>
+      <li class="step">Open the PRD you wrote during the lesson 0006 exercise. (If you didn't, pick any non-trivial feature from your backlog.)</li>
+      <li class="step">Read it with the new lens: does the <strong>Problem Statement</strong> name the user, not the system? Does the <strong>Solution</strong> say what the user gets, not what the code does? Are the <strong>User Stories</strong> exhaustive, not aspirational?</li>
+      <li class="step">Re-label the section headers to the new names: <em>Problem Statement</em>, <em>Solution</em>, <em>User Stories</em>, <em>Implementation Decisions</em>, <em>Testing Decisions</em>, <em>Out of Scope</em>. If you have to invent content for a section that didn't exist before (most likely <em>User Stories</em> or <em>Out of Scope</em>), write it now — that's the gap.</li>
+      <li class="step">Add the seam sketch. For each Testing Decision, name the seam: an existing one, or a new one proposed at the highest point you can. Count them. If the count is more than one, ask whether any of them can collapse.</li>
+      <li class="step">Commit the rewritten file to <code>docs/spec/&lt;feature-name&gt;.md</code> (move it from <code>docs/prd/</code> if you used the old path). Open a PR with the title <code>spec: &lt;feature-name&gt;</code>. Notice how the reviewer conversation changes when the spec is shaped this way.</li>
+      <li class="step">Optional but powerful: in the same PR, add a second commit that <em>only</em> contains the user stories, formatted as a checklist. That checklist is the seed for the <code>to-tickets</code> skill in the next lesson.</li>
+    </ol>
+  </div>
+
+  <div class="callout">
+    <strong>The compounding effect, redux.</strong> The PRD from lesson 0006 was a destination. The spec from this lesson is a destination <em>plus</em> a contract — the seam sketch is what makes it executable, and the exhaustive user stories are what make the tickets testable. Same document, sharper shape. Future-you opens the spec to change the SSO integration and immediately sees which seams to preserve.
+  </div>
+
+  <h2>Quiz</h2>
+
+  <ol>
+    <li>What frontmatter flag does <code>/to-spec</code> have, and why does it matter?</li>
+    <li>If <code>to-spec</code> starts asking you clarifying questions, what went wrong upstream?</li>
+    <li>Why does the seam sketch happen <em>before</em> writing the spec, not during implementation?</li>
+  </ol>
+
+  <details>
+    <summary>Answers (try first)</summary>
+    <ol>
+      <li><code>disable-model-invocation: true</code>. <code>to-spec</code> is a procedure — you invoke it deliberately when a grill session is complete. Letting the model invoke it on its own would cause it to write specs unsolicited, polluting the issue tracker with speculative artifacts and bypassing the interview step.</li>
+      <li>The grill was incomplete. The decision tree still has unresolved branches. Stop, return to <code>grill-me</code> or <code>grill-with-docs</code>, finish the interview in the same conversation (so the context is preserved), then re-invoke <code>to-spec</code>. The skill's input is the conversation; an empty conversation produces a generic spec.</li>
+      <li>Because the seams are the testing decisions. If the implementer invents the test surface during coding, scope hides inside the tests. A spec that names the seams up front makes the testing decisions a contract the implementer has to honor, not a discovery the implementer has to make.</li>
+    </ol>
+  </details>
+
+  <h2>Primary source</h2>
+
+  <p>The skill itself is Matt Pocock's <a href="https://github.com/mattpocock/skills/tree/main/skills/engineering/to-spec"><code>to-spec</code></a> on GitHub. The rename and the chain unification are documented in <a href="https://github.com/mattpocock/skills/commit/386d4ff719a7c420ad1454232d0436b01f1b8c17">commit 386d4ff</a> ("refactor: unify planning skills into /to-spec + /to-tickets"), and the community discussion that prompted the split is in <a href="https://github.com/mattpocock/skills/discussions/333">discussion #333</a>.</p>
+
+  <p>For grounding in why "no interview" is the right default, the relevant background is <a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md">the <code>grill-me</code> skill</a> itself: 3 sentences, devastatingly effective, and explicitly designed to be the interview that hands off to <code>to-spec</code>. The two skills are a pair.</p>
+
+  <h2>What to do next</h2>
+
+  <ol>
+    <li>Run the exercise above. Rewrite your lesson-0006 PRD as a spec, with a seam sketch and exhaustive user stories. Commit it as <code>docs/spec/&lt;feature-name&gt;.md</code>.</li>
+    <li>The natural next lesson is <strong>to-tickets</strong> — the procedure that takes the spec (this lesson) and turns it into one or more tickets that name their blocking edges. That's where the spec becomes a queue that the implementer (or an AFK agent) can consume in order or in parallel.</li>
+    <li>Ask your teacher anything that wasn't clear. The seam sketch is the hardest part to internalize — it requires thinking about the test surface before the implementation exists, which feels backwards. It's not. It's why <code>to-spec</code> produces specs the agent can actually build, and <code>write-a-prd</code> often didn't.</li>
+  </ol>
+
+  <div class="nav">
+    <a href="0011-verification-loops.html">&larr; Lesson 0011: Verification Loops</a>
+    <a href="index.html">Course Index &rarr;</a>
+  </div>
+</body>
+</html>
