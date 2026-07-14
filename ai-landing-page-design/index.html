@@ -1,58 +1,139 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Landing Page Design — Course Home</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 880px; margin: 0 auto; padding: 2rem; color: #0F172A; background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 100%); line-height: 1.7; min-height: 100vh; }
-    h1 { font-size: 2rem; }
-    .card { background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin: 1rem 0; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-    a { color: #6366F1; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .progress { font-size: 0.9rem; color: #64748B; margin-top: 1rem; }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Landing Page Design</title>
+  <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="index.html" class="site-logo">AI Landing Page Design</a>
+    <nav class="site-nav">
+      <a href="index.html" class="active">Lessons</a>
+    </nav>
+  </div>
+</header>
+<div class="page-banner">
   <h1>AI Landing Page Design</h1>
-  <p>Six lessons that turn Leon Lin's framework (per your summary; original tweet not retrieved at design time) into a real, shipped landing page you own.</p>
+  <p>Six lessons that turn Leon Lin's design-with-AI framework into a real, shipped landing page you own. Each lesson is a self-contained HTML exercise with localStorage gating; finish them in order.</p>
+</div>
+<main>
+<div class="callout">
+  <p><strong>Central Insight.</strong> AI executes design rules well, but lacks taste. Each lesson is a workaround for that limitation &mdash; pick the narrowest workflow that still ships distinct work.</p>
+</div>
+<h2>Lessons</h2>
+<div class="lesson-grid">
 
-  <h2>References</h2>
-  <div class="grid">
-    <div class="card"><a href="reference/three-methods-cheatsheet.html">Three Methods Cheatsheet</a><div>Matrix, decision tree, anti-patterns.</div></div>
-    <div class="card"><a href="reference/taste-vs-rules-glossary.html">Taste vs Rules Glossary</a><div>The five load-bearing terms.</div></div>
+<div class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0001</span>
+    <span class="card-category-badge">ai-landing-page-design</span>
+    <span class="card-time">2026-07-14</span>
   </div>
+  <h3 class="card-title"><a href="lessons/0001-taste-gap-brief.html">Taste Gap &amp; Brief</a></h3>
+  <p class="card-desc">Write a six-field creative-director brief (idea, audience, promise, feeling, anti-feeling, success signal). A vague-word guard blocks "clean"/"modern"/"professional" before save. ~6 minutes.</p>
+</div>
 
-  <h2>Lessons</h2>
-  <div class="grid" id="lessons">
-    <div class="card" data-slug="0001-taste-gap-brief"><a href="lessons/0001-taste-gap-brief.html">0001 — Taste Gap & Brief</a><div>Write the brief that makes AI usable.</div></div>
-    <div class="card" data-slug="0002-three-methods-baseline"><a href="lessons/0002-three-methods-baseline.html">0002 — Three Methods & Baseline</a><div>Ship a v0 fast and audit the slop.</div></div>
-    <div class="card" data-slug="0003-inspiration-board"><a href="lessons/0003-inspiration-board.html">0003 — Inspiration Board</a><div>Curate with intent, not vibe.</div></div>
-    <div class="card" data-slug="0004-component-by-component"><a href="lessons/0004-component-by-component.html">0004 — Component-by-Component</a><div>Build two sections with explicit intent.</div></div>
-    <div class="card" data-slug="0005-assets-and-motion"><a href="lessons/0005-assets-and-motion.html">0005 — Assets & Motion</a><div>Custom asset plus one purposeful interaction.</div></div>
-    <div class="card" data-slug="0006-critique-and-ship"><a href="lessons/0006-critique-and-ship.html">0006 — Critique & Ship</a><div>Use the brief to decide ship / iterate / cut.</div></div>
+<div class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0002</span>
+    <span class="card-category-badge">ai-landing-page-design</span>
+    <span class="card-time">2026-07-14</span>
   </div>
+  <h3 class="card-title"><a href="lessons/0002-three-methods-baseline.html">Three Methods &amp; Baseline</a></h3>
+  <p class="card-desc">Pick the fastest method (Design Skill) or the balanced method (Inspiration Board) for a v0 baseline, then audit it against eight common slop patterns. ~7 minutes.</p>
+</div>
 
-  <div class="progress" id="progress"></div>
+<div class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0003</span>
+    <span class="card-category-badge">ai-landing-page-design</span>
+    <span class="card-time">2026-07-14</span>
+  </div>
+  <h3 class="card-title"><a href="lessons/0003-inspiration-board.html">Inspiration Board</a></h3>
+  <p class="card-desc">Collect 12&ndash;20 references and annotate each with a verb-phrase principle, an anti-pattern, and a confidence rating. Requires 8+ sources and unique principles. ~9 minutes.</p>
+</div>
 
-  <script>
-    const slugs = ['0001-taste-gap-brief','0002-three-methods-baseline','0003-inspiration-board','0004-component-by-component','0005-assets-and-motion','0006-critique-and-ship'];
-    const isDone = (s) => {
-      const top = localStorage.getItem('aipd.lesson.' + s + '.gateChecked');
-      if (top === 'true') return true;
-      try {
-        const blob = JSON.parse(localStorage.getItem('aipd.lesson.' + s) || '{}');
-        if (blob.gateChecked === 'true') return true;
-        if (Array.isArray(blob) && blob.some(r => r && r.gateChecked === 'true')) return true;
-      } catch (e) { /* ignore malformed JSON */ }
-      return false;
-    };
-    const done = slugs.filter(isDone);
-    const el = document.getElementById('progress');
-    el.textContent = done.length === 0 ? 'No lessons completed yet — start with 0001.'
-      : done.length === slugs.length ? 'Course complete. Ship your landing page.'
-      : `${done.length} of ${slugs.length} lessons completed.`;
-  </script>
+<div class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0004</span>
+    <span class="card-category-badge">ai-landing-page-design</span>
+    <span class="card-time">2026-07-14</span>
+  </div>
+  <h3 class="card-title"><a href="lessons/0004-component-by-component.html">Component-by-Component</a></h3>
+  <p class="card-desc">Build Hero plus one other section, each with an intent paragraph, 2+ references, a 40-char minimum HTML payload, and a 360/768/1280 responsive pass. ~12 minutes.</p>
+</div>
+
+<div class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0005</span>
+    <span class="card-category-badge">ai-landing-page-design</span>
+    <span class="card-time">2026-07-14</span>
+  </div>
+  <h3 class="card-title"><a href="lessons/0005-assets-and-motion.html">Assets &amp; Motion</a></h3>
+  <p class="card-desc">Specify one custom asset, layer it over a background, and add one interaction whose motion grammar is one of five verbs (settle, reveal, acknowledge, hold, release). ~10 minutes.</p>
+</div>
+
+<div class="card">
+  <div class="card-meta">
+    <span class="card-num">Lesson 0006</span>
+    <span class="card-category-badge">ai-landing-page-design</span>
+    <span class="card-time">2026-07-14</span>
+  </div>
+  <h3 class="card-title"><a href="lessons/0006-critique-and-ship.html">Critique &amp; Ship</a></h3>
+  <p class="card-desc">Critique every section against the brief, mark each ship/iterate/cut, and require a 5/6 brief-alignment score plus two reflection fields. ~8 minutes.</p>
+</div>
+
+</div>
+
+<h2>Reference</h2>
+<div class="lesson-grid">
+
+<div class="card">
+  <div class="card-meta">
+    <span class="card-num">Reference</span>
+    <span class="card-category-badge">ai-landing-page-design</span>
+    <span class="card-time">2026-07-14</span>
+  </div>
+  <h3 class="card-title"><a href="reference/taste-vs-rules-glossary.html">Taste vs Rules Glossary</a></h3>
+  <p class="card-desc">Five load-bearing terms defined once and reused across every lesson: taste, slop, baseline, principle, intent.</p>
+</div>
+
+<div class="card">
+  <div class="card-meta">
+    <span class="card-num">Reference</span>
+    <span class="card-category-badge">ai-landing-page-design</span>
+    <span class="card-time">2026-07-14</span>
+  </div>
+  <h3 class="card-title"><a href="reference/three-methods-cheatsheet.html">Three Methods Cheatsheet</a></h3>
+  <p class="card-desc">Matrix comparing Design Skill, Inspiration Board, and Component-by-Component on speed, quality, distinctiveness, and best fit, plus the decision tree and anti-patterns.</p>
+</div>
+
+</div>
+
+<div class="callout">
+  <p><strong>Source.</strong> Based on Leon Lin's <em>How To Actually Design With AI</em> X thread (per your summary; original tweet not retrieved at design time). A teaching framework for human-AI collaborative design.</p>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>
+      <h4>Course</h4>
+      <ul>
+        <li><a href="index.html">Lessons</a></li>
+        <li><a href="reference/taste-vs-rules-glossary.html">Glossary</a></li>
+        <li><a href="reference/three-methods-cheatsheet.html">Cheatsheet</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer-bottom">
+    AI Landing Page Design &middot; Built with Cursor
+  </div>
+</footer>
+
 </body>
 </html>
