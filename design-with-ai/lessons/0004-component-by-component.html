@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004: Component-by-Component — Design with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    .breadcrumb { font-size: 0.85rem; color: #888; margin-bottom: 1rem; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #0066cc; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .lesson-meta { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #111; margin: 2rem 0 0.75rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    ul, ol { margin: 0 0 1.5rem 1.5rem; color: #444; }
+    li { margin-bottom: 0.5rem; }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    .key-insight-text { font-size: 1.05rem; font-weight: 500; }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+    
+    .workflow {
+      counter-reset: step;
+      margin: 2rem 0;
+    }
+    .workflow-step {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      position: relative;
+      padding-left: 4rem;
+    }
+    .workflow-step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 1.25rem;
+      top: 1.25rem;
+      width: 28px;
+      height: 28px;
+      background: #1565c0;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .workflow-title { font-weight: 600; margin-bottom: 0.5rem; }
+    .workflow-desc { font-size: 0.9rem; color: #555; }
+    
+    .prompt-example {
+      background: #f5f5f5;
+      border-radius: 6px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #444;
+    }
+    
+    .prompt-bad {
+      border-left: 4px solid #dc3545;
+    }
+    
+    .prompt-good {
+      border-left: 4px solid #28a745;
+    }
+    
+    .cta {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .cta-title { font-weight: 600; margin-bottom: 0.5rem; }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-nav a { color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+    .footer-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0004
+  </div>
+  
+  <h1>Method 2: Component-by-Component</h1>
+  <p class="lesson-meta">Lesson 0004 · ~10 minutes · Advanced</p>
+  
+  <p>This is the highest quality method. It's also the most work. If you want something that actually stands out — where people land on your product and feel that real thought went into it — this is the path.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Core Principle</div>
+    <div class="key-insight-text">Small tasks, executed well, add up to something distinctive. AI performs dramatically better on focused pieces than vague wholes.</div>
+  </div>
+  
+  <h2>Why Piece by Piece</h2>
+  
+  <p>When you ask AI to "build me a website," it has to make hundreds of micro-decisions without enough context. Spacing here, hierarchy there, feel somewhere else — each guess averages toward generic.</p>
+  
+  <p>When you ask AI to "create a hero section based on this style, adapted to my branding," it can focus. One section, one purpose, clear references. The result feels intentional because you made the intentional decisions.</p>
+  
+  <p>This is where your taste lives. In the small choices that accumulate into feeling.</p>
+  
+  <h2>The Prompt Difference</h2>
+  
+  <p>This is what changes:</p>
+  
+  <div class="prompt-example prompt-bad">
+    "Build me a full website for my SaaS product."
+  </div>
+  
+  <div class="prompt-example prompt-good">
+    "Create a hero section inspired by [reference]. Use my branding: dark background, electric blue accents, Inter font. Headline should be bold and confident. CTA should feel inviting, not pushy."
+  </div>
+  
+  <p>The first prompt gives AI nothing to work with. The second gives it constraints, references, and specific feelings to hit.</p>
+  
+  <h2>The Full Workflow</h2>
+  
+  <div class="workflow">
+    <div class="workflow-step">
+      <div class="workflow-title">Define the idea</div>
+      <p class="workflow-desc">What are you building and why does it exist? Write this down clearly.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Clarify purpose and audience</div>
+      <p class="workflow-desc">Who is this for? What problem does it solve? What should they feel when they see it?</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Set branding direction</div>
+      <p class="workflow-desc">Colors, fonts, tone, personality. What feeling should it communicate: minimal, playful, premium, technical, experimental?</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Collect references</div>
+      <p class="workflow-desc">Find 3-10 examples that capture your direction. Organize them by section type.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Organize references</div>
+      <p class="workflow-desc">Group by category: navigation, heroes, pricing, cards, mobile screens, dashboards, animations, typography.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Map structure</div>
+      <p class="workflow-desc">Define what sections you need. For a website: nav, hero, features, pricing, testimonials, CTA, footer.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Build components</div>
+      <p class="workflow-desc">One section at a time. Each gets its own prompt with context, reference, and constraints.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Generate assets</div>
+      <p class="workflow-desc">Custom images (GPT Images 2.0, Seedream 5.0), SVGs (Quiver), video (Google Flow).</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Add interactions</div>
+      <p class="workflow-desc">Animations, hover states, transitions, layering effects.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Refine everything</div>
+      <p class="workflow-desc">Final pass for consistency, spacing, and the small details that signal quality.</p>
+    </div>
+  </div>
+  
+  <h2>Start With Meaning</h2>
+  
+  <p>Before any building, answer four questions:</p>
+  
+  <ol>
+    <li><strong>Who is this for?</strong></li>
+    <li><strong>What problem does it solve?</strong></li>
+    <li><strong>What should it feel like?</strong></li>
+    <li><strong>What should it represent?</strong></li>
+  </ol>
+  
+  <p>The UI should reflect the meaning of the product. Write this down before you write any prompts.</p>
+  
+  <p>AI can help here — but not for design. Let it ask you questions:</p>
+  
+  <ul>
+    <li>What is the product about?</li>
+    <li>Who is the audience?</li>
+    <li>What feeling should it communicate?</li>
+    <li>What should the branding feel like?</li>
+    <li>What colors and fonts fit?</li>
+    <li>Should it feel minimal, playful, premium, technical, or experimental?</li>
+  </ul>
+  
+  <h2>The Golden Rule</h2>
+  
+  <p>Always build one section at a time. Never "build the whole page." The reason is simple: each section deserves focused attention. A hero built with full context beats a hero built as part of a batch every time.</p>
+  
+  <h2>When to Use This Method</h2>
+  
+  <p>Component-by-Component works best when:</p>
+  
+  <ul>
+    <li>The product needs to stand out from competitors</li>
+    <li>You're building something you'll live with for months or years</li>
+    <li>Your taste and direction are the differentiator</li>
+    <li>You have time to invest in quality</li>
+  </ul>
+  
+  <h2>Exercise: Build One Section</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Practice · 30 minutes</div>
+    <div class="exercise-title">Build a single section using the full workflow.</div>
+    <p style="margin-bottom: 0.5rem;">Use the same product idea from Lessons 0002 and 0003.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 1:</strong> Write down your four "Start with Meaning" answers.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 2:</strong> Find 3-5 references for a hero section specifically.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 3:</strong> Write a detailed prompt with context, references, and constraints.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 4:</strong> Build ONLY the hero. Don't touch other sections yet.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 5:</strong> Refine 2-3 times until it feels right.</p>
+    <p>Save this hero. Then build features and pricing the same way. Compare to your Inspiration Board output from Lesson 0003.</p>
+  </div>
+  
+  <h2>Why This Method Wins</h2>
+  
+  <p>The math is simple. Ten focused prompts on ten components beats one prompt on everything. Each component gets your full taste. Each component gets AI's full attention. The result doesn't feel generic because nothing was generic in the process.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Final Distinction</div>
+    <div class="key-insight-text">The best results will not come from better prompts. They will come from better taste — applied carefully, one section at a time.</div>
+  </div>
+  
+  <div class="cta">
+    <div class="cta-title">Questions?</div>
+    <p>Ask me about structuring the workflow, writing effective component prompts, or deciding when this method is overkill.</p>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="0003-inspiration-board.html">← Lesson 0003: Inspiration Board</a>
+    <a href="../index.html">Back to Index ↑</a>
+  </div>
+</body>
+</html>

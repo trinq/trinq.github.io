@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0009: Refinement and Critique — Design with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    .breadcrumb { font-size: 0.85rem; color: #888; margin-bottom: 1rem; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #0066cc; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .lesson-meta { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #111; margin: 2rem 0 0.75rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    ul, ol { margin: 0 0 1.5rem 1.5rem; color: #444; }
+    li { margin-bottom: 0.5rem; }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    .key-insight-text { font-size: 1.05rem; font-weight: 500; }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+    
+    .checklist {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .checklist-title { font-weight: 600; margin-bottom: 0.75rem; font-size: 0.95rem; }
+    .checklist-item {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.9rem;
+      color: #555;
+      display: flex;
+      align-items: flex-start;
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item::before {
+      content: "□";
+      margin-right: 0.6rem;
+      color: #0066cc;
+      font-weight: bold;
+    }
+    
+    .iteration-phases {
+      counter-reset: phase;
+      margin: 1.5rem 0;
+    }
+    .phase {
+      background: white;
+      border-left: 4px solid #0066cc;
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    .phase-title { font-weight: 600; margin-bottom: 0.25rem; }
+    .phase-desc { font-size: 0.9rem; color: #555; }
+    
+    .cta {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .cta-title { font-weight: 600; margin-bottom: 0.5rem; }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-nav a { color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+    .footer-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0009
+  </div>
+  
+  <h1>Refinement and Critique</h1>
+  <p class="lesson-meta">Lesson 0009 · ~8 minutes · Meta-Skill</p>
+  
+  <p>The first AI output is rarely the best output. The difference between good and great design is the iteration loop — knowing what to keep, what to change, and how to direct the next pass.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Skill Above the Skills</div>
+    <div class="key-insight-text">Refinement is a meta-skill. It sits above prompting, above referencing, above asset generation. Master this and every other skill compounds.</div>
+  </div>
+  
+  <h2>The Critique Mindset</h2>
+  
+  <p>Critique is not criticism. It is structured observation: looking at what is, comparing it to what you wanted, and identifying the specific gap.</p>
+  
+  <p>The best designers separate observation from judgment. First, describe what you see. Then, evaluate against intent. Only then, decide what to do.</p>
+  
+  <h2>The Critique Framework</h2>
+  
+  <p>When evaluating any design output — yours or AI's — use this four-step framework:</p>
+  
+  <ol>
+    <li><strong>What is it?</strong> — Describe what you see objectively. No judgment yet.</li>
+    <li><strong>What was intended?</strong> — Recall the prompt, the reference, the goal.</li>
+    <li><strong>What's the gap?</strong> — Identify specific differences between output and intent.</li>
+    <li><strong>What's the single next change?</strong> — Pick one focused refinement.</li>
+  </ol>
+  
+  <p>Skipping step 1 leads to vague feedback ("it feels off"). Skipping step 4 leads to rework loops that never converge.</p>
+  
+  <h2>The Refinement Ladder</h2>
+  
+  <p>Refinements exist at different levels. Knowing which level you're working at keeps iteration focused.</p>
+  
+  <div class="iteration-phases">
+    <div class="phase">
+      <div class="phase-title">Level 1: Surface</div>
+      <p class="phase-desc">Color, font, spacing values. Quick to change, often high impact. "Increase headline weight." "Tighten the line height."</p>
+    </div>
+    <div class="phase">
+      <div class="phase-title">Level 2: Structure</div>
+      <p class="phase-desc">Layout, hierarchy, information architecture. "Move the CTA above the fold." "Group these features together."</p>
+    </div>
+    <div class="phase">
+      <div class="phase-title">Level 3: Concept</div>
+      <p class="phase-desc">The fundamental approach or direction. "Try a completely different hero composition." "This isn't the right metaphor."</p>
+    </div>
+    <div class="phase">
+      <div class="phase-title">Level 4: Strategy</div>
+      <p class="phase-desc">The problem being solved or audience being served. "We built for the wrong user." "The product itself needs rethinking."</p>
+    </div>
+  </div>
+  
+  <p>Most iteration happens at Level 1. When Level 1 stops helping, move to Level 2. When that's exhausted, Level 3. The further up you climb, the more expensive the change — but sometimes necessary.</p>
+  
+  <h2>The "One Change" Rule</h2>
+  
+  <p>When directing AI for refinement, change one thing at a time. This gives you:</p>
+  
+  <ul>
+    <li>Clear cause-and-effect: you know what worked and what didn't</li>
+    <li>Faster convergence: small changes compound predictably</li>
+    <li>Easier prompts: each one is focused and unambiguous</li>
+    <li>Better learning: you build intuition about what drives quality</li>
+  </ul>
+  
+  <p>"Make it better" is not a refinement prompt. "Increase the CTA's contrast against the background" is.</p>
+  
+  <h2>The Visual Quality Checklist</h2>
+  
+  <p>Run every design through this checklist before declaring it done. If any item fails, you have your next refinement.</p>
+  
+  <div class="checklist">
+    <div class="checklist-title">Hierarchy</div>
+    <div class="checklist-item">The most important element is the most visually dominant</div>
+    <div class="checklist-item">Eye flow matches intended reading order</div>
+    <div class="checklist-item">Secondary elements support without competing</div>
+  </div>
+  
+  <div class="checklist">
+    <div class="checklist-title">Typography</div>
+    <div class="checklist-item">Font sizes follow a clear scale (no one-offs)</div>
+    <div class="checklist-item">Line lengths stay within readable range (45-75 chars)</div>
+    <div class="checklist-item">Line heights are appropriate for size and density</div>
+    <div class="checklist-item">Font weights create clear contrast between levels</div>
+  </div>
+  
+  <div class="checklist">
+    <div class="checklist-title">Spacing</div>
+    <div class="checklist-item">Related elements are visually grouped (closer than unrelated)</div>
+    <div class="checklist-item">Vertical rhythm is consistent across sections</div>
+    <div class="checklist-item">No element feels cramped or accidentally isolated</div>
+  </div>
+  
+  <div class="checklist">
+    <div class="checklist-title">Color</div>
+    <div class="checklist-item">Palette is restricted and intentional</div>
+    <div class="checklist-item">Contrast meets accessibility standards</div>
+    <div class="checklist-item">Color use reinforces hierarchy, not decoration</div>
+  </div>
+  
+  <div class="checklist">
+    <div class="checklist-title">Cohesion</div>
+    <div class="checklist-item">Components feel like part of the same system</div>
+    <div class="checklist-item">Assets match the design's tone and palette</div>
+    <div class="checklist-item">Motion supports the same feeling as the visuals</div>
+  </div>
+  
+  <h2>Spotting "AI-Default" Patterns</h2>
+  
+  <p>AI output has recognizable defaults. Learn to spot them so you can override:</p>
+  
+  <ul>
+    <li><strong>Purple-to-blue gradients</strong> — Default for tech products. Rarely the right choice.</li>
+    <li><strong>Inter as the only font</strong> — Safe but generic. Consider alternatives.</li>
+    <li><strong>Generic stock photo aesthetic</strong> — Even with AI generation, outputs can feel templated.</li>
+    <li><strong>Symmetric, centered layouts</strong> — Safe but lifeless. Try asymmetric tension.</li>
+    <li><strong>Vague copywriting</strong> — "Welcome to the future of productivity." Replace with specifics.</li>
+    <li><strong>Three-column feature grids</strong> — Overused. Try other arrangements.</li>
+    <li><strong>Cookie-cutter CTAs</strong> — "Get Started" everywhere. Make CTAs specific to the action.</li>
+  </ul>
+  
+  <p>When you see these, that's a signal to push further, not accept them.</p>
+  
+  <h2>The "Five Whys" for Design Problems</h2>
+  
+  <p>When something doesn't feel right but you can't articulate why, ask "why" five times:</p>
+  
+  <ol>
+    <li>Why does this not work? → "The CTA doesn't stand out."</li>
+    <li>Why doesn't it stand out? → "It's the same size as the body text."</li>
+    <li>Why is it the same size? → "I didn't specify a CTA scale."</li>
+    <li>Why didn't I specify? → "I assumed AI would default to a hierarchy."</li>
+    <li>Why did I assume? → "I've been treating AI as the designer, not as a tool."</li>
+  </ol>
+  
+  <p>The root cause is rarely the visible problem. Going deeper reveals what to actually fix.</p>
+  
+  <h2>The Iteration Loop</h2>
+  
+  <p>Put it all together — this is the loop you run for every design:</p>
+  
+  <ol>
+    <li>Generate with a detailed, complete prompt</li>
+    <li>Step away briefly (5-10 minutes minimum)</li>
+    <li>Return and describe what you see (no judgment)</li>
+    <li>Compare to intent; identify the gap</li>
+    <li>Pick one focused refinement at the right level</li>
+    <li>Apply, then return to step 2</li>
+    <li>Continue until the design passes the checklist</li>
+  </ol>
+  
+  <p>Typical count: 5-10 refinement passes for a single component. For a full page, expect 30-50 passes across components.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Patience Lesson</div>
+    <div class="key-insight-text">Quality is the sum of focused refinements. The designers who ship the best work aren't the most talented — they're the most patient with iteration.</div>
+  </div>
+  
+  <h2>When to Stop</h2>
+  
+  <p>The biggest risk in iteration is never stopping. Knowing when "done" is done is itself a skill.</p>
+  
+  <p>Stop when:</p>
+  
+  <ul>
+    <li>The checklist passes (or you've decided which failures to accept)</li>
+    <li>Further refinements make marginal, not meaningful, improvements</li>
+    <li>You're refining taste preferences, not objective issues</li>
+    <li>The design serves its purpose (launches, ships, gets used)</li>
+  </ul>
+  
+  <p>Perfectionism is expensive. Done and shipped beats perfect and never released.</p>
+  
+  <h2>Exercise: Run a Full Refinement Cycle</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Practice · 45 minutes</div>
+    <div class="exercise-title">Take one AI output and refine it through 5 passes.</div>
+    <p style="margin-bottom: 0.5rem;">Pick a component you generated in Lesson 0004 or 0006.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Pass 1:</strong> Step away for 5 minutes. Return. Describe what you see.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Pass 2:</strong> Apply the checklist. Identify the single biggest gap.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Pass 3:</strong> Make one focused refinement at Level 1 or 2.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Pass 4:</strong> Apply the Five Whys to anything that still feels off.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Pass 5:</strong> Make your final refinement. Run the checklist again.</p>
+    <p style="margin-bottom: 0;">Save before/after versions. Notice: how much did quality improve? At what level?</p>
+  </div>
+  
+  <h2>Key Takeaways</h2>
+  
+  <ul>
+    <li>Critique is observation before judgment</li>
+    <li>Refinements exist at four levels: surface, structure, concept, strategy</li>
+    <li>One focused change beats broad rework</li>
+    <li>Spot AI defaults and override them</li>
+    <li>Five Whys reveals root causes</li>
+    <li>Knowing when to stop is as important as knowing what to change</li>
+  </ul>
+  
+  <div class="cta">
+    <div class="cta-title">Questions?</div>
+    <p>Ask me about critique patterns, how to handle "close but not quite" outputs, or when to abandon an approach entirely.</p>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="0008-interactions-motion.html">← Lesson 0008: Interactions and Motion</a>
+    <a href="0010-shipping.html">Lesson 0010: Shipping the Product →</a>
+  </div>
+</body>
+</html>

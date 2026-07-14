@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001: The Taste Gap — Design with AI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    
+    .breadcrumb {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+    
+    .breadcrumb a {
+      color: #888;
+      text-decoration: none;
+    }
+    
+    .breadcrumb a:hover {
+      color: #0066cc;
+    }
+    
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #111;
+    }
+    
+    .lesson-meta {
+      color: #888;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #111;
+      margin: 2rem 0 0.75rem;
+    }
+    
+    p {
+      margin-bottom: 1rem;
+      color: #444;
+    }
+    
+    ul, ol {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #444;
+    }
+    
+    li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    
+    .key-insight-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    
+    .exercise-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .comparison-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    
+    .comparison-card.ai {
+      border-left: 4px solid #0066cc;
+    }
+    
+    .comparison-card.human {
+      border-left: 4px solid #28a745;
+    }
+    
+    .comparison-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .comparison-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    
+    .comparison-list li {
+      margin-bottom: 0.4rem;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    
+    .comparison-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #888;
+    }
+    
+    .next-steps {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .next-steps-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .citation {
+      font-size: 0.85rem;
+      color: #666;
+      border-left: 3px solid #ddd;
+      padding-left: 0.75rem;
+      margin: 1rem 0;
+    }
+    
+    .cta {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    
+    .cta-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .footer-nav a {
+      color: #0066cc;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .footer-nav a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0001
+  </div>
+  
+  <h1>The Taste Gap</h1>
+  <p class="lesson-meta">Lesson 0001 · ~5 minutes · Foundation</p>
+  
+  <p>Before we touch any tools, we need to understand the single most important idea in this framework. It's the difference between what AI can do for you and what you must do yourself.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Central Insight</div>
+    <div class="key-insight-text">AI understands design <em>rules</em> but not design <em>taste</em>. The gap between these two things is where your value lives.</div>
+  </div>
+  
+  <h2>What AI Can Do</h2>
+  
+  <p>Modern AI tools (Cursor, Codex, Claude, GPT-4) are exceptional at executing objective design principles. When you ask for spacing, typography, color theory, and hierarchy, they deliver — often faster and more consistently than humans.</p>
+  
+  <p>This is because design rules are learnable. They can be measured, taught, and verified. An AI that has seen 10,000 well-designed websites knows that 8-point grids feel tight, that 16-point grids feel spacious, and that 24-point grids feel luxurious. It knows that serif fonts communicate tradition, sans-serif feels modern, and that display fonts make statements.</p>
+  
+  <h2>What AI Cannot Do</h2>
+  
+  <p>Taste is different. Taste is the judgment that says "this combination feels right" or "this solution feels obvious." Taste is knowing not just that something works, but why it matters.</p>
+  
+  <p>AI doesn't know what feels original. It doesn't know what feels meaningful. It doesn't know what feels genuinely good versus technically correct. It can produce a perfectly spaced, beautifully typeset website that feels completely empty.</p>
+  
+  <div class="comparison">
+    <div class="comparison-card ai">
+      <div class="comparison-title">AI Strengths</div>
+      <ul class="comparison-list">
+        <li>Consistent spacing and alignment</li>
+        <li>Typography hierarchy</li>
+        <li>Color theory application</li>
+        <li>Rapid iteration</li>
+        <li>Pattern recognition at scale</li>
+      </ul>
+    </div>
+    <div class="comparison-card human">
+      <div class="comparison-title">Human Strengths</div>
+      <ul class="comparison-list">
+        <li>Knowing what feels meaningful</li>
+        <li>Original combinations</li>
+        <li>Cultural context</li>
+        <li>Emotional resonance</li>
+        <li>Intentional restraint</li>
+      </ul>
+    </div>
+  </div>
+  
+  <h2>Why This Matters</h2>
+  
+  <p>Every method in this framework — Design Skills, Component-by-Component, Inspiration Board — is a workaround for this limitation. When you use a design skill, you're borrowing taste from its creator. When you build component-by-component, you're applying your own taste piece by piece. When you use an inspiration board, you're giving AI references that encode taste.</p>
+  
+  <p>The framework isn't about making AI smarter. It's about structuring your workflow so that human taste shapes every important decision, while AI handles the execution.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Working Principle</div>
+    <div class="key-insight-text">You decide what to build, why it matters, who it's for, and what it should feel like. AI just helps you execute faster.</div>
+  </div>
+  
+  <h2>Exercise: Spot the Difference</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Practice · 3 minutes</div>
+    <div class="exercise-title">Find two designs that are technically identical but feel different.</div>
+    <p style="margin-bottom: 0.5rem;">Visit <a href="https://mobbin.com" target="_blank">Mobbin</a> or <a href="https://awwwards.com" target="_blank">Awwwards</a> and find two website screenshots with similar layouts, spacing, and typography.</p>
+    <p style="margin-bottom: 0.5rem;">Ask yourself:</p>
+    <ul style="margin-bottom: 0.5rem;">
+      <li>Why does one feel "better" than the other?</li>
+      <li>What specific decisions create that feeling?</li>
+      <li>Could AI have made those decisions without being told?</li>
+    </ul>
+    <p>Save your comparison. You'll reference it throughout the course.</p>
+  </div>
+  
+  <h2>The Three Methods Preview</h2>
+  
+  <p>Now that you understand the taste gap, the three methods make more sense:</p>
+  
+  <ul>
+    <li><strong>Design Skills</strong> — Borrow taste from skill creators. Fast but generic.</li>
+    <li><strong>Component-by-Component</strong> — Apply your own taste piece by piece. Slow but distinctive.</li>
+    <li><strong>Inspiration Board</strong> — Encode your taste in curated references. Balanced.</li>
+  </ul>
+  
+  <p>You'll practice each method in upcoming lessons. But first, internalize this: <strong>the quality of your output depends on the quality of your taste, not the sophistication of your prompts.</strong></p>
+  
+  <div class="citation">
+    Source: <a href="https://x.com/LexnLin" target="_blank">Leon Lin</a> — "AI can execute extremely well, but it still lacks true creativity. It understands design rules like spacing, typography, color theory, and hierarchy. But it does not understand taste."
+  </div>
+  
+  <div class="next-steps">
+    <div class="next-steps-title">Before the next lesson</div>
+    <p>Complete the exercise above. You'll need your saved comparison when we dive into the three methods.</p>
+  </div>
+  
+  <div class="cta">
+    <div class="cta-title">Questions?</div>
+    <p>Ask me anything about the taste gap, your comparison, or how this applies to your work.</p>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="../index.html">← Back to Index</a>
+    <a href="0002-design-skills.html">Lesson 0002: Design Skills →</a>
+  </div>
+</body>
+</html>

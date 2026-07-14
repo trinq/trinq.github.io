@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005: Reference Collection — Design with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    .breadcrumb { font-size: 0.85rem; color: #888; margin-bottom: 1rem; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #0066cc; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .lesson-meta { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #111; margin: 2rem 0 0.75rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    ul, ol { margin: 0 0 1.5rem 1.5rem; color: #444; }
+    li { margin-bottom: 0.5rem; }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    .key-insight-text { font-size: 1.05rem; font-weight: 500; }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+    
+    .folders {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin: 2rem 0;
+    }
+    .folder {
+      background: white;
+      border-left: 4px solid #0066cc;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    
+    .questions {
+      background: #fff8e1;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .questions-title {
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #6b5400;
+    }
+    .questions ul { color: #6b5400; }
+    
+    .cta {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .cta-title { font-weight: 600; margin-bottom: 0.5rem; }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-nav a { color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+    .footer-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0005
+  </div>
+  
+  <h1>Building Your Reference Library</h1>
+  <p class="lesson-meta">Lesson 0005 · ~6 minutes · Skill</p>
+  
+  <p>References are the raw material of design taste. Every time you save a screenshot, annotate why it works, you're building the muscle that AI can't replicate. This lesson teaches you how to collect and organize references effectively.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Hidden Skill</div>
+    <div class="key-insight-text">Building a reference library is how you develop taste. It's the work behind the work — and it's cumulative.</div>
+  </div>
+  
+  <h2>Why Reference Collection Matters</h2>
+  
+  <p>Most designers and developers scroll past good design without capturing it. They think "that looks good" and move on. That's a missed opportunity. A strong designer's library contains hundreds of annotated examples they've studied deeply.</p>
+  
+  <p>When you collect references systematically, three things happen:</p>
+  
+  <ul>
+    <li><strong>Pattern recognition develops</strong> — You start seeing why certain combinations work</li>
+    <li><strong>Decision-making speeds up</strong> — You have prior art when facing new design choices</li>
+    <li><strong>Your taste sharpens</strong> — You develop opinions about what feels right</li>
+  </ul>
+  
+  <h2>The Source Platforms</h2>
+  
+  <p>Different platforms serve different purposes. Use them strategically:</p>
+  
+  <ul>
+    <li><strong>Mobbin</strong> — Real product screens. The best source for studying actual UI patterns that ship</li>
+    <li><strong>Awwwards</strong> — High-end web design. For visual sophistication and creative risk-taking</li>
+    <li><strong>Pinterest</strong> — General inspiration. Good for mood boarding and early exploration</li>
+    <li><strong>Cosmos</strong> — Curated design references. For discovering cohesive design systems</li>
+    <li><strong>Webflow Templates</strong> — Structure and layout patterns. For understanding information architecture</li>
+    <li><strong>Craftwork</strong> — UI kits and components. For atomic design elements</li>
+    <li><strong>Rebrand Gallery</strong> — Branding case studies. For understanding identity evolution</li>
+    <li><strong>Component Gallery</strong> — Individual UI components. For studying isolated patterns</li>
+    <li><strong>Savee</strong> — Visual inspiration aggregator. For collecting across categories</li>
+    <li><strong>Lummi</strong> — Image library. For finding cohesive imagery</li>
+  </ul>
+  
+  <h2>The Asking Habit</h2>
+  
+  <p>Don't just save screenshots and think "this looks good." That tells you nothing useful. Ask yourself specific questions:</p>
+  
+  <div class="questions">
+    <div class="questions-title">Questions to ask for every reference</div>
+    <ul>
+      <li>Is it the <strong>layout</strong> that works? Why this structure?</li>
+      <li>Is it the <strong>spacing</strong>? What feeling does the whitespace create?</li>
+      <li>Is it the <strong>typography</strong>? Font choice, scale, weight combinations?</li>
+      <li>Is it the <strong>structure</strong>? How information is grouped?</li>
+      <li>Is it the <strong>interaction</strong>? What state changes feel right?</li>
+      <li>What would happen if I changed one element?</li>
+      <li>What feeling does this evoke? (calm, urgent, playful, premium, technical)</li>
+    </ul>
+  </div>
+  
+  <p>The goal is to articulate what you're responding to. Even a quick note ("the generous padding makes it feel premium") builds your taste vocabulary.</p>
+  
+  <h2>The Folder Structure</h2>
+  
+  <p>Organize references by section type so you can find them when needed:</p>
+  
+  <div class="folders">
+    <div class="folder">Navigation</div>
+    <div class="folder">Heroes</div>
+    <div class="folder">Pricing</div>
+    <div class="folder">Cards</div>
+    <div class="folder">Mobile Screens</div>
+    <div class="folder">Dashboards</div>
+    <div class="folder">Animations</div>
+    <div class="folder">Typography</div>
+    <div class="folder">Forms</div>
+    <div class="folder">Empty States</div>
+    <div class="folder">Error Pages</div>
+    <div class="folder">Onboarding</div>
+  </div>
+  
+  <p>Within each folder, don't be afraid to create sub-folders. "Heroes / SaaS / minimal" is fine. The more specific, the easier to find later.</p>
+  
+  <h2>The Daily Practice</h2>
+  
+  <p>Building this library takes time, but it's not complicated:</p>
+  
+  <ol>
+    <li>Spend 10 minutes daily browsing Mobbin or Awwwards</li>
+    <li>Save anything that triggers a positive response — even a small one</li>
+    <li>Write a one-sentence annotation: why does this work?</li>
+    <li>Drop it in the appropriate folder</li>
+    <li>Review monthly: remove what no longer resonates, reorganize as your eye evolves</li>
+  </ol>
+  
+  <p>This is the work. Not glamorous, but cumulative. A year of this practice gives you a library of thousands of annotated references — and a design sense you can't fake.</p>
+  
+  <h2>Combining, Not Copying</h2>
+  
+  <p>One critical rule: do not copy entire designs. The value of a reference library is in combining patterns, not reproducing screens.</p>
+  
+  <p>When you have multiple references for "hero section," you're not picking one to copy — you're synthesizing. Maybe one has the typography you want, another has the spacing rhythm, a third has the CTA approach. Your design emerges from the combination.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Synthesis Mindset</div>
+    <div class="key-insight-text">Reference libraries aren't for copying. They're for combining. Your taste emerges from the specific combinations you choose.</div>
+  </div>
+  
+  <h2>Exercise: Build Your First Reference Set</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Practice · 20 minutes</div>
+    <div class="exercise-title">Curate 10 references for one section type.</div>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 1:</strong> Pick one section type (hero, pricing, navigation — whatever interests you).</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 2:</strong> Browse Mobbin or Awwwards and save 10 screenshots.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 3:</strong> For each, write one sentence answering: why does this work?</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 4:</strong> Look at your 10 annotations. What patterns emerge? What values do you respond to?</p>
+    <p>This is your first taste data. Save it for future lessons.</p>
+  </div>
+  
+  <h2>Key Takeaways</h2>
+  
+  <ul>
+    <li>Reference collection is how taste develops — it's not optional</li>
+    <li>Always ask "why does this work?" when saving</li>
+    <li>Organize by section type for fast retrieval</li>
+    <li>Combine patterns, never copy entire designs</li>
+    <li>Daily practice compounds into a powerful library</li>
+  </ul>
+  
+  <div class="cta">
+    <div class="cta-title">Questions?</div>
+    <p>Ask me about annotation strategies, folder organization, or how to use your library in prompts.</p>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="0004-component-by-component.html">← Lesson 0004: Component-by-Component</a>
+    <a href="0006-prompt-crafting.html">Lesson 0006: Prompt Crafting →</a>
+  </div>
+</body>
+</html>

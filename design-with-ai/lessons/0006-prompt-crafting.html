@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006: Prompt Crafting — Design with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    .breadcrumb { font-size: 0.85rem; color: #888; margin-bottom: 1rem; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #0066cc; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .lesson-meta { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #111; margin: 2rem 0 0.75rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    ul, ol { margin: 0 0 1.5rem 1.5rem; color: #444; }
+    li { margin-bottom: 0.5rem; }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    .key-insight-text { font-size: 1.05rem; font-weight: 500; }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+    
+    .prompt-example {
+      background: #f5f5f5;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #444;
+      white-space: pre-wrap;
+    }
+    
+    .prompt-bad { border-left: 4px solid #dc3545; }
+    .prompt-good { border-left: 4px solid #28a745; }
+    
+    .prompt-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .prompt-bad .prompt-label { color: #dc3545; }
+    .prompt-good .prompt-label { color: #28a745; }
+    
+    .formula {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .formula-title { font-weight: 600; margin-bottom: 0.75rem; }
+    .formula-line { 
+      font-family: monospace; 
+      font-size: 0.85rem; 
+      color: #444; 
+      padding: 0.25rem 0;
+    }
+    .formula-plus { 
+      color: #888; 
+      text-align: center; 
+      font-weight: bold;
+      margin: 0.25rem 0;
+    }
+    
+    .mistake {
+      background: #fff5f5;
+      border-left: 4px solid #dc3545;
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+    .mistake-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; color: #dc3545; }
+    
+    .cta {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .cta-title { font-weight: 600; margin-bottom: 0.5rem; }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-nav a { color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+    .footer-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0006
+  </div>
+  
+  <h1>Prompt Crafting</h1>
+  <p class="lesson-meta">Lesson 0006 · ~8 minutes · Skill</p>
+  
+  <p>A great reference library doesn't help if you can't translate it into instructions. This lesson teaches you the prompt patterns that turn your taste into AI output.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Core Principle</div>
+    <div class="key-insight-text">The best prompts give constraints, not directives. The more specific you are about what you want, the less AI has to guess — and the more your taste shines through.</div>
+  </div>
+  
+  <h2>The Anatomy of a Good Design Prompt</h2>
+  
+  <p>Every effective prompt contains the same five elements. Use this formula:</p>
+  
+  <div class="formula">
+    <div class="formula-title">Prompt Formula</div>
+    <div class="formula-line">[Component scope]</div>
+    <div class="formula-plus">+</div>
+    <div class="formula-line">[References]</div>
+    <div class="formula-plus">+</div>
+    <div class="formula-line">[Branding context]</div>
+    <div class="formula-plus">+</div>
+    <div class="formula-line">[Specific constraints]</div>
+    <div class="formula-plus">+</div>
+    <div class="formula-line">[Feeling/tone]</div>
+  </div>
+  
+  <p>When all five are present, AI has what it needs to execute well. When even one is missing, it defaults to generic.</p>
+  
+  <h2>The Five Elements in Practice</h2>
+  
+  <p><strong>1. Component scope</strong> — Be specific about what you're building.</p>
+  <ul>
+    <li>"Hero section" not "landing page"</li>
+    <li>"Pricing card" not "pricing"</li>
+    <li>"Mobile navigation menu" not "nav"</li>
+  </ul>
+  
+  <p><strong>2. References</strong> — Show, don't tell. Attach screenshots from your library.</p>
+  <ul>
+    <li>Always use multiple references for inspiration</li>
+    <li>Include the "do not copy directly" instruction</li>
+  </ul>
+  
+  <p><strong>3. Branding context</strong> — Lock in your visual system.</p>
+  <ul>
+    <li>Colors (specific hex codes if you have them)</li>
+    <li>Fonts (specific family names)</li>
+    <li>Tone (minimal, playful, premium, technical)</li>
+  </ul>
+  
+  <p><strong>4. Specific constraints</strong> — The details that matter.</p>
+  <ul>
+    <li>Spacing values: "generous padding (at least 80px vertical)"</li>
+    <li>Typography scale: "headline 64px, subhead 20px"</li>
+    <li>Interaction: "hover should feel subtle, not bouncy"</li>
+    <li>Content: "headline should be confident, not salesy"</li>
+  </ul>
+  
+  <p><strong>5. Feeling/tone</strong> — The emotional target.</p>
+  <ul>
+    <li>"Should feel calm, never urgent"</li>
+    <li>"Playful but not childish"</li>
+    <li>"Confident without being aggressive"</li>
+  </ul>
+  
+  <h2>Before/After Examples</h2>
+  
+  <div class="prompt-example prompt-bad">
+    <div class="prompt-label">Bad Prompt</div>Build me a landing page for my SaaS tool.
+  </div>
+  
+  <div class="prompt-example prompt-good">
+    <div class="prompt-label">Good Prompt</div>Create a hero section for [product name], an AI tool for content teams.
+
+References attached (3 screenshots). Use the typography hierarchy from #1, the spacing rhythm from #2, and the CTA treatment from #3 — but do not copy directly. Adapt to my brand.
+
+Branding:
+- Background: warm off-white (#FAF7F2)
+- Primary text: charcoal (#1A1A1A)
+- Accent: muted terracotta (#C4654A)
+- Font: Inter for body, a confident serif (like Fraunces) for headlines
+- Tone: warm, considered, intelligent — not cold or corporate
+
+Specifics:
+- Headline: bold but conversational, max 8 words
+- Subhead: 1-2 sentences explaining the product benefit
+- CTA: primary action ("Start free trial") + secondary ("Watch demo")
+- Generous whitespace; section should breathe
+- Subtle entry animation on scroll
+
+The hero should feel like an invitation, not a pitch.
+  </div>
+  
+  <h2>The "Do Not Copy Directly" Rule</h2>
+  
+  <p>Always include this phrase when sharing references. Without it, AI will reproduce screens verbatim — producing something that looks familiar and feels derivative.</p>
+  
+  <p>With it, AI extracts patterns: the typography rhythm here, the spacing scale there, the structural approach over there. The result is your own synthesis, not a copy.</p>
+  
+  <h2>Common Mistakes</h2>
+  
+  <div class="mistake">
+    <div class="mistake-title">Mistake 1: Vague adjectives</div>
+    <p style="margin-bottom: 0;">"Modern, clean, beautiful" tells AI nothing. Replace with specifics: "8px border radius, 16px base spacing, sans-serif throughout."</p>
+  </div>
+  
+  <div class="mistake">
+    <div class="mistake-title">Mistake 2: Too many references</div>
+    <p style="margin-bottom: 0;">More than 5-7 references dilutes direction. The more you show, the more AI averages everything. Pick 3-5 that share a clear direction.</p>
+  </div>
+  
+  <div class="mistake">
+    <div class="mistake-title">Mistake 3: Skipping the feeling</div>
+    <p style="margin-bottom: 0;">Technical specifications without emotional targeting produce technically correct but emotionally empty design. Always include how it should <em>feel</em>.</p>
+  </div>
+  
+  <div class="mistake">
+    <div class="mistake-title">Mistake 4: Not iterating</div>
+    <p style="margin-bottom: 0;">First output is rarely the best output. Plan for 2-4 refinement rounds. Each one should add or sharpen one specific thing.</p>
+  </div>
+  
+  <h2>The Iteration Pattern</h2>
+  
+  <p>Each refinement should be focused, not broad:</p>
+  
+  <ul>
+    <li><strong>Round 1:</strong> Generate the initial design from the full prompt</li>
+    <li><strong>Round 2:</strong> Refine typography — "Increase headline weight, tighten line height"</li>
+    <li><strong>Round 3:</strong> Refine spacing — "Add more breathing room between sections"</li>
+    <li><strong>Round 4:</strong> Refine tone — "The CTA feels too pushy; make it gentler"</li>
+  </ul>
+  
+  <p>Single-focus refinements get better results than "fix everything" prompts.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Refinement Mindset</div>
+    <div class="key-insight-text">Don't ask AI to redo. Ask AI to refine one thing. Focused adjustments compound into quality.</div>
+  </div>
+  
+  <h2>Exercise: Write a Component Prompt</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Practice · 25 minutes</div>
+    <div class="exercise-title">Write a detailed prompt for a pricing section.</div>
+    <p style="margin-bottom: 0.5rem;">Use the product idea from previous lessons.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 1:</strong> Find 3-5 pricing section references from your library (or Mobbin/Awwwards).</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 2:</strong> Apply the formula: scope + references + branding + constraints + feeling.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 3:</strong> Include the "do not copy directly" instruction.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 4:</strong> Generate, then iterate with 2 focused refinements.</p>
+    <p>Save the final result and your prompt. You'll reference it in future lessons.</p>
+  </div>
+  
+  <h2>Key Takeaways</h2>
+  
+  <ul>
+    <li>Good prompts provide constraints, not directives</li>
+    <li>Five elements: scope, references, branding, constraints, feeling</li>
+    <li>"Do not copy directly" prevents verbatim reproduction</li>
+    <li>Iterate one focused change at a time</li>
+    <li>Vague adjectives produce vague results — always be specific</li>
+  </ul>
+  
+  <div class="cta">
+    <div class="cta-title">Questions?</div>
+    <p>Ask me about specific prompt patterns, iteration strategies, or how to handle AI when it ignores your constraints.</p>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="0005-reference-collection.html">← Lesson 0005: Reference Collection</a>
+    <a href="0007-asset-generation.html">Lesson 0007: Asset Generation →</a>
+  </div>
+</body>
+</html>

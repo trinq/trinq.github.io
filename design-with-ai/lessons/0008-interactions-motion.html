@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0008: Interactions and Motion — Design with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    .breadcrumb { font-size: 0.85rem; color: #888; margin-bottom: 1rem; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #0066cc; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .lesson-meta { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #111; margin: 2rem 0 0.75rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    ul, ol { margin: 0 0 1.5rem 1.5rem; color: #444; }
+    li { margin-bottom: 0.5rem; }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    .key-insight-text { font-size: 1.05rem; font-weight: 500; }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+    
+    .timing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .timing-table th {
+      background: #f5f5f5;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #555;
+    }
+    .timing-table td {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+    .timing-table code {
+      background: #f5f5f5;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.85rem;
+    }
+    
+    .easing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    .easing-card {
+      background: white;
+      border-radius: 6px;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .easing-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; color: #0066cc; }
+    .easing-feel { font-size: 0.85rem; color: #666; margin-bottom: 0.5rem; }
+    .easing-code {
+      background: #f5f5f5;
+      padding: 0.4rem 0.6rem;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: #444;
+    }
+    
+    .cta {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .cta-title { font-weight: 600; margin-bottom: 0.5rem; }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-nav a { color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+    .footer-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0008
+  </div>
+  
+  <h1>Interactions and Motion</h1>
+  <p class="lesson-meta">Lesson 0008 · ~7 minutes · Skill</p>
+  
+  <p>Static design is half a design. The other half is what happens when users interact with it. This lesson covers the principles and timing that make interfaces feel alive — without feeling chaotic.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Hidden Layer</div>
+    <div class="key-insight-text">Motion is not decoration. It communicates: this is clickable, this is loading, this just happened. Use it to clarify, not to impress.</div>
+  </div>
+  
+  <h2>What Motion Communicates</h2>
+  
+  <p>Every transition carries meaning. Before adding animation, ask what it should communicate:</p>
+  
+  <ul>
+    <li><strong>Affordance</strong> — "I'm clickable" (hover states, button presses)</li>
+    <li><strong>Feedback</strong> — "Your action registered" (form submits, toggle states)</li>
+    <li><strong>Hierarchy</strong> — "This is the new state" (modal openings, page transitions)</li>
+    <li><strong>Continuity</strong> — "You're in the same place" (subtle scrolling, parallax)</li>
+    <li><strong>Delight</strong> — "Someone cared about this" (considered micro-interactions)</li>
+  </ul>
+  
+  <p>If you can't name the communication, you probably don't need the motion.</p>
+  
+  <h2>Duration: How Long</h2>
+  
+  <p>Duration determines whether motion feels responsive or sluggish. Use these ranges:</p>
+  
+  <table class="timing-table">
+    <thead>
+      <tr>
+        <th>Duration</th>
+        <th>Best for</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>0-100ms</code></td>
+        <td>Instant feedback (button press, hover color change)</td>
+      </tr>
+      <tr>
+        <td><code>150-250ms</code></td>
+        <td>Subtle state changes (dropdown open, tooltip)</td>
+      </tr>
+      <tr>
+        <td><code>250-400ms</code></td>
+        <td>Component transitions (modal, drawer, accordion)</td>
+      </tr>
+      <tr>
+        <td><code>400-600ms</code></td>
+        <td>Page-level transitions (route change, content swap)</td>
+      </tr>
+      <tr>
+        <td><code>600ms+</code></td>
+        <td>Decorative or choreographed (rare, used sparingly)</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <p>The shorter the distance traveled, the shorter the duration. The further or more dramatic the change, the longer it takes — but never longer than necessary.</p>
+  
+  <h2>Easing: How It Moves</h2>
+  
+  <p>Linear motion feels mechanical. Easing makes motion feel physical and natural. These four cover most needs:</p>
+  
+  <div class="easing-grid">
+    <div class="easing-card">
+      <div class="easing-name">Ease-out</div>
+      <div class="easing-feel">Arrives quickly, settles gently. Most common.</div>
+      <div class="easing-code">cubic-bezier(0.0, 0.0, 0.2, 1)</div>
+    </div>
+    <div class="easing-card">
+      <div class="easing-name">Ease-in</div>
+      <div class="easing-feel">Starts slow, accelerates. For exits.</div>
+      <div class="easing-code">cubic-bezier(0.4, 0.0, 1, 1)</div>
+    </div>
+    <div class="easing-card">
+      <div class="easing-name">Ease-in-out</div>
+      <div class="easing-feel">Smooth both directions. For symmetric transitions.</div>
+      <div class="easing-code">cubic-bezier(0.4, 0.0, 0.2, 1)</div>
+    </div>
+    <div class="easing-card">
+      <div class="easing-name">Spring/overshoot</div>
+      <div class="easing-feel">Playful, expressive. Use sparingly.</div>
+      <div class="easing-code">Material: spring(stiffness, damping)</div>
+    </div>
+  </div>
+  
+  <p><strong>Rule of thumb:</strong> things entering the screen use ease-out (they arrive). Things leaving use ease-in (they accelerate away). This mirrors physical reality and feels natural.</p>
+  
+  <h2>The Hover State Spectrum</h2>
+  
+  <p>Hover is the most common interaction. Its intensity should match the action's importance:</p>
+  
+  <ul>
+    <li><strong>Links</strong> — Underline appears, color shift, 0ms (instant)</li>
+    <li><strong>Buttons (primary)</strong> — Subtle background darken, 100-150ms</li>
+    <li><strong>Buttons (secondary)</strong> — Border or background fill, 150ms</li>
+    <li><strong>Cards</strong> — Slight lift (translateY(-2px)) + shadow growth, 200ms</li>
+    <li><strong>Icon buttons</strong> — Background fade-in, 150ms</li>
+  </ul>
+  
+  <p>Higher-stakes actions (primary buttons) deserve more pronounced feedback. Secondary actions stay subtle.</p>
+  
+  <h2>Transitions to Master</h2>
+  
+  <p>Every product uses the same core transitions. Get these right:</p>
+  
+  <p><strong>Modal opening</strong> — Background fades, modal scales from 95% to 100%, 250ms, ease-out. Optional backdrop blur.</p>
+  
+  <p><strong>Drawer / sidebar</strong> — Slides in from edge, 300ms, ease-out. Content (not background) is what moves.</p>
+  
+  <p><strong>Accordion expand</strong> — Height auto animates, 250ms, ease-in-out. Avoid display: none jumps.</p>
+  
+  <p><strong>Toast / notification</strong> — Slides in from corner, 300ms. Auto-dismisses after 4-6 seconds with same exit.</p>
+  
+  <p><strong>Page transition</strong> — Outgoing fades to 0, incoming fades from 0, 300ms total. Keep it brief; users want to move on.</p>
+  
+  <p><strong>Skeleton loading</strong> — Subtle shimmer animation, infinite, 1.5s cycle. Indicates content is coming.</p>
+  
+  <h2>Scroll-Triggered Motion</h2>
+  
+  <p>As users scroll, content can respond. Use this sparingly:</p>
+  
+  <ul>
+    <li><strong>Fade-in on enter</strong> — Element appears as it scrolls into view. Most useful for long pages.</li>
+    <li><strong>Stagger children</strong> — Lists/cards fade in one after another (50ms stagger). Adds rhythm without noise.</li>
+    <li><strong>Parallax</strong> — Background moves slower than foreground. Use very subtly; overuse causes motion sickness.</li>
+  </ul>
+  
+  <p>Avoid: animations that block scrolling, animations that replay when scrolling back, anything that makes users wait.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Scrolling Test</div>
+    <div class="key-insight-text">If motion makes scrolling feel slower or harder, you've overdone it. Motion should support navigation, not fight it.</div>
+  </div>
+  
+  <h2>Accessibility Considerations</h2>
+  
+  <p>Motion can disable or harm users with vestibular disorders. Always respect:</p>
+  
+  <ul>
+    <li><strong>prefers-reduced-motion</strong> — Disable non-essential animations for these users</li>
+    <li>Never rely on motion alone to communicate (also use color, text, or position)</li>
+    <li>Keep loops short or provide a way to stop them</li>
+    <li>Avoid large-scale parallax or rapid movement</li>
+  </ul>
+  
+  <p>This isn't optional — it's part of good design.</p>
+  
+  <h2>The AI Prompting Angle</h2>
+  
+  <p>When prompting AI for components, motion descriptions matter. Include:</p>
+  
+  <ul>
+    <li>"Subtle hover lift, 200ms ease-out"</li>
+    <li>"Modal scales from 95% to 100% on open"</li>
+    <li>"Transitions should feel calm, never bouncy"</li>
+    <li>"Respect prefers-reduced-motion"</li>
+  </ul>
+  
+  <p>Without these, AI generates either no motion or generic motion. Both miss your intent.</p>
+  
+  <h2>Common Motion Mistakes</h2>
+  
+  <ul>
+    <li><strong>Too long</strong> — Anything over 500ms feels sluggish for UI. Save longer durations for video.</li>
+    <li><strong>Too bouncy</strong> — Spring/elastic easing feels playful but quickly feels amateur in serious products.</li>
+    <li><strong>Too much</strong> — Animating every element creates noise. Animate only what matters.</li>
+    <li><strong>Wrong easing</strong> — Linear motion in a sophisticated product feels broken.</li>
+    <li><strong>No reduced-motion support</strong> — Accessibility violation that excludes real users.</li>
+  </ul>
+  
+  <h2>Exercise: Audit and Improve Motion</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Practice · 30 minutes</div>
+    <div class="exercise-title">Audit motion in your reference library.</div>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 1:</strong> Pick 3 product references from your library (Lesson 0005).</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 2:</strong> For each, note what motion is used: hover, modal, page transition, scroll.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 3:</strong> Estimate durations and easings (visually).</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 4:</strong> What feeling does the motion create? Calm? Responsive? Playful?</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 5:</strong> Apply to your own product: which transitions matter most? What duration? What easing?</p>
+    <p>Save your motion spec — it's a core part of your design system.</p>
+  </div>
+  
+  <h2>Key Takeaways</h2>
+  
+  <ul>
+    <li>Motion communicates; always know what it's saying</li>
+    <li>Match duration to distance and importance</li>
+    <li>Use ease-out for arrivals, ease-in for exits</li>
+    <li>Hover intensity should match action importance</li>
+    <li>Respect prefers-reduced-motion for accessibility</li>
+    <li>Less motion, done well, beats more motion</li>
+  </ul>
+  
+  <div class="cta">
+    <div class="cta-title">Questions?</div>
+    <p>Ask me about specific transitions, when to use spring vs. ease, or how to prompt AI for the motion you want.</p>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="0007-asset-generation.html">← Lesson 0007: Asset Generation</a>
+    <a href="0009-refinement.html">Lesson 0009: Refinement and Critique →</a>
+  </div>
+</body>
+</html>

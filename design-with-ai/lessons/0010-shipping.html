@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0010: Shipping the Product — Design with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    .breadcrumb { font-size: 0.85rem; color: #888; margin-bottom: 1rem; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #0066cc; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .lesson-meta { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #111; margin: 2rem 0 0.75rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    ul, ol { margin: 0 0 1.5rem 1.5rem; color: #444; }
+    li { margin-bottom: 0.5rem; }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    .key-insight-text { font-size: 1.05rem; font-weight: 500; }
+    
+    .final-cta {
+      background: linear-gradient(135deg, #111 0%, #333 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      margin: 3rem 0;
+      text-align: center;
+    }
+    .final-cta-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .final-cta-subtitle { font-size: 0.95rem; opacity: 0.85; margin-bottom: 1.5rem; }
+    .final-cta-link {
+      display: inline-block;
+      background: white;
+      color: #111;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .final-cta-link:hover { background: #f5f5f5; }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+    
+    .checklist {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .checklist-title { font-weight: 600; margin-bottom: 0.75rem; font-size: 0.95rem; }
+    .checklist-item {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.9rem;
+      color: #555;
+      display: flex;
+      align-items: flex-start;
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item::before {
+      content: "□";
+      margin-right: 0.6rem;
+      color: #0066cc;
+      font-weight: bold;
+    }
+    
+    .principle {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .principle-title { font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem; color: #0066cc; }
+    .principle-text { font-size: 0.9rem; color: #555; margin: 0; }
+    
+    .tradeoff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    .tradeoff-card {
+      background: white;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .tradeoff-label { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .tradeoff-when { font-size: 0.85rem; color: #666; margin-bottom: 0.5rem; }
+    .tradeoff-cost { font-size: 0.8rem; color: #999; font-style: italic; }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-nav a { color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+    .footer-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0010
+  </div>
+  
+  <h1>Shipping the Product</h1>
+  <p class="lesson-meta">Lesson 0010 · ~6 minutes · Meta-Skill</p>
+  
+  <p>A design that lives on a Figma canvas affects no one. A design that ships changes something. This final lesson covers the gap between "looks good in review" and "actually works in the world."</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Last Mile</div>
+    <div class="key-insight-text">Most design quality is lost between design and shipped product — not in the design itself. The last mile matters more than you think.</div>
+  </div>
+  
+  <h2>The Ship Readiness Checklist</h2>
+  
+  <p>Before declaring any design done, run this final check. Every item must be answered yes, or you have a known debt.</p>
+  
+  <div class="checklist">
+    <div class="checklist-title">Functional</div>
+    <div class="checklist-item">Every link and button does something</div>
+    <div class="checklist-item">Forms submit and validate correctly</div>
+    <div class="checklist-item">Empty states exist for every list</div>
+    <div class="checklist-item">Error states are designed, not just text</div>
+    <div class="checklist-item">Loading states exist for async actions</div>
+  </div>
+  
+  <div class="checklist">
+    <div class="checklist-title">Responsive</div>
+    <div class="checklist-item">Mobile layout works (test at 375px width)</div>
+    <div class="checklist-item">Tablet layout works (test at 768px)</div>
+    <div class="checklist-item">Desktop layout works (test at 1440px)</div>
+    <div class="checklist-item">No horizontal scrolling at any size</div>
+    <div class="checklist-item">Touch targets are at least 44x44px</div>
+  </div>
+  
+  <div class="checklist">
+    <div class="checklist-title">Accessible</div>
+    <div class="checklist-item">Color contrast meets WCAG AA (4.5:1 for text)</div>
+    <div class="checklist-item">All images have alt text</div>
+    <div class="checklist-item">Keyboard navigation works through all interactive elements</div>
+    <div class="checklist-item">Focus states are visible and styled</div>
+    <div class="checklist-item">Reduced-motion preference is respected</div>
+  </div>
+  
+  <div class="checklist">
+    <div class="checklist-title">Performance</div>
+    <div class="checklist-item">Images are optimized (correct format, sized for display)</div>
+    <div class="checklist-item">Page loads in under 3 seconds on 3G</div>
+    <div class="checklist-item">No layout shifts after initial load</div>
+    <div class="checklist-item">Animations run at 60fps</div>
+  </div>
+  
+  <div class="checklist">
+    <div class="checklist-title">Content</div>
+    <div class="checklist-item">All placeholder copy is replaced</div>
+    <div class="checklist-item">Spelling and grammar checked</div>
+    <div class="checklist-item">Numbers, dates, and facts are accurate</div>
+    <div class="checklist-item">Legal pages exist (privacy, terms)</div>
+  </div>
+  
+  <p>Items that fail become known debt. Decide: fix now, fix in next sprint, or accept and document. Never pretend they don't exist.</p>
+  
+  <h2>The "Good Enough" Decision</h2>
+  
+  <p>Every design choice is a tradeoff. Knowing when to stop refining is a strategic skill.</p>
+  
+  <div class="tradeoff-grid">
+    <div class="tradeoff-card">
+      <div class="tradeoff-label">Ship at 90%</div>
+      <div class="tradeoff-when">When learning from users matters more than polish. When competition is moving.</div>
+      <div class="tradeoff-cost">Lower initial impression; faster feedback</div>
+    </div>
+    <div class="tradeoff-card">
+      <div class="tradeoff-label">Ship at 100%</div>
+      <div class="tradeoff-when">When first impression defines the brand. When launch is the marketing moment.</div>
+      <div class="tradeoff-cost">Higher cost; slower learning</div>
+    </div>
+    <div class="tradeoff-card">
+      <div class="tradeoff-label">Ship, then iterate</div>
+      <div class="tradeoff-when">When you have traffic. When you can measure impact.</div>
+      <div class="tradeoff-cost">Inconsistent experience during iteration</div>
+    </div>
+    <div class="tradeoff-card">
+      <div class="tradeoff-label">Kill it</div>
+      <div class="tradeoff-when">When the design doesn't solve the real problem. When nobody uses it.</div>
+      <div class="tradeoff-cost">Sunk cost; but frees you to build what matters</div>
+    </div>
+  </div>
+  
+  <p>There is no universal right answer. Match the decision to your context, not to abstract ideals.</p>
+  
+  <h2>The Five Launch Principles</h2>
+  
+  <div class="principle">
+    <div class="principle-title">1. Done is better than perfect</div>
+    <p class="principle-text">The design that ships teaches you. The one you keep refining teaches you nothing. Pick a date, hit it, learn from real use.</p>
+  </div>
+  
+  <div class="principle">
+    <div class="principle-title">2. Real users over design opinions</div>
+    <p class="principle-text">Your aesthetic preferences matter less than whether users can complete their goals. Watch real people use it.</p>
+  </div>
+  
+  <div class="principle">
+    <div class="principle-title">3. Document the debt, don't ignore it</div>
+    <p class="principle-text">Every known issue should be written down. Undocumented debt compounds. Documented debt becomes a roadmap.</p>
+  </div>
+  
+  <div class="principle">
+    <div class="principle-title">4. Plan the iteration, not just the launch</div>
+    <p class="principle-text">The first version is the start, not the end. Before shipping, know what you'll measure and what you'll change based on it.</p>
+  </div>
+  
+  <div class="principle">
+    <div class="principle-title">5. Ship the smallest useful thing</div>
+    <p class="principle-text">Every feature you don't ship is one fewer thing to test, maintain, and confuse users with. Cut until it hurts, then cut one more thing.</p>
+  </div>
+  
+  <h2>Post-Launch: What to Watch</h2>
+  
+  <p>The first 48 hours after launch tell you the most. Watch for:</p>
+  
+  <ul>
+    <li><strong>Where users drop off</strong> — Funnels reveal what confused them</li>
+    <li><strong>What they search for</strong> — Missing features or unclear language</li>
+    <li><strong>What they message support about</strong> — Real pain points vs. imagined ones</li>
+    <li><strong>Where they click that isn't clickable</strong> — Affordance failures</li>
+    <li><strong>How long tasks take</strong> — Efficiency vs. expected ease</li>
+  </ul>
+  
+  <p>Use these signals to prioritize the next iteration. Don't redesign; fix specific, observed problems.</p>
+  
+  <h2>The Honest Reflection</h2>
+  
+  <p>After shipping, ask yourself three questions — not to judge, but to learn:</p>
+  
+  <ol>
+    <li>What worked better than expected?</li>
+    <li>What worked worse than expected?</li>
+    <li>What would I do differently next time?</li>
+  </ol>
+  
+  <p>Capture answers in your learning log. This is how taste compounds. Each project teaches you something the previous one didn't.</p>
+  
+  <h2>Final Exercise: The Whole Loop</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Capstone · 2-4 hours</div>
+    <div class="exercise-title">Ship a complete product from scratch.</div>
+    <p style="margin-bottom: 0.5rem;">Apply everything from lessons 0001-0009 to a real project.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Phase 1 (Foundation):</strong> Define the product, audience, and taste direction (Lessons 0001-0002).</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Phase 2 (Design):</strong> Build component-by-component using your reference library and prompts (Lessons 0003-0008).</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Phase 3 (Refinement):</strong> Apply the critique framework and visual quality checklist (Lesson 0009).</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Phase 4 (Ship):</strong> Run the ship readiness checklist, deploy, and observe (this lesson).</p>
+    <p style="margin-bottom: 0;"><strong>Phase 5 (Learn):</strong> Write a public case study of what you built, what worked, what didn't.</p>
+  </div>
+  
+  <h2>The Closing Thought</h2>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">Where This Started</div>
+    <div class="key-insight-text">Lesson 0001 said AI can't replace your creativity. After ten lessons, you have the tools to prove it: taste, methods, references, prompts, assets, motion, critique, and shipping. The constraint was never the AI. It was always you.</div>
+  </div>
+  
+  <p>You now have a complete system. The only remaining variable is how often you use it. Design compounds: every project sharpens your taste, every iteration teaches you something, every shipped product earns you the chance to ship another.</p>
+  
+  <p>Go build something worth shipping.</p>
+  
+  <div class="final-cta">
+    <div class="final-cta-title">You've finished the course.</div>
+    <div class="final-cta-subtitle">Ten lessons. One complete system. Now go use it.</div>
+    <a href="../index.html" class="final-cta-link">Return to Course Index →</a>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="0009-refinement-critique.html">← Lesson 0009: Refinement and Critique</a>
+    <a href="../index.html">Course Index →</a>
+  </div>
+</body>
+</html>

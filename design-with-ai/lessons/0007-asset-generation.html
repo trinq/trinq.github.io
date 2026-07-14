@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0007: Asset Generation — Design with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    .breadcrumb { font-size: 0.85rem; color: #888; margin-bottom: 1rem; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #0066cc; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .lesson-meta { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #111; margin: 2rem 0 0.75rem; }
+    h3 { font-size: 1rem; font-weight: 600; color: #222; margin: 1.5rem 0 0.5rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    ul, ol { margin: 0 0 1.5rem 1.5rem; color: #444; }
+    li { margin-bottom: 0.5rem; }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    .key-insight-text { font-size: 1.05rem; font-weight: 500; }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+    
+    .tool-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .tool-name { font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem; color: #0066cc; }
+    .tool-purpose { font-size: 0.9rem; color: #555; margin-bottom: 0.5rem; }
+    .tool-when { font-size: 0.85rem; color: #777; }
+    
+    .workflow {
+      counter-reset: step;
+      margin: 2rem 0;
+    }
+    .workflow-step {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      position: relative;
+      padding-left: 4rem;
+    }
+    .workflow-step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 1.25rem;
+      top: 1.25rem;
+      width: 28px;
+      height: 28px;
+      background: #1565c0;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .workflow-title { font-weight: 600; margin-bottom: 0.5rem; }
+    .workflow-desc { font-size: 0.9rem; color: #555; }
+    
+    .prompt-example {
+      background: #f5f5f5;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #444;
+      white-space: pre-wrap;
+    }
+    
+    .cta {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .cta-title { font-weight: 600; margin-bottom: 0.5rem; }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-nav a { color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+    .footer-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0007
+  </div>
+  
+  <h1>Asset Generation with AI</h1>
+  <p class="lesson-meta">Lesson 0007 · ~8 minutes · Skill</p>
+  
+  <p>The fastest way to differentiate a design is custom imagery. AI tools now let you generate unique assets in minutes. This lesson covers the workflow, the tools, and how to prompt them well.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Difference</div>
+    <div class="key-insight-text">Generic products use stock photos. Distinctive products use custom-generated assets. AI lets you create the distinctive version — at scale.</div>
+  </div>
+  
+  <h2>The Four Asset Categories</h2>
+  
+  <p>Different assets need different tools. Understanding which to use when is the first skill.</p>
+  
+  <div class="tool-card">
+    <div class="tool-name">Custom Images</div>
+    <div class="tool-purpose">Photorealistic or stylized product photography, hero imagery, illustrations</div>
+    <div class="tool-when"><strong>Use:</strong> GPT Images 2.0, Seedream 5.0 (or similar generative models)</div>
+  </div>
+  
+  <div class="tool-card">
+    <div class="tool-name">Logos</div>
+    <div class="tool-purpose">Brand marks, wordmarks, monograms</div>
+    <div class="tool-when"><strong>Use:</strong> Quiver, Ideogram, or dedicated logo generators</div>
+  </div>
+  
+  <div class="tool-card">
+    <div class="tool-name">Vectors & Icons</div>
+    <div class="tool-purpose">UI icons, diagrams, custom illustrations in SVG</div>
+    <div class="tool-when"><strong>Use:</strong> Quiver (SVG generation) or dedicated vector tools</div>
+  </div>
+  
+  <div class="tool-card">
+    <div class="tool-name">Motion & Video</div>
+    <div class="tool-purpose">Product demos, background loops, social content</div>
+    <div class="tool-when"><strong>Use:</strong> Google Flow, Runway, Pika</div>
+  </div>
+  
+  <h2>The Asset Generation Workflow</h2>
+  
+  <div class="workflow">
+    <div class="workflow-step">
+      <div class="workflow-title">Identify what you need</div>
+      <p class="workflow-desc">Be specific: a hero illustration? A set of 12 feature icons? A product demo reel?</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Find visual references</div>
+      <p class="workflow-desc">Use your reference library (Lesson 0005). Pick 2-4 examples that match the direction.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Write a detailed prompt</div>
+      <p class="workflow-desc">Apply the prompt formula (Lesson 0006). Include branding context, constraints, and feeling.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Generate multiple variations</div>
+      <p class="workflow-desc">Don't stop at one. Generate 4-8 versions and pick the strongest.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Refine the winner</div>
+      <p class="workflow-desc">Use focused refinements: lighting, color palette, composition, mood.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-title">Edit for cohesion</div>
+      <p class="workflow-desc">Adjust colors, cropping, and treatment so assets feel like a set.</p>
+    </div>
+  </div>
+  
+  <h2>Custom Image Prompts</h2>
+  
+  <p>For AI image generation, prompts need different specifics than UI prompts. Use this structure:</p>
+  
+  <div class="prompt-example">Hero illustration for a productivity app.
+
+Scene: A minimalist workspace at dawn, soft natural light streaming through a large window. Desk surface barely visible, mostly negative space.
+
+Mood: Calm focus. Inviting but not cozy — more aspirational than comfortable.
+
+Style: Soft 3D rendering, muted color palette (warm off-white, soft terracotta, deep navy accents). Influences: Stripe, Linear, modern Apple marketing.
+
+Format: 16:9, ultra-wide composition suitable for a hero section.
+
+Do not include: text, people, specific products, busy details.
+  </div>
+  
+  <p>Note what works: specific scene, clear mood, palette reference, format defined, exclusions explicit.</p>
+  
+  <h2>The Branding Lock</h2>
+  
+  <p>Custom assets must feel like part of your brand, not strangers in your layout. Always lock in:</p>
+  
+  <ul>
+    <li><strong>Color palette</strong> — Same hex codes as your design system</li>
+    <li><strong>Lighting tone</strong> — Warm vs. cool, dramatic vs. soft</li>
+    <li><strong>Rendering style</strong> — Flat, gradient, 3D, photorealistic</li>
+    <li><strong>Composition</strong> — Minimal vs. complex, negative space ratios</li>
+  </ul>
+  
+  <p>When these align, assets integrate seamlessly. When they don't, the page feels disjointed.</p>
+  
+  <h2>SVG & Icon Strategy</h2>
+  
+  <p>Custom icons can completely change the feel of a product. Most products use icon libraries; distinctive products use custom-drawn or generated sets.</p>
+  
+  <p>For icon generation with AI:</p>
+  
+  <ul>
+    <li>Generate a style test first — one icon — and iterate until the style is right</li>
+    <li>Then generate the full set using that locked style as reference</li>
+    <li>Edit in vector software if needed for consistency tweaks</li>
+    <li>Keep stroke width, corner radius, and fill treatment consistent across the set</li>
+  </ul>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Style Lock First</div>
+    <div class="key-insight-text">For any asset set, perfect one example first. Then generate the rest using it as the reference. Consistency comes from referencing an existing example.</div>
+  </div>
+  
+  <h2>Video & Motion</h2>
+  
+  <p>Video generation is the newest frontier. Current tools work best for:</p>
+  
+  <ul>
+    <li>Short loops (5-15 seconds) for hero backgrounds</li>
+    <li>Product showcase clips (rotating, zooming)</li>
+    <li>Atmospheric backgrounds (subtle motion, abstract)</li>
+    <li>Social content snippets</li>
+  </ul>
+  
+  <p>Approach video prompts like image prompts, but add:</p>
+  
+  <ul>
+    <li>Motion description ("slow camera push-in," "subtle parallax")</li>
+    <li>Duration ("5-second loop")</li>
+    <li>Ending condition ("fade to white," "loop seamlessly")</li>
+  </ul>
+  
+  <h2>Common Asset Mistakes</h2>
+  
+  <ul>
+    <li><strong>Generating without references</strong> — Always start with visual references in your library</li>
+    <li><strong>Stopping at first output</strong> — Generate multiple variations; the first rarely wins</li>
+    <li><strong>Ignoring style consistency</strong> — Lock the style early or your assets will look like strangers</li>
+    <li><strong>Over-relying on AI</strong> — Sometimes a human-designed icon or illustration beats AI-generated ones. Know when to step in.</li>
+  </ul>
+  
+  <h2>Exercise: Generate a Cohesive Set</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Practice · 30 minutes</div>
+    <div class="exercise-title">Create 3 hero illustrations that feel like a set.</div>
+    <p style="margin-bottom: 0.5rem;">Use the product idea from previous lessons.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 1:</strong> Define your locked style: palette, rendering style, lighting tone.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 2:</strong> Pick 2-3 reference images for your scene direction.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 3:</strong> Generate 4-8 versions of the first scene.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 4:</strong> Pick the winner. Note what worked.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 5:</strong> Generate the next 2 scenes with the winner's style as reference.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 6:</strong> Edit in any tool needed to make all 3 feel cohesive.</p>
+    <p>Save these — they pair with your UI components from Lesson 0004.</p>
+  </div>
+  
+  <h2>Key Takeaways</h2>
+  
+  <ul>
+    <li>Custom assets differentiate from stock-photo competitors</li>
+    <li>Different tools serve different asset categories</li>
+    <li>Always generate multiple versions; pick the strongest</li>
+    <li>Lock style early; reference the winner for subsequent assets</li>
+    <li>Branding lock: palette, lighting, style, composition must align</li>
+  </ul>
+  
+  <div class="cta">
+    <div class="cta-title">Questions?</div>
+    <p>Ask me about specific prompt patterns for different tools, asset integration with UI, or when to skip AI assets entirely.</p>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="0006-prompt-crafting.html">← Lesson 0006: Prompt Crafting</a>
+    <a href="0008-interactions.html">Lesson 0008: Interactions & Motion →</a>
+  </div>
+</body>
+</html>

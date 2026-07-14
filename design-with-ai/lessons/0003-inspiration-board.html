@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003: Inspiration Board — Design with AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+    .breadcrumb { font-size: 0.85rem; color: #888; margin-bottom: 1rem; }
+    .breadcrumb a { color: #888; text-decoration: none; }
+    .breadcrumb a:hover { color: #0066cc; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #111; }
+    .lesson-meta { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.15rem; font-weight: 600; color: #111; margin: 2rem 0 0.75rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    ul, ol { margin: 0 0 1.5rem 1.5rem; color: #444; }
+    li { margin-bottom: 0.5rem; }
+    
+    .key-insight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+    .key-insight-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+    .key-insight-text { font-size: 1.05rem; font-weight: 500; }
+    
+    .exercise {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .exercise-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0066cc;
+      margin-bottom: 0.5rem;
+    }
+    .exercise-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+    
+    .sources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin: 2rem 0;
+    }
+    .source-tag {
+      background: white;
+      border-radius: 6px;
+      padding: 0.75rem;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .process {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .process-step {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .process-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      background: #e65100;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .process-text { flex: 1; padding-top: 0.25rem; }
+    
+    .comparison-table {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 2rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-bottom: 1px solid #eee;
+    }
+    .comparison-row:last-child { border-bottom: none; }
+    .comparison-cell {
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+    .comparison-header {
+      background: #f5f5f5;
+      font-weight: 600;
+    }
+    
+    .cta {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .cta-title { font-weight: 600; margin-bottom: 0.5rem; }
+    
+    .footer-nav {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer-nav a { color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+    .footer-nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumb">
+    <a href="../index.html">Design with AI</a> / <a href="../reference/glossary.html">Reference</a> / Lesson 0003
+  </div>
+  
+  <h1>Method 3: Inspiration Board</h1>
+  <p class="lesson-meta">Lesson 0003 · ~7 minutes · Intermediate</p>
+  
+  <p>Design skills are fast but generic. Component-by-Component is high-quality but slow. Inspiration Board sits in the middle — faster than building everything piece by piece, but more distinctive than using a prebuilt skill.</p>
+  
+  <div class="key-insight">
+    <div class="key-insight-label">The Core Idea</div>
+    <div class="key-insight-text">Instead of telling AI what your design should look like, show it. Curated references encode taste in a way prompts can't.</div>
+  </div>
+  
+  <h2>Why Inspiration Boards Work</h2>
+  
+  <p>When you describe a design in words, you lose information. "Minimal, modern, premium" could mean a hundred different things. But when you show AI a screenshot of a specific website, it can analyze the actual spacing, typography choices, color relationships, and structural patterns.</p>
+  
+  <p>References don't just communicate style — they communicate taste. A board full of Awwwards winners tells AI something different than a board full of corporate SaaS sites. The selection itself is a taste decision.</p>
+  
+  <h2>Where to Find References</h2>
+  
+  <div class="sources-grid">
+    <div class="source-tag">Mobbin</div>
+    <div class="source-tag">Awwwards</div>
+    <div class="source-tag">Webflow</div>
+    <div class="source-tag">Craftwork</div>
+    <div class="source-tag">Rebrand Gallery</div>
+    <div class="source-tag">Component Gallery</div>
+    <div class="source-tag">Savee</div>
+    <div class="source-tag">Cosmos</div>
+    <div class="source-tag">Pinterest</div>
+  </div>
+  
+  <p style="margin-bottom: 1rem;">Each platform serves a different purpose:</p>
+  
+  <ul>
+    <li><strong>Mobbin</strong> — Real product screens. Best for app and mobile references.</li>
+    <li><strong>Awwwards</strong> — High-end web design. Best for visual sophistication.</li>
+    <li><strong>Webflow Templates</strong> — Structure and layout patterns.</li>
+    <li><strong>Craftwork</strong> — Components and UI kits.</li>
+    <li><strong>Rebrand Gallery</strong> — Branding and identity work.</li>
+    <li><strong>Component Gallery</strong> — Atomic design patterns.</li>
+    <li><strong>Savee</strong> — General visual inspiration.</li>
+    <li><strong>Cosmos</strong> — Curated design systems.</li>
+    <li><strong>Pinterest</strong> — Mood boarding and exploration.</li>
+  </ul>
+  
+  <h2>The Process</h2>
+  
+  <div class="process">
+    <div class="process-step">
+      <div class="process-num">1</div>
+      <div class="process-text"><strong>Give full context first</strong> — What you're building, audience, feeling you want</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">2</div>
+      <div class="process-text"><strong>Let the AI ask questions</strong> — It can clarify direction before generating</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">3</div>
+      <div class="process-text"><strong>Curate 5-10 references</strong> — Screenshots that capture the direction you want</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">4</div>
+      <div class="process-text"><strong>Prompt for combination</strong> — "Combine the style and direction of these references"</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">5</div>
+      <div class="process-text"><strong>Refine</strong> — Iterate until it feels right</div>
+    </div>
+  </div>
+  
+  <h2>The Key Prompt</h2>
+  
+  <p>After showing your references, use a prompt like:</p>
+  
+  <p style="background: #f5f5f5; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+    "Combine the style and direction of these references into a design for my product. Do not copy directly — adapt the patterns to fit my branding and content."
+  </p>
+  
+  <p>The "do not copy directly" instruction is important. You want AI to extract patterns, not reproduce screens verbatim.</p>
+  
+  <h2>How It Compares</h2>
+  
+  <div class="comparison-table">
+    <div class="comparison-row">
+      <div class="comparison-cell comparison-header">Method</div>
+      <div class="comparison-cell comparison-header">Speed</div>
+      <div class="comparison-cell comparison-header">Distinctiveness</div>
+    </div>
+    <div class="comparison-row">
+      <div class="comparison-cell">Design Skills</div>
+      <div class="comparison-cell">Fastest</div>
+      <div class="comparison-cell">Lowest</div>
+    </div>
+    <div class="comparison-row">
+      <div class="comparison-cell">Inspiration Board</div>
+      <div class="comparison-cell">Balanced</div>
+      <div class="comparison-cell">Medium</div>
+    </div>
+    <div class="comparison-row">
+      <div class="comparison-cell">Component-by-Component</div>
+      <div class="comparison-cell">Slowest</div>
+      <div class="comparison-cell">Highest</div>
+    </div>
+  </div>
+  
+  <h2>When to Use This Method</h2>
+  
+  <p>Inspiration Board works best when:</p>
+  
+  <ul>
+    <li>You have strong references in mind but don't want to build everything manually</li>
+    <li>The project is mid-complexity (full landing page, multi-section site)</li>
+    <li>You want more distinctiveness than a design skill provides</li>
+    <li>You're willing to curate references as part of your workflow</li>
+  </ul>
+  
+  <h2>Exercise: Build with an Inspiration Board</h2>
+  
+  <div class="exercise">
+    <div class="exercise-label">Practice · 25 minutes</div>
+    <div class="exercise-title">Curate references and prompt for a combined design.</div>
+    <p style="margin-bottom: 0.5rem;">Use the same product idea from Lesson 0002's exercise.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 1:</strong> Curate 5-7 screenshots from Mobbin, Awwwards, or Webflow that capture the direction you want.</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 2:</strong> Write context for your AI tool (product, audience, feeling).</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 3:</strong> Share references and prompt: "Combine the style and direction of these references into a design for my product. Do not copy directly."</p>
+    <p style="margin-bottom: 0.5rem;"><strong>Step 4:</strong> Iterate 2-3 times based on output.</p>
+    <p>Compare this to your Design Skills output from Lesson 0002. What feels different?</p>
+  </div>
+  
+  <h2>Key Takeaways</h2>
+  
+  <ul>
+    <li>References encode taste more effectively than prompts</li>
+    <li>Curating the board is itself a taste decision</li>
+    <li>Faster than Component-by-Component, more distinctive than Design Skills</li>
+    <li>"Do not copy directly" is a critical instruction</li>
+  </ul>
+  
+  <div class="cta">
+    <div class="cta-title">Questions?</div>
+    <p>Ask me about curating references, prompt strategies, or when this method overlaps with the others.</p>
+  </div>
+  
+  <div class="footer-nav">
+    <a href="0002-design-skills.html">← Lesson 0002: Design Skills</a>
+    <a href="0004-component-by-component.html">Lesson 0004: Component-by-Component →</a>
+  </div>
+</body>
+</html>
