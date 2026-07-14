@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002 — Three Methods & Baseline</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; color: #0F172A; background: #F8FAFC; line-height: 1.7; }
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    .breadcrumbs { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
+    .card { background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin: 1.25rem 0; }
+    textarea { width: 100%; min-height: 90px; padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid #E2E8F0; font: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    select, input { width: 100%; padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid #E2E8F0; font: inherit; }
+    button { background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; border: 0; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    .feedback { font-size: 0.9rem; margin-top: 0.5rem; }
+    .ok { color: #047857; }
+    .warn { color: #B91C1C; }
+    a { color: #6366F1; text-decoration: none; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #E2E8F0; text-align: left; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumbs"><a href="../index.html">Home</a> / <a href="../reference/three-methods-cheatsheet.html">Cheatsheet</a> / Lesson 0002</div>
+  <h1>Three Methods & Baseline</h1>
+  <p>You've written the brief. Now ship a v0 using the fastest method (Design Skill) so you can see what your instincts would reject. The baseline is not the final page — it's a mirror.</p>
+
+  <div class="card">
+    <h2 style="margin-top:0">Your brief (read-only)</h2>
+    <div id="briefView"></div>
+  </div>
+
+  <div class="card">
+    <label for="method"><strong>Method chosen</strong></label>
+    <select id="method">
+      <option value="1">Method 1 — Design Skill (recommended for baseline)</option>
+      <option value="3">Method 3 — Inspiration Board (you'll still need a board in Lesson 3)</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <label for="baseline"><strong>Baseline HTML (paste output from your AI tool)</strong></label>
+    <textarea id="baseline" placeholder="<!-- Paste your v0 here -->"></textarea>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Slop audit</h2>
+    <p>Check every pattern that applies. List the ones you spotted — don't list ones you wish you saw.</p>
+    <table id="slopTable"></table>
+  </div>
+
+  <div class="card">
+    <label for="commit"><strong>Which Method 3 reference categories will you assemble for Lesson 0003?</strong></label>
+    <textarea id="commit" placeholder="e.g. Hero, Cards, Typography, Motion..."></textarea>
+  </div>
+
+  <button id="save">Save baseline & unlock Lesson 0003</button>
+  <div id="feedback" class="feedback"></div>
+
+  <script>
+    const KEY = 'aipd.lesson.0002-three-methods-baseline';
+    const PREV = 'aipd.lesson.0001-taste-gap-brief';
+    const PATTERNS = [
+      'Centered hero with gradient background',
+      'Three-column features grid',
+      'Glassmorphism cards',
+      'Gradient CTA button',
+      'Generic stock photo in hero',
+      'Auto-playing testimonial carousel',
+      'Emoji icons in feature list',
+      'No visible hierarchy between sections'
+    ];
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[c]);
+    }
+    function gate() {
+      const prev = localStorage.getItem(PREV);
+      if (!prev || JSON.parse(prev).gateChecked !== 'true') {
+        document.body.innerHTML = '<p style="padding:2rem">Please complete <a href="0001-taste-gap-brief.html">Lesson 0001</a> first.</p>';
+        return false;
+      }
+      return true;
+    }
+    function viewBrief() {
+      const data = JSON.parse(localStorage.getItem(PREV));
+      document.getElementById('briefView').innerHTML =
+        ['idea','audience','promise','feeling','antifeeling','success'].map(k => `<p><strong>${k}:</strong> ${escapeHtml(data[k])}</p>`).join('');
+    }
+    function renderSlop() {
+      document.getElementById('slopTable').innerHTML =
+        '<tr><th>Pattern</th><th>Present?</th></tr>' +
+        PATTERNS.map((p, i) => `<tr><td>${p}</td><td><input type="checkbox" data-pattern="${i}"></td></tr>`).join('');
+    }
+    function save() {
+      const checks = [...document.querySelectorAll('#slopTable input[type=checkbox]')]
+        .map((cb, i) => cb.checked ? PATTERNS[i] : null).filter(Boolean);
+      const data = {
+        methodChosen: document.getElementById('method').value,
+        baselineHTML: document.getElementById('baseline').value,
+        slopAudit: checks,
+        nextCategories: document.getElementById('commit').value.trim(),
+        gateChecked: 'true'
+      };
+      const fb = document.getElementById('feedback');
+      if (!data.baselineHTML || data.slopAudit.length === 0 || !data.nextCategories) {
+        fb.className = 'feedback warn';
+        fb.textContent = 'Provide baseline HTML, complete the slop audit (at least one honest check), and name next lesson categories.';
+        return;
+      }
+      localStorage.setItem(KEY, JSON.stringify(data));
+      fb.className = 'feedback ok';
+      fb.textContent = 'Saved. Lesson 0003 is unlocked.';
+    }
+    document.getElementById('save').addEventListener('click', save);
+    if (gate()) { viewBrief(); renderSlop(); }
+  </script>
+</body>
+</html>

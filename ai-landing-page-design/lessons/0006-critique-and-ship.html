@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006 — Critique & Ship</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem; color: #0F172A; background: #F8FAFC; line-height: 1.7; }
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    .breadcrumbs { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
+    .card { background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin: 1.25rem 0; }
+    textarea, input { width: 100%; padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid #E2E8F0; font: inherit; }
+    button { background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; border: 0; padding: 0.7rem 1.1rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.5rem; border-bottom: 1px solid #E2E8F0; text-align: left; font-size: 0.9rem; vertical-align: top; }
+    .feedback { font-size: 0.9rem; margin-top: 0.5rem; }
+    .ok { color: #047857; }
+    .warn { color: #B91C1C; }
+    a { color: #6366F1; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumbs"><a href="../index.html">Home</a> / Lesson 0006</div>
+  <h1>Critique, Refine and Ship</h1>
+  <p>Walk each section against the brief. Mark ship / iterate / cut. Do the iterations. Don't ship until at least 80% of brief fields are demonstrably present in the page.</p>
+
+  <div class="card">
+    <h2 style="margin-top:0">Brief alignment</h2>
+    <div id="briefView"></div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Section critique</h2>
+    <table id="critique">
+      <thead><tr><th>Section</th><th>Decision</th><th>Why</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <button id="add">+ Add section row</button>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Brief alignment score</h2>
+    <label>How many of the 6 brief fields are visibly present in the page? (0–6)<input id="alignment" type="number" min="0" max="6"></label>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Final reflection</h2>
+    <label>What you still trust AI for (vs. what still needs you)<textarea id="trustAI"></textarea></label>
+    <label style="display:block;margin-top:0.5rem">One improvement for your next project<textarea id="improve"></textarea></label>
+  </div>
+
+  <button id="save">Save & mark course complete</button>
+  <div id="feedback" class="feedback"></div>
+
+  <script>
+    const KEY = 'aipd.lesson.0006-critique-and-ship';
+    const PREV = 'aipd.lesson.0005-assets-and-motion';
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[c]);
+    }
+    function gate() {
+      const prev = localStorage.getItem(PREV);
+      if (!prev) { redirect(); return false; }
+      try { const data = JSON.parse(prev); if (!data || data.gateChecked !== 'true') { redirect(); return false; } } catch (e) { redirect(); return false; }
+      return true;
+    }
+    function redirect() { document.body.innerHTML = '<p style="padding:2rem">Please complete <a href="0005-assets-and-motion.html">Lesson 0005</a> first.</p>'; }
+    function viewBrief() {
+      const brief = JSON.parse(localStorage.getItem('aipd.lesson.0001-taste-gap-brief'));
+      document.getElementById('briefView').innerHTML =
+        ['idea','audience','promise','feeling','antifeeling','success'].map(k => `<p><strong>${k}:</strong> ${escapeHtml(brief[k])}</p>`).join('');
+    }
+    function addRow() {
+      const tbody = document.querySelector('#critique tbody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input class="section"></td>
+        <td><select class="decision"><option>ship</option><option>iterate</option><option>cut</option></select></td>
+        <td><textarea class="why"></textarea></td>
+      `;
+      tbody.appendChild(tr);
+    }
+    function submit() {
+      const rows = [...document.querySelectorAll('#critique tbody tr')].map(tr => ({
+        section: tr.querySelector('.section').value.trim(),
+        decision: tr.querySelector('.decision').value,
+        why: tr.querySelector('.why').value.trim()
+      }));
+      const alignment = Number(document.getElementById('alignment').value);
+      const trust = document.getElementById('trustAI').value.trim();
+      const improve = document.getElementById('improve').value.trim();
+      const fb = document.getElementById('feedback');
+      const errors = [];
+      if (rows.length < 4) errors.push('Critique every section (≥ 4 rows).');
+      for (const r of rows) if (!r.section || !r.why) errors.push(`Row missing section or why.`);
+      if (!Number.isFinite(alignment) || alignment < 0 || alignment > 6) errors.push('Alignment score must be 0–6.');
+      if (alignment < 5) errors.push(`Alignment is ${alignment}; brief threshold is 5/6. Iterate before shipping.`);
+      if (!trust || !improve) errors.push('Reflection requires both fields.');
+      if (errors.length) { fb.className='feedback warn'; fb.textContent = errors.join(' '); return; }
+      localStorage.setItem(KEY, JSON.stringify({ rows, alignment, trust, improve, gateChecked: 'true' }));
+      fb.className='feedback ok'; fb.textContent = 'Saved. Course complete.';
+    }
+    document.getElementById('add').addEventListener('click', addRow);
+    document.getElementById('save').addEventListener('click', submit);
+    if (gate()) { viewBrief(); addRow(); }
+  </script>
+</body>
+</html>

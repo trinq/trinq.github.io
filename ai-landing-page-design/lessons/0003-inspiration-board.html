@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003 — Inspiration Board</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; color: #0F172A; background: #F8FAFC; line-height: 1.7; }
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    .breadcrumbs { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
+    .card { background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin: 1.25rem 0; }
+    input, select, textarea { width: 100%; padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid #E2E8F0; font: inherit; }
+    textarea { min-height: 60px; }
+    button { background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; border: 0; padding: 0.6rem 1rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #E2E8F0; text-align: left; font-size: 0.85rem; vertical-align: top; }
+    .feedback { font-size: 0.9rem; margin-top: 0.5rem; }
+    .ok { color: #047857; }
+    .warn { color: #B91C1C; }
+    a { color: #6366F1; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumbs"><a href="../index.html">Home</a> / <a href="../reference/three-methods-cheatsheet.html">Cheatsheet</a> / Lesson 0003</div>
+  <h1>Inspiration Board with Intent</h1>
+  <p>Collect 12–20 references. For each, name the <em>principle</em> you're stealing and the trap you're avoiding. Confidence without a written justification is not confidence.</p>
+
+  <div class="card">
+    <h2 style="margin-top:0">Add a reference</h2>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.75rem">
+      <label>URL<input id="url"></label>
+      <label>Category
+        <select id="category">
+          <option>Navigation</option><option>Hero</option><option>Cards</option><option>Typography</option>
+          <option>Animations</option><option>Colors</option><option>Layout</option>
+        </select>
+      </label>
+      <label style="grid-column: span 2">Principle (verb phrase)<input id="principle" placeholder="earn the negative space"></label>
+      <label style="grid-column: span 2">What I don't want (anti)<textarea id="anti"></textarea></label>
+      <label>Confidence
+        <select id="confidence"><option>low</option><option>medium</option><option>high</option></select>
+      </label>
+      <label>Justification (required if high)<input id="justification"></label>
+    </div>
+    <button id="add" style="margin-top: 0.75rem">Add reference</button>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Board</h2>
+    <table id="board"><thead><tr><th>URL</th><th>Cat</th><th>Principle</th><th>Anti</th><th>Confidence</th></tr></thead><tbody></tbody></table>
+    <div id="counts" style="font-size: 0.9rem; color:#64748B"></div>
+  </div>
+
+  <button id="save">Save board & unlock Lesson 0004</button>
+  <div id="feedback" class="feedback"></div>
+
+  <script>
+    const KEY = 'aipd.lesson.0003-inspiration-board';
+    const PREV = 'aipd.lesson.0002-three-methods-baseline';
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[c]);
+    }
+    function gate() {
+      const prev = localStorage.getItem(PREV);
+      if (!prev || JSON.parse(prev).gateChecked !== 'true') {
+        document.body.innerHTML = '<p style="padding:2rem">Please complete <a href="0002-three-methods-baseline.html">Lesson 0002</a> first.</p>';
+        return false;
+      }
+      return true;
+    }
+    function load() {
+      const rows = JSON.parse(localStorage.getItem(KEY) || '[]');
+      rows.forEach(addRow);
+    }
+    function addRow(row) {
+      const tbody = document.querySelector('#board tbody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${escapeHtml((row.url||'').slice(0,24))}…</td><td>${escapeHtml(row.category||'')}</td><td>${escapeHtml(row.principle||'')}</td><td>${escapeHtml((row.anti||'').slice(0,32))}…</td><td>${escapeHtml(row.confidence||'')}</td>`;
+      tbody.appendChild(tr);
+    }
+    function collect() {
+      const url = document.getElementById('url').value.trim();
+      const anti = document.getElementById('anti').value.trim();
+      const principle = document.getElementById('principle').value.trim();
+      const confidence = document.getElementById('confidence').value;
+      const justification = document.getElementById('justification').value.trim();
+      if (!url || !principle || !anti) return null;
+      if (confidence === 'high' && !justification) return null;
+      return { url, category: document.getElementById('category').value, principle, anti, confidence, justification };
+    }
+    function addReference() {
+      const rows = JSON.parse(localStorage.getItem(KEY) || '[]');
+      const dataOnly = rows.filter(r => !r.gateChecked);
+      const row = collect();
+      if (!row) { fb('warn', 'URL, principle, anti required; high confidence needs a justification.'); return; }
+      dataOnly.push(row);
+      localStorage.setItem(KEY, JSON.stringify(dataOnly));
+      addRow(row);
+      clearForm();
+      fb('ok', `Reference added (${dataOnly.length}).`);
+    }
+    function submit() {
+      const rows = JSON.parse(localStorage.getItem(KEY) || '[]');
+      const dataOnly = rows.filter(r => !r.gateChecked);
+      const origins = new Set(dataOnly.map(r => { try { return new URL(r.url).host; } catch (e) { return ''; } }));
+      const principles = new Set(dataOnly.map(r => (r.principle||'').toLowerCase()));
+      const fb_ = document.getElementById('feedback');
+      const errors = [];
+      if (dataOnly.length < 12) errors.push(`Need 12+ references (have ${dataOnly.length}).`);
+      if (origins.size < 8) errors.push(`Need 8+ different sources (have ${origins.size}).`);
+      if (dataOnly.length !== principles.size) errors.push('Principle phrases must be unique across the board.');
+      if (errors.length) { fb('warn', errors.join(' ')); return; }
+      const next = [...dataOnly, { gateChecked: 'true' }];
+      localStorage.setItem(KEY, JSON.stringify(next));
+      fb('ok', 'Saved. Lesson 0004 is unlocked.');
+    }
+    function fb(cls, msg) { const el = document.getElementById('feedback'); el.className = 'feedback ' + cls; el.textContent = msg; }
+    function clearForm() { ['url','principle','anti','justification'].forEach(id => document.getElementById(id).value = ''); document.getElementById('confidence').value = 'medium'; }
+    document.getElementById('add').addEventListener('click', addReference);
+    document.getElementById('save').addEventListener('click', submit);
+    if (gate()) load();
+  </script>
+</body>
+</html>

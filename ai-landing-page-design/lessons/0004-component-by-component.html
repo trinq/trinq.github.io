@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004 — Component-by-Component</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem; color: #0F172A; background: #F8FAFC; line-height: 1.7; }
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    .breadcrumbs { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
+    .card { background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin: 1.25rem 0; }
+    input, select, textarea { width: 100%; padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid #E2E8F0; font: inherit; }
+    textarea { min-height: 70px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    button { background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; border: 0; padding: 0.7rem 1.1rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    .section-card { border: 1px dashed #E2E8F0; border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+    .feedback { font-size: 0.9rem; margin-top: 0.5rem; }
+    .ok { color: #047857; }
+    .warn { color: #B91C1C; }
+    a { color: #6366F1; text-decoration: none; }
+    .responsive { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+    .responsive label { font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumbs"><a href="../index.html">Home</a> / <a href="../reference/three-methods-cheatsheet.html">Cheatsheet</a> / Lesson 0004</div>
+  <h1>Component-by-Component</h1>
+  <p>Pick hero + one other section. For each, write an intent paragraph, attach 2–3 references from your board, then prompt AI. AI works better on small focused tasks.</p>
+
+  <div id="sections"></div>
+
+  <button id="add" style="margin-top: 0.5rem">+ Add section</button>
+  <button id="save" style="margin-left: 0.5rem">Save & unlock Lesson 0005</button>
+  <div id="feedback" class="feedback"></div>
+
+  <script>
+    const KEY = 'aipd.lesson.0004-component-by-component';
+    const PREV = 'aipd.lesson.0003-inspiration-board';
+    const STRUCTURE = ['Hero','Social proof','Problem','Solution','Demo','Pricing','FAQ','CTA','Footer'];
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[c]);
+    }
+    function redirect() {
+      document.body.innerHTML = '<p style="padding:2rem">Please complete <a href="0003-inspiration-board.html">Lesson 0003</a> first.</p>';
+      return false;
+    }
+    function gate() {
+      const prevRaw = localStorage.getItem(PREV);
+      if (!prevRaw) return redirect();
+      let prevArr;
+      try { prevArr = JSON.parse(prevRaw); } catch (e) { return redirect(); }
+      if (!Array.isArray(prevArr) || !prevArr.some(r => r && r.gateChecked === 'true')) return redirect();
+      return true;
+    }
+    function render() {
+      const data = JSON.parse(localStorage.getItem(KEY) || '{"sections":[]}');
+      if (Array.isArray(data.sections)) data.sections.forEach(renderSection);
+    }
+    function renderSection(s, idx) {
+      const div = document.createElement('div');
+      div.className = 'section-card';
+      div.dataset.idx = idx;
+      div.innerHTML = `
+        <label>Section name
+          <select class="name">${STRUCTURE.map(n => `<option ${n===s.name?'selected':''}>${escapeHtml(n)}</option>`).join('')}</select>
+        </label>
+        <label style="display:block;margin-top:0.5rem">Intent paragraph<textarea class="intent">${escapeHtml(s.intent||'')}</textarea></label>
+        <label style="display:block;margin-top:0.5rem">References (comma-separated principle phrases)
+          <input class="refs" value="${escapeHtml((s.refs||[]).join(', '))}">
+        </label>
+        <label style="display:block;margin-top:0.5rem">Component HTML<textarea class="html">${escapeHtml(s.html||'')}</textarea></label>
+        <div class="responsive" style="margin-top:0.5rem">
+          <label>360px <input type="checkbox" class="r360" ${s.responsive && s.responsive.includes(360)?'checked':''}></label>
+          <label>768px <input type="checkbox" class="r768" ${s.responsive && s.responsive.includes(768)?'checked':''}></label>
+          <label>1280px <input type="checkbox" class="r1280" ${s.responsive && s.responsive.includes(1280)?'checked':''}></label>
+        </div>
+      `;
+      document.getElementById('sections').appendChild(div);
+    }
+    function addSection() {
+      renderSection({}, document.querySelectorAll('.section-card').length);
+    }
+    function collect() {
+      const out = [];
+      document.querySelectorAll('.section-card').forEach(card => {
+        const r = [];
+        if (card.querySelector('.r360').checked) r.push(360);
+        if (card.querySelector('.r768').checked) r.push(768);
+        if (card.querySelector('.r1280').checked) r.push(1280);
+        out.push({
+          name: card.querySelector('.name').value,
+          intent: card.querySelector('.intent').value.trim(),
+          refs: card.querySelector('.refs').value.split(',').map(s => s.trim()).filter(Boolean),
+          html: card.querySelector('.html').value,
+          responsive: r
+        });
+      });
+      return out;
+    }
+    function submit() {
+      const sections = collect();
+      const fb = document.getElementById('feedback');
+      const errors = [];
+      const names = sections.map(s => s.name);
+      const uniqNames = new Set(names);
+      if (sections.length < 2) errors.push('Build at least two sections.');
+      if (!names.includes('Hero')) errors.push('Hero is required.');
+      if (uniqNames.size !== names.length) errors.push('Each section name must be unique.');
+      for (const s of sections) {
+        if (!s.intent || s.intent.length < 40) errors.push(`"${s.name}" needs an intent of at least 40 characters.`);
+        if (s.refs.length < 2) errors.push(`"${s.name}" needs 2+ references.`);
+        if (!s.html || s.html.length < 40) errors.push(`"${s.name}" needs component HTML.`);
+        if (s.responsive.length !== 3) errors.push(`"${s.name}" must pass 360/768/1280.`);
+      }
+      if (errors.length) { fb.className='feedback warn'; fb.textContent = errors.join(' '); return; }
+      localStorage.setItem(KEY, JSON.stringify({ sections, gateChecked: 'true' }));
+      fb.className = 'feedback ok'; fb.textContent = 'Saved. Lesson 0005 is unlocked.';
+    }
+    document.getElementById('add').addEventListener('click', addSection);
+    document.getElementById('save').addEventListener('click', submit);
+    if (gate()) render();
+  </script>
+</body>
+</html>

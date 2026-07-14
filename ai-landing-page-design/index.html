@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Landing Page Design — Course Home</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 880px; margin: 0 auto; padding: 2rem; color: #0F172A; background: linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 100%); line-height: 1.7; min-height: 100vh; }
+    h1 { font-size: 2rem; }
+    .card { background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin: 1rem 0; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    a { color: #6366F1; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .progress { font-size: 0.9rem; color: #64748B; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>AI Landing Page Design</h1>
+  <p>Six lessons that turn Leon Lin's framework (per your summary; original tweet not retrieved at design time) into a real, shipped landing page you own.</p>
+
+  <h2>References</h2>
+  <div class="grid">
+    <div class="card"><a href="reference/three-methods-cheatsheet.html">Three Methods Cheatsheet</a><div>Matrix, decision tree, anti-patterns.</div></div>
+    <div class="card"><a href="reference/taste-vs-rules-glossary.html">Taste vs Rules Glossary</a><div>The five load-bearing terms.</div></div>
+  </div>
+
+  <h2>Lessons</h2>
+  <div class="grid" id="lessons">
+    <div class="card" data-slug="0001-taste-gap-brief"><a href="lessons/0001-taste-gap-brief.html">0001 — Taste Gap & Brief</a><div>Write the brief that makes AI usable.</div></div>
+    <div class="card" data-slug="0002-three-methods-baseline"><a href="lessons/0002-three-methods-baseline.html">0002 — Three Methods & Baseline</a><div>Ship a v0 fast and audit the slop.</div></div>
+    <div class="card" data-slug="0003-inspiration-board"><a href="lessons/0003-inspiration-board.html">0003 — Inspiration Board</a><div>Curate with intent, not vibe.</div></div>
+    <div class="card" data-slug="0004-component-by-component"><a href="lessons/0004-component-by-component.html">0004 — Component-by-Component</a><div>Build two sections with explicit intent.</div></div>
+    <div class="card" data-slug="0005-assets-and-motion"><a href="lessons/0005-assets-and-motion.html">0005 — Assets & Motion</a><div>Custom asset plus one purposeful interaction.</div></div>
+    <div class="card" data-slug="0006-critique-and-ship"><a href="lessons/0006-critique-and-ship.html">0006 — Critique & Ship</a><div>Use the brief to decide ship / iterate / cut.</div></div>
+  </div>
+
+  <div class="progress" id="progress"></div>
+
+  <script>
+    const slugs = ['0001-taste-gap-brief','0002-three-methods-baseline','0003-inspiration-board','0004-component-by-component','0005-assets-and-motion','0006-critique-and-ship'];
+    const isDone = (s) => {
+      const top = localStorage.getItem('aipd.lesson.' + s + '.gateChecked');
+      if (top === 'true') return true;
+      try {
+        const blob = JSON.parse(localStorage.getItem('aipd.lesson.' + s) || '{}');
+        if (blob.gateChecked === 'true') return true;
+        if (Array.isArray(blob) && blob.some(r => r && r.gateChecked === 'true')) return true;
+      } catch (e) { /* ignore malformed JSON */ }
+      return false;
+    };
+    const done = slugs.filter(isDone);
+    const el = document.getElementById('progress');
+    el.textContent = done.length === 0 ? 'No lessons completed yet — start with 0001.'
+      : done.length === slugs.length ? 'Course complete. Ship your landing page.'
+      : `${done.length} of ${slugs.length} lessons completed.`;
+  </script>
+</body>
+</html>

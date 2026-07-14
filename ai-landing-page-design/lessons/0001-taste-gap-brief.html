@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0001 — Taste Gap & Brief</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 720px; margin: 0 auto; padding: 2rem; color: #0F172A; background: #F8FAFC; line-height: 1.7; }
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    .breadcrumbs { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
+    .card { background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin: 1.25rem 0; }
+    .field { margin-bottom: 1rem; }
+    label { font-weight: 600; display: block; margin-bottom: 0.25rem; }
+    input, textarea { width: 100%; padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid #E2E8F0; font: inherit; }
+    textarea { min-height: 70px; }
+    button { background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; border: 0; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .feedback { font-size: 0.9rem; margin-top: 0.5rem; }
+    .ok { color: #047857; }
+    .warn { color: #B91C1C; }
+    a { color: #6366F1; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumbs"><a href="../index.html">Home</a> / <a href="../reference/taste-vs-rules-glossary.html">Glossary</a> / Lesson 0001</div>
+  <h1>Taste Gap & Creative Director Brief</h1>
+  <p>AI handles design rules — spacing, typography, hierarchy, colour theory. It does not handle taste — originality, meaning, feel. Your job, as the creative director of your own landing page, is to specify the things AI cannot decide. That is what this brief is.</p>
+
+  <p><em>Source: Leon Lin's "How To Actually Design With AI" X thread (per your summary; original tweet not retrieved at design time).</em></p>
+
+  <h2>Write the brief</h2>
+  <div class="card">
+    <div class="field"><label for="idea">Idea (one sentence)</label><input id="idea"></div>
+    <div class="field"><label for="audience">Audience (who specifically)</label><input id="audience"></div>
+    <div class="field"><label for="promise">Promise (what changes for them)</label><textarea id="promise"></textarea></div>
+    <div class="field"><label for="feeling">Feeling (one motion word — calm / sharp / earned / playful)</label><input id="feeling"></div>
+    <div class="field"><label for="antifeeling">Anti-feeling (the feeling you will reject)</label><input id="antifeeling"></div>
+    <div class="field"><label for="success">Success signal (how you'll know it works)</label><textarea id="success"></textarea></div>
+    <button id="save">Save brief & unlock Lesson 0002</button>
+    <div id="feedback" class="feedback"></div>
+  </div>
+
+  <h2>What you'll need next</h2>
+  <p>Your saved brief becomes the gate for Lesson 0002. If you can't name the audience with one noun, return to this lesson; vague audience always produces slop.</p>
+
+  <script>
+    const KEY = 'aipd.lesson.0001-taste-gap-brief';
+    const FIELDS = ['idea','audience','promise','feeling','antifeeling','success'];
+    const VAGUE = /\b(modern|clean|simple|professional)\b/i;
+
+    function load() {
+      const data = JSON.parse(localStorage.getItem(KEY) || '{}');
+      for (const f of FIELDS) if (data[f]) document.getElementById(f).value = data[f];
+    }
+    function save() {
+      const data = {};
+      for (const f of FIELDS) data[f] = document.getElementById(f).value.trim();
+      const warnings = [];
+      for (const f of FIELDS) if (!data[f]) warnings.push(`"${f}" is empty.`);
+      const hits = FIELDS.filter(f => VAGUE.test(data[f]));
+      if (hits.length) warnings.push(`Vague words (${hits.join(', ')}) — replace with specifics.`);
+      const fb = document.getElementById('feedback');
+      if (warnings.length) { fb.className = 'feedback warn'; fb.textContent = warnings.join(' '); return; }
+      localStorage.setItem(KEY, JSON.stringify({ ...data, gateChecked: 'true' }));
+      fb.className = 'feedback ok';
+      fb.textContent = 'Saved. Lesson 0002 is unlocked.';
+    }
+    document.getElementById('save').addEventListener('click', save);
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005 — Assets & Motion</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 820px; margin: 0 auto; padding: 2rem; color: #0F172A; background: #F8FAFC; line-height: 1.7; }
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    .breadcrumbs { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
+    .card { background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin: 1.25rem 0; }
+    input, textarea { width: 100%; padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid #E2E8F0; font: inherit; }
+    textarea { min-height: 80px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .feedback { font-size: 0.9rem; margin-top: 0.5rem; }
+    .ok { color: #047857; }
+    .warn { color: #B91C1C; }
+    a { color: #6366F1; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumbs"><a href="../index.html">Home</a> / Lesson 0005</div>
+  <h1>Custom Assets, Layering, Motion</h1>
+  <p>One custom asset that couldn't be a stock photo. One motion that names a single feeling word and stays inside it. Two surfaces to differentiate taste from effort.</p>
+
+  <div class="card">
+    <h2 style="margin-top:0">1. Asset specification</h2>
+    <div class="grid">
+      <label>Subject<input id="subject"></label>
+      <label>Style<input id="style"></label>
+      <label>Lighting<input id="lighting"></label>
+      <label>Composition<input id="composition"></label>
+      <label>Use case<input id="useCase"></label>
+      <label>Palette<input id="palette"></label>
+    </div>
+    <label style="display:block;margin-top:0.5rem">Why this asset couldn't be a stock photo<textarea id="whyNot"></textarea></label>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">2. Layered composition</h2>
+    <label>Asset + background + depth treatment HTML<textarea id="assetHTML" placeholder="<!-- Composition HTML -->"></textarea></label>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">3. Motion</h2>
+    <label>Single motion grammar word (settle / reveal / acknowledge / hold / release)<input id="grammar"></label>
+    <label>Rule that enforces the grammar<textarea id="rule" placeholder="e.g. ease-out 240ms; only fades from 100% to 0% opacity on initial load"></textarea></label>
+    <label>CSS implementing the motion<textarea id="motionCSS" placeholder="/* CSS */"></textarea></label>
+  </div>
+
+  <button id="save">Save &amp; unlock Lesson 0006</button>
+  <div id="feedback" class="feedback"></div>
+
+  <script>
+    const KEY = 'aipd.lesson.0005-assets-and-motion';
+    const PREV = 'aipd.lesson.0004-component-by-component';
+
+    function gate() {
+      const prev = localStorage.getItem(PREV);
+      if (!prev) { redirect(); return false; }
+      try { const data = JSON.parse(prev); if (!data || data.gateChecked !== 'true') { redirect(); return false; } } catch (e) { redirect(); return false; }
+      return true;
+    }
+    function redirect() { document.body.innerHTML = '<p style="padding:2rem">Please complete <a href="0004-component-by-component.html">Lesson 0004</a> first.</p>'; }
+    function submit() {
+      const fields = ['subject','style','lighting','composition','useCase','palette','whyNot','assetHTML','grammar','rule','motionCSS'];
+      const data = {};
+      for (const f of fields) data[f] = document.getElementById(f).value.trim();
+      const fb = document.getElementById('feedback');
+      const errors = [];
+      for (const f of fields) if (!data[f]) errors.push('"' + f + '" is empty.');
+      if (data.whyNot && data.whyNot.length < 30) errors.push('"whyNot" must explain at least 30 characters.');
+      const allowedGrammar = ['settle','reveal','acknowledge','hold','release'];
+      if (!allowedGrammar.includes((data.grammar||'').toLowerCase())) errors.push('Motion grammar must be one of: settle, reveal, acknowledge, hold, release.');
+      if (errors.length) { fb.className='feedback warn'; fb.textContent = errors.join(' '); return; }
+      localStorage.setItem(KEY, JSON.stringify(Object.assign({}, data, { gateChecked: 'true' })));
+      fb.className = 'feedback ok'; fb.textContent = 'Saved. Lesson 0006 is unlocked.';
+    }
+    document.getElementById('save').addEventListener('click', submit);
+    if (!gate()) { /* redirected */ }
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three Methods Cheatsheet</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; color: #0F172A; background: #F8FAFC; line-height: 1.7; }
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.05rem; margin-top: 2rem; }
+    table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #E2E8F0; font-size: 0.95rem; }
+    th { background: #EEF2FF; color: #4338CA; }
+    tr:last-child td { border-bottom: 0; }
+    .card { background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 1.25rem; margin: 1rem 0; }
+    .breadcrumbs { font-size: 0.85rem; color: #64748B; margin-bottom: 1rem; }
+    a { color: #6366F1; text-decoration: none; }
+    .anti { color: #B91C1C; }
+  </style>
+</head>
+<body>
+  <div class="breadcrumbs"><a href="../index.html">Home</a> / Cheatsheet</div>
+  <h1>Three Methods Cheatsheet</h1>
+  <p>Leon Lin's three methods (per your summary; the original tweet was not retrieved at design time) and when each one wins.</p>
+
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Speed</th><th>Quality</th><th>Distinctiveness</th><th>Best fit</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1. Design Skill</td><td>Very fast</td><td>Medium</td><td>Low–Medium</td><td>Small projects, prototypes, time-bound</td></tr>
+      <tr><td>2. Component-by-Component</td><td>Slow</td><td>Highest</td><td>High</td><td>Products that need to stand out</td></tr>
+      <tr><td>3. Inspiration Board</td><td>Balanced</td><td>High</td><td>Medium–High</td><td>Mid-complexity, balanced speed/quality</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Decision tree</h2>
+  <div class="card">If the page needs to ship tomorrow → Method 1 (Design Skill).</div>
+  <div class="card">If the page needs to be unmistakably yours → Method 2 (Component-by-Component).</div>
+  <div class="card">If the page needs to be both fast and distinct → Method 3 (Inspiration Board).</div>
+
+  <h2>Anti-patterns</h2>
+  <ul class="anti">
+    <li>One-shot prompt: "make a modern, clean landing page." Always sloppy.</li>
+    <li>"Make it pop" — undefined; require the user to name the audience feeling.</li>
+    <li>Default gradients on every section — looks 2023.</li>
+    <li>No reference attached to a component — implies no intent was written.</li>
+  </ul>
+
+  <h2>Map to lessons</h2>
+  <ul>
+    <li><a href="../lessons/0002-three-methods-baseline.html">Lesson 0002</a> — Method 1 baseline.</li>
+    <li><a href="../lessons/0003-inspiration-board.html">Lesson 0003</a> — Method 3 board.</li>
+    <li><a href="../lessons/0004-component-by-component.html">Lesson 0004</a> — Method 2 component build.</li>
+  </ul>
+</body>
+</html>
