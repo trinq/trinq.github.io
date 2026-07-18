@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>14-Year-Old Summary | Whole-Brain Child</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+    :root {
+      --bg: #faf9f7;
+      --text: #2d2a26;
+      --accent: #5c6bc0;
+      --accent-light: #e8eaf6;
+      --secondary: #78909c;
+      --highlight: #fff3e0;
+      --border: #e0ddd8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.75;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+
+    header {
+      margin-bottom: 4rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .course-label {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--secondary);
+      font-style: italic;
+    }
+
+    .meta {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem;
+      color: var(--secondary);
+      margin-top: 1.5rem;
+    }
+
+    .meta a { color: var(--accent); }
+
+    .key-question {
+      background: linear-gradient(135deg, var(--accent-light) 0%, #f3e5f5 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2.5rem 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .key-question::before {
+      content: "The question:";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-style: normal;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .test-intro {
+      background: var(--highlight);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .test-intro::before {
+      content: "The 14-Year-Old Test";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e65100;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 3rem 0 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    h2:first-of-type {
+      margin-top: 0;
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .three-sentences {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 1.5rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--accent);
+    }
+
+    .three-sentences p {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .three-sentences p:last-child {
+      margin-bottom: 0;
+    }
+
+    .sentence-number {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      width: 1.5rem;
+      height: 1.5rem;
+      text-align: center;
+      line-height: 1.5rem;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    .actionable-section {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2.5rem 0;
+    }
+
+    .actionable-section::before {
+      content: "The One Thing";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #2e7d32;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .actionable-main {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .quote-box {
+      background: white;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .quote-box p {
+      font-style: italic;
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+
+    .quote-box cite {
+      display: block;
+      font-size: 0.85rem;
+      font-style: normal;
+      color: var(--secondary);
+      font-family: 'Source Sans 3', sans-serif;
+    }
+
+    .how-to {
+      background: var(--accent-light);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+
+    .how-to::before {
+      content: "How to Actually Do It";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .how-to ol {
+      margin-left: 1.5rem;
+    }
+
+    .how-to li {
+      margin-bottom: 0.75rem;
+    }
+
+    .how-to li strong {
+      color: var(--accent);
+    }
+
+    .remember-box {
+      background: var(--highlight);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .remember-box::before {
+      content: "Remember This";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e65100;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .remember-box p {
+      margin-bottom: 0;
+      font-weight: 600;
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.85rem;
+      color: var(--secondary);
+    }
+
+    footer a { color: var(--accent); }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    nav a { color: var(--accent); text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      body { font-size: 17px; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="course-label">Whole-Brain Child</div>
+    <h1>14-Year-Old Summary</h1>
+    <p class="subtitle">The Feynman test — compression is understanding</p>
+    <p class="meta">Based on <em>The Whole-Brain Child</em> by Daniel J. Siegel & Tina Payne Bryson</p>
+  </header>
+
+  <div class="key-question">
+    If I had to explain this book's core idea to a smart 14-year-old in three sentences, what would I say? And what is the single most actionable thing the author wants the reader to do differently after finishing?
+  </div>
+
+  <div class="test-intro">
+    <p><strong>Why this matters:</strong> You cannot compress what you do not understand. If you can't explain it simply, you don't understand it. This is the Feynman technique: no jargon, no professional shorthand, no place to hide. The book has more work to do on you if you can't produce these three sentences yourself.</p>
+  </div>
+
+  <h2>The Three Sentences</h2>
+
+  <div class="three-sentences">
+    <p><span class="sentence-number">1</span>Your brain has different parts — a "downstairs" part that handles emotions and survival, and an "upstairs" part that thinks and plans — and when you're upset, the downstairs part takes over and turns off the upstairs part, kind of like how a computer crashes when it overheats.</p>
+
+    <p><span class="sentence-number">2</span>You can't reason your way out of being upset (because the reasoning part is offline), but you <em>can</em> come back upstairs faster if someone helps you feel safe first — by naming what you're feeling, staying calm themselves, and not making you feel worse about it.</p>
+
+    <p><span class="sentence-number">3</span>Every time a parent does this — connects with the feeling before correcting the behavior — they're not just calming you down in that moment, they're actually helping your brain learn how to calm itself down, which is the skill that separates people who can handle their emotions from people who can't.</p>
+  </div>
+
+  <h2>The One Thing to Do Differently</h2>
+
+  <div class="actionable-section">
+    <div class="actionable-main">
+      <strong>Before you correct your child's behavior, get on their level, make eye contact, and name the emotion they're feeling.</strong> Don't fix it. Don't explain why they're wrong. Don't tell them to calm down. Just be with them in the feeling until you see them come back upstairs — then you can talk about what happened.
+    </div>
+
+    <div class="quote-box">
+      <p>"When your child is in the midst of a meltdown, the single most important thing you can do is to stay calm — which is difficult, I know — and to connect with your child in a way that acknowledges his or her distress."</p>
+      <cite>— Chapter 1, "Connect and Redirect"</cite>
+    </div>
+  </div>
+
+  <div class="how-to">
+    <strong>How to actually do it:</strong>
+    <ol>
+      <li><strong>Get physical</strong> — Get down to your child's eye level. Physical proximity and eye contact activate the social engagement system that helps the upstairs brain come back online.</li>
+      <li><strong>Name it</strong> — "You're really angry. I can see that." Not "You shouldn't be angry" or "There's nothing to be angry about." Just name it.</li>
+      <li><strong>Wait</strong> — Resist the urge to fix, explain, or solve. Just be present. Watch for the physical shift — shoulders dropping, breathing slowing — that signals they're back upstairs.</li>
+      <li><strong>Then redirect</strong> — Now that the upstairs brain is online, you can introduce logic, consequences, or problem-solving.</li>
+    </ol>
+  </div>
+
+  <div class="remember-box">
+    <p>If you can only remember two things from this book: (1) <strong>integration is the goal</strong> — help your child's whole brain work together. (2) <strong>connection comes before correction</strong> — be with the emotion before you fix the behavior.</p>
+  </div>
+
+  <nav>
+    <a href="hostile-review.html">← Hostile Review</a>
+    <a href="index.html">Course Index →</a>
+  </nav>
+
+  <footer>
+    <p>Based on <em>The Whole-Brain Child</em> by Daniel J. Siegel & Tina Payne Bryson.</p>
+  </footer>
+</body>
+</html>

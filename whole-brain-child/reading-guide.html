@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Guide | Whole-Brain Child</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+    :root {
+      --bg: #faf9f7;
+      --text: #2d2a26;
+      --accent: #5c6bc0;
+      --accent-light: #e8eaf6;
+      --secondary: #78909c;
+      --highlight: #fff3e0;
+      --border: #e0ddd8;
+      --core: #4caf50;
+      --example: #78909c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.75;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+
+    header {
+      margin-bottom: 4rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .course-label {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--secondary);
+      font-style: italic;
+    }
+
+    .meta {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem;
+      color: var(--secondary);
+      margin-top: 1.5rem;
+    }
+
+    .meta a { color: var(--accent); }
+
+    .key-question {
+      background: linear-gradient(135deg, var(--accent-light) 0%, #f3e5f5 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2.5rem 0;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .key-question::before {
+      content: "The question:";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-style: normal;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 3rem 0 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    h2:first-of-type {
+      margin-top: 0;
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .skip-intro {
+      background: var(--highlight);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .skip-intro::before {
+      content: "Read This First";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e65100;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .skip-intro p {
+      margin-bottom: 0;
+    }
+
+    .skip-intro strong {
+      color: #e65100;
+    }
+
+    .reading-list {
+      margin: 2rem 0;
+    }
+
+    .chapter-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .chapter-card.core {
+      border-left: 4px solid var(--core);
+    }
+
+    .chapter-card.example {
+      border-left: 4px solid var(--example);
+      opacity: 0.85;
+    }
+
+    .chapter-card.skip {
+      border-left: 4px solid var(--border);
+      opacity: 0.6;
+    }
+
+    .chapter-badge {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      min-width: 55px;
+      text-align: center;
+    }
+
+    .chapter-card.core .chapter-badge {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .chapter-card.example .chapter-badge {
+      background: #eceff1;
+      color: #546e7a;
+    }
+
+    .chapter-card.skip .chapter-badge {
+      background: #f5f5f5;
+      color: #9e9e9e;
+    }
+
+    .chapter-content {
+      flex: 1;
+    }
+
+    .chapter-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .chapter-why {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    .chapter-strategies {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .chapter-card.skip .chapter-strategies {
+      color: var(--secondary);
+    }
+
+    .summary-box {
+      background: var(--accent-light);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2.5rem 0;
+    }
+
+    .summary-box::before {
+      content: "The Cliff Notes Version";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .summary-box ol {
+      margin-left: 1.5rem;
+    }
+
+    .summary-box li {
+      margin-bottom: 0.75rem;
+    }
+
+    .summary-box li strong {
+      color: var(--accent);
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.85rem;
+      color: var(--secondary);
+    }
+
+    footer a { color: var(--accent); }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    nav a { color: var(--accent); text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      body { font-size: 17px; }
+      h1 { font-size: 2rem; }
+      .chapter-card { flex-direction: column; gap: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="course-label">Whole-Brain Child</div>
+    <h1>Reading Guide</h1>
+    <p class="subtitle">Which chapters you actually need to read</p>
+    <p class="meta">Based on <em>The Whole-Brain Child</em> by Daniel J. Siegel & Tina Payne Bryson</p>
+  </header>
+
+  <div class="key-question">
+    Which chapters or sections contain the core ideas? Which ones are examples, case studies, or repetition of things already said? Give me a list of the chapters I actually need to read, in order.
+  </div>
+
+  <div class="skip-intro">
+    <p><strong>Read the Introduction and Conclusion.</strong> Yes, really. The Introduction (pages 1-15) contains the integration framework in plain language. The Conclusion (pages 139-150) synthesizes everything. These are not optional — they're the book in miniature. Everything else is elaboration.</p>
+  </div>
+
+  <h2>The Core Chapters (Read These First)</h2>
+
+  <p>These 5 chapters contain the entire argument. Read them in order.</p>
+
+  <div class="reading-list">
+    <div class="chapter-card core">
+      <span class="chapter-badge">Core 1</span>
+      <div class="chapter-content">
+        <div class="chapter-title">Chapter 1: "Kitchen Sink" or "Brick House"</div>
+        <div class="chapter-why">Establishes the integration framework. This is the entire book in one chapter — left/right brain, upstairs/downstairs brain, what integration looks like when it works and fails. If you only read one chapter, read this.</div>
+        <div class="chapter-strategies">Strategies #1-2</div>
+      </div>
+    </div>
+
+    <div class="chapter-card core">
+      <span class="chapter-badge">Core 2</span>
+      <div class="chapter-content">
+        <div class="chapter-title">Chapter 2: "Building the Staircase"</div>
+        <div class="chapter-why">The upstairs/downstairs brain model in depth. Why toddlers are literally "downstairs" — it's not metaphor, it's neuroscience. Introduces the "baby gate" (amygdala) concept that explains why reasoning doesn't work during tantrums.</div>
+        <div class="chapter-strategies">Strategies #3-5</div>
+      </div>
+    </div>
+
+    <div class="chapter-card core">
+      <span class="chapter-badge">Core 3</span>
+      <div class="chapter-content">
+        <div class="chapter-title">Chapter 3: "The Journey" or "The Tale of the Brain"</div>
+        <div class="chapter-why">Memory — the brain's timekeeper. Introduces implicit vs. explicit memory, the hippocampus, and the key insight: memories are reconstructions, not recordings. This is the chapter that makes the other chapters make sense.</div>
+        <div class="chapter-strategies">Strategies #6-7</div>
+      </div>
+    </div>
+
+    <div class="chapter-card core">
+      <span class="chapter-badge">Core 4</span>
+      <div class="chapter-content">
+        <div class="chapter-title">Chapter 4: "The River" or "Feeling, Not Frozen"</div>
+        <div class="chapter-why">The Wheel of Awareness — mindsight. The single most important concept for emotional regulation: feelings are temporary weather, not permanent identity. "I feel angry" ≠ "I am an angry person."</div>
+        <div class="chapter-strategies">Strategies #8-10</div>
+      </div>
+    </div>
+
+    <div class="chapter-card core">
+      <span class="chapter-badge">Core 5</span>
+      <div class="chapter-content">
+        <div class="chapter-title">Chapter 5: "The Healthy Marriage" or "The Family"</div>
+        <div class="chapter-why">Me + We integration. The brain is a social organ. Relationships build the brain. The deepest claim in the book: secure attachment physically shapes neural integration. Also contains the most practically useful material on handling conflict.</div>
+        <div class="chapter-strategies">Strategies #11-12</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Examples & Case Studies (Read Selectively)</h2>
+
+  <p>These chapters contain useful examples but no new concepts. If a concept from the core chapters confuses you, dip into these.</p>
+
+  <div class="reading-list">
+    <div class="chapter-card example">
+      <span class="chapter-badge">Examples</span>
+      <div class="chapter-content">
+        <div class="chapter-title">Chapters 6-12 (or Part 2 in some editions)</div>
+        <div class="chapter-why">The book repeats its framework across different domains: tantrums, siblings, grief, medical procedures, everyday frustrations. Each chapter illustrates the same 5 integrations from a different angle. If you understood Chapters 1-5, these are optional. If you want concrete scripts and scenarios, they're worth skimming.</div>
+        <div class="chapter-strategies">Same 12 strategies, applied to specific situations</div>
+      </div>
+    </div>
+
+    <div class="chapter-card example">
+      <span class="chapter-badge">Examples</span>
+      <div class="chapter-content">
+        <div class="chapter-title">"Before the Age of Two" (often Appendix)</div>
+        <div class="chapter-why">Specific guidance for children under 2. Useful if you have an infant or toddler, but the core concepts are the same. Skip if your child is older.</div>
+        <div class="chapter-strategies">Special considerations for 0-2 year olds</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Safe to Skip</h2>
+
+  <div class="reading-list">
+    <div class="chapter-card skip">
+      <span class="chapter-badge">Skip</span>
+      <div class="chapter-content">
+        <div class="chapter-title">Most case study sections within chapters</div>
+        <div class="chapter-why">The dialogues between Siegel/Bryson and children are illustrative, not educational. Read the principle, skip the play-by-play. The principle is: connect first, correct second. The examples are all variations on that theme.</div>
+        <div class="chapter-strategies">Repetition of core framework</div>
+      </div>
+    </div>
+
+    <div class="chapter-card skip">
+      <span class="chapter-badge">Skip</span>
+      <div class="chapter-content">
+        <div class="chapter-title">"Integration Examples" sidebar sections</div>
+        <div class="chapter-why">These small gray-box examples scattered throughout each chapter restate the same point with different ages and situations. Once you get the pattern, you've seen them all.</div>
+        <div class="chapter-strategies">Reinforcement, not new content</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>The Minimal Reading List</h2>
+
+  <div class="summary-box">
+    <ol>
+      <li><strong>Introduction</strong> — The integration framework in plain language</li>
+      <li><strong>Chapter 1</strong> — The whole book in one chapter</li>
+      <li><strong>Chapter 2</strong> — Why toddlers are "downstairs"</li>
+      <li><strong>Chapter 3</strong> — Memory is reconstruction, not recording</li>
+      <li><strong>Chapter 4</strong> — Feelings are temporary, not identity</li>
+      <li><strong>Chapter 5</strong> — Relationships build the brain</li>
+      <li><strong>Conclusion</strong> — Synthesis and how to practice</li>
+    </ol>
+    <p style="margin-top: 1rem; font-size: 0.95rem;"><em>Total: ~80 pages out of 150. You're cutting half the book by skipping examples and repetition.</em></p>
+  </div>
+
+  <nav>
+    <a href="central-argument.html">← The Central Argument</a>
+    <a href="index.html">Course Index →</a>
+  </nav>
+
+  <footer>
+    <p>Based on <em>The Whole-Brain Child</em> by Daniel J. Siegel & Tina Payne Bryson.</p>
+  </footer>
+</body>
+</html>
