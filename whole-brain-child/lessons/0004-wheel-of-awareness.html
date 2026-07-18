@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0004 — The Wheel of Awareness | Whole-Brain Child</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&display=swap');
+
+    :root {
+      --bg: #faf9f7;
+      --text: #2d2a26;
+      --accent: #5c6bc0;
+      --accent-light: #e8eaf6;
+      --secondary: #78909c;
+      --highlight: #fff3e0;
+      --border: #e0ddd8;
+      --hub: #7e57c2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1rem;
+      color: var(--accent);
+    }
+
+    p { margin-bottom: 1.25rem; }
+
+    .wheel-diagram {
+      background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto;
+    }
+
+    .wheel-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      background: var(--hub);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .wheel-rim {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 240px;
+      height: 240px;
+      transform: translate(-50%, -50%);
+      border: 3px solid var(--hub);
+      border-radius: 50%;
+    }
+
+    .rim-label {
+      position: absolute;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6a1b9a;
+      white-space: nowrap;
+    }
+
+    .rim-label.top { top: 0; left: 50%; transform: translateX(-50%); }
+    .rim-label.right { top: 50%; right: -5px; transform: translateY(-50%); }
+    .rim-label.bottom { bottom: 0; left: 50%; transform: translateX(-50%); }
+    .rim-label.left { top: 50%; left: -5px; transform: translateY(-50%); }
+
+    .key-concept {
+      background: var(--accent-light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .key-concept strong {
+      color: var(--accent);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy {
+      background: var(--highlight);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border-left: 4px solid #ff9800;
+    }
+
+    .strategy-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e65100;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #bf360c;
+    }
+
+    .step {
+      background: white;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 0.75rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .step-number {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.75rem;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      margin-right: 0.75rem;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--secondary);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: #555;
+    }
+
+    .example {
+      background: #f5f5f5;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    .example::before {
+      content: "Example";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .sift-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .sift-item {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .sift-letter {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .sift-word {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .sift-example {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .try-it {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+
+    .try-it h3 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #2e7d32;
+      margin-bottom: 1rem;
+    }
+
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .action-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .nav-link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-link:hover { text-decoration: underline; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.85rem;
+      color: var(--secondary);
+    }
+
+    footer a { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .sift-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="lesson-number">Lesson 0004</div>
+    <h1>The Wheel of Awareness</h1>
+    <p class="subtitle">Teaching your toddler they have choices in how they feel</p>
+  </header>
+
+  <section>
+    <p>Here's a scene that plays out in homes everywhere: Your toddler is having a meltdown over something small. You know — logically — that this isn't the end of the world. But your toddler doesn't know that. They ARE the frustration. The anger. The fear.</p>
+
+    <p>When a toddler feels something, they often feel like they ARE that feeling. "I am sad" instead of "I feel sad." This isn't just semantics. It's a fundamental difference in how their brain processes emotions.</p>
+
+    <p>The good news? You can teach your child to create space between "feeling" and "being" — and it starts with a simple image: <strong>the wheel of awareness</strong>.</p>
+  </section>
+
+  <h2>The Wheel of Awareness</h2>
+
+  <p>Imagine a bicycle wheel. In the center is the <strong>hub</strong>. Extending outward are <strong>spokes</strong> leading to the <strong>rim</strong>.</p>
+
+  <div class="wheel-diagram">
+    <div class="wheel-container">
+      <div class="wheel-rim"></div>
+      <div class="wheel-center">Hub<br>(You)</div>
+      <span class="rim-label top">Thoughts</span>
+      <span class="rim-label right">Images</span>
+      <span class="rim-label bottom">Feelings</span>
+      <span class="rim-label left">Body Sensations</span>
+    </div>
+  </div>
+
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li><strong>The rim</strong> = All the things you can notice: thoughts, feelings, images, body sensations, sounds, the outside world</li>
+    <li><strong>The hub</strong> = The place inside you that notices all these things</li>
+  </ul>
+
+  <div class="key-concept">
+    <strong>The Key Insight</strong>
+    <p>The hub is you — the part that can step back and say: "I notice I'm feeling angry. But that's just ONE part of me. I'm also feeling curious. And hungry. And loved."</p>
+  </div>
+
+  <h2>Why "Feel" ≠ "Am"</h2>
+
+  <p>Here's what happens when a child gets "stuck on the rim":</p>
+
+  <blockquote>
+    <p>Instead of "I <em>feel</em> frustrated," they say "I <em>am</em> frustrated." The temporary state becomes a permanent identity.</p>
+  </blockquote>
+
+  <p>When your toddler throws a tantrum and says "I HATE you!" — they mean it. In that moment, they ARE the hate. They can't see past it.</p>
+
+  <p>But here's the powerful truth:</p>
+
+  <div class="key-concept">
+    <strong>The Truth</strong>
+    <p>Feelings are like clouds. They pass by. The sun is always there — even when clouds cover it. Your child IS the sun. The feelings are just clouds.</p>
+  </div>
+
+  <h2>Strategy #8: Let the Clouds Roll By</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #8</div>
+    <h3>Feelings Come and Go</h3>
+    <p>Teach your toddler that emotions are temporary — they come, they go, and they're not in charge.</p>
+  </div>
+
+  <p>For toddlers, you can use very simple language:</p>
+
+  <div class="example">
+    <p>"That big mad feeling is here right now. But it will go away. Just like when the rain stops and the sun comes back."</p>
+  </div>
+
+  <p>You can also use physical metaphors:</p>
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>"The mad is like a big wave. It goes up, up, up... and then it goes down."</li>
+    <li>"Feelings are like visitors. They come to visit, and then they leave."</li>
+  </ul>
+
+  <p>This helps your child understand: <strong>this moment is hard, but it won't last forever.</strong></p>
+
+  <h2>Strategy #9: SIFT</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #9</div>
+    <h3>Paying Attention to What's Inside</h3>
+    <p>Help your child notice the different parts of their inner world: Sensations, Images, Feelings, and Thoughts.</p>
+  </div>
+
+  <div class="sift-grid">
+    <div class="sift-item">
+      <div class="sift-letter">S</div>
+      <div class="sift-word">Sensations</div>
+      <div class="sift-example">"My tummy feels wobbly." "My hands feel tight."</div>
+    </div>
+    <div class="sift-item">
+      <div class="sift-letter">I</div>
+      <div class="sift-word">Images</div>
+      <div class="sift-example">"I see the dog in my head." "I picture the playground."</div>
+    </div>
+    <div class="sift-item">
+      <div class="sift-letter">F</div>
+      <div class="sift-word">Feelings</div>
+      <div class="sift-example">"I feel happy." "I feel scared." "I feel mad."</div>
+    </div>
+    <div class="sift-item">
+      <div class="sift-letter">T</div>
+      <div class="sift-word">Thoughts</div>
+      <div class="sift-example">"I think I want milk." "I think the monster is under the bed."</div>
+    </div>
+  </div>
+
+  <p>For toddlers, this is mostly about <strong>building awareness</strong>:</p>
+
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>Pointing out sensations: "Your tummy is rumbling — that means you're hungry!"</li>
+    <li>Naming feelings as they happen: "I see your face getting red. You feel really mad, don't you?"</li>
+    <li>Noticing images in the mind: "You're picturing the dog, aren't you? That's why you're scared."</li>
+  </ul>
+
+  <h2>Strategy #10: Exercise Mindsight</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #10</div>
+    <h3>Getting Back to the Hub</h3>
+    <p>When your child gets "stuck on the rim" — fixated on one feeling — help them return to the calm center.</p>
+  </div>
+
+  <p>This is essentially a <strong>mini mindfulness practice</strong> for toddlers:</p>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <strong>Get present</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"Let's take a pause. Let's be still together."</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <strong>Focus on breath</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">For toddlers: place a small toy on their belly. "Watch the boat go up and down on the ocean."</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <strong>Notice what's here now</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"What do you hear right now? What do you feel in your body?"</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <strong>Come back to the hub</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"You're the one watching the waves. You're the one who notices the feelings. That's the real you."</p>
+  </div>
+
+  <div class="example">
+    <p>Toddler having a meltdown before nap? Try: "Let's lie down together. Put your stuffed bunny on your tummy. Watch him go up and down with your breathing. Breathe in... and out... Just like bunny. Now what does your body feel? Are your shoulders tight? Let's relax them. There. Better."</p>
+  </div>
+
+  <h2>The Science: Focused Attention Changes the Brain</h2>
+
+  <p>Here's something amazing: <strong>where you focus your attention actually changes your brain</strong>.</p>
+
+  <p>This is called <strong>neuroplasticity</strong>. When your child practices returning to their hub — over and over — they're literally building neural pathways that will help them self-regulate for life.</p>
+
+  <blockquote>
+    <p>Neurons that fire together, wire together. The more your child practices noticing their feelings, the easier it becomes.</p>
+  </blockquote>
+
+  <p>This is why the practices in these lessons aren't just "nice ideas" — they're building your child's brain.</p>
+
+  <div class="try-it">
+    <h3>Your Practice This Week</h3>
+    <div class="action-item">
+      <span class="action-icon">☁️</span>
+      <div>
+        <strong>Name the clouds</strong><br>
+        When big emotions come, say: "Here's the mad cloud. Here's the sad cloud. They'll pass by." Simple, but powerful.
+      </div>
+    </div>
+    <div class="action-item">
+      <span class="action-icon">🔍</span>
+      <div>
+        <strong>Play SIFT together</strong><br>
+        During a calm moment, ask: "What does your body feel? What pictures are in your head?" Start building awareness early.
+      </div>
+    </div>
+    <div class="action-item">
+      <span class="action-icon">🚣</span>
+      <div>
+        <strong>Try the breathing boat</strong><br>
+        When overwhelmed, lie down with your toddler. Put a small toy on their belly. Watch it rise and fall with breathing.
+      </div>
+    </div>
+  </div>
+
+  <h2>Your Own Wheel</h2>
+
+  <p>Here's a question worth asking yourself:</p>
+
+  <blockquote>
+    <p>What rim points am I focused on right now? What am I missing?</p>
+  </blockquote>
+
+  <p>When you're stuck in frustration with your toddler — that's one rim point. But you're also tired (rim point), you love your child (rim point), you're doing your best (rim point).</p>
+
+  <p>When you return to your hub, you can see the bigger picture. You're not just a frustrated parent — you're a whole person with many feelings, and so is your child.</p>
+
+  <nav class="navigation">
+    <a href="0003-memory-and-healing.html" class="nav-link">← Lesson 3: Memory and Healing</a>
+    <a href="0005-me-we-connection.html" class="nav-link">Lesson 5: Me-We Connection →</a>
+  </nav>
+
+  <footer>
+    <p>Based on <em>The Whole-Brain Child</em> Chapter 5 by Daniel J. Siegel & Tina Payne Bryson.</p>
+    <p>Questions? <a href="mailto:ask-me-anything">Ask your teacher</a>.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0003 — Memory and Healing | Whole-Brain Child</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&display=swap');
+
+    :root {
+      --bg: #faf9f7;
+      --text: #2d2a26;
+      --accent: #5c6bc0;
+      --accent-light: #e8eaf6;
+      --secondary: #78909c;
+      --highlight: #fff3e0;
+      --border: #e0ddd8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1rem;
+      color: var(--accent);
+    }
+
+    p { margin-bottom: 1.25rem; }
+
+    .key-concept {
+      background: var(--accent-light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .key-concept strong {
+      color: var(--accent);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy {
+      background: var(--highlight);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border-left: 4px solid #ff9800;
+    }
+
+    .strategy-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e65100;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #bf360c;
+    }
+
+    .step {
+      background: white;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 0.75rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .step-number {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.75rem;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      margin-right: 0.75rem;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--secondary);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: #555;
+    }
+
+    .example {
+      background: #f5f5f5;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    .example::before {
+      content: "Example";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .memory-types {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .memory-type {
+      padding: 1.25rem;
+      border-radius: 8px;
+    }
+
+    .explicit {
+      background: #e3f2fd;
+      border-left: 4px solid #1565c0;
+    }
+
+    .implicit {
+      background: #fff3e0;
+      border-left: 4px solid #e65100;
+    }
+
+    .memory-type h4 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .explicit h4 { color: #1565c0; }
+    .implicit h4 { color: #e65100; }
+
+    .memory-type ul {
+      margin: 0;
+      padding-left: 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    .memory-type li { margin: 0.25rem 0; }
+
+    .try-it {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+
+    .try-it h3 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #2e7d32;
+      margin-bottom: 1rem;
+    }
+
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .action-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .nav-link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-link:hover { text-decoration: underline; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.85rem;
+      color: var(--secondary);
+    }
+
+    footer a { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .memory-types { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="lesson-number">Lesson 0003</div>
+    <h1>Memory and Healing</h1>
+    <p class="subtitle">How past experiences shape present behavior — and how to help</p>
+  </header>
+
+  <section>
+    <p>Here's a scenario that might sound familiar: Your toddler screams in terror at the doctor's office — even though they've been there before. Or refuses to go near the dog after a single scary encounter. Or suddenly falls apart at daycare drop-off after months of smooth goodbyes.</p>
+
+    <p>Sound irrational? It isn't. The answer lies in how memory actually works in the brain.</p>
+  </section>
+
+  <h2>The Truth About Memory</h2>
+
+  <p>Forget everything you think you know about memory. It's not a filing cabinet. And it's not a video recording.</p>
+
+  <div class="key-concept">
+    <strong>The Rule</strong>
+    <p><strong>"Neurons that fire together, wire together."</strong></p>
+    <p style="margin-bottom: 0;">Every experience causes brain cells to connect. Those connections ARE memory. The more two things happen together, the stronger the connection.</p>
+  </div>
+
+  <p>Think about it:</p>
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>Every time you picked up your baby after work, the neurons for "Daddy comes home" connected with "Getting a hug." Now your toddler expects that hug the moment you walk in.</li>
+    <li>One scary moment with a dog = the neurons for "dog" and "danger" got linked. Now even friendly dogs trigger fear.</li>
+  </ul>
+
+  <blockquote>
+    <p>Memory isn't stored. It's <strong>encoded as connections</strong>. And when one neuron fires, it pulls all its connected friends along with it.</p>
+  </blockquote>
+
+  <h2>Two Types of Memory</h2>
+
+  <p>Here's something most parents don't know: there are two kinds of memory working in your child's brain right now.</p>
+
+  <div class="memory-types">
+    <div class="memory-type explicit">
+      <h4>Explicit Memory</h4>
+      <p style="font-size: 0.85rem; font-style: italic; margin-bottom: 0.5rem;">Conscious recollection</p>
+      <ul>
+        <li>Things you <strong>know</strong> you remember</li>
+        <li>Stories you can tell</li>
+        <li>"Remember when we went to the beach?"</li>
+        <li>Develops after ~18 months</li>
+      </ul>
+    </div>
+    <div class="memory-type implicit">
+      <h4>Implicit Memory</h4>
+      <p style="font-size: 0.85rem; font-style: italic; margin-bottom: 0.5rem;">Unconscious influence</p>
+      <ul>
+        <li>You don't know it's happening</li>
+        <li>Body sensations, emotions, habits</li>
+        <li>"I don't know why I'm scared" (but your body does)</li>
+        <li>Forms even before birth</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>The problem? <strong>Implicit memory shapes behavior without your child knowing why.</strong></p>
+
+  <p>A scary doctor visit doesn't just stay in memory — it creates a mental model: "Doctor = bad." Now every white coat triggers fear, even without conscious thought.</p>
+
+  <h2>The Hippocampus: Your Child's Memory Detective</h2>
+
+  <p>There's a part of the brain whose job is to make sense of all these scattered memories: the <strong>hippocampus</strong>.</p>
+
+  <p>Think of it as a puzzle master. Implicit memories are scattered puzzle pieces. The hippocampus pulls them together into a coherent picture — making implicit memories explicit so your child can <em>understand</em> what happened.</p>
+
+  <div class="key-concept">
+    <strong>The Key Insight</strong>
+    <p>When implicit memories stay hidden, they act like buried land mines — exploding in unexpected moments. When we <strong>make them explicit</strong>, we give our kids power over them instead of being controlled by them.</p>
+  </div>
+
+  <h2>Strategy #6: The Remote Control</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #6</div>
+    <h3>Replaying Memories with Control</h3>
+    <p>Help your child revisit scary or upsetting experiences by giving them a "remote control" for their internal DVD player.</p>
+  </div>
+
+  <p>Kids can imagine a movie playing in their head. With a remote, they can <strong>pause</strong> scary parts, <strong>fast-forward</strong> past overwhelming moments, or <strong>rewind</strong> to the happy ending.</p>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <strong>Tell the story once, simply</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"So the dog came over and scared you, and you ran away."</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <strong>Introduce the remote</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"Now let's watch it again in your head. But this time, you have the remote. If it gets too scary, just hit pause."</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <strong>Let them control the pace</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">Pause, fast-forward, rewind — whatever they need to get through the story.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <strong>End with the resolution</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">Always return to the part where things turned out okay.</p>
+  </div>
+
+  <p>This works because:</p>
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>It gives control back to your child</li>
+    <li>The hippocampus can do its job and integrate the memory</li>
+    <li>Scary becomes story — something happened, and it ended</li>
+  </ul>
+
+  <h2>Strategy #7: Remember to Remember</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #7</div>
+    <h3>Making Recollection Part of Daily Life</h3>
+    <p>Tell stories together. The more kids practice remembering, the stronger their memory integration becomes.</p>
+  </div>
+
+  <p>Memory is like a muscle — the more you use it, the stronger it gets. And for toddlers, this practice starts with simple questions.</p>
+
+  <div class="example">
+    <p><strong>For toddlers (1-3):</strong></p>
+    <ul style="margin: 0.5rem 0; padding-left: 1.25rem;">
+      <li>"What did you do at the park today?"</li>
+      <li>"Who did you play with? What did you play?"</li>
+      <li>"Remember when we went to the zoo? The monkeys were so silly!"</li>
+    </ul>
+  </div>
+
+  <div class="example">
+    <p><strong>For building positive associations:</strong></p>
+    <p style="margin-bottom: 0;">After a potentially scary experience (like the doctor), deliberately recall the positive parts: "Remember when the doctor gave you the sticker? You loved that one!"</p>
+  </div>
+
+  <p>This creates new neurons-to-fire connections — building positive memories that can balance out the scary ones.</p>
+
+  <h2>For Your Toddler: Practical Applications</h2>
+
+  <p>Here's how this applies to your everyday life with a 1-3 year old:</p>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <strong>When they fall apart at daycare drop-off</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">Don't just rush through it. Later, at home, recall it together: "This morning you cried when Mama left. But then what happened? Ms. Sarah gave you a hug and you played with the trucks. And then I came back!"</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <strong>After a scary moment</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">Once calm, briefly tell the story: "That loud noise scared you. It was just the garbage truck. It went away. You're safe."</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <strong>Build positive expectations</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"We're going to Grandma's house today! Remember last time? She made pancakes and you fed the ducks."</p>
+  </div>
+
+  <div class="try-it">
+    <h3>Your Practice This Week</h3>
+    <div class="action-item">
+      <span class="action-icon">🔍</span>
+      <div>
+        <strong>Look for the pattern</strong><br>
+        Notice when your toddler reacts strongly to something. Ask: "Is this about now, or about something from before?"
+      </div>
+    </div>
+    <div class="action-item">
+      <span class="action-icon">📺</span>
+      <div>
+        <strong>Try the remote control</strong><br>
+        If your child had a scary or upsetting experience, offer to retell the story. Let them hit "pause" if it gets too much.
+      </div>
+    </div>
+    <div class="action-item">
+      <span class="action-icon">🌟</span>
+      <div>
+        <strong>Build positive memories daily</strong><br>
+        Take 2 minutes before bed to recall something good from the day. "Remember when we made sandcastles? That was so fun!"
+      </div>
+    </div>
+  </div>
+
+  <h2>Your Own Hidden Memories</h2>
+
+  <p>Here's a question worth asking yourself:</p>
+
+  <blockquote>
+    <p>"Is my reaction making sense? Or is something from my past being triggered?"</p>
+  </blockquote>
+
+  <p>Your implicit memories affect your parenting too. A scary medical experience from your childhood might make you anxious at the pediatrician. A memory of your own parents yelling might make you over-react to normal toddler behavior.</p>
+
+  <p>When you notice your own disproportionate reactions, that's an opportunity to ask: "Where is this coming from? What am I remembering?"</p>
+
+  <nav class="navigation">
+    <a href="0002-upstairs-downstairs-brain.html" class="nav-link">← Lesson 2: Upstairs Downstairs Brain</a>
+    <a href="0004-wheel-of-awareness.html" class="nav-link">Lesson 4: Wheel of Awareness →</a>
+  </nav>
+
+  <footer>
+    <p>Based on <em>The Whole-Brain Child</em> Chapter 4 by Daniel J. Siegel & Tina Payne Bryson.</p>
+    <p>Questions? <a href="mailto:ask-me-anything">Ask your teacher</a>.</p>
+  </footer>
+</body>
+</html>

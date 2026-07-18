@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0002 — The Upstairs Downstairs Brain | Whole-Brain Child</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&display=swap');
+
+    :root {
+      --bg: #faf9f7;
+      --text: #2d2a26;
+      --accent: #5c6bc0;
+      --accent-light: #e8eaf6;
+      --secondary: #78909c;
+      --highlight: #fff3e0;
+      --border: #e0ddd8;
+      --downstairs: #ef9a9a;
+      --upstairs: #90caf9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1rem;
+      color: var(--accent);
+    }
+
+    p { margin-bottom: 1.25rem; }
+
+    .house-diagram {
+      background: linear-gradient(180deg, var(--upstairs) 0%, var(--upstairs) 50%, var(--downstairs) 50%, var(--downstairs) 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .house-level {
+      padding: 1.5rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+    }
+
+    .upstairs {
+      background: rgba(255,255,255,0.9);
+    }
+
+    .downstairs {
+      background: rgba(255,255,255,0.9);
+    }
+
+    .house-level h3 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .upstairs h3 { color: #1565c0; }
+    .downstairs h3 { color: #c62828; }
+
+    .key-concept {
+      background: var(--accent-light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .key-concept strong {
+      color: var(--accent);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy {
+      background: var(--highlight);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border-left: 4px solid #ff9800;
+    }
+
+    .strategy-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e65100;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #bf360c;
+    }
+
+    .step {
+      background: white;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 0.75rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .step-number {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.75rem;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      margin-right: 0.75rem;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--secondary);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: #555;
+    }
+
+    .example {
+      background: #f5f5f5;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    .example::before {
+      content: "Example";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .tantrum-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .tantrum-type {
+      padding: 1.25rem;
+      border-radius: 8px;
+    }
+
+    .upstairs-tantrum {
+      background: #e3f2fd;
+      border-left: 4px solid #1565c0;
+    }
+
+    .downstairs-tantrum {
+      background: #ffebee;
+      border-left: 4px solid #c62828;
+    }
+
+    .tantrum-type h4 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .upstairs-tantrum h4 { color: #1565c0; }
+    .downstairs-tantrum h4 { color: #c62828; }
+
+    .tantrum-type ul {
+      margin: 0;
+      padding-left: 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    .tantrum-type li { margin: 0.25rem 0; }
+
+    .try-it {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+
+    .try-it h3 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #2e7d32;
+      margin-bottom: 1rem;
+    }
+
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .action-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .nav-link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-link:hover { text-decoration: underline; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.85rem;
+      color: var(--secondary);
+    }
+
+    footer a { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .tantrum-compare {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="lesson-number">Lesson 0002</div>
+    <h1>The Upstairs Downstairs Brain</h1>
+    <p class="subtitle">The thinking brain and the survival brain — and why your toddler lives mostly downstairs</p>
+  </header>
+
+  <section>
+    <p>Remember from Lesson 1: your toddler's brain has a left side and a right side. Now let's look at it from top to bottom.</p>
+
+    <p>Imagine your child's brain as a <strong>two-story house</strong>. This mental image will change how you see every tantrum, every "I can't" moment, and every time your toddler seems completely unreasonable.</p>
+  </section>
+
+  <h2>The House Analogy</h2>
+
+  <p>Your toddler's brain is literally divided into two parts:</p>
+
+  <div class="house-diagram">
+    <div class="house-level upstairs">
+      <h3>Upstairs Brain</h3>
+      <p><strong>The Thinking Brain</strong> — Prefrontal Cortex</p>
+      <p style="font-size: 0.9rem; margin-bottom: 0;">Decision making, planning, empathy, self-control, moral reasoning</p>
+    </div>
+    <div class="house-level downstairs">
+      <h3>Downstairs Brain</h3>
+      <p><strong>The Survival Brain</strong> — Brain Stem & Limbic System</p>
+      <p style="font-size: 0.9rem; margin-bottom: 0;">Basic instincts, strong emotions, fight-flight-freeze, breathing, blinking</p>
+    </div>
+  </div>
+
+  <h2>Why Your Toddler Is "Downstairs"</h2>
+
+  <div class="key-concept">
+    <strong>The Key Fact</strong>
+    <p>The <strong>upstairs brain doesn't finish building until your mid-20s.</strong> In toddlers and young children, it's like a second floor that's still under construction — full of scaffolding, exposed beams, and patches of sky showing through.</p>
+  </div>
+
+  <p>This is crucial to understand:</p>
+
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>Your toddler <strong>physically cannot</strong> always access their upstairs brain</li>
+    <li>They can't "just calm down" on command — the thinking part isn't fully online yet</li>
+    <li>This isn't bad behavior. It's brain development.</li>
+  </ul>
+
+  <h2>The Baby Gate: Meet the Amygdala</h2>
+
+  <p>Here's something that makes toddler behavior even more challenging: the <strong>amygdala</strong>.</p>
+
+  <p>The amygdala is a tiny almond-shaped structure in the downstairs brain. Its job? <strong>Watchdog.</strong> It's always scanning for danger, and when it senses threat — real or perceived — it can:</p>
+
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>"Flip the lid" on the upstairs brain</li>
+    <li>Lower the baby gate that blocks access to upstairs</li>
+    <li>Take over completely — no thinking allowed</li>
+  </ul>
+
+  <blockquote>
+    <p>When your toddler has no orange Popsicles left, their amygdala sees a <em>crisis</em>. Massive energy floods the downstairs brain. The upstairs brain goes offline. No matter how many times you explain, they literally cannot access logic.</p>
+  </blockquote>
+
+  <h2>Two Types of Tantrums</h2>
+
+  <p>This is one of the most practical insights in the whole book. Not all tantrums are the same:</p>
+
+  <div class="tantrum-compare">
+    <div class="tantrum-type upstairs-tantrum">
+      <h4>Upstairs Tantrum</h4>
+      <p style="font-size: 0.85rem; margin-bottom: 0.5rem;"><em>Intentional manipulation</em></p>
+      <ul>
+        <li>Child <strong>chooses</strong> to act out</li>
+        <li>Upstairs brain is working</li>
+        <li>Could stop if they wanted to</li>
+        <li>Testing boundaries</li>
+      </ul>
+    </div>
+    <div class="tantrum-type downstairs-tantrum">
+      <h4>Downstairs Tantrum</h4>
+      <p style="font-size: 0.85rem; margin-bottom: 0.5rem;"><em>Amygdala hijack</em></p>
+      <ul>
+        <li>Child <strong>cannot</strong> control it</li>
+        <li>Upstairs brain is offline</li>
+        <li>Literally incapable of stopping</li>
+        <li>Overwhelmed by emotion</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Strategy #3: Engage, Don't Enrage</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #3</div>
+    <h3>Appealing to the Upstairs Brain</h3>
+    <p>When your child is struggling, ask yourself: <strong>Am I triggering the downstairs brain, or engaging the upstairs?</strong></p>
+  </div>
+
+  <p>Commands and threats activate the survival brain. Questions and collaboration engage the thinking brain.</p>
+
+  <div class="example">
+    <p><strong>Triggering Downstairs (Bad):</strong> "Stop that right now or no TV for a week!"</p>
+    <p><strong>Engaging Upstairs (Better):</strong> "I can see you're frustrated. What's something we could do instead of hitting?"</p>
+  </div>
+
+  <p>The second approach:</p>
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>Acknowledges the feeling</li>
+    <li>Invites problem-solving</li>
+    <li>Uses the word "we" — connection</li>
+    <li>Gives practice at thinking, not just obeying</li>
+  </ul>
+
+  <h2>Strategy #4: Use It or Lose It</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #4</div>
+    <h3>Exercising the Upstairs Brain</h3>
+    <p>The upstairs brain is like a muscle. It grows stronger when you use it. Give your toddler daily practice.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <strong>Offer choices (even small ones)</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"Red cup or blue cup?" "Banana or apple?" This builds decision-making skills.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <strong>Ask questions about feelings</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"Why do you think your brother is crying?" Builds empathy and self-understanding.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <strong>Let them solve problems</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"You and Sophie both want the swing. What could we do?" Resist fixing it for them.</p>
+  </div>
+
+  <h2>Strategy #5: Move It or Lose It</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #5</div>
+    <h3>Moving the Body to Avoid Losing the Mind</h3>
+    <p>Physical movement changes brain chemistry. When upstairs goes offline, <strong>get the body moving</strong> to bring it back.</p>
+  </div>
+
+  <p>Research shows: changing your physical state changes your emotional state.</p>
+
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>Frowning can make you sad; smiling can help you feel better</li>
+    <li>Shallow breathing comes with anxiety; slow breathing calms</li>
+    <li>Running, jumping, dancing can release the energy that amygdala hijack creates</li>
+  </ul>
+
+  <div class="example">
+    <p>Toddler melting down over spilled milk? Instead of just saying "it's okay," try: "Let's jump up and down five times together, then clean it up!"</p>
+  </div>
+
+  <div class="try-it">
+    <h3>Your Practice This Week</h3>
+    <div class="action-item">
+      <span class="action-icon">🏠</span>
+      <div>
+        <strong>Picture the house</strong><br>
+        The next time your toddler flips out, visualize: Is the upstairs brain accessible? Is the baby gate down?
+      </div>
+    </div>
+    <div class="action-item">
+      <span class="action-icon">🤔</span>
+      <div>
+        <strong>Ask instead of demand</strong><br>
+        "What should we do?" or "How could we solve this?" engages the upstairs brain better than "Stop it!"
+      </div>
+    </div>
+    <div class="action-item">
+      <span class="action-icon">🏃</span>
+      <div>
+        <strong>Move it to lose it</strong><br>
+        When emotions are high, try physical movement: jumping, running in place, or even a silly dance to reset.
+      </div>
+    </div>
+  </div>
+
+  <h2>Integrating Yourself</h2>
+
+  <p>Here's the hard truth: <strong>you have an upstairs brain too.</strong> And sometimes, your amygdala takes over.</p>
+
+  <div class="key-concept">
+    <strong>When You Flip Your Lid</strong>
+    <p>When you find yourself yelling, saying something cruel, or feeling completely out of control — you've been hijacked. Your toddler's behavior triggered your downstairs brain.</p>
+  </div>
+
+  <p>What to do:</p>
+  <ol style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li><strong>First: Do no harm.</strong> Close your mouth. Put your hands somewhere safe.</li>
+    <li><strong>Remove yourself.</strong> "Mommy needs to take a breath." That's not rejection — it's regulation.</li>
+    <li><strong>Move your body.</strong> Jumping jacks, stretching, deep breaths. Get back in your upstairs brain.</li>
+    <li><strong>Repair quickly.</strong> Reconnect and apologize if needed. Your child is watching how adults recover.</li>
+  </ol>
+
+  <nav class="navigation">
+    <a href="0001-the-integration-secret.html" class="nav-link">← Lesson 1: The Integration Secret</a>
+    <a href="0003-memory-and-healing.html" class="nav-link">Lesson 3: Memory and Healing →</a>
+  </nav>
+
+  <footer>
+    <p>Based on <em>The Whole-Brain Child</em> Chapter 3 by Daniel J. Siegel & Tina Payne Bryson.</p>
+    <p>Questions? <a href="mailto:ask-me-anything">Ask your teacher</a>.</p>
+  </footer>
+</body>
+</html>

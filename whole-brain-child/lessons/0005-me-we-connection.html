@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0005 — The Me-We Connection | Whole-Brain Child</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&display=swap');
+
+    :root {
+      --bg: #faf9f7;
+      --text: #2d2a26;
+      --accent: #5c6bc0;
+      --accent-light: #e8eaf6;
+      --secondary: #78909c;
+      --highlight: #fff3e0;
+      --border: #e0ddd8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1rem;
+      color: var(--accent);
+    }
+
+    p { margin-bottom: 1.25rem; }
+
+    .key-concept {
+      background: var(--accent-light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .key-concept strong {
+      color: var(--accent);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy {
+      background: var(--highlight);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border-left: 4px solid #ff9800;
+    }
+
+    .strategy-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e65100;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #bf360c;
+    }
+
+    .step {
+      background: white;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 0.75rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .step-number {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.75rem;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      margin-right: 0.75rem;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--secondary);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: #555;
+    }
+
+    .example {
+      background: #f5f5f5;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    .example::before {
+      content: "Example";
+      display: block;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .brain-visual {
+      background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .brain-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .try-it {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+
+    .try-it h3 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #2e7d32;
+      margin-bottom: 1rem;
+    }
+
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .action-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+    .finale {
+      background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .finale h3 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #f57c00;
+      margin-bottom: 1rem;
+    }
+
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .strategy-card {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .strategy-num {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .strategy-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .nav-link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-link:hover { text-decoration: underline; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.85rem;
+      color: var(--secondary);
+    }
+
+    footer a { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .strategy-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="lesson-number">Lesson 0005</div>
+    <h1>The Me-We Connection</h1>
+    <p class="subtitle">From "I" to "We" — building your toddler's social brain</p>
+  </header>
+
+  <section>
+    <p>Your toddler has a favorite word: <strong>"Mine!"</strong></p>
+
+    <p>This isn't selfishness. It's brain development. Toddlers are hardwired to focus on "me" — they literally cannot fully see things from another person's perspective yet. The "we" circuit isn't built yet.</p>
+
+    <p>Your job? Help build it.</p>
+  </section>
+
+  <h2>The Social Brain</h2>
+
+  <div class="brain-visual">
+    <div class="brain-icon">🧠</div>
+    <p><strong>The brain is a social organ.</strong></p>
+    <p style="font-size: 0.95rem; margin-bottom: 0;">We're not born knowing how to be in relationships. We learn it — and the brain is built for this learning.</p>
+  </div>
+
+  <p>Here's something fascinating: <strong>mirror neurons</strong>.</p>
+
+  <p>When your baby watches you smile, the same neurons fire in their brain as when they smile. They're quite literally <em>feeling with you</em> — not just watching you feel.</p>
+
+  <blockquote>
+    <p>This is why your toddler catches your emotions. If you're stressed, they become stressed. If you're calm and happy, they can settle. You're not just modeling behavior — you're transferring emotional states directly.</p>
+  </blockquote>
+
+  <h2>Mental Models: What Relationships "Feel" Like</h2>
+
+  <p>The experiences your toddler has with you now create <strong>mental models</strong> — expectations about how relationships work.</p>
+
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li>If you consistently comfort them when upset → "People can be trusted. I'm safe in relationships."</li>
+    <li>If you're cold or inconsistent → "Relationships are unpredictable. I need to protect myself."</li>
+  </ul>
+
+  <div class="key-concept">
+    <strong>The Long Game</strong>
+    <p>Every loving interaction you have with your toddler now shapes how they'll relate to friends, teachers, future partners, and their own children. You're not just surviving today — you're building their relational future.</p>
+  </div>
+
+  <h2>Reactive vs. Receptive</h2>
+
+  <p>Here's a quick experiment. Say "no" to yourself seven times firmly. Notice what happens in your body.</p>
+
+  <p>Now say "yes" seven times gently. Notice the difference.</p>
+
+  <p>This is the difference between <strong>reactive</strong> and <strong>receptive</strong> states:</p>
+
+  <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+    <li><strong>Reactive ("No"):</strong> Fight-flight-freeze mode. Impossible to connect. Defensive, closed.</li>
+    <li><strong>Receptive ("Yes"):</strong> Social engagement mode. Open, curious, able to connect.</li>
+  </ul>
+
+  <p>When your toddler is in full meltdown, they're reactive. You can't teach, reason, or connect deeply in this state. <strong>Wait for the receptive state.</strong></p>
+
+  <h2>Strategy #11: Increase the Family Fun Factor</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #11</div>
+    <h3>Make a Point to Enjoy Each Other</h3>
+    <p>Play isn't just fun — it's building your toddler's brain for relationships.</p>
+  </div>
+
+  <p>Every joyful experience releases <strong>dopamine</strong> — the brain's reward chemical. When your toddler associates YOU with good feelings, they're building a positive mental model of relationships.</p>
+
+  <p>This isn't optional parenting. It's essential brain development.</p>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <strong>Play every day</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">Put down your phone. Get on the floor. Be silly. This is the work.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <strong>Follow their lead</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">Let your toddler choose the game. Mirror their excitement. "You want to dump the blocks? Okay! Here they go!"</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <strong>Use silliness to shift mood</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">When your toddler is stuck in a grumpy state, sometimes a silly face or a goofy voice can shift everything.</p>
+  </div>
+
+  <div class="example">
+    <p>After dinner tonight: "Everyone grab one blanket and meet me in the living room. We're having a blanket fort and reading books by flashlight."</p>
+  </div>
+
+  <h2>Strategy #12: Connect Through Conflict</h2>
+
+  <div class="strategy">
+    <div class="strategy-number">Whole-Brain Strategy #12</div>
+    <h3>Teach "We" Thinking During Conflicts</h3>
+    <p>Every conflict is a growth opportunity. Your toddler is learning: "How do I be in relationship with others?"</p>
+  </div>
+
+  <p>Conflicts will happen. Toddlers hit, grab, refuse to share. But the conflict itself isn't the problem — it's what you teach during and after that matters.</p>
+
+  <h3>Three Mindsight Skills for Conflict:</h3>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <strong>See Through Their Eyes</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"I know you wanted that truck. How do you think Sophie feels?" Even if they can't answer yet, you're building empathy circuits.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <strong>Notice What's Not Said</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">Help them read body language: "Look at Sophie's face. Her eyebrows are turned down. What does that tell you?"</p>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <strong>Make It Right</strong>
+    <p style="margin-top: 0.5rem; margin-bottom: 0;">"What could you do to help Sophie feel better?" (Hug, share another toy, say sorry.)</p>
+  </div>
+
+  <div class="example">
+    <p><strong>Toddler example:</strong> Your toddler hits another child at the playground. Instead of just separating them:</p>
+    <ul style="margin: 0.5rem 0 0; padding-left: 1.25rem;">
+      <li>Comfort the hurt child first (model empathy)</li>
+      <li>Get down to your toddler's level: "You hit. That hurt Sophie."</li>
+      <li>"Look at Sophie's face. She's crying. How does she feel?"</li>
+      <li>"What can we do to help her feel better?"</li>
+    </ul>
+  </div>
+
+  <h2>The Power of Repair</h2>
+
+  <p>Here's something powerful: <strong>you don't need perfect parenting</strong>. You need good repair.</p>
+
+  <p>When you lose your temper (and you will), when you're impatient (and you will), the repair is what matters. When you come back, apologize, reconnect — you're teaching your toddler that relationships can survive rupture.</p>
+
+  <blockquote>
+    <p>The capacity to repair is more important than never making mistakes. Your toddler is learning: "Can relationships survive conflict?" Your repair says YES.</p>
+  </blockquote>
+
+  <div class="finale">
+    <h3>All 12 Strategies</h3>
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <div class="strategy-num">#1-2</div>
+        <div class="strategy-name">Connect & Redirect, Name It to Tame It</div>
+      </div>
+      <div class="strategy-card">
+        <div class="strategy-num">#3-5</div>
+        <div class="strategy-name">Engage, Use It, Move It</div>
+      </div>
+      <div class="strategy-card">
+        <div class="strategy-num">#6-7</div>
+        <div class="strategy-name">Remote Control, Remember</div>
+      </div>
+      <div class="strategy-card">
+        <div class="strategy-num">#8-10</div>
+        <div class="strategy-name">Clouds, SIFT, Mindsight</div>
+      </div>
+      <div class="strategy-card">
+        <div class="strategy-num">#11-12</div>
+        <div class="strategy-name">Fun Factor, Connect Through Conflict</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="try-it">
+    <h3>Your Practice This Week</h3>
+    <div class="action-item">
+      <span class="action-icon">🎉</span>
+      <div>
+        <strong>Schedule fun</strong><br>
+        Put it in your calendar: 15 minutes of pure, undivided attention play with your toddler. No phones. No multitasking.
+      </div>
+    </div>
+    <div class="action-item">
+      <span class="action-icon">🔍</span>
+      <div>
+        <strong>Name emotions in others</strong><br>
+        When you see another child upset, name it: "That boy looks sad. What do you think happened?" Building empathy through observation.
+      </div>
+    </div>
+    <div class="action-item">
+      <span class="action-icon">🔧</span>
+      <div>
+        <strong>Practice repair</strong><br>
+        Made a mistake? Lost your temper? Use it as a teaching moment: "I yelled. That wasn't okay. I'm sorry. I was really tired and frustrated, but I still shouldn't have yelled."
+      </div>
+    </div>
+  </div>
+
+  <h2>Your Own Story</h2>
+
+  <p>Here's a deeper question worth sitting with:</p>
+
+  <blockquote>
+    <p>What mental models did your childhood give you about relationships? How do you automatically respond to conflict, closeness, or need?</p>
+  </blockquote>
+
+  <p>Your toddler isn't just learning from what you do — they're learning from who you are. The patterns you carry, the triggers you have, the way you attach — these are being absorbed through mirror neurons and repeated experiences.</p>
+
+  <p>Healing your own relational patterns isn't just good for you. It's a gift to your child.</p>
+
+  <nav class="navigation">
+    <a href="0004-wheel-of-awareness.html" class="nav-link">← Lesson 4: Wheel of Awareness</a>
+    <a href="0006-review.html" class="nav-link">Lesson 6: Review →</a>
+  </nav>
+
+  <footer>
+    <p>Based on <em>The Whole-Brain Child</em> Chapter 6 by Daniel J. Siegel & Tina Payne Bryson.</p>
+    <p>Questions? <a href="mailto:ask-me-anything">Ask your teacher</a>.</p>
+  </footer>
+</body>
+</html>

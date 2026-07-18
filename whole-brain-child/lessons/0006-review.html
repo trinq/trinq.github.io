@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 0006 — Bringing It All Together | Whole-Brain Child</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+    :root {
+      --bg: #faf9f7;
+      --text: #2d2a26;
+      --accent: #5c6bc0;
+      --accent-light: #e8eaf6;
+      --secondary: #78909c;
+      --border: #e0ddd8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .lesson-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1rem;
+      color: var(--accent);
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.75rem;
+      color: var(--text);
+    }
+
+    p { margin-bottom: 1.25rem; }
+
+    .intro-box {
+      background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .intro-box h2 {
+      color: #3f51b5;
+      margin-top: 0;
+    }
+
+    .big-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .chapter-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--accent);
+    }
+
+    .chapter-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .chapter-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .strategy-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .strategy-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .strategy-item:last-child {
+      border-bottom: none;
+    }
+
+    .strategy-num {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .strategy-text {
+      font-size: 0.95rem;
+    }
+
+    .key-insight {
+      background: #fff3e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .key-insight strong {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e65100;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .quote-box {
+      border-left: 3px solid var(--secondary);
+      padding-left: 1.25rem;
+      margin: 2rem 0;
+      font-style: italic;
+      color: #555;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .summary-card {
+      background: var(--accent-light);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .summary-card h4 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .summary-card p {
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .final-thought {
+      background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .final-thought h3 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #6a1b9a;
+      margin-bottom: 1rem;
+    }
+
+    .next-steps {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .next-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .next-step-item:last-child {
+      border-bottom: none;
+    }
+
+    .step-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .nav-link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-link:hover { text-decoration: underline; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.85rem;
+      color: var(--secondary);
+      text-align: center;
+    }
+
+    footer a { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="lesson-number">Lesson 0006</div>
+    <h1>Bringing It All Together</h1>
+    <p class="subtitle">The complete picture of whole-brain parenting</p>
+  </header>
+
+  <div class="intro-box">
+    <div class="big-number">12</div>
+    <h2>Strategies</h2>
+    <p style="margin-bottom: 0;">You've learned the tools. Now let's see how they all fit together.</p>
+  </div>
+
+  <h2>The Integration Framework</h2>
+
+  <p>All 12 strategies serve one goal: <strong>integration</strong>.</p>
+
+  <p>Integration means bringing different parts together so they work as a whole. In your toddler's brain, this means:</p>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <h4>Left + Right</h4>
+      <p>Logic + Emotion working together</p>
+    </div>
+    <div class="summary-card">
+      <h4>Upstairs + Downstairs</h4>
+      <p>Thinking + Feeling in balance</p>
+    </div>
+    <div class="summary-card">
+      <h4>Implicit + Explicit</h4>
+      <p>Unconscious + Conscious memory</p>
+    </div>
+    <div class="summary-card">
+      <h4>Me + We</h4>
+      <p>Self + Others connected</p>
+    </div>
+  </div>
+
+  <h2>All 12 Strategies</h2>
+
+  <div class="chapter-section">
+    <div class="chapter-number">Chapter 2: Integration #1</div>
+    <div class="chapter-title">Left and Right Brain</div>
+    <ul class="strategy-list">
+      <li class="strategy-item">
+        <span class="strategy-num">1</span>
+        <span class="strategy-text"><strong>Connect and Redirect</strong> — When upset, connect emotionally first (right brain), then teach (left brain)</span>
+      </li>
+      <li class="strategy-item">
+        <span class="strategy-num">2</span>
+        <span class="strategy-text"><strong>Name It to Tame It</strong> — Tell the story of what happened to help make sense of big emotions</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="chapter-section">
+    <div class="chapter-number">Chapter 3: Integration #2</div>
+    <div class="chapter-title">Upstairs and Downstairs Brain</div>
+    <ul class="strategy-list">
+      <li class="strategy-item">
+        <span class="strategy-num">3</span>
+        <span class="strategy-text"><strong>Engage, Don't Enrage</strong> — Ask questions, offer choices, engage thinking brain</span>
+      </li>
+      <li class="strategy-item">
+        <span class="strategy-num">4</span>
+        <span class="strategy-text"><strong>Use It or Lose It</strong> — Give daily opportunities to practice decision-making</span>
+      </li>
+      <li class="strategy-item">
+        <span class="strategy-num">5</span>
+        <span class="strategy-text"><strong>Move It or Lose It</strong> — Use movement to regain balance when overwhelmed</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="chapter-section">
+    <div class="chapter-number">Chapter 4: Integration #3</div>
+    <div class="chapter-title">Memory</div>
+    <ul class="strategy-list">
+      <li class="strategy-item">
+        <span class="strategy-num">6</span>
+        <span class="strategy-text"><strong>Remote Control</strong> — Help replay painful memories with pause, fast-forward, rewind</span>
+      </li>
+      <li class="strategy-item">
+        <span class="strategy-num">7</span>
+        <span class="strategy-text"><strong>Remember to Remember</strong> — Build memory through daily storytelling and questions</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="chapter-section">
+    <div class="chapter-number">Chapter 5: Integration #4</div>
+    <div class="chapter-title">The Many Parts of Self</div>
+    <ul class="strategy-list">
+      <li class="strategy-item">
+        <span class="strategy-num">8</span>
+        <span class="strategy-text"><strong>Let the Clouds Roll By</strong> — Feelings are temporary, they come and go</span>
+      </li>
+      <li class="strategy-item">
+        <span class="strategy-num">9</span>
+        <span class="strategy-text"><strong>SIFT</strong> — Notice Sensations, Images, Feelings, Thoughts</span>
+      </li>
+      <li class="strategy-item">
+        <span class="strategy-num">10</span>
+        <span class="strategy-text"><strong>Exercise Mindsight</strong> — Return to the calm hub through breathing and presence</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="chapter-section">
+    <div class="chapter-number">Chapter 6: Integration #5</div>
+    <div class="chapter-title">Self and Other</div>
+    <ul class="strategy-list">
+      <li class="strategy-item">
+        <span class="strategy-num">11</span>
+        <span class="strategy-text"><strong>Family Fun Factor</strong> — Play builds positive relational circuits</span>
+      </li>
+      <li class="strategy-item">
+        <span class="strategy-num">12</span>
+        <span class="strategy-text"><strong>Connect Through Conflict</strong> — See through eyes, read body language, make repair</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="key-insight">
+    <strong>The Key Insight</strong>
+    <p>The goal isn't perfect parenting. It's <strong>good enough</strong> parenting with good repair. Every mistake is an opportunity to teach resilience, repair, and growth.</p>
+  </div>
+
+  <div class="quote-box">
+    <p>"Even the hard times you go through with your kids, even the mistakes you make as you parent, are opportunities to help your children grow, learn, and develop."</p>
+    <p style="text-align: right; margin-bottom: 0;">— Siegel & Bryson</p>
+  </div>
+
+  <div class="final-thought">
+    <h3>What You Now Know</h3>
+    <p style="margin-bottom: 0;">You know how the brain works. You have 12 practical strategies. You understand that every interaction shapes your toddler's developing brain. You are not just surviving — you're building their future.</p>
+  </div>
+
+  <h2>Next Steps</h2>
+
+  <div class="next-steps">
+    <div class="next-step-item">
+      <span class="step-icon">🎯</span>
+      <div>
+        <strong>Pick one strategy</strong><br>
+        <span style="font-size: 0.95rem;">Start with just one. Practice it until it feels natural. Then add another.</span>
+      </div>
+    </div>
+    <div class="next-step-item">
+      <span class="step-icon">🔄</span>
+      <div>
+        <strong>Be patient with yourself</strong><br>
+        <span style="font-size: 0.95rem;">These skills take practice. You'll forget. You'll slip. That's normal. Return and try again.</span>
+      </div>
+    </div>
+    <div class="next-step-item">
+      <span class="step-icon">💜</span>
+      <div>
+        <strong>Remember the "why"</strong><br>
+        <span style="font-size: 0.95rem;">You're not just getting through today. You're building a brain that will serve your child for their entire life.</span>
+      </div>
+    </div>
+    <div class="next-step-item">
+      <span class="step-icon">📚</span>
+      <div>
+        <strong>Read the book</strong><br>
+        <span style="font-size: 0.95rem;">These lessons are a summary. The full book has many more examples and deeper explanations.</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navigation">
+    <a href="0005-me-we-connection.html" class="nav-link">← Lesson 5: Me-We Connection</a>
+    <span></span>
+  </nav>
+
+  <footer>
+    <p>Based on <em>The Whole-Brain Child</em> by Daniel J. Siegel & Tina Payne Bryson.</p>
+    <p style="margin-top: 0.5rem;"><a href="mailto:ask-me-anything">Questions? Ask your teacher</a></p>
+  </footer>
+</body>
+</html>
