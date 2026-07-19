@@ -1487,3 +1487,122 @@ body.home-body .ed-post-row:hover .ed-post-arrow {
     -webkit-line-clamp: 1;
   }
 }
+
+/* ─── Lesson Index Styles ─── */
+body.home-body .crumbs {
+  font-family: "Source Code Pro", "SF Mono", monospace;
+  font-size: 0.8rem;
+  color: var(--_ink-mute);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+body.home-body .crumbs a {
+  color: var(--_accent);
+}
+
+body.home-body h1 {
+  font-family: "Iowan Old Style", "Source Serif Pro", Charter, Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--_ink);
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+body.home-body .section-label {
+  font-family: "Source Code Pro", "SF Mono", monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--_ink-mute);
+  border-bottom: 1px solid var(--_rule);
+  padding-bottom: 0.5rem;
+  margin: 2.5rem 0 1.25rem 0;
+}
+
+body.home-body .lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+  margin: 1rem 0 2rem 0;
+}
+
+body.home-body .card {
+  background: var(--_paper);
+  border: 1px solid var(--_rule);
+  border-radius: 4px;
+  padding: 1.25rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.home-body .card:hover {
+  border-color: var(--_accent);
+  box-shadow: 0 2px 8px rgba(139, 44, 26, 0.08);
+}
+
+body.home-body .card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-family: "Source Code Pro", "SF Mono", monospace;
+  font-size: 0.7rem;
+}
+
+body.home-body .card-num {
+  color: var(--_accent);
+  font-weight: 600;
+}
+
+body.home-body .card-category-badge {
+  background: var(--_accent-soft);
+  color: var(--_accent);
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+body.home-body .card-time {
+  color: var(--_ink-mute);
+  margin-left: auto;
+}
+
+body.home-body .card-title {
+  font-family: "Iowan Old Style", "Source Serif Pro", Charter, Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+body.home-body .card-title a {
+  color: var(--_ink);
+  text-decoration: none;
+}
+
+body.home-body .card-title a:hover {
+  color: var(--_accent);
+}
+
+body.home-body .card-desc {
+  font-size: 0.9rem;
+  color: var(--_ink-soft);
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  body.home-body .lesson-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  body.home-body h1 {
+    font-size: 1.8rem;
+  }
+}
