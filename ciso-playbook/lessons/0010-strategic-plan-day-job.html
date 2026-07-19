@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0010 — Strategic Plan, The Day Job</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0010 &middot; CISO playbook &middot; Arc 3: The ongoing operational programme</div>
+<h1>Strategic Plan &mdash; The Day Job</h1>
+<p class="subtitle">The plan that turns the 17 chapters of work into 1 page the board can read, the UBCK examiner can audit, and the next CISO can inherit.</p>
+
+<h2>Why this lesson tenth</h2>
+
+<p>Lessons 0001&ndash;0009 built the substantive content of the CISO playbook. Lesson 0010 builds the strategic plan that organises all of it &mdash; the 1-page-per-objective + initiatives + owners + dates document that operates as the day-to-day manual of the security function.</p>
+
+<p>Chapter 18 is the closing chapter of Volume 2. The framing: <em>"the last key action for the reader to take is to build a strategic cybersecurity plan. We've emphasised that cybersecurity is a team sport, and we come back again to your human network."</em> The plan is not the strategy. The plan is the artefact that <strong>documents the strategy</strong> so that the board, the executive team, the UBCK examiner, the cyber-insurance carrier, the next CISO, and the security team itself all know what the CISO is doing, why, and when.</p>
+
+<p>For your 9-entity VN securities firm, three specific weights. First, the UBCK expects a documented security strategy as part of the ICT risk management requirements &mdash; the strategic plan is the artefact that demonstrates compliance. Second, the board needs a 1-page-per-objective view of what security is doing &mdash; not a 300-page strategy document nobody reads. Third, the strategic plan is what makes the security function defensible against budget cuts &mdash; the CISO can point to specific objectives, specific initiatives, specific dates, specific outcomes, and ask "which of these do you want to cut?"</p>
+
+<p>By the end of this lesson you will have <strong>drafted your firm's cybersecurity strategic plan &mdash; in Vietnamese &mdash; with mission, vision, governance, SWOT analysis, strategic objectives, key initiatives, and the build-vs-outsource matrix.</strong></p>
+
+<h2>The strategic plan structure &mdash; the 6 sections</h2>
+
+<p>Bonney, Hayslip, and Stamper converge on a single recommended structure. 6 sections, each with a specific purpose:</p>
+
+<ol>
+  <li><strong>Mission Statement.</strong> Declaration of the organisation's core purpose. Does not change over time.</li>
+  <li><strong>Vision Statement.</strong> Aspirational description of what the organisation would like to achieve in the mid-term or long-term future.</li>
+  <li><strong>Introduction.</strong> Statement describing the business and the environment in which the security program operates. Executive leadership uses this to communicate the cybersecurity program's critical role.</li>
+  <li><strong>Governance.</strong> How the strategic plan will be implemented. Who audits the process. Which committees or personnel assess effectiveness and recommend changes.</li>
+  <li><strong>Strategic Objectives.</strong> How the cybersecurity organisation invests time and resources to manage the security risks discovered in the assessment and SWOT data. Arrayed over 1&ndash;3 years. Each objective has initiatives derived from security-gap data.</li>
+  <li><strong>Key Initiatives.</strong> Each initiative states which objectives it satisfies, what security/risk issues it alleviates, and the benefits it brings to the business.</li>
+</ol>
+
+<p>For your firm, the structure adapts to the multi-entity reality: the strategic plan at the group level + entity-level tactical plans that roll up into the group plan. The group's mission/vision/governance/strategic objectives are common. The entity-level initiatives reflect the specific risk profile of each entity.</p>
+
+<h2>The plan is concise, not encyclopedic</h2>
+
+<p>Bonney's most distinctive contribution is the brevity discipline: <em>"The cybersecurity strategic plan needs to be concise and easy to understand and reflect realistic expectations for funding that are in line with what the organisation can afford. The plan document is not the place to surface a 300% increase in funding. That is a discussion that should already have taken place between you and the management team and, as appropriate, the board."</em></p>
+
+<p>For your firm, the practical implication: the strategic plan is a 5&ndash;15 page document, not a 50-page document. The board reads the executive summary (1 page) + the strategic objectives table (1 page). The executive team reads the full plan. The security team uses the plan + project schedule as the operating manual.</p>
+
+<h2>The SWOT analysis &mdash; the discovery input</h2>
+
+<p>Bonney recommends a Strengths, Weaknesses, Opportunities, Threats analysis as the discovery input for the strategic plan. The 7 areas the SWOT should cover:</p>
+
+<ol>
+  <li><strong>Current capacity to deliver security services.</strong></li>
+  <li><strong>Core competencies &mdash; what the security program is doing well.</strong></li>
+  <li><strong>Business processes the security program supports.</strong></li>
+  <li><strong>Staffing roles, skills, knowledge strengths and shortfalls.</strong></li>
+  <li><strong>Currently deployed security assets.</strong></li>
+  <li><strong>Effective and ineffective security controls.</strong></li>
+  <li><strong>Financial resources the program currently has available.</strong></li>
+</ol>
+
+<div class="callout">
+  <strong>The 9 lessons produce the SWOT inputs.</strong> Lessons 0001&ndash;0009 have each produced a Vietnamese artefact that maps directly to a SWOT category: lesson 0001 (first 90 days plan → financial resources); lesson 0002 (blended-capability team → staffing + competencies); lesson 0003 (awareness one-pager → business processes supported); lesson 0004 (monitoring one-pager → security assets + effective controls); lesson 0005 (threat intel programme → core competencies); lesson 0006 (BIA matrix → business processes supported); lesson 0007 (IR playbook → effective controls + gaps); lesson 0008 (recovery playbook → financial resources + gaps); lesson 0009 (forensics + post-mortem playbook → core competencies + gaps). Aggregating these 9 artefacts produces the SWOT.
+</div>
+
+<h2>Moore's core-vs-context matrix &mdash; the build-vs-outsource tool</h2>
+
+<p>Bonney references Geoffrey Moore's mission-critical "core vs context" matrix (Volume 1 Chapter 10). The matrix helps group capabilities along two axes: mission-critical vs commodity, and core competency vs outsourced.</p>
+
+<table>
+  <thead>
+    <tr><th></th><th>Mission-critical</th><th>Commodity</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Core competency</strong></td>
+      <td>Build &amp; retain in-house (e.g., security strategy, BIA ownership, IR leadership)</td>
+      <td>Differentiate selectively (e.g., threat intel specific to your industry)</td>
+    </tr>
+    <tr>
+      <td><strong>Not core</strong></td>
+      <td>Strategic partnership (e.g., 24/7 SOC, MSSP for commodity monitoring)</td>
+      <td>Outsource to commodity provider (e.g., log retention, vulnerability scanning)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For your firm, the practical use: walk through each capability in the security function and place it on the matrix. Mission-critical + not-core = strategic partnership (vendor relationship management becomes the in-house competency). Commodity + not-core = outsource to MSSP. Mission-critical + core = build and retain in-house.</p>
+
+<h2>The build-from-scratch playbook</h2>
+
+<p>Bonney's most operationally distinctive contribution is the build-from-scratch playbook for the new CISO with no programme:</p>
+
+<ol>
+  <li><strong>Inventory required security functions.</strong> Use the lessons 0001&ndash;0009 artefacts to determine what needs to be protected and what is already in place.</li>
+  <li><strong>Look internally for overlooked talent.</strong> Many systems and network administrators are <em>"chomping at the bit to move into cybersecurity."</em> Coordinate with CIO &mdash; do not poach. HR facilitates training.</li>
+  <li><strong>Audit the existing security architecture.</strong> Where are the blind spots? Can you meet regulatory and contractual obligations with current controls?</li>
+  <li><strong>Surface regulatory exposure directly to C-suite.</strong> <em>"If not, surface this concern directly to your colleagues in the C-suite and get their acknowledgment that the organisation has significant regulatory exposure and cannot meet contractual obligations."</em></li>
+  <li><strong>Apply the "what cannot I see?" question.</strong> <em>"What is it that I cannot see that I should see that will allow me to protect my organisation better?"</em> Take a full-stack, process-driven view. Leverage data flow diagrams for material processes.</li>
+  <li><strong>Prioritise where to implement new technology.</strong> Knowing which business processes require the most protection drives this prioritisation.</li>
+  <li><strong>Establish cadence of program reviews with executive management.</strong> Security metrics tied to business + organisational initiatives. Validate data with stakeholders + trusted partner.</li>
+</ol>
+
+<h2>The outsource playbook &mdash; MSSP due diligence</h2>
+
+<p>Bonney's outsource playbook is the most operationally detailed in the chapter. The principle: <em>"Validate everything. Leave nothing to chance. The selected MSSP will have a huge impact on the credibility and effectiveness of your security program."</em></p>
+
+<ol>
+  <li><strong>Begin with the BIA.</strong> Know which processes are material. Use the core-vs-context matrix to determine which security processes can be safely outsourced.</li>
+  <li><strong>Expect organisational momentum to outsource.</strong> <em>"You will likely experience significant organisational momentum to outsource key elements of your security program (e.g., the use of a managed security services provider or an MSSP)."</em></li>
+  <li><strong>Work with candidate MSSPs during evaluation.</strong> Review tools and services. How will the service be staffed? Communications protocols? Measurements?</li>
+  <li><strong>If it isn't spelled out in the contract, it doesn't get done.</strong> <em>"If it isn't spelled out in the service contract, it doesn't get done without a change order. Change orders are where service providers make their profit."</em> Have a trusted third party review the service contract before signing.</li>
+  <li><strong>Visit the MSSP's SOC after hours.</strong> <em>"If the services require 7x24 monitoring and support, validate services and capabilities by going to the MSSP's SOC after hours, preferably late at night or early in the morning."</em></li>
+  <li><strong>Ask the two questions.</strong> <em>"How will I know they are delivering as contracted? And how can I take this process back in-house if I need to?"</em></li>
+</ol>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 18</span>
+  In a scenario where outsourcing has been the primary modus operandi of the organisation, you may also have inherited significant security debt &mdash; not necessarily internal &mdash; that is tied to immature vendor oversight and vendor risk management practices on other departments' outsourced business processes.
+</div>
+
+<p>For your firm, the security-debt-inherited-from-vendors observation is the chapter's most underappreciated warning. Outsourcing does not outsource risk &mdash; it transfers operational accountability to a vendor but leaves the firm accountable for the outcome. Vendor risk management (lesson 0005 vendor-touchpoint analysis) is the discipline that closes this gap.</p>
+
+<h2>The vendor materiality model</h2>
+
+<p>Bonney's recommendation for vendor materiality: <em>"Work with your colleagues within the organisation to create a model that defines the materiality of your vendors. You can base this on the type and volume of information shared (e.g., PHI, PII, or intellectual property) as well as the criticality of the vendors' services to your organisation's operations."</em></p>
+
+<p>For your firm, the materiality model uses:</p>
+
+<ul>
+  <li><strong>Data type:</strong> Customer PII, trading data, custody records, financial reports.</li>
+  <li><strong>Data volume:</strong> Number of records (customers × records per customer).</li>
+  <li><strong>Criticality of service:</strong> OMS vendor, KYC vendor, custody system vendor, market-data vendor.</li>
+  <li><strong>Compliance overlap:</strong> PDPD exposure, UBCK regulatory exposure, contractual exposure.</li>
+</ul>
+
+<h2>CISO govern thyself &mdash; the annual review discipline</h2>
+
+<p>The chapter's most operationally important governance move is the annual review discipline: <em>"The vision, goals, and objectives of your plan should be reviewed at least annually with senior leadership. This review will ensure that the plan's projects, policies, and roadmap are relevant, current, and applicable to the organisation's current technology and application portfolios and strategic business objectives."</em></p>
+
+<p>For your firm, the annual review produces a 1-page update to the board: what changed in the threat landscape, what changed in the business, what objectives are complete, what objectives are in progress, what objectives are at risk. The update is the artefact that demonstrates the CISO is governing the function &mdash; not just running it.</p>
+
+<h2>Transparency as a governance principle</h2>
+
+<p>Bonney's most distinctive contribution is the transparency principle: <em>"Another critical aspect of governance is transparency, both from the perspective of creating visibility about the plan and the resources being assigned to achieve it. This is an essential driver for the engagement of the entire organisation and the ability of everyone &mdash; you, your team, your management peers and the organisation as a whole &mdash; to held accountable for the outcomes you collectively agreed to achieve."</em></p>
+
+<p>For your firm, the transparency artefact is the quarterly security dashboard (lesson 0004) + the strategic plan tracker (this lesson) + the annual board update. Three artefacts together demonstrate that security is being run as a disciplined function, not a hidden one.</p>
+
+<h2>The three concluding themes &mdash; and your firm's response</h2>
+
+<p>The chapter closes with three themes that anchor everything in Volume 2:</p>
+
+<ol>
+  <li><strong>Many tools are available.</strong> With footnotes, bibliography, and references to standards, the two volumes provide a combination of best practices + informative narrative. Use the resources.</li>
+  <li><strong>Almost every problem can be addressed by preparation + critical thinking.</strong> Do homework. Dig in. Learn everything about the organisation, industry, and goals. Apply to plans, staffing, and resource allocation.</li>
+  <li><strong>Cybersecurity is a team sport.</strong> Build a world-class team. Use the human network. Communication is key. Get out into the organisation. Talk to team, peers, management. Meet regularly with colleagues and vendors. Join local, regional, industry groups. Share knowledge. Absorb what you learn.</li>
+</ol>
+
+<p>For your firm, the three themes map to: (1) the 10 lessons + 10 Vietnamese artefacts; (2) the BIA + assessment + planning discipline; (3) the human network of peer CISOs, MSSPs, law enforcement, UBCK examiners, and security team members.</p>
+
+<h2>Where Bonney, Hayslip, and Stamper actually agree</h2>
+
+<p>The three authors converge on a single principle: <strong>the strategic plan is the artefact that turns the security function from a hidden cost centre into a visible, accountable, board-ready programme. The plan is concise, SWOT-informed, objective-driven, initiative-tracked, and annually reviewed.</strong></p>
+
+<ul>
+  <li><strong>Bonney</strong> emphasises the 6-section structure + the SWOT analysis + the build-from-scratch playbook + the MSSP due diligence + the vendor materiality model + the transparency principle.</li>
+  <li><strong>Hayslip</strong> emphasises the strategic plan as proof of business value + the human network as the CISO's primary asset + the project schedule as the operating manual.</li>
+  <li><strong>Stamper</strong> emphasises the SWOT integration with the assessment findings + the core-vs-context matrix as the build-vs-outsource tool + the cadence of program reviews with executive management.</li>
+</ul>
+
+<p>For your CEO briefing on the strategic plan, lead with Bonney (the 6-section structure + the SWOT + the build-vs-outsource), support with Stamper (the cadence of program reviews), close with Hayslip (the human network + the project schedule as the operating manual).</p>
+
+<h2>The interview artifact: cybersecurity strategic plan (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Kế hoạch Chiến lược An toàn thông tin (Cybersecurity Strategic Plan)</h3>
+
+<p><strong>Use case:</strong> the artefact that turns the 17 chapters of work into 1 page the board can read, the UBCK examiner can audit, and the next CISO can inherit. One Vietnamese-language strategic plan: mission + vision + governance + SWOT + strategic objectives + key initiatives + build-vs-outsource matrix.</p>
+
+<h3 style="margin-top:18px;">1. Sứ mệnh (Mission Statement)</h3>
+<p style="font-size:14px; padding:10px 14px; background:#f3efe6; border-radius:4px;">
+"Phát triển và thực thi chương trình an toàn thông tin chủ động, toàn công ty, dựa trên các mục tiêu kinh doanh chiến lược của Tập đoàn, bảo vệ tài sản thông tin của khách hàng, nhân viên, cổ đông và các bên liên quan, đồng thời đảm bảo tuân thủ quy định UBCK, PDPD và các chuẩn ngành."
+</p>
+
+<h3 style="margin-top:18px;">2. Tầm nhìn (Vision Statement)</h3>
+<p style="font-size:14px; padding:10px 14px; background:#f3efe6; border-radius:4px;">
+"Xây dựng văn hóa an ninh mạng liên tục trong mọi hoạt động kinh doanh của Tập đoàn, từ giao dịch chứng khoán, lưu ký, đến phục vụ khách hàng và đối tác, với mục tiêu trở thành chuẩn mực về an toàn thông tin trong ngành chứng khoán Việt Nam."
+</p>
+
+<h3 style="margin-top:18px;">3. Giới thiệu (Introduction)</h3>
+<ul>
+  <li><strong>Tập đoàn:</strong> 9 công ty chứng khoán, ~600 nhân viên, 3 sàn giao dịch (HOSE, HNX, UPCOM), khối lượng giao dịch hàng ngày hàng triệu USD.</li>
+  <li><strong>Môi trường hoạt động:</strong> Quy định UBCK về quản trị rủi ro ICT, PDPD về dữ liệu cá nhân, ISO 27001 (mục tiêu), luật An toàn thông tin mạng 2015.</li>
+  <li><strong>Vai trò của an toàn thông tin:</strong> Bảo vệ niềm tin của khách hàng, đảm bảo liên tục giao dịch, giảm thiểu rủi ro pháp lý và tài chính.</li>
+</ul>
+
+<h3 style="margin-top:18px;">4. Quản trị (Governance)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Vai trò</th><th>Trách nhiệm</th><th>Tần suất</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>HĐQT / Audit Committee</strong></td>
+      <td>Phê duyệt kế hoạch chiến lược + phân bổ ngân sách. Nhận báo cáo hàng quý.</td>
+      <td>Phê duyệt hàng năm + cập nhật hàng quý</td>
+    </tr>
+    <tr>
+      <td><strong>CEO Tập đoàn</strong></td>
+      <td>Tone at the top. Phê duyệt tài trợ cho sáng kiến chiến lược. Điều phối với HĐQT.</td>
+      <td>Hàng tháng (với CISO) + hàng quý (với HĐQT)</td>
+    </tr>
+    <tr>
+      <td><strong>CEO các công ty con</strong></td>
+      <td>Triển khai kế hoạch tại entity. Báo cáo tiến độ.</td>
+      <td>Hàng tháng</td>
+    </tr>
+    <tr>
+      <td><strong>CISO</strong></td>
+      <td>Soạn thảo + điều phối thực thi + báo cáo. Chủ trì Strategic Cybersecurity Committee.</td>
+      <td>Liên tục + báo cáo hàng tuần với CEO</td>
+    </tr>
+    <tr>
+      <td><strong>Strategic Cybersecurity Committee</strong></td>
+      <td>CISO + CIO + Head of Risk + Head of Compliance + Head of IT. Đánh giá + đề xuất điều chỉnh.</td>
+      <td>Hàng quý</td>
+    </tr>
+    <tr>
+      <td><strong>Audit Committee</strong></td>
+      <td>Đánh giá độc lập. Kiểm toán nội bộ hàng năm.</td>
+      <td>Hàng năm + khi cần</td>
+    </tr>
+    <tr>
+      <td><strong>UBCK Examiner</strong></td>
+      <td>Thanh tra định kỳ. Xem xét kế hoạch + bằng chứng thực thi.</td>
+      <td>Theo lịch UBCK (thường 1&ndash;2 năm/lần)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">5. Phân tích SWOT (rút gọn cho 9 công ty)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Strengths (Điểm mạnh)</th><th>Weaknesses (Điểm yếu)</th><th>Opportunities (Cơ hội)</th><th>Threats (Mối đe dọa)</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Đã có playbook IR + recovery + forensics (lessons 0007&ndash;0009)</td>
+      <td>MSSP chưa được audit sâu; chưa thăm SOC sau giờ làm việc</td>
+      <td>Chuẩn hóa quy trình trên 9 entity &mdash; economies of scale</td>
+      <td>Tấn công APT nhắm vào ngành tài chính VN đang tăng</td>
+    </tr>
+    <tr>
+      <td>BIA matrix đã hoàn thành (lesson 0006)</td>
+      <td>Threat intel chưa có programme chính thức</td>
+      <td>Đạt ISO 27001 certification &mdash; tăng uy tín với khách hàng lớn</td>
+      <td>PDPD enforcement đang siết chặt</td>
+    </tr>
+    <tr>
+      <td>Team có 2&ndash;3 người có thể train thành forensic first responder</td>
+      <td>Tabletop chưa được chạy hàng quý</td>
+      <td>Peer-CISO network trong ngành chứng khoán</td>
+      <td>Cyber insurance premium tăng</td>
+    </tr>
+    <tr>
+      <td>Threat intel sharing với MSSP + peer firms</td>
+      <td>Vendor risk management chưa mature</td>
+      <td>UBCK examiner sẽ positive với programme có tài liệu</td>
+      <td>Ransomware tấn công ngành tài chính châu Á</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">6. Mục tiêu chiến lược (Strategic Objectives &mdash; 3 năm)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Mục tiêu</th><th>Thời hạn</th><th>Chỉ số thành công</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td><strong>Hoàn thiện nền tảng an toàn thông tin (Foundational)</strong> &mdash; chuẩn hóa chính sách + quy trình + công cụ trên 9 entity</td>
+      <td>12 tháng</td>
+      <td>100% entity tuân thủ baseline ISO 27001; 0 finding critical từ UBCK examination</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>Tăng cường phát hiện &amp; ứng phó (Detect &amp; Respond)</strong> &mdash; SIEM + SOAR + IRP + forensics-by-design</td>
+      <td>18 tháng</td>
+      <td>MTTD &lt; 1 giờ cho High-severity; MTTR &lt; 4 giờ cho High-severity</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>Quản trị rủi ro ICT (Risk Management)</strong> &mdash; BIA + risk register + control framework</td>
+      <td>12 tháng</td>
+      <td>Risk register được review hàng quý; 100% critical asset có control mapped</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>Tuân thủ &amp; chứng nhận (Compliance)</strong> &mdash; UBCK + PDPD + ISO 27001</td>
+      <td>24 tháng</td>
+      <td>ISO 27001 certified; 0 finding UBCK; PDPD notification process đạt 72h benchmark</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><strong>Văn hóa an ninh (Culture)</strong> &mdash; awareness + phishing simulation + tabletop</td>
+      <td>24 tháng</td>
+      <td>Phishing click rate &lt; 5%; 100% employee hoàn thành awareness training hàng năm; quarterly tabletop đạt &gt; 80% participation</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><strong>Khả năng phục hồi (Resilience)</strong> &mdash; backup + DR + BCP + recovery playbook</td>
+      <td>18 tháng</td>
+      <td>RTO đạt cho 100% critical process; backup integrity verified quarterly</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">7. Sáng kiến chính (Key Initiatives &mdash; ví dụ cho Objective 1)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Sáng kiến</th><th>Phục vụ mục tiêu</th><th>Mô tả</th><th>Chủ sở hữu</th><th>Thời hạn</th><th>Lợi ích kinh doanh</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1.1 Policy framework</td>
+      <td>1, 3, 4</td>
+      <td>Phát triển + phê duyệt bộ chính sách ATTT dựa trên ISO 27001 + UBCK + PDPD</td>
+      <td>CISO + Legal</td>
+      <td>Q1</td>
+      <td>Baseline rõ ràng cho 9 entity; đối chiếu với audit</td>
+    </tr>
+    <tr>
+      <td>1.2 Baseline configuration</td>
+      <td>1, 6</td>
+      <td>Định nghĩa baseline configuration cho OS, DB, network device; triển khai trên 9 entity</td>
+      <td>CIO + CISO</td>
+      <td>Q2</td>
+      <td>Giảm attack surface; phát hiện drift sớm</td>
+    </tr>
+    <tr>
+      <td>1.3 Asset inventory CMDB</td>
+      <td>1, 3</td>
+      <td>CMDB hoàn chỉnh cho 9 entity &mdash; hardware, software, data, services</td>
+      <td>CIO + IT</td>
+      <td>Q2</td>
+      <td>Nền tảng cho BIA + risk register + IRP</td>
+    </tr>
+    <tr>
+      <td>1.4 Identity governance</td>
+      <td>1, 6</td>
+      <td>IAM + MFA cho admin + privileged access management</td>
+      <td>CISO + IT</td>
+      <td>Q3</td>
+      <td>Giảm credential theft + insider threat</td>
+    </tr>
+    <tr>
+      <td>1.5 Logging + monitoring baseline</td>
+      <td>2, 6</td>
+      <td>SIEM + log retention + monitoring baseline (lesson 0004)</td>
+      <td>CISO + MSSP</td>
+      <td>Q3</td>
+      <td>Nền tảng cho detect + IRP + forensics</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">8. Ma trận Core vs Context (Moore) &mdash; cho 9 entity</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Năng lực</th><th>Phân loại</th><th>Mô hình thực thi</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Security strategy + governance</td>
+      <td>Mission-critical, Core</td>
+      <td><strong>In-house</strong> &mdash; CISO + direct reports</td>
+    </tr>
+    <tr>
+      <td>BIA + risk management</td>
+      <td>Mission-critical, Core</td>
+      <td><strong>In-house</strong> &mdash; CISO + risk team</td>
+    </tr>
+    <tr>
+      <td>Incident response (lead)</td>
+      <td>Mission-critical, Core</td>
+      <td><strong>In-house</strong> &mdash; IR lead + 2&ndash;3 responders</td>
+    </tr>
+    <tr>
+      <td>Forensics (first responder)</td>
+      <td>Mission-critical, Not core</td>
+      <td><strong>First responder + retainer</strong> &mdash; 2&ndash;3 trained internal + external firm</td>
+    </tr>
+    <tr>
+      <td>24/7 SOC monitoring</td>
+      <td>Mission-critical, Not core</td>
+      <td><strong>MSSP</strong> &mdash; validate everything, visit SOC after hours</td>
+    </tr>
+    <tr>
+      <td>Threat intel (commodity feeds)</td>
+      <td>Commodity, Not core</td>
+      <td><strong>MSSP + commercial feeds</strong></td>
+    </tr>
+    <tr>
+      <td>Threat intel (industry-specific)</td>
+      <td>Mission-critical, Differentiate</td>
+      <td><strong>In-house</strong> &mdash; peer-CISO network + custom collection</td>
+    </tr>
+    <tr>
+      <td>Vulnerability scanning</td>
+      <td>Commodity, Not core</td>
+      <td><strong>Tool + outsourced scanning</strong></td>
+    </tr>
+    <tr>
+      <td>Awareness training</td>
+      <td>Mission-critical, Differentiate</td>
+      <td><strong>In-house + platform</strong> &mdash; CISO designs, HR delivers</td>
+    </tr>
+    <tr>
+      <td>Pen testing</td>
+      <td>Commodity, Not core</td>
+      <td><strong>External firm</strong> &mdash; annual + post-major-change</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">9. Lịch trình dự án (Project schedule &mdash; 12 tháng)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Quý</th><th>Sáng kiến chính</th><th>Deliverable</th><th>Chủ sở hữu</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Q1</strong></td>
+      <td>Policy framework + Baseline configuration + Risk register initial</td>
+      <td>Bộ chính sách được HĐQT phê duyệt; baseline config được áp dụng; risk register draft</td>
+      <td>CISO + Legal</td>
+    </tr>
+    <tr>
+      <td><strong>Q2</strong></td>
+      <td>Asset inventory + BIA refresh + Identity governance rollout (Phase 1)</td>
+      <td>CMDB hoàn chỉnh cho 3 entity đầu tiên; BIA refresh; MFA cho admin</td>
+      <td>CIO + CISO</td>
+    </tr>
+    <tr>
+      <td><strong>Q3</strong></td>
+      <td>SIEM + monitoring baseline + Tabletop #1 + Forensics first-responder training</td>
+      <td>SIEM live; tabletop scenario 1; 2 first responders trained</td>
+      <td>CISO + MSSP + IR lead</td>
+    </tr>
+    <tr>
+      <td><strong>Q4</strong></td>
+      <td>Tabletop #2 + Phishing simulation #1 + Recovery playbook validation</td>
+      <td>Tabletop scenario 2; phishing click rate measured; recovery playbook dry-run</td>
+      <td>CISO + HR + IR team</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">10. Điểm chạm quy định (Regulatory touchpoints)</h3>
+<ul>
+  <li><strong>UBCK:</strong> Kế hoạch chiến lược là bằng chứng cho yêu cầu quản trị rủi ro ICT. Examiner sẽ xem trong thanh tra. Cập nhật hàng năm.</li>
+  <li><strong>PDPD:</strong> Chính sách + quy trình bảo vệ dữ liệu cá nhân đáp ứng Nghị định 13/2023.</li>
+  <li><strong>Luật An toàn thông tin mạng 2015:</strong> Chính sách + tổ chức + giám sát.</li>
+  <li><strong>ISO 27001 (mục tiêu):</strong> Toàn bộ chính sách + quy trình + kiểm soát phải align với ISO 27001:2022.</li>
+  <li><strong>Cyber insurance:</strong> Strategic plan + governance + testing evidence là điều kiện bồi thường.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the strategic plan template above and fill in your firm's specifics. Spend 60 minutes on section 6 (the 6 strategic objectives &mdash; this is the spine of the plan) and section 9 (the 12-month project schedule &mdash; this is what makes the plan executable, not aspirational). Then take the completed plan to your CEO for endorsement before bringing it to the board. The strategic plan is the artefact that converts the security function from a cost centre to a strategic capability.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does Bonney insist the strategic plan be concise (5–15 pages, not 50)?</summary>
+<p>Because the strategic plan has three distinct audiences with three distinct reading patterns: (1) the board reads the executive summary (1 page) + the strategic objectives table (1 page); (2) the executive team reads the full plan; (3) the security team uses the plan + project schedule as the operating manual. A 50-page plan serves none of these audiences &mdash; the board does not read 50 pages, the executive team does not absorb 50 pages, and the security team cannot use 50 pages as an operating manual. Bonney's discipline: the plan is concise (5&ndash;15 pages), realistic (no 300% budget increases surfaced for the first time), and aligned with current business functions. <em>"The plan document is not the place to surface a 300% increase in funding. That is a discussion that should already have taken place between you and the management team and, as appropriate, the board."</em></p>
+</details>
+
+<details>
+<summary>What is the build-vs-outsource decision framework and how does Moore's core-vs-context matrix help?</summary>
+<p>The core-vs-context matrix groups capabilities along two axes: mission-critical vs commodity, and core competency vs not-core. Mission-critical + core = build and retain in-house (security strategy, BIA ownership, IR leadership). Mission-critical + not-core = strategic partnership (24/7 SOC, MSSP for commodity monitoring). Commodity + not-core = outsource to commodity provider (log retention, vulnerability scanning). Commodity + core = differentiate selectively (threat intel specific to your industry). The matrix is not just for talent management &mdash; it is the operational map for the entire security function. For your firm, the practical use: walk through each capability in the security function, place it on the matrix, and the build-vs-outsource answer is structural rather than political.</p>
+</details>
+
+<details>
+<summary>What is "what is it that I cannot see that I should see that will allow me to protect my organisation better?" and how does it work?</summary>
+<p>Bonney's framing question for the new CISO with no programme. The point: the security architecture has blind spots, and the most dangerous blind spots are the ones the CISO does not know about. The discipline is to take a full-stack, process-driven view. Leverage data flow diagrams for material processes. Understand where security controls should be deployed and evaluate the status of these controls. Walk through each critical business process end-to-end and ask: what data does this process handle? Where does the data flow? What controls are between each step? Which controls are missing or degraded? For your firm, the answer for the OMS process is probably: customer identity → KYC → order routing → execution → settlement → custody → reporting. Walk through each step. Identify the controls. Identify the gaps. The gaps are the strategic plan's initiatives.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 18 (Building Your Strategic Plan) of Volume 2. The unified three-author essay gives you the 6-section strategic plan structure + the SWOT analysis + the core-vs-context matrix + the build-from-scratch playbook + the MSSP due diligence discipline + the vendor materiality model + the transparency principle + the annual review cadence + the project schedule as the operating manual. The chapter's three concluding themes (many tools available, preparation + critical thinking, cybersecurity is a team sport) are the closing argument for the entire two-volume series.</p>
+
+<p><strong>Read next:</strong> Chapter 18 in full &mdash; it is the closing chapter of Volume 2 and the operational anchor for everything in the 18-chapter set. Pay particular attention to the 6-section structure (mission / vision / introduction / governance / strategic objectives / key initiatives), the build-from-scratch playbook (the operational sequence if you are the new CISO with no programme), and the MSSP due diligence discipline (the most expensive single mistake a CISO can make).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to scope the SWOT analysis for a 9-entity group vs a single-entity firm, how to structure the strategic objectives across group vs entity levels, how to negotiate the annual budget increase with the CFO without surfacing it in the strategic plan document, how to use the strategic plan to push back on scope-creep requests, how to align the strategic plan with UBCK's ICT risk management expectations &mdash; ask. The next lesson (0011: Review &amp; Refresh &mdash; The Final Lesson) is the meta-lesson: how to review the 10 lessons + 10 Vietnamese artefacts you have built and turn them into the 1 strategic plan that organises the security function.
+</div>
+
+<div class="lesson-nav">
+  <a href="0009-forensics-post-mortem.html">&larr; Lesson 0009: Forensics &amp; Post-Mortem</a>
+  <a href="0011-review-refresh.html">Lesson 0011: Review &amp; Refresh &mdash; The Final Lesson &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

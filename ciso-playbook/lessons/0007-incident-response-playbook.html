@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0007 — Incident Response, The Playbook</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0007 &middot; CISO playbook &middot; Arc 2: Run the program when something goes wrong</div>
+<h1>Incident Response &mdash; The Playbook</h1>
+<p class="subtitle">The chapter that decides whether the 2 AM phone call is a 6-hour incident or a 6-month crisis.</p>
+
+<h2>Why this lesson seventh</h2>
+
+<p>Lessons 0001&ndash;0006 built the prevention + recovery programme. Lesson 0007 builds what you actually do in the moment when something triggers. The BIA + RTO/RPO (lesson 0006) tells you <em>what</em> to recover. This lesson tells you <em>how</em> to recover &mdash; the team, the decisions, the communications, the chain of command.</p>
+
+<p>Chapter 15 opens with the framing line every CISO should tattoo on their brain: <em>"Incident response is the most visible function for a typical CISO. For good or for ill, it is the primary way CISOs are judged."</em> The lesson is not "incident response in theory." The lesson is "the playbook that turns a 2 AM incident into a documented, rehearsed, executed routine &mdash; not a hunt for information."</p>
+
+<p>For your 9-entity VN securities firm, three specific weights. First, UBCK will judge you on whether your IR programme is documented, tested, and integrated with the regulator's own notification expectations. Second, the trading window (9:00&ndash;14:30 HOSE / 9:00&ndash;15:00 HNX) is your hardest constraint &mdash; an incident during trading has minutes, not hours, to be contained or escalated. Third, the PDPD 72-hour breach notification clock starts when you become "aware" of a personal-data breach &mdash; and your playbook must define when "aware" begins.</p>
+
+<p>By the end of this lesson you will have <strong>drafted the IR playbook for your firm &mdash; in Vietnamese &mdash; with the virtuous cycle, the RACI matrix, the pre-staged communications, the runbooks, and the test cadence.</strong></p>
+
+<h2>Bonney's virtuous cycle &mdash; the framework</h2>
+
+<p>Bonney's 6-phase "virtuous cycle" is the canonical structure: <strong>prepare, detect, contain, eradicate, recover, improve.</strong> Each phase has its own communication requirements. The cycle loops back into preparation because each incident produces lessons that update the playbook.</p>
+
+<table>
+  <thead>
+    <tr><th>Phase</th><th>What happens</th><th>Who leads</th><th>Communication</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Prepare</strong></td>
+      <td>Training, documentation, tools, runbooks, pre-staged communications, tabletop exercises.</td>
+      <td>CISO + IR lead</td>
+      <td>Internal &mdash; sell the programme to board.</td>
+    </tr>
+    <tr>
+      <td><strong>Detect</strong></td>
+      <td>SIEM alerts, user reports, threat intel feeds, MSSP triage.</td>
+      <td>SOC (MSSP or in-house) + on-call engineer</td>
+      <td>Internal &mdash; IR team + CISO.</td>
+    </tr>
+    <tr>
+      <td><strong>Contain</strong></td>
+      <td>Isolate affected systems, preserve evidence, stop lateral movement.</td>
+      <td>IR lead + sysadmin / network engineer</td>
+      <td>Internal &mdash; CISO + senior management + legal.</td>
+    </tr>
+    <tr>
+      <td><strong>Eradicate</strong></td>
+      <td>Remove malware, close attack vector, reset credentials, patch vulnerabilities.</td>
+      <td>IR lead + engineering</td>
+      <td>Internal &mdash; same as contain.</td>
+    </tr>
+    <tr>
+      <td><strong>Recover</strong></td>
+      <td>Restore from clean backup, validate, monitor for re-infection.</td>
+      <td>Engineering + business owner</td>
+      <td>Internal + customer / market operator.</td>
+    </tr>
+    <tr>
+      <td><strong>Improve</strong></td>
+      <td>Post-mortem, lessons learned, playbook update, board briefing.</td>
+      <td>CISO + IR lead + post-mortem team</td>
+      <td>Board + regulatory (if required) + customer (if affected).</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The chapter's framing: <em>"While it's helpful to break the entire incident response discipline into a series of discrete phases so that each can be described individually to assist with training and the command and control of response activities, it is rarely clear-cut when one process ends, and the next begins. There is often significant overlap."</em> The virtuous cycle is a teaching tool, not a strict sequence. In real incidents you will move back and forth.</p>
+
+<h2>Bonney's 5 governance activities &mdash; the board's job</h2>
+
+<p>Bonney's most distinctive contribution is the board-level framing. Five governance activities the board must perform during preparation:</p>
+
+<ol>
+  <li><strong>Adequately staff, equip, and train.</strong> Balancing resource needs is a critical function of the board. The board validates the preparations made for business continuity and recovery.</li>
+  <li><strong>Provide guidance for communication plans and escalation paths.</strong> Avoid the cursory review. Ensure communication plans are adequate. Involve legal in escalation. Know when to notify law enforcement, regulators.</li>
+  <li><strong>Signal the importance of the preparation work.</strong> Senior leaders participate personally in planning and drills. Tone at the top.</li>
+  <li><strong>Marshal external resources.</strong> Partners, suppliers, key customers. Joint drills with multi-partner integrations. Communication plans for enterprise customers.</li>
+  <li><strong>Dedicate time to prioritise improvements.</strong> Every drill and every live incident produces gaps. Act on them.</li>
+</ol>
+
+<p>For your firm, the CISO move is to make sure the board has performed these 5 activities in the last 12 months and can produce evidence (board minutes, tabletop attendance lists, drill reports). Without that evidence, "reasonable care" is harder to demonstrate when an incident happens.</p>
+
+<h2>Stamper's 5 critical assumptions &mdash; the worst-case framing</h2>
+
+<p>Stamper's essay is the most operationally bracing in the chapter. He opens with: <em>"There are three things we can predict with certainty: death, taxes, and that our organisations will be the subject of cyber-attacks."</em> Five assumptions to plan around:</p>
+
+<ol>
+  <li><strong>An incident will happen.</strong> The CISO's role is not "if," it is "when."</li>
+  <li><strong>An incident will happen when you are least prepared.</strong> After hours. On vacation. During a holiday. When the most experienced engineer is unreachable.</li>
+  <li><strong>An incident will involve infrastructure you do not directly protect.</strong> Shadow IT. Service provider. Third-party platform. The CISO is accountable for the consequences regardless.</li>
+  <li><strong>An incident will impact a high-value, material business process.</strong> Not the low-priority server. The trading system. The custody ledger. The regulatory reporting system.</li>
+  <li><strong>The response will have life-impacting and career-ending consequences if mishandled.</strong> Stamper's exact words: <em>"Cybersecurity incidents can be life-impacting and career-ending if not handled well."</em></li>
+</ol>
+
+<div class="callout">
+  <strong>The first four assumptions drive the playbook design.</strong> The playbook must work at 2 AM with a primary unavailable and a backup who has never run the playbook end-to-end. The playbook must cover shadow IT and third-party infrastructure. The playbook must prioritise by the BIA's critical processes (lesson 0006). The playbook must be tested quarterly, not annually. Stamper's recommendation: <em>"while many standards suggest annual incident response exercises, I strongly recommend that you change the cadence to quarterly."</em>
+</div>
+
+<h2>Stamper's IT/OT convergence + negligence doctrine &mdash; the legal frame</h2>
+
+<p>Stamper's most forward-looking argument is that IT/OT convergence is creating a negligence doctrine in cybersecurity. Establishing negligence requires four elements:</p>
+
+<ol>
+  <li><strong>Duty.</strong> Regulations (PDPD, UBCK circulars, ISO 27001) create the legal duty of care.</li>
+  <li><strong>Breach of duty.</strong> Frameworks (NIST, ISO) define specific obligations. Discretionary practices no longer suffice.</li>
+  <li><strong>Causation.</strong> When harm results from an unpatched system or a misconfiguration, causation is established.</li>
+  <li><strong>Damages.</strong> Liability and settlement awards follow.</li>
+</ol>
+
+<p>For VN securities firms, this maps directly to: PDPD creates the duty for personal data. UBCK circulars create the duty for ICT risk management. ISO 27001 controls (where certified) define the breach-of-duty standard. Customer records at $158 each (lesson 0006) define the damages.</p>
+
+<div class="quote">
+  <span class="cite">Stamper, CISO DRG Vol. 2 Ch. 15</span>
+  If incident response has been a process you have put off until next quarter or delegated to other members of your team, it's time to bring incident response front and center and make it a top, if not the top, priority of your security programme.
+</div>
+
+<h2>Stamper's "document the obvious" &mdash; the most underrated move</h2>
+
+<p>Stamper's 8-category "document the obvious" list is the most operationally useful single artefact in the chapter. The framing: <em>"It's the middle of the night, and you get one of those calls. You stumble to your home office, fire up the laptop and try to figure what's happening. It is precisely the wrong time to look for fundamental information."</em> The 8 categories:</p>
+
+<ol>
+  <li><strong>Contact details of key participants.</strong> Home phone, mobile phone, alternative email &mdash; not just office. Embed in the IR plan.</li>
+  <li><strong>Contact details and account numbers for key vendors.</strong> ISP, MSSP, EDR vendor, cloud provider, forensic firm, crisis comms. Know who is authorised to request changes at 3 AM.</li>
+  <li><strong>Escalation matrices and conditions.</strong> Circumstances for escalation. Alternate contacts.</li>
+  <li><strong>Signal-to-noise definitions.</strong> The difference between an event, an alert, an incident, and a crisis. When does each escalate?</li>
+  <li><strong>Pre-drafted communiques.</strong> Corporate comms drafts basic templates for data breach, DDoS, ransomware. Legal reviews in advance.</li>
+  <li><strong>Pre-established authorisations.</strong> Who can approve shutdown of a system? Who can approve payment of a ransom (which the chapter explicitly discourages)? Who can approve external comms?</li>
+  <li><strong>Process workflows and documentation.</strong> Workflow diagram understandable by both technical and non-technical colleagues.</li>
+  <li><strong>Runbooks for common attacks.</strong> DoS/DDoS, ransomware, phishing/spear-phishing, malware, compromised vendor.</li>
+</ol>
+
+<p>For your firm, this is the 1-page-per-category document you build in the next 30 days. Hard copies in the IR team's homes. Soft copies on a tablet in the SOC. Quarterly review and update.</p>
+
+<h2>Hayslip's "it's about the business" &mdash; the value-model argument</h2>
+
+<p>Hayslip's opening framing is the chapter's most quoted line: <em>"Incident response isn't about technology, it is really about business."</em> His value argument for an in-house IR programme (vs pure outsourcing) is the rebuttal to the "let's just outsource it" instinct:</p>
+
+<ol>
+  <li><strong>The business is accountable for reasonable care, regardless of who does the work.</strong> Outsourcing IR does not outsource accountability.</li>
+  <li><strong>The business needs its own IR plan.</strong> The plan covers communications, resource activation, leadership responsibility, reporting to executive leadership. This is not the vendor's job.</li>
+  <li><strong>The IRP provides a framework for fast decisions.</strong> Without it, the team is improvising at 2 AM.</li>
+  <li><strong>The IRP provides clarity on priorities.</strong> Which system, which data, which stakeholder, which comms.</li>
+  <li><strong>The IRP defines the business priorities and interdependencies.</strong> The mapping you need to triage is the BIA's output (lesson 0006).</li>
+</ol>
+
+<p>Hayslip's 2016 SANS stats frame the maturity gap: <em>"76% of those security professionals had dedicated internal IR teams... 21% said their time to detect malware in their networks, or 'dwell time,' was two to seven days, while 40% indicated that they could detect an incident in less than one day... malware remains the underlying cause of most reported breaches, at 69%... 65% of the security professionals surveyed were still dealing with a shortage of skilled personnel, and only 58% of organisations admit to regularly reviewing and updating their IR processes."</em></p>
+
+<p>For your firm, the median dwell time target should be &lt;24 hours. The 2016 leader target (40%) was &lt;1 day. The 2016 laggard (21%) was 2&ndash;7 days. The lesson's practical implication: invest in detection engineering (lesson 0004 monitoring + lesson 0005 intel) to drive dwell time down, and run quarterly IR exercises to drive response time down.</p>
+
+<h2>The team-sport framing &mdash; 5 functions</h2>
+
+<p>Stamper's "incident response is a team sport" lists 5 functions that must participate in the IR plan. This is your RACI matrix's rows:</p>
+
+<table>
+  <thead>
+    <tr><th>Function</th><th>Role in IR</th><th>Who in your firm</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>HR</strong></td>
+      <td>Insider threats. Employee comms. Training programmes.</td>
+      <td>HR Director + entity-level HR leads.</td>
+    </tr>
+    <tr>
+      <td><strong>Legal Counsel</strong></td>
+      <td>Regulator notification. Law enforcement liaison. Attorney-client privilege for forensic work. PDPD 72-hour clock.</td>
+      <td>General Counsel + external counsel (already on retainer).</td>
+    </tr>
+    <tr>
+      <td><strong>Corporate Communications</strong></td>
+      <td>Media, customer, regulator, public statements. Pre-drafted templates.</td>
+      <td>Head of Communications + PR agency.</td>
+    </tr>
+    <tr>
+      <td><strong>Line of Business / Department Heads</strong></td>
+      <td>Ground truth on operational impact. Shadow IT knowledge. Vendor relationships.</td>
+      <td>Entity leadership + key business process owners.</td>
+    </tr>
+    <tr>
+      <td><strong>Executive Management</strong></td>
+      <td>Tone at the top. Risk-tolerance decisions. Public communicator for major incidents.</td>
+      <td>CEO + Audit Committee + entity CEOs.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Threat modelling &mdash; the proactive IR move</h2>
+
+<p>Stamper's most operationally distinctive recommendation: <em>"CISOs should have their teams conduct threat modelling exercises on the more critical or high-priority operations, processes, applications, and infrastructure within their organisation. Threat modelling will indicate where there are inherent weaknesses in these systems that the organisation values most. Further, threat modelling will also provide contextualised indicators of compromise (IOCs) that can inform the security and IT staff."</em></p>
+
+<p>STRIDE (Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege) and DREAD (Damage potential, Reproducibility, Exploitability, Affected users, Discoverability) are the two frameworks Stamper names. For your firm, the practical move is to run STRIDE against the top 3 BIA processes per entity, producing a threat model + IOCs that feed the SIEM use-case library (lesson 0004).</p>
+
+<h2>The "what would happen if..." question</h2>
+
+<p>Stamper's most underrated practical recommendation: <em>"Bring up the incident response process in your day-to-day discussions with your team and other colleagues. One simple way to do this is to ask the following question: 'What would happen if adversaries compromised this system?'"</em></p>
+
+<p>For your firm, this is a 5-minute weekly question you raise in your leadership meeting. The first answer is always partial. The fourth answer is detailed. By the twelfth week, your team is doing the threat-modelling instinctively.</p>
+
+<h2>Where Bonney, Stamper, and Hayslip actually agree</h2>
+
+<p>The three authors converge on a single principle: <strong>incident response is a team sport, requires pre-staged artefacts, must be tested quarterly, and is judged by the board on whether the firm can demonstrate reasonable care.</strong></p>
+
+<ul>
+  <li><strong>Bonney</strong> emphasises the virtuous cycle + the 5 governance activities for the board + the importance of pre-staged communication templates.</li>
+  <li><strong>Stamper</strong> emphasises muscle memory + the 5 critical assumptions + "document the obvious" + threat modelling + the IT/OT negligence doctrine.</li>
+  <li><strong>Hayslip</strong> emphasises the business value framing + the 2016 SANS stats as the maturity gap + the argument for in-house IRP even when outsourced operationally.</li>
+</ul>
+
+<p>For your CEO briefing, lead with Hayslip (the SANS stats + the business-value framing), support with Stamper (the 5 assumptions + "document the obvious"), close with Bonney (the virtuous cycle + the 5 governance activities).</p>
+
+<h2>The interview artifact: IR playbook (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Sổ tay Ứng phó Sự cố (Incident Response Playbook)</h3>
+
+<p><strong>Use case:</strong> the artefact that turns a 2 AM call into an execution routine. One Vietnamese-language playbook: virtuous cycle, RACI matrix, pre-staged information, runbooks, test cadence, regulatory touchpoints.</p>
+
+<h3 style="margin-top:18px;">1. Vòng phản hồi IR (Virtuous cycle &mdash; Bonney)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Giai đoạn</th><th>Hành động</th><th>Người chịu trách nhiệm</th><th>Thời gian mục tiêu</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Chuẩn bị</strong></td>
+      <td>Đào tạo, tài liệu, runbook, communique mẫu, tabletop</td>
+      <td>CISO + IR lead</td>
+      <td>Liên tục</td>
+    </tr>
+    <tr>
+      <td><strong>Phát hiện</strong></td>
+      <td>SIEM alert, user report, threat intel, MSSP triage</td>
+      <td>SOC + on-call</td>
+      <td>MTTD &lt; 24h (mục tiêu &lt; 1h cho High)</td>
+    </tr>
+    <tr>
+      <td><strong>Ngăn chặn</strong></td>
+      <td>Cô lập hệ thống, bảo toàn bằng chứng, dừng lateral movement</td>
+      <td>IR lead + sysadmin / network</td>
+      <td>&lt; 1h cho High</td>
+    </tr>
+    <tr>
+      <td><strong>Loại bỏ</strong></td>
+      <td>Gỡ malware, đóng attack vector, reset credentials, patch</td>
+      <td>IR lead + engineering</td>
+      <td>Per runbook</td>
+    </tr>
+    <tr>
+      <td><strong>Khôi phục</strong></td>
+      <td>Restore từ backup sạch, validate, giám sát tái nhiễm</td>
+      <td>Engineering + business owner</td>
+      <td>Theo RTO (lesson 0006)</td>
+    </tr>
+    <tr>
+      <td><strong>Cải tiến</strong></td>
+      <td>Post-mortem, lessons learned, cập nhật playbook, báo cáo HĐQT</td>
+      <td>CISO + IR lead</td>
+      <td>Trong 14 ngày sau sự cố</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">2. Ma trận RACI (Team-sport &mdash; Stamper)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Hoạt động</th><th>CISO</th><th>IR Lead</th><th>HR</th><th>Legal</th><th>Comms</th><th>LoB</th><th>CEO/Execs</th><th>Board</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Phát hiện + triage</td>
+      <td>A</td><td>R</td><td>I</td><td>I</td><td>I</td><td>C</td><td>I</td><td>I</td>
+    </tr>
+    <tr>
+      <td>Ngăn chặn (system shutdown)</td>
+      <td>A</td><td>R</td><td>I</td><td>C</td><td>I</td><td>C</td><td>I</td><td>I</td>
+    </tr>
+    <tr>
+      <td>Loại bỏ + khôi phục</td>
+      <td>A</td><td>R</td><td>I</td><td>I</td><td>I</td><td>C</td><td>I</td><td>I</td>
+    </tr>
+    <tr>
+      <td>Insider threat response</td>
+      <td>A</td><td>R</td><td>R</td><td>C</td><td>I</td><td>C</td><td>I</td><td>I</td>
+    </tr>
+    <tr>
+      <td>PDPD notification (72h)</td>
+      <td>A</td><td>C</td><td>I</td><td>R</td><td>C</td><td>I</td><td>I</td><td>I</td>
+    </tr>
+    <tr>
+      <td>UBCK examiner notification</td>
+      <td>A</td><td>C</td><td>I</td><td>R</td><td>C</td><td>I</td><td>C</td><td>I</td>
+    </tr>
+    <tr>
+      <td>Law enforcement</td>
+      <td>A</td><td>C</td><td>I</td><td>R</td><td>I</td><td>I</td><td>C</td><td>I</td>
+    </tr>
+    <tr>
+      <td>Public statement</td>
+      <td>C</td><td>I</td><td>I</td><td>C</td><td>R</td><td>C</td><td>A</td><td>I</td>
+    </tr>
+    <tr>
+      <td>Customer notification</td>
+      <td>A</td><td>C</td><td>I</td><td>C</td><td>R</td><td>C</td><td>C</td><td>I</td>
+    </tr>
+    <tr>
+      <td>HĐQT briefing</td>
+      <td>R</td><td>C</td><td>I</td><td>C</td><td>I</td><td>I</td><td>C</td><td>A</td>
+    </tr>
+    <tr>
+      <td>Post-mortem + lessons learned</td>
+      <td>A</td><td>R</td><td>C</td><td>C</td><td>I</td><td>C</td><td>C</td><td>I</td>
+    </tr>
+    <tr>
+      <td>Playbook update</td>
+      <td>A</td><td>R</td><td>I</td><td>C</td><td>I</td><td>C</td><td>I</td><td>I</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:13px;color:var(--ink-soft);">R = Responsible &middot; A = Accountable &middot; C = Consulted &middot; I = Informed</p>
+
+<h3 style="margin-top:18px;">3. "Document the obvious" (Stamper &mdash; 8 danh mục)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Danh mục</th><th>Nội dung cần có sẵn</th><th>Định dạng</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td><td>Liên hệ thành viên IR team</td><td>Họ tên, chức danh, mobile, home phone, email cá nhân, email dự phòng</td><td>Bản cứng + bản mềm (tablet)</td>
+    </tr>
+    <tr>
+      <td>2</td><td>Liên hệ vendor + tài khoản</td><td>ISP, MSSP, EDR vendor, cloud provider, forensic firm, PR agency. Account numbers, authorized contacts, 24/7 support lines</td><td>Bản cứng + bản mềm</td>
+    </tr>
+    <tr>
+      <td>3</td><td>Ma trận escalation</td><td>Điều kiện escalation, người liên hệ chính + dự phòng</td><td>Bản cứng</td>
+    </tr>
+    <tr>
+      <td>4</td><td>Signal-to-noise definitions</td><td>Event vs alert vs incident vs crisis &mdash; criteria cho mỗi mức</td><td>Trong playbook</td>
+    </tr>
+    <tr>
+      <td>5</td><td>Communiqué mẫu</td><td>Data breach, DDoS, ransomware, insider threat, system outage &mdash; reviewed bởi Legal</td><td>Trong playbook + comms toolkit</td>
+    </tr>
+    <tr>
+      <td>6</td><td>Pre-authorisations</td><td>Ai approve shutdown hệ thống? Ai approve external comms? Ai approve ransom (khuyến nghị: KHÔNG)?</td><td>Board resolution</td>
+    </tr>
+    <tr>
+      <td>7</td><td>Workflow diagram</td><td>Sơ đồ quy trình cho cả technical và non-technical</td><td>Trong playbook</td>
+    </tr>
+    <tr>
+      <td>8</td><td>Runbooks cho common attacks</td><td>DDoS, ransomware, phishing/spear-phishing, malware, compromised vendor, insider threat</td><td>Mỗi runbook 2&ndash;4 trang</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">4. Runbook mẫu (cho 5 kịch bản phổ biến)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Kịch bản</th><th>Dấu hiệu phát hiện</th><th>Containment</th><th>Eradication</th><th>Recovery</th><th>Notification</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Phishing / spear-phishing</strong></td>
+      <td>User report, email gateway alert</td>
+      <td>Thu hồi email, block sender, reset affected credentials</td>
+      <td>Quét malware trên endpoint, kiểm tra lateral movement</td>
+      <td>Khôi phục từ backup nếu cần</td>
+      <td>User education, board summary nếu PII lộ</td>
+    </tr>
+    <tr>
+      <td><strong>Ransomware</strong></td>
+      <td>EDR alert, file-server alert, user report</td>
+      <td>Isolate affected systems ngay lập tức, ngắt network share</td>
+      <td>Không trả tiền chuộc. Restore từ immutable backup</td>
+      <td>Verify backup integrity, monitor cho re-infection</td><td>UBCK examiner + PDPD (nếu PII) + board</td>
+    </tr>
+    <tr>
+      <td><strong>Insider threat (data exfil)</strong></td>
+      <td>DLP alert, UEBA anomaly, HR report</td><td>Disable account, preserve evidence, legal review</td>
+      <td>Rotate credentials, audit access logs</td><td>Restore nếu có sửa đổi dữ liệu</td><td>UBCK + PDPD + law enforcement (A05)</td>
+    </tr>
+    <tr>
+      <td><strong>DDoS</strong></td>
+      <td>NOC alert, ISP alert, customer report</td>
+      <td>Kích hoạt DDoS mitigation (Cloudflare / Akamai), fail-over</td>
+      <td>Identify attack source, block</td>
+      <td>Khôi phục từ secondary path</td><td>Customer status page, UBCK nếu ảnh hưởng trading</td>
+    </tr>
+    <tr>
+      <td><strong>Compromised vendor / third party</strong></td>
+      <td>Vendor notification, anomaly detection</td>
+      <td>Disable vendor access, rotate credentials shared với vendor</td>
+      <td>Audit all data accessed by vendor</td>
+      <td>Restore nếu data bị sửa</td>
+      <td>Vendor + customers + UBCK + PDPD (nếu PII)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">5. Pre-staged communications (5 mẫu)</h3>
+<ul>
+  <li><strong>Template A &mdash; Data breach (customer-facing):</strong> Thông báo cho khách hàng về việc dữ liệu cá nhân có thể bị ảnh hưởng. Bao gồm: scope, dữ liệu nào, hành động của công ty, quyền của khách hàng, liên hệ.</li>
+  <li><strong>Template B &mdash; Ransomware (internal):</strong> Thông báo cho nhân viên về sự cố, hướng dẫn hành động, câu hỏi thường gặp.</li>
+  <li><strong>Template C &mdash; System outage (market operator + UBCK):</strong> Báo cáo cho UBCK + HOSE/HNX về gián đoạn hệ thống giao dịch, thời gian dự kiến khôi phục, tác động.</li>
+  <li><strong>Template D &mdash; PDPD notification (72h clock):</strong> Thông báo cho VNCERT/CC + bộ phận bảo vệ dữ liệu cá nhân theo Nghị định 13/2023.</li>
+  <li><strong>Template E &mdash; Board briefing:</strong> Báo cáo cho HĐQT về sự cố &mdash; scope, impact, response, lessons learned.</li>
+</ul>
+
+<h3 style="margin-top:18px;">6. Test cadence (Stamper's quarterly recommendation)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Test type</th><th>Frequency</th><th>Scope</th><th>Output</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tabletop</td>
+      <td>Quarterly (per entity)</td>
+      <td>Scenario walk-through với RACI matrix participants</td>
+      <td>Lessons learned report, playbook update</td>
+    </tr>
+    <tr>
+      <td>Communication drill</td>
+      <td>Semi-annual (group)</td>
+      <td>Test escalation matrix + communiqué templates</td>
+      <td>Communication effectiveness report</td>
+    </tr>
+    <tr>
+      <td>Functional exercise</td>
+      <td>Annual (group, highest-criticality process)</td>
+      <td>Live containment + eradication exercise</td>
+      <td>MTTD/MTTR measurement, playbook update</td>
+    </tr>
+    <tr>
+      <td>"What would happen if..."</td>
+      <td>Weekly (CISO + leadership team)</td>
+      <td>5-minute threat-model question cho top 3 hệ thống</td>
+      <td>Threat-model library growth</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">7. Điểm chạm quy định (Regulatory touchpoints)</h3>
+<ul>
+  <li><strong>UBCK:</strong> IR playbook là bằng chứng cho yêu cầu quản trị rủi ro ICT. UBCK examiner sẽ xem playbook trong thanh tra.</li>
+  <li><strong>PDPD:</strong> Nghị định 13/2023 yêu cầu thông báo trong 72 giờ khi vi phạm dữ liệu cá nhân. Playbook phải có sẵn template D + RACI cho notification.</li>
+  <li><strong>ISO 27001 A.5.24 &mdash; A.5.27:</strong> Incident management planning, response, learning from incidents. Test records là bằng chứng.</li>
+  <li><strong>Luật An toàn thông tin mạng 2015:</strong> Sự cố an toàn thông tin phải được báo cáo cho cơ quan chức năng.</li>
+  <li><strong>Cyber insurance:</strong> IR playbook + test records là điều kiện bồi thường phổ biến.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the playbook template above and fill in your firm's specifics. Spend 30 minutes on section 3 (the "document the obvious" 8 categories &mdash; this is the single most operationally important thing you build in lesson 0007) and section 4 (the 5 runbooks &mdash; even rough drafts are valuable). When you have the playbook filled in, schedule the first tabletop within 30 days. Muscle memory is built by quarterly reps, not by annual ones.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does Stamper insist on quarterly IR exercises instead of annual?</summary>
+<p>Because of muscle memory. <em>"Incident response benefits from muscle memory. In this case, even high-level discussions about incident response will improve overall organisational preparedness and resiliency."</em> Annual exercises are too infrequent &mdash; the playbook changes substantially between exercises, key people leave or rotate, and the lessons learned are not practiced enough to become reflexive. Quarterly exercises produce a different operational outcome: when an incident happens at 2 AM, the team executes rather than improvises. Stamper's recommendation is the practical floor for any firm that takes reasonable-care doctrine seriously.</p>
+</details>
+
+<details>
+<summary>What is "document the obvious" and why does Stamper argue for it?</summary>
+<p>It is the practice of pre-staging the basic information you need at 2 AM &mdash; contact details (home phone, mobile, alternative email), vendor account numbers, escalation matrices, signal-to-noise definitions, pre-drafted communiques, pre-authorisations, workflow diagrams, runbooks for common attacks. Without it, your first hour of an incident is spent hunting for information that should have been pre-staged. Stamper's argument is that this hunting-for-information time is <em>"for the benefit of the adversary and to the detriment of your organisation."</em> For a securities firm, where trading windows have minutes of tolerance, the difference between pre-staged and improvised can be the difference between a contained incident and a regulatory disclosure.</p>
+</details>
+
+<details>
+<summary>What is the "team sport" framing and why is it important?</summary>
+<p>Incident response is not just a security/IT function. It requires HR (insider threats, employee comms, training programmes), Legal Counsel (regulator notification, law enforcement liaison, PDPD 72-hour clock, attorney-client privilege for forensic work), Corporate Communications (pre-drafted templates, customer + media statements), Line of Business (ground truth on operational impact, shadow IT knowledge, vendor relationships), and Executive Management (tone at the top, risk-tolerance decisions, public communicator for major incidents). Without explicit RACI coverage of all 5 functions, the IR plan is structurally incomplete. Stamper's framing: <em>"Too frequently, we think of incident response exclusively as a cybersecurity or IT discipline. Nothing could be further from the truth."</em></p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 15 (Incident Response and Communication) of Volume 2. The three essays give you Bonney's virtuous cycle + the 5 governance activities for the board + the importance of pre-staged communications, Stamper's 5 critical assumptions + "document the obvious" + the IT/OT negligence doctrine + the team-sport framing, and Hayslip's business-value framing + the 2016 SANS maturity-gap stats + the in-house IRP vs outsourcing argument. The chapter's 5-points-5-actions summary is your fallback when the CEO asks "what does the book say about this?"</p>
+
+<p><strong>Read next:</strong> Chapter 15 in full &mdash; it is the chapter that determines your firm's ability to respond to the inevitable. Pay particular attention to Stamper's "document the obvious" (the 1-page-per-category artefact you should build this quarter), Bonney's virtuous cycle (the framework that organises the playbook), and Hayslip's 2016 SANS stats (the maturity gap to plan against).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to structure the first tabletop exercise, how to negotiate with cyber-insurance carriers about IRP requirements, how to handle the PDPD 72-hour clock operationally (when does "aware" begin?), how to integrate the MSSP into the RACI matrix, how to test the playbook without exposing production systems &mdash; ask. The next lesson (0008: Recovery &mdash; Resuming Operations) builds on the playbook: when the playbook's "contain" and "eradicate" phases complete, you move to "recover" &mdash; and lesson 0008 gives you the structured approach.
+</div>
+
+<div class="lesson-nav">
+  <a href="0006-continuity-backups-rto-rpo.html">&larr; Lesson 0006: Continuity, Backups, RTO/RPO</a>
+  <a href="0008-recovery-resuming-operations.html">Lesson 0008: Recovery &mdash; Resuming Operations &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

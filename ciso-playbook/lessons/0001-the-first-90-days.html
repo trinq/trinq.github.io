@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0001 — The First 90 Days: Your CISO Interview Showpiece</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0001 &middot; CISO playbook &middot; Arc 1: Become the CISO the board wants</div>
+<h1>The First 90 Days: Your CISO Interview Showpiece</h1>
+<p class="subtitle">The single most-asked question in any CISO interview &mdash; and the question most candidates answer badly.</p>
+
+<h2>Why this lesson first</h2>
+
+<p>Every CISO interview panel asks some version of one of these:</p>
+
+<ul>
+  <li><em>"How would you approach your first 90 days in this role?"</em></li>
+  <li><em>"You've just inherited our program. What's the first thing you do?"</em></li>
+  <li><em>"Walk me through how you'd assess our security posture on day one."</em></li>
+  <li><em>"You've been here two weeks and there's been a breach. What do you do?"</em></li>
+</ul>
+
+<p>Most candidates answer these by listing activities: <em>I'd review the controls, I'd meet the team, I'd audit the tools, I'd brief the board.</em> That's a senior-security-engineer answer, not a CISO answer. The CISO answer is structural: it shows you understand that <strong>the first 90 days are not about fixing things &mdash; they're about establishing the credibility and the cadence that will let you fix things for the next five years.</strong></p>
+
+<p>Volume 2 of the CISO Desk Reference Guide was written for exactly this moment. The book's whole framing is the "build" half of the CISO arc: Volume 1 is what you inherited and how you assessed it; Volume 2 is what you build from there. The book's structure maps cleanly onto a 90-day plan, and that mapping is the lesson.</p>
+
+<div class="quote">
+  <span class="cite">Bonney / Hayslip / Stamper, CISO DRG Vol. 2 &mdash; Introduction</span>
+  In Volume 1, we focused the CISO internally, on assessing the state and structure of their program. In Volume 2, we flip the focus from assessing to building.
+</div>
+
+<p>By the end of this lesson you will have <strong>drafted a 90-day plan for a hypothetical mid-size company</strong> &mdash; the artifact you can show a hiring panel and say <em>"this is how I would walk into your seat."</em></p>
+
+<h2>The interview-shaped answer</h2>
+
+<p>A good CISO 90-day answer has three acts. The panel will recognise all three. They will <em>also</em> recognise when you skip the middle one.</p>
+
+<table>
+  <thead>
+    <tr><th>Act</th><th>Days</th><th>What you do</th><th>What the panel hears</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Listen and inventory</strong></td>
+      <td>0&ndash;30</td>
+      <td>Meet the team, meet the business, read the prior assessments, walk the controls, attend the IR drills. Don't change anything yet.</td>
+      <td>"This person won't burn the program down in the first month."</td>
+    </tr>
+    <tr>
+      <td><strong>2. Prioritise and communicate</strong></td>
+      <td>30&ndash;60</td>
+      <td>Write the program assessment. Identify the three risks that matter most to <em>this</em> business. Brief the CEO, the board, the audit committee. Set the cadence.</td>
+      <td>"This person can translate cyber into business language."</td>
+    </tr>
+    <tr>
+      <td><strong>3. Ship and build</strong></td>
+      <td>60&ndash;90</td>
+      <td>Land one visible quick win (an IR tabletop the exec team actually attends; a third-party-risk remediation; an awareness metric that changes behaviour). Start drafting the strategic plan.</td>
+      <td>"This person can actually deliver, not just analyse."</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The hidden test.</strong> The panel is also probing whether you will <em>make the first 90 days about you</em> (reorg the team, replace vendors, announce a strategy) or about <em>the business</em>. The book's three authors are unanimous on this point across every essay: the CISO's first job is to learn the business before proposing changes to it. Hayslip is the most explicit: a new CISO who arrives with a pre-baked playbook is a CISO who will miss the actual risk.
+</div>
+
+<h2>What the book actually teaches for days 0&ndash;30</h2>
+
+<p>Volume 2 doesn't write a 90-day plan for you. But it gives you the <em>vocabulary</em> and the <em>artefacts</em> for each phase. Days 0&ndash;30 are the "listening" phase, and the book is clear about what you're listening for:</p>
+
+<ol>
+  <li><strong>The talent.</strong> Chapter 10 (Finding Talent and Developing Your Team) is the first chapter in Vol. 2 for a reason: the team is the constraint. Bonney's essay opens with the workforce-as-fundamental-transformation framing; Stamper's essay pushes for realistic job descriptions; Hayslip's essay gives you the data-driven approach to capability assessment. The 90-day plan you leave this lesson with must include <em>at least one</em> talent assessment activity in the first 30 days.</li>
+  <li><strong>The awareness.</strong> Chapter 11 (Cyber Awareness Training) sets up the same point from a different angle: a security program that doesn't change user behaviour is a security program that doesn't work. Your listening phase should include at least one observation of how awareness training actually runs &mdash; not the policy, the practice.</li>
+  <li><strong>The monitoring.</strong> Chapter 12 (Monitoring Your Environment) is the technical floor. If you don't know what you're monitoring, you don't know what you have. Hayslip's "continuous scanning, monitoring, and remediation" framing is the most useful single mental model from this chapter for a 90-day plan: you're not buying new tools in the first 30 days; you're <em>understanding what the existing tools are already telling you.</em></li>
+</ol>
+
+<div class="quote">
+  <span class="cite">Hayslip, CISO DRG Vol. 2 Ch. 12</span>
+  Continuous Scanning, Monitoring, and Remediation &hellip; it's about the rhythm of seeing what's happening, deciding what matters, and acting on it before the next scan.
+</div>
+
+<p>That's the CISO-layer move. It's not "buy Splunk." It's "what does the existing telemetry tell us that we already know and aren't acting on?"</p>
+
+<h2>What the book teaches for days 30&ndash;60</h2>
+
+<p>The middle act is where most new CISOs lose the room. They have a thousand observations from the listening phase and they want to act on all of them. The book keeps insisting on the opposite: <strong>prioritise ruthlessly.</strong></p>
+
+<p>Chapters 13 (Threat Intelligence) and 14 (Continuity Planning) are the bridge between listening and acting. Threat intel teaches you to focus on the threats that are <em>actually relevant to your business</em> &mdash; not the threats that are loud in the news. Continuity planning teaches you to focus on the business processes whose disruption would <em>actually kill the company</em> &mdash; not the processes that are easiest to document.</p>
+
+<div class="quote">
+  <span class="cite">Stamper, CISO DRG Vol. 2 Ch. 14</span>
+  Tying risk to the organization's core priorities and organizational objectives &hellip; that's what turns cybersecurity from a cost centre into a business function.
+</div>
+
+<p>The 90-day plan you leave this lesson with must include a specific board / executive briefing in days 30&ndash;60, anchored to <em>three risks</em>, not a list of thirty.</p>
+
+<h2>What the book teaches for days 60&ndash;90</h2>
+
+<p>The final act is where you earn the right to keep the job. The book dedicates four chapters to this &mdash; Incident Response (15), Recovery (16), Forensics (17), and the Strategic Plan (18) &mdash; and the consistent message is: <strong>muscle memory beats brilliance.</strong></p>
+
+<p>The single most CISO-defining move in this phase is running (or re-running) an incident response tabletop with the executive team <em>actually present</em>. Not the security team. The CEO. The CFO. The general counsel. The COO. This is what Stamper calls "muscle memory": a rehearsed response that survives the panic of the real event.</p>
+
+<div class="quote">
+  <span class="cite">Stamper, CISO DRG Vol. 2 Ch. 15</span>
+  Incident Response &mdash; it's all about muscle memory &hellip; You don't rise to the occasion; you fall to the level of your training.
+</div>
+
+<p>The capstone of days 60&ndash;90 is the first draft of your <strong>strategic cybersecurity plan</strong>. The book spends Chapter 18 on this because it's the artifact the board will see, the regulator will ask for, and your successor will inherit. If you can't produce a credible first draft in 90 days, the panel will conclude you don't yet have the CISO frame.</p>
+
+<h2>Where Bonney, Stamper, and Hayslip actually agree</h2>
+
+<p>The book's tri-perspective structure is unusual and worth understanding. Each chapter has three essays &mdash; one per author &mdash; with deliberately different voices:</p>
+
+<ul>
+  <li><strong>Bill Bonney</strong> writes from a finance-industry, regulated-entity background. His lens: governance, audit, board communication, defensible decision-making under regulatory scrutiny.</li>
+  <li><strong>Matt Stamper</strong> writes from a programmatic, multi-customer-services background (think: MSSP / shared-services). His lens: process discipline, scale, repeatable frameworks, "doing this for many customers at once."</li>
+  <li><strong>Gary Hayslip</strong> writes from a hands-on, in-the-trenches CISO background. His lens: metrics, lists, practical artefacts, "here are the 12 things you actually need to do this week."</li>
+</ul>
+
+<p>On the first 90 days they are <em>unanimous</em> on the following:</p>
+
+<ol>
+  <li><strong>Do not announce a strategy in week one.</strong> Announce a listening posture. Strategy comes from the listening.</li>
+  <li><strong>Meet the business before you meet the controls.</strong> The business will tell you what matters. The controls will only tell you what's there.</li>
+  <li><strong>Communicate more than you think is necessary.</strong> The CISO who goes silent in the first 90 days is the CISO the board stops trusting.</li>
+  <li><strong>Land one quick win that's visible to the executive team.</strong> Not a tool purchase. An IR tabletop, a third-party risk remediation, a visible awareness metric, a documented post-mortem.</li>
+</ol>
+
+<p>The single sharpest piece of cross-essay agreement: <strong>the first 90 days are the credibility phase, not the delivery phase.</strong> You are not being hired to ship a strategic plan in 90 days. You are being hired to <em>establish the credibility and the cadence</em> that will let you ship a strategic plan that lasts five years.</p>
+
+<h2>The interview artifact: a 90-day plan template</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; 90-Day CISO Onboarding Plan (one-pager)</h3>
+
+<p><strong>Use case:</strong> show this in the interview when asked "how would you approach your first 90 days?" Make it specific to <em>their</em> company if you can. If you can't, leave clear placeholders.</p>
+
+<h3 style="margin-top:18px;">Days 0&ndash;30: Listen &amp; inventory</h3>
+<ul>
+  <li>One-on-ones with every member of the security team (and the IT team, if separate). Listen for: who actually owns what, what's been promised but not delivered, what the team is proud of, what they're afraid of.</li>
+  <li>Read the last 12 months of board / audit-committee cyber materials. Note what's been promised vs. what's been delivered.</li>
+  <li>Read the last incident-response after-action reports. Note the recurring themes &mdash; they're the real risk.</li>
+  <li>Observe (do not yet change) how awareness training actually runs. Watch one phishing simulation end-to-end.</li>
+  <li>Walk the monitoring stack: what alerts fire, who responds, what gets ignored. Don't fix anything yet.</li>
+  <li>Identify the 3&ndash;5 business leaders whose processes depend most on confidentiality, integrity, and availability. These are your stakeholders.</li>
+</ul>
+
+<h3 style="margin-top:18px;">Days 30&ndash;60: Prioritise &amp; communicate</h3>
+<ul>
+  <li>Draft the <strong>program assessment</strong> (the deliverable the book spends Chapter 18 scaffolding). Three risks that matter to <em>this</em> business, not thirty.</li>
+  <li>Brief the CEO. Fifteen minutes. Three risks. Three asks. No more.</li>
+  <li>Brief the board / audit committee. Same three risks, framed in their language: financial exposure, regulatory exposure, reputational exposure.</li>
+  <li>Set the cadence: weekly 30-minute security standup with the team; monthly security review with the exec team; quarterly board cyber update.</li>
+  <li>Identify one <strong>quick win</strong> to ship in days 60&ndash;90. The book suggests: an IR tabletop the executives actually attend, a third-party-risk remediation, or an awareness metric that moves.</li>
+</ul>
+
+<h3 style="margin-top:18px;">Days 60&ndash;90: Ship &amp; build</h3>
+<ul>
+  <li>Run the quick win. Publicise the outcome. <em>Especially</em> publicise it inside the security team &mdash; they need to see you ship.</li>
+  <li>Run (or re-run) an IR tabletop with the CEO / CFO / GC / COO present. Use the book's Chapter 15 framing: muscle memory, not brilliance.</li>
+  <li>Begin the strategic plan draft. By day 90 you should have the structure, the first three risks, and the first three initiatives &mdash; even if the rest is scaffolded.</li>
+  <li>Publish the 90-day plan retrospective. What you heard, what you learned, what you got wrong. This is the most CISO-shaped artifact you can produce in three months.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Pick a real mid-size company you might interview with (or invent one with similar shape). Spend 20 minutes filling in this template with concrete names, real risks from their industry, and a specific quick win. Then rehearse the 90-day answer out loud &mdash; not from the page, from memory. The interview is oral; the artifact is for the panel to take away, not for you to read from.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>What does the panel actually hear when you say "I would not announce a strategy in week one"?</summary>
+<p>Three things, in order: (1) you've been a CISO before, or you've studied CISO failure modes closely enough to know this; (2) you understand that the first 90 days are about credibility, not delivery; (3) you can resist the temptation to perform competence through premature strategy. The single sharpest CISO failure mode the book warns about &mdash; and that the panel will have seen &mdash; is the new CISO who arrives with a pre-baked playbook and immediately alienates the team and the business.</p>
+</details>
+
+<details>
+<summary>Why does the book put the talent chapter (10) first in Volume 2, before the technical chapters?</summary>
+<p>Because the team is the constraint, not the tools. The book's framing is that a CISO who arrives and starts buying tools before understanding the team is a CISO who will spend the budget without moving the risk. The first 30 days are about understanding who you have, what they can do, and what's missing &mdash; then making the people decisions that everything else depends on. The tri-perspective agreement on this is unusually strong: Bonney says it from the governance lens, Stamper says it from the programmatic lens, Hayslip says it from the data-driven lens.</p>
+</details>
+
+<details>
+<summary>What's the difference between a senior-engineer 90-day answer and a CISO 90-day answer?</summary>
+<p>The senior-engineer answer lists activities: <em>review controls, audit tools, run scans, hire analysts.</em> The CISO answer is structured around three credibility moments &mdash; the listening phase that earns trust, the prioritisation phase that earns authority, and the quick-win phase that earns the right to lead. The panel hears the difference in the first 30 seconds. Activities are what a senior engineer does <em>in the role</em>; credibility moments are what a CISO builds <em>around the role.</em></p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on the book's framing across the introduction and Chapters 10&ndash;12 for the days 0&ndash;30 phase, Chapters 13&ndash;14 for the days 30&ndash;60 phase, and Chapters 15&ndash;18 for the days 60&ndash;90 phase. The five-points-and-five-actions structure at the end of every chapter is the compressed wisdom you can lean on when you're filling in the template.</p>
+
+<p><strong>Read next:</strong> the introduction of Volume 2 (the "assess to build" pivot is the book's whole thesis) and the summary of Chapter 10 (Finding Talent &mdash; the constraint behind everything). Skim the summaries of Chapters 11&ndash;18 for the five-points-five-actions structure; you'll need that vocabulary across every interview answer.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear &mdash; what "muscle memory" means in practice, what the five-points-five-actions structure looks like, how to tailor the 90-day plan to a specific industry &mdash; ask. The next lesson (0002: The Blended-Capability Team) builds directly on the talent point from Chapter 10.
+</div>
+
+<div class="lesson-nav">
+  <span></span>
+  <a href="0002-blended-capability-team.html">Lesson 0002: The Blended-Capability Team &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

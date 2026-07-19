@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0003 — Awareness Training That Changes Behaviour</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0003 &middot; CISO playbook &middot; Arc 1: Become the CISO the firm already needs</div>
+<h1>Awareness Training That Changes Behaviour</h1>
+<p class="subtitle">Most security awareness programs change nothing. The book teaches how to make yours the exception.</p>
+
+<h2>Why this lesson third</h2>
+
+<p>You have the 90-day plan (lesson 0001) and the blended-capability team operating model (lesson 0002). The very first deliverable you owe the board from those plans is the awareness program. Awareness is the cheapest, most regulator-friendly, and most visible security intervention you can make this quarter &mdash; and the easiest to get wrong.</p>
+
+<p>Chapter 11 of Volume 2 is the lesson. The three authors spend most of their pages on one uncomfortable observation: <strong>most awareness training does not change behaviour.</strong> Annual click-through compliance training is the norm in the industry. It satisfies the regulator (PCI-DSS, HIPAA, ISO 27001, UBCK expectations) and it changes nothing. People complete it. People forget it. People click the phishing link anyway.</p>
+
+<p>For a 9-entity Vietnamese securities firm, the lesson lands harder than for a single-firm US peer. Your reality: PDPD breach-notification requirements that depend on your staff recognising a data-handling error, UBCK examiners who will ask to see training records by entity, ISO 27001 auditors who will fail you on A.7.2.2 if the training is just "annual completion," and a multi-entity workforce that responds differently to training delivered from the centre versus from a familiar entity coordinator.</p>
+
+<p>By the end of this lesson you will have <strong>drafted the awareness-program one-pager for the CEO and the audit committee &mdash; in Vietnamese &mdash; that distinguishes "compliance" from "behaviour change" and shows the cost difference.</strong></p>
+
+<h2>The book's central diagnosis: training is detached from goals</h2>
+
+<p>Bonney's diagnosis is the cleanest in the chapter, and it is the framing you should use when you brief the board. <em>"It is a corporate training program detached from every other goal the company might have. It's lumped together with workplace harassment training and anti-bribery training and the new-hire classic: 'how to log onto your new expense reporting system in 20 easy steps.'"</em></p>
+
+<p>That sentence is the whole chapter in one line. The reason your annual awareness training does not change behaviour is that <strong>it is not connected to anything your colleagues care about.</strong> The trading desk does not care about your phishing simulation because they care about filling client orders. The compliance officer does not care about your password-policy reminder because they care about UBCK filing deadlines. The custodian does not care about your USB-drive policy because they care about T+1 settlement.</p>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 11</span>
+  Best practice has advanced from the timed lessons that prohibit quick clicks and require a minimum think time per module to ensure the employee had ample time to absorb the material they aren't reading. Best practice is now a series of short, to-the-point vignettes focused on key messages.
+</div>
+
+<p>The book is explicit that the answer is not "more training, more often." The answer is <em>different training, designed around behaviour rather than completion.</em> That is the design lens the lesson teaches.</p>
+
+<h2>The three audiences you are actually training</h2>
+
+<p>Hayslip names the three groups you are training &mdash; and most CISOs confuse them. They need different programmes, different cadences, different metrics.</p>
+
+<table>
+  <thead>
+    <tr><th>Audience</th><th>Who they are</th><th>What they need from you</th><th>What you measure</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Your security team</strong></td>
+      <td>FTE + cross-trained IT staff + evangelists at each entity.</td>
+      <td>Continuous technical training: threat-landscape updates, tool deep-dives, IR runbook drills, forensic lab practice, certification maintenance.</td>
+      <td>Skill-matrix progression (lesson 0002's 0&ndash;5 scale). Certification count per person per year. MTTD / MTTR improvement. Tabletop-exercise performance.</td>
+    </tr>
+    <tr>
+      <td><strong>2. The broader workforce</strong></td>
+      <td>Everyone else: traders, brokers, custody ops, compliance, HR, finance, IT helpdesk, entity leadership.</td>
+      <td>Behaviour-change training: phishing recognition, password hygiene, data-handling (PDPD), social engineering, USB / removable media, working-from-home, BYOD.</td>
+      <td>Phishing-simulation click-through rate (target &lt;5% by end of FY). Password reuse rate from breach-corpus checks. Reported-incident rate (target: rising, because reporting is the behaviour you want).</td>
+    </tr>
+    <tr>
+      <td><strong>3. Executive management &amp; board</strong></td>
+      <td>CEO, deputy CEOs, board, audit committee. Often the highest-risk group because they are the most attacked (whaling) and the least time-available.</td>
+      <td>Risk-translation briefings: what is changing in the threat landscape, what it means for the firm in business terms, what you are doing about it, what you need from them.</td>
+      <td>Meeting attendance and questions asked. Decisions made (or not made) on your asks. Time-to-decision on escalated risks. Whaling-attempt report rate.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The 90&ndash;180 day retention problem.</strong> Hayslip's most-quoted finding from the chapter: <em>"completing awareness training has an impact on workers and is retained for about 90 to 180 days. After three months' time people start to forget."</em> This is why annual training is structurally broken: by month four, the behaviour change has decayed. The lesson is not "train more often." The lesson is <em>"reinforce continuously between formal training events, through trusted agents embedded in each entity."</em> That is the evangelist layer of your blended-capability model doing real work.
+</div>
+
+<h2>Bonney's four attributes of a programme that actually works</h2>
+
+<p>Bonney borrows from World War II home-front propaganda, civil defence, factory-floor safety, and immunization programmes to extract four attributes that every successful society-wide awareness programme shares. If your programme does not have all four, it will not work.</p>
+
+<ol>
+  <li><strong>Coordination between leadership and the population.</strong> Not just C-suite endorsement &mdash; C-suite <em>visible participation</em>. The CEO has done the phishing simulation. The CFO has completed the data-handling module. The board has attended the IR tabletop. Without this, the programme reads as "IT telling us what to do."</li>
+  <li><strong>Demonstrated diligence over an extended period.</strong> Not a quarterly awareness blast. Not an annual completion certificate. A programme that is visibly present in the working week: signage, screen-saver reminders, monthly newsletter, quarterly phishing simulation, half-year tabletop, annual refresh.</li>
+  <li><strong>An ecosystem of messaging, material, and roles.</strong> Not just training modules. Posters in the trading floor. Looped videos in the elevators. WhatsApp/Slack reminders from entity coordinators. New-hire onboarding that includes security from day one. Manager-level 1:1s that include a security talking point.</li>
+  <li><strong>Personal consequence, framed in business terms.</strong> Not "you might get hacked." "<em>If customer PII is breached, we have to notify UBCK within 72 hours per PDPD; the firm faces administrative penalties up to 5% of prior-year revenue; affected customers can sue; the firm's reputation with HOSE / HNX counterparts takes a hit you cannot put a number on.</em>" Personal consequence is what makes people <em>remember</em>.</li>
+</ol>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 11</span>
+  You'll know your education program is working when different departments are reaching out to you because they have detected behaviors that are harbingers of imminent compromise, when departments report success and failure for cyber awareness on their own, and when your peers are sharing best practices about what has worked for them and what hasn't.
+</div>
+
+<p>That last sentence is the success criterion. You have succeeded when the entity coordinators are reporting breaches-attempts to you without being asked, when a trader forwards a suspicious email with a note ("looks like phishing, please confirm"), when the head of HR tells you they incorporated security into the new-hire day-one checklist. Until then, you are still doing <em>training</em>, not <em>awareness</em>.</p>
+
+<h2>Stamper's translation problem &mdash; the CISO's most underrated skill</h2>
+
+<p>Stamper's essay is the most important one in the chapter for a CISO formalising into the role. His central observation: <em>the CISO's job is not to train executives on technical risk &mdash; it is to translate technical risk into business risk in language the executives already speak.</em></p>
+
+<div class="quote">
+  <span class="cite">Stamper, CISO DRG Vol. 2 Ch. 11</span>
+  The CISO has to translate technical risk, vulnerabilities, and insights about the threat landscape into the language of enterprise risk management that executives use and understand.
+</div>
+
+<p>Stamper tells the story of asking for budget for a vulnerability management tool by quoting its technical merits, and being met with blank stares. He then reframed the ask in terms of business impact and got the budget immediately. The lesson is not "learn to talk to executives." The lesson is <em>"your awareness programme for executives must be structured around the asks you will need from them in the next 12 months."</em></p>
+
+<p>For your firm, that means: the awareness programme you design for the CEO, the deputy CEOs, and the board must be engineered to produce the decisions you will need from them this year. Examples:</p>
+
+<ul>
+  <li><strong>You need ISO 27001 certification budget.</strong> The board briefing in Q1 should include a 10-minute segment on what ISO 27001 buys the firm (customer trust, UBCK posture, insurance), what it costs, and what you need from them (sign-off on scope and budget).</li>
+  <li><strong>You need entity-level compliance officers.</strong> The Q2 briefing should include a 10-minute segment on why each entity needs a designated compliance officer, what the alternative costs (regulator findings, audit failures), and what you need (authority to designate or hire).</li>
+  <li><strong>You need PDPD breach-notification authority.</strong> The Q3 briefing should walk through a hypothetical breach, show the 72-hour notification clock, and surface the decision rights you need pre-defined (who signs the notification, who talks to the press, who talks to UBCK).</li>
+  <li><strong>You need IR tabletop participation.</strong> The Q4 briefing should announce the tabletop, name the executives whose attendance you require, and explain why their presence is non-negotiable.</li>
+</ul>
+
+<p>This is what Stamper means by "talking the language of business." The awareness programme is not a compliance deliverable. It is the platform you use to surface the decisions only executives can make, and to get those decisions made.</p>
+
+<h2>Hayslip's cyber-hygiene spine &mdash; the operational layer</h2>
+
+<p>Hayslip's contribution is the operational backbone. He summarises the CIS (Center for Internet Security) Cyber Hygiene Campaign in five verbs: <strong>Count, Configure, Control, Patch, Repeat.</strong> These are the actual behaviours the awareness programme is trying to drive. The training is the wrapper. The hygiene is the work.</p>
+
+<table>
+  <thead>
+    <tr><th>Verb</th><th>What it means</th><th>What most firms do badly</th><th>How training supports it</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Count</strong></td>
+      <td>Inventory authorised and unauthorised assets, accounts, and programs.</td>
+      <td>Shadow IT, untracked contractor accounts, forgotten test environments.</td>
+      <td>Train asset owners to flag new systems to IT before procurement. Train IT helpdesk to register every new account.</td>
+    </tr>
+    <tr>
+      <td><strong>Configure</strong></td>
+      <td>Secure baseline configurations (CIS Benchmarks), CMDB, change management.</td>
+      <td>Default credentials, unhardened endpoints, ad-hoc server builds.</td>
+      <td>Train sysadmins on the baseline. Train change-request submitters on the change-management process.</td>
+    </tr>
+    <tr>
+      <td><strong>Control</strong></td>
+      <td>Identity, access management, credential protection.</td>
+      <td>Shared accounts, sticky notes with passwords, credentials in config files.</td>
+      <td>Train everyone on credential handling. Train app owners on access-review cadence.</td>
+    </tr>
+    <tr>
+      <td><strong>Patch</strong></td>
+      <td>Timely patching of third-party software and internal apps.</td>
+      <td>Unpatched internet-facing systems, "we'll patch next quarter."</td>
+      <td>Train sysadmins on patch SLA. Train application owners on vulnerability disclosure.</td>
+    </tr>
+    <tr>
+      <td><strong>Repeat</strong></td>
+      <td>Mature, established, continuously-improved hygiene processes.</td>
+      <td>Programmes that exist on paper but are not actually executed.</td>
+      <td>Train new joiners on the cadence. Train managers on the metrics.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This is the operational spine of your awareness programme. Every module, every simulation, every reminder should map to one of these five verbs. If it does not, it is probably filler.</p>
+
+<div class="callout">
+  <strong>The $600-per-incident maths Hayslip uses to make the business case.</strong> Hayslip's example: each malware-infected machine costs about $600 in lost productivity (2 days of IT helpdesk reimaging + data recovery). A firm that goes from 40 infections per month to 24 per month through training saves <em>$115,200 per year.</em> Run the numbers for your firm. At 600 employees across 9 entities, even a conservative baseline (e.g., 8 infections per month at $600 each = $4,800/month = $57,600/year at risk) makes the awareness programme pay for itself many times over. The board loves maths. Give them maths.
+</div>
+
+<h2>The trusted-agent pattern &mdash; your evangelist layer in action</h2>
+
+<p>Hayslip names the pattern that makes the difference between a programme that decays and one that holds. He calls the people "trusted agents": individuals embedded in each entity, in each department, who carry part-time security responsibility and provide <em>continuous, contextual reinforcement</em> between formal training events.</p>
+
+<div class="quote">
+  <span class="cite">Hayslip, CISO DRG Vol. 2 Ch. 11</span>
+  Earlier in my career, I witnessed a 30-40% reduction in incidents through the use of informal training with trusted agents in my organization's departments. These trusted agents would provide timely reminders to stakeholders about security issues, and through this simple process I was able to keep awareness of security issues going for months after formal companywide training.
+</div>
+
+<p>This is your blended-capability model's evangelist layer, doing its actual job. For your 9 entities, the design question is: who is the trusted agent in each entity? Often the IT manager. Sometimes a compliance officer. Sometimes an influential senior person in a high-risk function (trading desk lead, head of custody ops). The role is:</p>
+
+<ul>
+  <li>Forward suspicious emails to the security team with a note ("our team saw this").</li>
+  <li>Remind colleagues about new policies in the weekly team meeting.</li>
+  <li>Flag new joiners so the security team can deliver onboarding on day one.</li>
+  <li>Surface near-misses to the security team without fear of blame.</li>
+  <li>Champion the security agenda in entity-level leadership meetings.</li>
+</ul>
+
+<p>For your awareness programme, the trusted-agent pattern is the bridge between the central programme and the entity-level workforce. Without it, the central programme is a broadcast. With it, the central programme is a network.</p>
+
+<h2>Behaviour change vs compliance &mdash; the distinction your board needs to see</h2>
+
+<p>This is the most important slide in your CEO briefing. The board will assume "we do annual training" means "we are secure." You need to show them the difference between the two programmes, in their language, in a single table.</p>
+
+<table>
+  <thead>
+    <tr><th>Dimension</th><th>Compliance programme (what you have now)</th><th>Behaviour-change programme (what you propose)</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Cadence</strong></td>
+      <td>Annual. One module per employee per year.</td>
+      <td>Continuous. Annual base + monthly micro-modules + quarterly phishing simulation + half-year tabletop.</td>
+    </tr>
+    <tr>
+      <td><strong>Format</strong></td>
+      <td>30&ndash;60 minute e-learning. Timed clicks.</td>
+      <td>3&ndash;5 minute vignettes tied to current threats; immediate-just-in-time training after a failed phishing simulation.</td>
+    </tr>
+    <tr>
+      <td><strong>Audience targeting</strong></td>
+      <td>All employees, same content.</td>
+      <td>Role-based: trader / broker / custody / compliance / HR / IT / executive &mdash; tailored content per group.</td>
+    </tr>
+    <tr>
+      <td><strong>Entity customisation</strong></td>
+      <td>None. One firm-wide module.</td>
+      <td>Trusted-agent layer in each of the 9 entities. Entity-specific examples. Local-language reinforcement.</td>
+    </tr>
+    <tr>
+      <td><strong>Executive participation</strong></td>
+      <td>CEO clicks "complete" like everyone else.</td>
+      <td>CEO records a 2-minute video for new-hire onboarding. Board attends IR tabletop. Quarterly risk-translation briefing.</td>
+    </tr>
+    <tr>
+      <td><strong>Metrics</strong></td>
+      <td>Completion rate (target 100%).</td>
+      <td>Click-through rate on phishing (target &lt;5%). Reporting rate of suspicious emails (target rising). MTTD improvement. Cost-of-incident reduction.</td>
+    </tr>
+    <tr>
+      <td><strong>Cost (rough order, 600 ppl)</strong></td>
+      <td>LMS subscription + 1 FTE fraction.</td>
+      <td>LMS subscription + phishing sim + 1 FTE fraction + trusted-agent time (small per-entity allocation).</td>
+    </tr>
+    <tr>
+      <td><strong>Behaviour change at 6 months</strong></td>
+      <td>Decayed (Hayslip's 90&ndash;180 day retention).</td>
+      <td>Sustained through trusted-agent reinforcement + just-in-time training.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This table is your single most powerful CEO-briefing artefact for the awareness programme. Show them what they are paying for now (compliance), what they could be paying for (behaviour change), and the difference in outcomes. Then show the cost: surprisingly similar, because the difference is design, not budget.</p>
+
+<h2>Where Bonney, Stamper, and Hayslip actually agree</h2>
+
+<p>The three authors are unusually aligned on this chapter. The agreement is worth knowing because it is the spine you can lean on in any briefing:</p>
+
+<ol>
+  <li><strong>The CISO must evangelise.</strong> All three essays. The awareness programme is not a delegated task; it is the CISO's primary lever for changing the firm's relationship to cyber risk.</li>
+  <li><strong>The programme must connect to business goals.</strong> Bonney's framing. Stamper's framing. Hayslip's framing. Detached training is wasted training.</li>
+  <li><strong>Executive participation is non-negotiable.</strong> Bonney says it first; Stamper builds the entire exec-engagement section on it; Hayslip assumes it.</li>
+  <li><strong>Behaviour, not completion, is the metric.</strong> All three authors. Completion rate is the wrong number to show the board.</li>
+  <li><strong>Continuous reinforcement beats annual events.</strong> All three authors. The trusted-agent pattern is how this works in practice.</li>
+</ol>
+
+<p>Where they diverge: <em>emphasis.</em> Bonney emphasises the historical analogies (war, civil defence, immunization). Stamper emphasises the translation skill (talking to the VP of Sales in her language). Hayslip emphasises the operational metrics ($600 per incident, 30&ndash;40% reduction). In your CEO briefing, lead with Stamper (translation), support with Hayslip (maths), close with Bonney (the historical-analogy framing is what makes executives <em>remember</em> the conversation).</p>
+
+<h2>The interview artifact: awareness-program one-pager (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Đề án Chương trình Nâng cao Nhận thức An ninh mạng (Awareness Programme One-Pager)</h3>
+
+<p><strong>Use case:</strong> submit to CEO / Audit Committee / UBCK examiner as evidence of a behaviour-change awareness programme (not just compliance training). The format is one Vietnamese-language page: chương trình, đối tượng, nội dung, tần suất, chỉ số, ngân sách, điểm chạm quy định.</p>
+
+<h3 style="margin-top:18px;">1. Mục tiêu (Objective)</h3>
+<p>Thay đổi <strong>hành vi</strong> nhân sự để giảm rủi ro an ninh mạng từ bên trong (insider risk), không chỉ đạt <strong>tỷ lệ hoàn thành</strong> khóa học. Đảm bảo tuân thủ PDPD (Nghị định 13/2023), yêu cầu UBCK, ISO 27001 A.7.2.2.</p>
+
+<h3 style="margin-top:18px;">2. Đối tượng (Audiences)</h3>
+<ul>
+  <li><strong>Nhóm 1 &mdash; Đội ngũ an ninh:</strong> FTE + IT cross-trained + evangelists. Đào tạo kỹ thuật liên tục, chứng chỉ, diễn tập IR.</li>
+  <li><strong>Nhóm 2 &mdash; Toàn thể nhân sự (600 người, 9 công ty):</strong> Đào tạo theo vai trò &mdash; trader / broker / custody / compliance / HR / IT / entity leadership. Cadence: base hàng năm + micro-module hàng tháng + phishing simulation mỗi quý + tabletop bán niên.</li>
+  <li><strong>Nhóm 3 &mdash; Ban lãnh đạo &amp; HĐQT:</strong> Risk-translation briefing mỗi quý. Tham gia IR tabletop. Cam kết công khai (CEO ghi video onboarding).</li>
+</ul>
+
+<h3 style="margin-top:18px;">3. Nội dung (Content) &mdash; mapped to CIS Five Verbs</h3>
+<ul>
+  <li><strong>Count:</strong> Asset owners phải đăng ký hệ thống mới với IT trước khi mua sắm.</li>
+  <li><strong>Configure:</strong> Baseline CIS Benchmarks. Sysadmin training on secure build.</li>
+  <li><strong>Control:</strong> Credential hygiene. Access review cadence for app owners.</li>
+  <li><strong>Patch:</strong> SLA patching. Vulnerability disclosure cho application owners.</li>
+  <li><strong>Repeat:</strong> New joiner onboarding. Manager metrics review.</li>
+</ul>
+
+<h3 style="margin-top:18px;">4. Tần suất (Cadence)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Hoạt động</th><th>Tần suất</th><th>Đối tượng</th><th>Người chịu trách nhiệm</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Base awareness module</td>
+      <td>1 lần / năm</td>
+      <td>Toàn thể</td>
+      <td>Group security + LMS</td>
+    </tr>
+    <tr>
+      <td>Micro-module (3&ndash;5 min)</td>
+      <td>Hàng tháng</td>
+      <td>Toàn thể</td>
+      <td>Group security</td>
+    </tr>
+    <tr>
+      <td>Phishing simulation</td>
+      <td>Mỗi quý</td>
+      <td>Toàn thể</td>
+      <td>Group security + vendor</td>
+    </tr>
+    <tr>
+      <td>Just-in-time training (sau phishing fail)</td>
+      <td>Tức thì</td>
+      <td>Cá nhân fail</td>
+      <td>LMS auto-trigger</td>
+    </tr>
+    <tr>
+      <td>Tabletop IR (with exec)</td>
+      <td>Bán niên</td>
+      <td>Ban lãnh đạo + security team</td>
+      <td>Group security</td>
+    </tr>
+    <tr>
+      <td>Risk-translation briefing</td>
+      <td>Mỗi quý</td>
+      <td>CEO + deputy CEOs + board</td>
+      <td>CISO</td>
+    </tr>
+    <tr>
+      <td>Trusted-agent reinforcement</td>
+      <td>Liên tục</td>
+      <td>Tại mỗi entity</td>
+      <td>Entity coordinator</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">5. Chỉ số (Metrics)</h3>
+<ul>
+  <li><strong>Phishing click-through rate:</strong> target &lt;5% cuối FY (baseline đo trong Q1).</li>
+  <li><strong>Phishing report rate:</strong> target tăng 200% trong 12 tháng (baseline đo trong Q1).</li>
+  <li><strong>Completion rate:</strong> target &ge;95% cho base module.</li>
+  <li><strong>Số vụ malware/thiết bị nhiễm:</strong> target giảm 30&ndash;40% theo mô hình Hayslip.</li>
+  <li><strong>Cost savings:</strong> tính theo công thức Hayslip (~$600/vụ) &mdash; trình HĐQT mỗi quý.</li>
+  <li><strong>Tabletop participation rate (executive):</strong> target 100% cho CEO + deputy CEOs + GC + CFO.</li>
+  <li><strong>PDPD reporting drills:</strong> 1 lần / năm (liên kết với bài IR tabletop).</li>
+</ul>
+
+<h3 style="margin-top:18px;">6. Trusted-agent network (lớp evangelist)</h3>
+<ul>
+  <li>Mỗi công ty thành viên chỉ định <strong>1 trusted agent</strong> (thường là Trưởng phòng IT hoặc cán bộ được chỉ định).</li>
+  <li>Trusted agent được đào tạo riêng (2 ngày / năm) + nhận feed cập nhật từ group security hàng tuần.</li>
+  <li>Trusted agent có <strong>10% thời gian</strong> dành cho hoạt động awareness (đưa vào job description, đánh giá KPIs).</li>
+</ul>
+
+<h3 style="margin-top:18px;">7. Điểm chạm quy định (Regulatory touchpoints)</h3>
+<ul>
+  <li><strong>UBCK:</strong> Báo cáo đào tạo theo yêu cầu. Chương trình có bằng chứng cho từng công ty thành viên.</li>
+  <li><strong>ISO 27001 A.7.2.2:</strong> Đáp ứng yêu cầu "nâng cao nhận thức" + chứng minh hiệu quả (không chỉ completion).</li>
+  <li><strong>PDPD:</strong> Đào tạo về xử lý dữ liệu cá nhân cho data owners tại mỗi entity. Diễn tập thông báo vi phạm 72h.</li>
+  <li><strong>Luật An toàn thông tin mạng 2015:</strong> Đáp ứng yêu cầu đào tạo nhân sự về an toàn thông tin.</li>
+</ul>
+
+<h3 style="margin-top:18px;">8. Ngân sách (Budget) &mdash; chỉ trình bày khi HĐQT hỏi</h3>
+<ul>
+  <li>LMS subscription (existing): $0 incremental.</li>
+  <li>Phishing simulation platform: $X / năm (vendor quote).</li>
+  <li>Trusted-agent training (2 ngày / năm x 9 agents): chi phí đào tạo nội bộ + thời gian.</li>
+  <li>Content production (12 micro-modules / năm): 0.5 FTE content designer.</li>
+  <li>Tabletop facilitation (2 / năm + exec attendance): internal cost.</li>
+  <li>Total incremental: rất nhỏ so với cost-of-incident reduction.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the seven-section Vietnamese one-pager above and fill it in for your firm. Spend 20 minutes on each section. The hard parts are sections 2 (audience tailoring &mdash; which content for which role at which entity) and 6 (trusted-agent identification &mdash; who is the right person in each of the 9 entities, and do they have 10% bandwidth?). When the one-pager is filled in, you have the artefact for the CEO briefing <em>and</em> the evidence pack for the next UBCK examiner visit.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does Stamper say "awareness training" with executives is really about asking for decisions?</summary>
+<p>Because executives do not need to be trained on cyber &mdash; they need to be informed enough to make the decisions only they can make. Stamper's reframing: the awareness programme for executives is not a curriculum; it is a structured pipeline of decisions you need from them over the next 12 months. ISO 27001 budget, entity-level compliance officers, PDPD breach-notification authority, IR tabletop participation, post-mortem sign-off &mdash; each one is a Q-by-Q decision you must surface, frame in business terms, and get signed off. The "training" is the conversation that produces the decision.</p>
+</details>
+
+<details>
+<summary>What is the difference between Hayslip's "trusted agents" and your blended-capability evangelist layer?</summary>
+<p>They are the same people, doing the same job, in different language. The blended-capability model (lesson 0002) names them "evangelists" because they carry part-time security responsibility across each entity. Hayslip calls them "trusted agents" because they are the trusted peers who deliver continuous, contextual reinforcement between formal training events. The pattern works because security messages from a familiar colleague land differently than security messages from the central IT team. Trusted agents are the bridge from broadcast to network. Without them, the central programme decays; with them, it holds.</p>
+</details>
+
+<details>
+<summary>What does the chapter mean by "FUD is counterproductive"?</summary>
+<p>Bonney is explicit: fear, uncertainty, and doubt create a sense of hopelessness that leads to paralysis. <em>"FUD seems on the surface to be a shortcut right to hyper-awareness of the challenges we face. But it often has the opposite effect as it makes the problem appear unsolvable."</em> The alternative is to frame consequences in business outcomes the audience already understands &mdash; regulatory exposure, financial exposure, reputational exposure, operational exposure &mdash; without catastrophising. Personal consequence works when it is concrete and actionable. It does not work when it is vague and existential. That is why Bonney's "personal consequence, framed in business terms" is the fourth attribute of a programme that works &mdash; and why FUD is the opposite.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 11 (Cyber Awareness Training: It Takes an Organization) of Volume 2. The three essays give you Bonney's carrot-and-stick framing plus the four attributes of successful programmes, Stamper's translation-skill framing for executive engagement, and Hayslip's operational metrics plus the trusted-agent pattern. The chapter's five-points-five-actions summary is your fallback when the CEO asks "what does the book say about this?"</p>
+
+<p><strong>Read next:</strong> Chapter 11 in full &mdash; it is short and reads well. Pay particular attention to Hayslip's $600-per-incident calculation (Figure 11.1 referenced PCI training manual; the maths is in the prose) and the trusted-agent paragraph. Both translate directly into your one-pager's metrics section.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to run a phishing simulation without alienating colleagues, how to identify the right trusted agent at each entity, how to handle the executive audience if the CEO is technically literate vs not, how to integrate PDPD-specific content &mdash; ask. The next lesson (0004: What to Monitor, and How to Talk About It) builds directly on the awareness programme: the trusted-agent layer is also where near-miss reporting lands, and that reporting feeds your monitoring programme.
+</div>
+
+<div class="lesson-nav">
+  <a href="0002-blended-capability-team.html">&larr; Lesson 0002: The Blended-Capability Team</a>
+  <a href="0004-monitoring-without-lying.html">Lesson 0004: Monitoring Without Lying &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

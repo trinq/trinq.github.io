@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0011 — Handover, The Final Lesson</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0011 &middot; CISO playbook &middot; Arc 3: The handover that outlives the CISO</div>
+<h1>Handover &mdash; The Final Lesson</h1>
+<p class="subtitle">The CISO role is a stewardship. The handover package is what you leave behind. Build it as if you will not be there tomorrow &mdash; because one day, you will not.</p>
+
+<h2>Why this lesson eleventh</h2>
+
+<p>Lessons 0001&ndash;0010 built the substantive content + the strategic plan. Lesson 0011 builds the discipline that makes the programme survive the CISO's departure. Every CISO leaves &mdash; promotion, lateral move, retirement, contract end, the unexpected. The handover package is the difference between a programme that continues to mature and a programme that resets to zero.</p>
+
+<p>Chapter 18 closes Volume 2 with a thematic summary, but the substantive content of handover lives across the volume &mdash; the Stamper hospital scenario in Chapter 16 (the new CISO who inherited nothing), the strategic plan in Chapter 18 (the artefact that organises the function), and the recurring "document the obvious" discipline from lesson 0007. Lesson 0011 integrates these threads into the handover discipline.</p>
+
+<p>For your 9-entity VN securities firm, four specific weights. First, the average CISO tenure in financial services is 24&ndash;36 months &mdash; shorter than the strategic-plan horizon. The handover discipline must work on a 12-month turnover cycle. Second, the UBCK examiner expects continuity of programme &mdash; a programme that visibly resets after each CISO departure is a programme the examiner will examine more closely. Third, the institutional knowledge (who at UBCK, who at MSSP, who at peer firms, who at insurance carrier, which board member is supportive, which is hostile) is the CISO's most under-appreciated asset &mdash; and the most easily lost. Fourth, the relationships with security team members matter for retention &mdash; a CISO who disappears without handover damages the team he or she built.</p>
+
+<p>By the end of this lesson you will have <strong>drafted your handover package &mdash; in Vietnamese &mdash; covering the institutional knowledge transfer, the relationship transfer, the documentation audit, the 30-60-90 transition plan, and the post-departure support window.</strong></p>
+
+<h2>The handover philosophy: stewardship, not ownership</h2>
+
+<p>The handover philosophy that makes 0011 work: <strong>the CISO role is a stewardship, not an ownership.</strong> The programme belongs to the firm, not to the individual. The institutional knowledge belongs to the firm. The relationships belong to the firm (with the CISO as the temporary custodian). The handover is the act of returning these to the firm in a form the next custodian can use.</p>
+
+<p>The handover that is built with this philosophy has three characteristics:</p>
+
+<ol>
+  <li><strong>Built continuously, not at the end.</strong> The handover package is updated quarterly alongside the strategic plan tracker. By the time the CISO announces departure, the handover package is 90% complete.</li>
+  <li><strong>Designed for the next CISO, not for the current one.</strong> The handover package is written as if the reader has zero institutional knowledge of the firm, the regulator, the MSSP, the peers. The current CISO cannot imagine being that reader &mdash; but the next CISO will be.</li>
+  <li><strong>Contains the unglamorous.</strong> The handover package is not just strategic plan + policy framework + playbook. It is also: which office has the good coffee, which executive assistant actually knows how to book a board meeting, which UBCK examiner is friendly to clarification questions, which MSSP engineer answers the phone on weekends, which board member asks the hardest questions and why, which entity-level CISO is most reliable and which is most at risk.</li>
+</ol>
+
+<div class="quote">
+  <span class="cite">Stamper, CISO DRG Vol. 2 Ch. 16</span>
+  These "hypothetical" dynamics likely resonate with a number of us who have worked in healthcare or provided services to this sector. Just to add to the tension, you've been in your role less than a month. The former head of security left under less-than-ideal circumstances. It's now your department. You own it.
+</div>
+
+<p>Stamper's hospital scenario in Chapter 16 is the handover-from-hell: new CISO, no playbook, no documentation, FBI at the door, predecessor departed under "less-than-ideal circumstances." The lesson: this is what happens when the handover discipline fails. The fix: lesson 0007's "document the obvious" discipline + lesson 0010's strategic plan + this lesson's handover package together ensure the next CISO inherits a functioning programme.</p>
+
+<h2>The 8-component handover package</h2>
+
+<p>For your firm, the handover package has 8 components. Each is updated on a defined cadence during the CISO's tenure, not assembled in a panic in the final week.</p>
+
+<ol>
+  <li><strong>Programme overview &mdash; the strategic plan + project schedule.</strong> From lesson 0010. What the function is, where it is going, who is accountable for what.</li>
+  <li><strong>Documentation index &mdash; the inventory of policies, procedures, playbooks, runbooks.</strong> Where they live, who owns each, last-review date, next-review date.</li>
+  <li><strong>Relationship map &mdash; the institutional knowledge.</strong> UBCK examiner contact, MSSP relationship owner, peer-CISO network, board allies, internal stakeholders, external vendors, law enforcement contacts.</li>
+  <li><strong>Operational status &mdash; the day-to-day running of the function.</strong> Active incidents, open initiatives, upcoming audits, pending regulatory matters, scheduled tabletop exercises.</li>
+  <li><strong>Risk register &mdash; the current view of where the function is exposed.</strong> Top 10 risks, owners, mitigation status.</li>
+  <li><strong>Team &amp; talent map &mdash; the people.</strong> Org chart, key personnel, retention risk, succession candidates, hiring plans.</li>
+  <li><strong>Budget &amp; vendor map &mdash; the money.</strong> Current fiscal year budget, vendor contracts, insurance carrier, renewal calendar.</li>
+  <li><strong>Personal transition plan &mdash; the 30-60-90 transition.</strong> What the CISO will hand over when, who the successor will meet with when, what the post-departure support window looks like.</li>
+</ol>
+
+<p>For your firm, components 1&ndash;7 are updated quarterly. Component 8 is updated when departure is announced. The package is stored in the CISO's personal handover folder + the firm's secure document repository (encrypted, WORM-backed, access-controlled).</p>
+
+<h2>The "document the obvious" discipline &mdash; the Stamper thread</h2>
+
+<p>Lesson 0007 introduced Stamper's "document the obvious" discipline (the RACI matrix in the runbook). Lesson 0011 elevates this discipline from a lesson-0007 tactical practice to a handover philosophy: <strong>the things that are obvious to the current CISO are the things that will be unknown to the next one.</strong></p>
+
+<p>For the handover package, the "document the obvious" categories:</p>
+
+<ul>
+  <li><strong>Vendor contacts &mdash; who actually answers the phone.</strong> Not the published account manager. The actual engineer who picks up at 2 AM on a Saturday.</li>
+  <li><strong>Regulator contacts &mdash; who is approachable.</strong> Not the published examiner. The deputy who responds to clarification emails within 24 hours.</li>
+  <li><strong>Internal politics &mdash; which meetings matter.</strong> Not the published organisational chart. Which weekly meeting is where the real decisions get made.</li>
+  <li><strong>Board dynamics &mdash; who asks the hard questions.</strong> Not the published audit committee charter. Which director will read the strategic plan cover-to-cover and which will skim the executive summary.</li>
+  <li><strong>Team dynamics &mdash; who is at risk of leaving.</strong> Not the published org chart. Which engineer is being recruited by the competitor and which is loyal to the firm.</li>
+  <li><strong>Taboo topics &mdash; what not to raise with whom.</strong> Not the published stakeholder list. Which topic will trigger the CIO's defensiveness, which will trigger the CFO's silence.</li>
+</ul>
+
+<div class="callout">
+  <strong>Documenting the obvious is the discipline that distinguishes the good handover from the bad.</strong> The good handover assumes the reader knows nothing about the firm's specific context. The bad handover assumes the reader can read minds. Every "obvious" thing that the current CISO has not written down is a thing the next CISO will spend the first 90 days discovering &mdash; the worst possible use of the first 90 days.
+</div>
+
+<h2>The 30-60-90 transition plan</h2>
+
+<p>When the CISO announces departure, the 30-60-90 transition plan kicks in. The plan has three phases:</p>
+
+<h3>Days 1&ndash;30: Orientation</h3>
+<ul>
+  <li><strong>Day 1&ndash;7:</strong> Successor CISO (or interim) receives the handover package. Walks through each component with the departing CISO. Asks questions. Documents gaps.</li>
+  <li><strong>Day 8&ndash;14:</strong> Successor meets the key internal stakeholders (CEO, CIO, Head of Risk, Head of Compliance, Audit Committee chair, board sponsor). Departing CISO introduces in person where possible.</li>
+  <li><strong>Day 15&ndash;21:</strong> Successor meets the key external stakeholders (UBCK examiner, MSSP account manager, peer CISOs, insurance broker). Departing CISO introduces where possible.</li>
+  <li><strong>Day 22&ndash;30:</strong> Successor attends the next regularly scheduled governance meetings (Strategic Cybersecurity Committee, Audit Committee briefing, UBCK update if scheduled). Observes, does not lead.</li>
+</ul>
+
+<h3>Days 31&ndash;60: Shadowing + early leadership</h3>
+<ul>
+  <li><strong>Day 31&ndash;45:</strong> Successor shadows the departing CISO in all operational activities. Incident response (if any), tabletop exercise (if scheduled), MSSP quarterly review, vendor management meeting.</li>
+  <li><strong>Day 46&ndash;60:</strong> Successor begins leading selected activities. Departing CISO remains available but not in the lead. Strategic plan updates begin.</li>
+</ul>
+
+<h3>Days 61&ndash;90: Departing CISO exits; successor takes the lead</h3>
+<ul>
+  <li><strong>Day 61&ndash;75:</strong> Departing CISO available on call (defined hours). Successor leads all activities. Hand-off to MSSP and external stakeholders completed.</li>
+  <li><strong>Day 76&ndash;90:</strong> Departing CISO reduces availability to on-request basis. Successor fully operational. Final transition review with CEO.</li>
+</ul>
+
+<h2>The post-departure support window</h2>
+
+<p>The handover does not end at day 90. For your firm, the practical post-departure support window is 6 months:</p>
+
+<ul>
+  <li><strong>Months 1&ndash;3:</strong> Weekly check-in (1 hour, video call). Departing CISO available for questions. No commitments beyond the agreed hours.</li>
+  <li><strong>Months 4&ndash;6:</strong> Monthly check-in (1 hour, video call). Departing CISO available on request. Focus on the strategic decisions the successor is facing.</li>
+  <li><strong>After month 6:</strong> Departing CISO available on request, at standard consulting rates, with explicit pre-agreement. No informal obligation.</li>
+</ul>
+
+<p>The post-departure support window is the safety net. The successor inherits the programme; the post-departure support is the parachute if something the handover package missed surfaces in the first months.</p>
+
+<h2>The relationship transfer &mdash; the most under-appreciated handover</h2>
+
+<p>The relationship transfer is the most under-appreciated part of the handover. The CISO has invested years in building relationships &mdash; with the UBCK examiner, with the MSSP account team, with the peer-CISO network, with internal stakeholders. These relationships do not transfer automatically. They transfer by deliberate introduction.</p>
+
+<p>For your firm, the relationship transfer checklist:</p>
+
+<table>
+  <thead>
+    <tr><th>Relationship</th><th>Transfer mechanism</th><th>Successor action</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>UBCK examiner</strong></td>
+      <td>Formal introduction email + in-person meeting at UBCK office</td>
+      <td>Schedule within first 30 days</td>
+    </tr>
+    <tr>
+      <td><strong>MSSP account manager + service delivery manager</strong></td>
+      <td>Formal introduction + joint account review meeting</td>
+      <td>Within first 14 days</td>
+    </tr>
+    <tr>
+      <td><strong>Peer-CISO network</strong></td>
+      <td>Personal introduction at next quarterly meeting</td>
+      <td>Attend next scheduled meeting</td>
+    </tr>
+    <tr>
+      <td><strong>Insurance broker + carrier</strong></td>
+      <td>Formal introduction + policy review meeting</td>
+      <td>Within first 30 days</td>
+    </tr>
+    <tr>
+      <td><strong>External forensic firm + legal counsel</strong></td>
+      <td>Formal introduction + retainer review</td>
+      <td>Within first 14 days</td>
+    </tr>
+    <tr>
+      <td><strong>Law enforcement (MPS cybercrime)</strong></td>
+      <td>Formal introduction letter + in-person meeting</td>
+      <td>Within first 60 days</td>
+    </tr>
+    <tr>
+      <td><strong>Internal stakeholders (CEO, CIO, Head of Risk, Head of Compliance, board sponsor)</strong></td>
+      <td>Formal introduction + alignment meeting</td>
+      <td>Within first 7 days</td>
+    </tr>
+    <tr>
+      <td><strong>Security team</strong></td>
+      <td>Team meeting + 1-on-1s with each direct report</td>
+      <td>Within first 14 days</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The relationship transfer that is rushed produces a CISO who is "in the role" but not "in the network." The relationship transfer that is skipped produces a CISO who has to rebuild the network from scratch &mdash; the worst possible use of the first 6 months.</p>
+
+<h2>The documentation audit &mdash; the handover-quality check</h2>
+
+<p>Before departure, the CISO runs a documentation audit. The audit asks: <strong>if I were hit by a bus tomorrow, what would the next CISO not be able to figure out from the documentation?</strong></p>
+
+<p>For your firm, the documentation audit categories:</p>
+
+<ol>
+  <li><strong>Strategic plan + project schedule.</strong> (Lesson 0010) — Current state? Yes/No. Gaps?</li>
+  <li><strong>Policy framework + standards.</strong> — Current state? Yes/No. Gaps?</li>
+  <li><strong>BIA + risk register.</strong> (Lesson 0006) — Current state? Yes/No. Gaps?</li>
+  <li><strong>IR playbook + runbooks.</strong> (Lesson 0007) — Current state? Yes/No. Gaps?</li>
+  <li><strong>Recovery playbook + persistence checklist.</strong> (Lesson 0008) — Current state? Yes/No. Gaps?</li>
+  <li><strong>Forensics + post-mortem template.</strong> (Lesson 0009) — Current state? Yes/No. Gaps?</li>
+  <li><strong>Awareness training + phishing simulation results.</strong> (Lesson 0003) — Current state? Yes/No. Gaps?</li>
+  <li><strong>Monitoring + metrics dashboard.</strong> (Lesson 0004) — Current state? Yes/No. Gaps?</li>
+  <li><strong>Threat intel programme + peer network map.</strong> (Lesson 0005) — Current state? Yes/No. Gaps?</li>
+  <li><strong>Vendor contracts + service-level expectations.</strong> — Current state? Yes/No. Gaps?</li>
+  <li><strong>Cyber insurance policy + panel counsel.</strong> — Current state? Yes/No. Gaps?</li>
+  <li><strong>Taboo topics + internal politics notes.</strong> — Current state? Yes/No. Gaps?</li>
+  <li><strong>Team + talent + retention risk map.</strong> — Current state? Yes/No. Gaps?</li>
+</ol>
+
+<p>The audit produces a gap list. Each gap is closed before departure (or explicitly documented as a known gap with a recommended approach to closure).</p>
+
+<h2>The handover package as an audit-ready artefact</h2>
+
+<p>The handover package is also an audit-ready artefact. The UBCK examiner may ask: <em>"Show me the documentation that demonstrates the security function operates continuously regardless of personnel changes."</em> The handover package is the answer.</p>
+
+<p>For your firm, the audit-ready characteristics:</p>
+
+<ul>
+  <li><strong>Versioned.</strong> Each component has a version number + last-update date + next-update date.</li>
+  <li><strong>Stored in a controlled location.</strong> Encrypted at rest, access-controlled, backed up.</li>
+  <li><strong>Reviewed by Audit Committee.</strong> Annual review ensures the package is current.</li>
+  <li><strong>Aligned with UBCK expectations.</strong> Maps to UBCK's ICT risk management documentation requirements.</li>
+</ul>
+
+<h2>The handover in the absence of a successor</h2>
+
+<p>The most common handover scenario is not the planned succession but the unexpected departure &mdash; the CISO resigns, is terminated, is incapacitated, or simply disappears. For your firm, the handover package must be designed to function in this scenario as well.</p>
+
+<p>The successor-in-absence playbook:</p>
+
+<ol>
+  <li><strong>Interim CISO appointed within 7 days.</strong> Internal candidate (CIO, Head of IT, Head of Risk) or external interim.</li>
+  <li><strong>Handover package provided to interim CISO.</strong> Component 8 (personal transition plan) is replaced by a "handover-in-absence" annex.</li>
+  <li><strong>30-day stabilisation period.</strong> Interim CISO stabilises the function. No strategic changes. No vendor changes. No team changes.</li>
+  <li><strong>Permanent CISO search initiated by day 30.</strong> External search firm engaged. Internal candidate evaluated.</li>
+  <li><strong>Permanent CISO onboarded by day 90&ndash;120.</strong> 30-60-90 transition plan resumes (without the departing CISO's involvement).</li>
+</ol>
+
+<p>The handover-in-absence scenario is the test of whether the handover package has been built continuously. If the package is 90% complete at the moment of unexpected departure, the stabilisation period works. If the package is 10% complete, the stabilisation period does not work.</p>
+
+<h2>The handover as a programme-management discipline</h2>
+
+<p>The most important reframing in this lesson: <strong>the handover is not an end-of-ten activity. It is a programme-management discipline that runs throughout the CISO's tenure.</strong></p>
+
+<p>For your firm, the discipline:</p>
+
+<ul>
+  <li><strong>Quarterly review:</strong> Each component is reviewed for currency. Gaps documented. Updates made.</li>
+  <li><strong>Annual audit:</strong> Audit Committee reviews the package as part of the annual governance review.</li>
+  <li><strong>Tabletop drill:</strong> Once per year, assume the CISO is unavailable for 30 days. Can the function operate? What breaks?</li>
+  <li><strong>Succession planning:</strong> Identify potential successors (internal candidates, peer-CISO contacts who could serve as interim). Build relationships with them.</li>
+</ul>
+
+<h2>The handover and the lessons &mdash; the integration</h2>
+
+<p>Lesson 0011 is the integration lesson. The 10 previous lessons produce artefacts that feed into the 8 handover components:</p>
+
+<table>
+  <thead>
+    <tr><th>Handover component</th><th>Source lesson(s)</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1. Programme overview (strategic plan + project schedule)</td>
+      <td>0010</td>
+    </tr>
+    <tr>
+      <td>2. Documentation index</td>
+      <td>0001&ndash;0010 (all)</td>
+    </tr>
+    <tr>
+      <td>3. Relationship map</td>
+      <td>0005 (peer-CISO), 0007 (IR team), 0009 (forensic + legal), 0010 (board + UBCK)</td>
+    </tr>
+    <tr>
+      <td>4. Operational status</td>
+      <td>0004 (monitoring dashboard), 0007 (active incidents), 0010 (project schedule)</td>
+    </tr>
+    <tr>
+      <td>5. Risk register</td>
+      <td>0006 (BIA), 0008 (DOJ 8-step), 0010 (SWOT)</td>
+    </tr>
+    <tr>
+      <td>6. Team &amp; talent map</td>
+      <td>0002 (operating model), 0009 (forensic first responders)</td>
+    </tr>
+    <tr>
+      <td>7. Budget &amp; vendor map</td>
+      <td>0002 (MSSP due diligence), 0008 (vendor panel), 0010 (budget context)</td>
+    </tr>
+    <tr>
+      <td>8. Personal transition plan</td>
+      <td>0011 (this lesson)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The 10 lessons + 10 Vietnamese artefacts + the 8-component handover package = the complete CISO operating system. The handover package is what makes the operating system survive the CISO's departure.</p>
+
+<h2>The interview artifact: handover package (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Gói bàn giao chức danh CISO (CISO Handover Package)</h3>
+
+<p><strong>Use case:</strong> the artefact that ensures the security function survives the CISO's departure. One Vietnamese-language handover package: 8 components + quarterly review cadence + 30-60-90 transition plan + post-departure support window.</p>
+
+<h3 style="margin-top:18px;">1. Tổng quan chương trình (Programme Overview)</h3>
+<p style="font-size:14px;">Strategic plan (lesson 0010) + project schedule (lesson 0010) + annual review cadence + next review date.</p>
+<ul>
+  <li>Strategic plan version, last-update date, next-update date</li>
+  <li>Project schedule status (which initiatives in progress, complete, at risk)</li>
+  <li>Annual review schedule (date, attendees, last-review outcomes)</li>
+  <li>Strategic objectives scorecard (current KPI status vs target)</li>
+</ul>
+
+<h3 style="margin-top:18px;">2. Chỉ mục tài liệu (Documentation Index)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Tài liệu</th><th>Chủ sở hữu</th><th>Last review</th><th>Next review</th><th>Nơi lưu trữ</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chính sách ATTT (Policy framework)</td>
+      <td>CISO + Legal</td>
+      <td></td><td></td><td>SharePoint / secure repo</td>
+    </tr>
+    <tr>
+      <td>BIA matrix</td>
+      <td>CISO + Risk</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Risk register</td>
+      <td>CISO + Risk</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>IR playbook + runbooks</td>
+      <td>CISO + IR Lead</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Recovery playbook</td>
+      <td>CISO + IR Lead</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Forensics + post-mortem playbook</td>
+      <td>CISO + Legal</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Awareness training plan + results</td>
+      <td>CISO + HR</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Monitoring dashboard + metrics</td>
+      <td>CISO + MSSP</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Threat intel programme</td>
+      <td>CISO</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Vendor contracts (MSSP, IR firm, etc.)</td>
+      <td>Procurement + CISO</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Cyber insurance policy</td>
+      <td>Legal + Finance + CISO</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Tabletop exercise records</td>
+      <td>CISO</td>
+      <td></td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>Post-incident reports (post-mortems)</td>
+      <td>CISO + IR Lead</td>
+      <td></td><td></td><td></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">3. Bản đồ quan hệ (Relationship Map)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Mối quan hệ</th><th>Tên + chức danh</th><th>Phương thức liên lạc ưa thích</th><th>Tần suất</th><th>Ghi chú</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>UBCK examiner chính</strong></td>
+      <td></td><td></td><td>Hàng quý</td><td>Người cụ thể phụ trách ICT risk. Đừng gửi email cho người không quen.</td>
+    </tr>
+    <tr>
+      <td><strong>MSSP account manager</strong></td>
+      <td></td><td></td><td>Hàng tháng</td><td>Người thực sự giải quyết vấn đề &mdash; không phải người trong hợp đồng.</td>
+    </tr>
+    <tr>
+      <td><strong>MSSP service delivery manager</strong></td>
+      <td></td><td></td><td>Hàng tuần</td><td>Người phụ trách daily operations.</td>
+    </tr>
+    <tr>
+      <td><strong>MSSP engineer trực SOC</strong></td>
+      <td></td><td>Điện thoại</td><td>Khi cần</td><td>Số điện thoại cá nhân nếu quan hệ tốt. Số tổng đài nếu không.</td>
+    </tr>
+    <tr>
+      <td><strong>Peer-CISO network &mdash; chứng khoán</strong></td>
+      <td></td><td></td><td>Hàng quý</td><td>Danh sách + Chatham House Rule context.</td>
+    </tr>
+    <tr>
+      <td><strong>Peer-CISO network &mdash; ngân hàng</strong></td>
+      <td></td><td></td><td>Hàng quý</td><td></td>
+    </tr>
+    <tr>
+      <td><strong>External forensic firm lead</strong></td>
+      <td></td><td></td><td>Khi cần</td><td>Số điện thoại 24/7. Đã qua retainer.</td>
+    </tr>
+    <tr>
+      <td><strong>External legal counsel (cyber)</strong></td>
+      <td></td><td></td><td>Hàng quý</td><td></td>
+    </tr>
+    <tr>
+      <td><strong>Insurance broker</strong></td>
+      <td></td><td></td><td>Hàng quý</td><td>Liên hệ đầu tiên khi có sự cố.</td>
+    </tr>
+    <tr>
+      <td><strong>MPS cybercrime contact</strong></td>
+      <td></td><td></td><td>Khi cần</td><td>Quan hệ đã thiết lập. Không phải first-time contact.</td>
+    </tr>
+    <tr>
+      <td><strong>CEO</strong></td>
+      <td></td><td></td><td>Hàng tuần</td><td>Style ưa thích: brief hay detail? Sáng hay chiều?</td>
+    </tr>
+    <tr>
+      <td><strong>CIO</strong></td>
+      <td></td><td></td><td>Hàng ngày</td><td>Đồng minh hay cản trở? Chủ đề nhạy cảm?</td>
+    </tr>
+    <tr>
+      <td><strong>Head of Risk</strong></td>
+      <td></td><td></td><td>Hàng tuần</td>
+    </tr>
+    <tr>
+      <td><strong>Head of Compliance</strong></td>
+      <td></td><td></td><td>Hàng tuần</td>
+    </tr>
+    <tr>
+      <td><strong>Audit Committee chair</strong></td>
+      <td></td><td></td><td>Hàng quý</td><td>Câu hỏi nào thường được hỏi?</td>
+    </tr>
+    <tr>
+      <td><strong>Board sponsor (nếu có)</strong></td>
+      <td></td><td></td><td>Hàng tháng</td>
+    </tr>
+    <tr>
+      <td><strong>HR Business Partner</strong></td>
+      <td></td><td></td><td>Hàng tháng</td><td>Người giúp thực sự trong việc tuyển dụng + kỷ luật.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">4. Tình trạng vận hành (Operational Status)</h3>
+<ul>
+  <li><strong>Active incidents:</strong> None / List with severity + owner + status</li>
+  <li><strong>Open initiatives:</strong> List from project schedule with status</li>
+  <li><strong>Upcoming audits:</strong> UBCK examination date + Audit Committee review date + internal audit date + cyber insurance carrier review date</li>
+  <li><strong>Pending regulatory matters:</strong> List with status + expected resolution date</li>
+  <li><strong>Scheduled tabletop exercises:</strong> Date + scenario + participants</li>
+  <li><strong>Scheduled board / committee briefings:</strong> Date + topic + owner</li>
+</ul>
+
+<h3 style="margin-top:18px;">5. Sổ rủi ro (Risk Register &mdash; Top 10)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Rủi ro</th><th>Mức độ</th><th>Chủ sở hữu</th><th>Trạng thái giảm thiểu</th><th>Ghi chú</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>2</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>3</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>4</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>5</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>6</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>7</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>8</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>9</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>10</td><td></td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">6. Bản đồ đội ngũ (Team &amp; Talent Map)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Vai trò</th><th>Tên</th><th>Ngày gia nhập</th><th>Kỹ năng chính</th><th>Rủi ro nghỉ việc</th><th>Ứng viên kế thừa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>IR Lead</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Forensic First Responder #1</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Forensic First Responder #2</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Threat Intel Analyst</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Awareness Lead</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>GRC Analyst</td><td></td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">7. Ngân sách &amp; nhà cung cấp (Budget &amp; Vendor Map)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Hạng mục</th><th>Ngân sách năm hiện tại</th><th>Đã sử dụng YTD</th><th>Vendor chính</th><th>Ngày gia hạn hợp đồng</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>MSSP</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>External forensic firm</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Cyber insurance</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Threat intel feeds</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Pen testing firm</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Awareness platform</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>SIEM + EDR</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Tabletop facilitation</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Training + certifications</td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">8. Kế hoạch chuyển giao (Personal Transition Plan &mdash; 30-60-90)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Giai đoạn</th><th>Hoạt động</th><th>Chủ sở hữu</th><th>Ngày hoàn thành</th></tr>
+  </thead>
+  <tbody>
+    <tr><td rowspan="4"><strong>Days 1&ndash;30 (Orientation)</strong></td><td>Handover package provided to successor</td><td>Departing CISO</td><td></td></tr>
+    <tr><td>Internal stakeholder intros (CEO, CIO, Risk, Compliance, Audit Committee)</td><td>Departing CISO + Successor</td><td></td></tr>
+    <tr><td>External stakeholder intros (UBCK, MSSP, peers, insurance, legal)</td><td>Departing CISO + Successor</td><td></td></tr>
+    <tr><td>Successor attends scheduled governance meetings (observer)</td><td>Successor</td><td></td></tr>
+    <tr><td rowspan="2"><strong>Days 31&ndash;60 (Shadowing)</strong></td><td>Successor shadows operational activities</td><td>Successor</td><td></td></tr>
+    <tr><td>Successor begins leading selected activities</td><td>Successor</td><td></td></tr>
+    <tr><td rowspan="2"><strong>Days 61&ndash;90 (Full transition)</strong></td><td>Departing CISO available on-call (defined hours)</td><td>Departing CISO</td><td></td></tr>
+    <tr><td>Final transition review with CEO</td><td>CEO + Successor + Departing CISO</td><td></td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">9. Cửa sổ hỗ trợ sau khi rời (Post-Departure Support Window)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Giai đoạn</th><th>Mức hỗ trợ</th><th>Cam kết của Departing CISO</th><th>Cam kết của Successor</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Months 1&ndash;3</strong></td>
+      <td>Weekly check-in (1 hour)</td>
+      <td>Available for questions within agreed hours</td>
+      <td>Use the resource; don't save questions</td>
+    </tr>
+    <tr>
+      <td><strong>Months 4&ndash;6</strong></td>
+      <td>Monthly check-in (1 hour)</td>
+      <td>Available on request</td>
+      <td>Bring strategic questions, not operational</td>
+    </tr>
+    <tr>
+      <td><strong>After month 6</strong></td>
+      <td>On request</td>
+      <td>Standard consulting rates + explicit pre-agreement</td>
+      <td>Treat as external advisor</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">10. Kỷ luật đánh giá hàng quý (Quarterly Review Discipline)</h3>
+<ul>
+  <li><strong>Quarterly:</strong> Review each of the 8 components for currency. Update gaps. Document changes.</li>
+  <li><strong>Annual:</strong> Audit Committee reviews the package as part of annual governance review.</li>
+  <li><strong>Tabletop drill (annual):</strong> Assume CISO unavailable for 30 days. Can the function operate? What breaks?</li>
+  <li><strong>Succession planning (annual):</strong> Identify potential successors (internal candidates, peer-CISO contacts who could serve as interim). Build relationships with them.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before you stop reading.</strong> Take the handover package template above and start filling it in today &mdash; not tomorrow, not when you announce departure, not in your last week. The package is a quarterly review discipline, not a final-week scramble. The package that is 90% complete at the moment of unexpected departure is the package that protects the programme. The package that is 10% complete is the package that produces a Stamper-style hospital scenario for your successor.
+</div>
+
+<h2>The lessons &mdash; the integration</h2>
+
+<p>Across 11 lessons, the playbook now contains:</p>
+
+<ol>
+  <li><strong>First 90 days.</strong> Get the foundation right.</li>
+  <li><strong>Blended-capability team.</strong> Build + buy + borrow + bot.</li>
+  <li><strong>Awareness.</strong> Reduce the human attack surface.</li>
+  <li><strong>Monitoring.</strong> See what is happening.</li>
+  <li><strong>Threat intel.</strong> Know what is coming.</li>
+  <li><strong>Continuity.</strong> Keep the business running.</li>
+  <li><strong>Incident response.</strong> Stop the bleeding.</li>
+  <li><strong>Recovery.</strong> Get back to normal.</li>
+  <li><strong>Forensics + post-mortem.</strong> Learn from the incident.</li>
+  <li><strong>Strategic plan.</strong> Organise the function.</li>
+  <li><strong>Handover.</strong> Make the programme survive you.</li>
+</ol>
+
+<p>Together, these 11 lessons produce 11 Vietnamese artefacts that constitute the operating system of the security function. The operating system survives the CISO who built it. The CISO is a steward; the programme is the legacy.</p>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is the handover a programme-management discipline, not an end-of-ten activity?</summary>
+<p>Because the handover package that is built continuously (updated quarterly, reviewed annually, audited periodically) is the package that works when the CISO departs unexpectedly. The handover package that is built in the final week is the package that produces a Stamper-style hospital scenario for the successor: no playbook, no documentation, FBI at the door. The handover discipline throughout the CISO's tenure is what closes the gap. Every quarterly review of the 8 components is a deposit in the handover package. The CISO who builds the package continuously is the CISO who leaves behind a programme, not a pile of documents.</p>
+</details>
+
+<details>
+<summary>What is "document the obvious" and why does it matter for the handover?</summary>
+<p>Documenting the obvious is the discipline that distinguishes the good handover from the bad. The good handover assumes the reader knows nothing about the firm's specific context. The bad handover assumes the reader can read minds. Every "obvious" thing that the current CISO has not written down is a thing the next CISO will spend the first 90 days discovering &mdash; the worst possible use of the first 90 days. Categories of the obvious: vendor contacts (who actually answers the phone at 2 AM), regulator contacts (who is approachable), internal politics (which meetings matter), board dynamics (who asks the hard questions), team dynamics (who is at risk of leaving), taboo topics (what not to raise with whom). The current CISO cannot imagine being the next CISO's reader &mdash; but the next CISO will be.</p>
+</details>
+
+<details>
+<summary>What is the relationship transfer and why is it the most under-appreciated part of the handover?</summary>
+<p>The relationship transfer is the deliberate introduction of the successor to the institutional network the CISO has built &mdash; UBCK examiner, MSSP account team, peer-CISO network, insurance broker, external forensic firm, legal counsel, law enforcement, internal stakeholders, security team. Relationships do not transfer automatically; they transfer by deliberate introduction. The relationship transfer that is rushed produces a CISO who is "in the role" but not "in the network" &mdash; the CISO has the title but not the standing. The relationship transfer that is skipped produces a CISO who has to rebuild the network from scratch &mdash; the worst possible use of the first 6 months. For each relationship, the practical move is a formal introduction within the first 7&ndash;60 days (depending on the relationship's importance), not just an email forward.</p>
+</details>
+
+<h2>The closing thought</h2>
+
+<div class="quote">
+  <span class="cite">Bonney, Hayslip, Stamper &mdash; CISO DRG Vol. 2 Ch. 18 (Conclusion)</span>
+  With the second volume of the CISO Desk Reference Guide, we've attempted to provide the reader with guidance that will help them mature their cybersecurity programme. The last key action for the reader to take is to build a strategic cybersecurity plan. We've emphasised that cybersecurity is a team sport, and we come back again to your human network.
+</div>
+
+<p>The CISO role is a stewardship. The programme belongs to the firm. The handover package is the act of returning the programme to the firm in a form the next steward can use. Build the package continuously. Update it quarterly. Audit it annually. Test it with the annual tabletop drill (assume you are unavailable for 30 days). And when the day comes &mdash; and the day will come &mdash; hand it over with the grace of someone who has built something larger than themselves.</p>
+
+<p>You have 11 lessons + 11 Vietnamese artefacts. You have the playbook. Now build the handover.</p>
+
+<div class="lesson-nav">
+  <a href="0010-strategic-plan-day-job.html">&larr; Lesson 0010: Strategic Plan &mdash; The Day Job</a>
+  <a href="../../index.html">Course Index &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

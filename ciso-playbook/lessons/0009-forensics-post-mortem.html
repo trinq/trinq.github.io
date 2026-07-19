@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0009 — Forensics & Post-Mortem</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0009 &middot; CISO playbook &middot; Arc 2: Run the program when something goes wrong</div>
+<h1>Forensics &amp; Post-Mortem</h1>
+<p class="subtitle">When the recovery is over, the question is not "what happened?" &mdash; the question is "what did we learn, and what did we change?"</p>
+
+<h2>Why this lesson ninth</h2>
+
+<p>Lessons 0001&ndash;0008 built prevention + continuity + response + recovery. Lesson 0009 builds the discipline of learning from incidents &mdash; the forensic analysis that produces evidence, the post-mortem that produces permanent improvement, and the attribution decision that decides whether to pursue legal action.</p>
+
+<p>Chapter 17 opens with the framing line: <em>"Although we are covering them in one chapter, forensics activities and post-mortem activities for cyber incidents are entirely different."</em> Forensics is technical &mdash; evidence collection, preservation, analysis. Post-mortem is organisational &mdash; what we learned, who we told, what we change. The CISO's job is to make sure both happen, in that order, on every incident.</p>
+
+<p>For your 9-entity VN securities firm, three specific weights. First, the PDPD 72-hour clock requires forensic evidence to be preserved and analysed fast &mdash; the timeline cannot be compressed without affecting integrity. Second, the UBCK examiner expects the post-mortem report (chronology, root cause, corrective actions, costs) within a defined window after any material incident. Third, the cyber insurance carrier typically requires forensic evidence + post-mortem as conditions for coverage &mdash; failing either can void the policy.</p>
+
+<p>By the end of this lesson you will have <strong>drafted the forensics + post-mortem playbook &mdash; in Vietnamese &mdash; covering the 5 forensic stages, chain-of-custody discipline, the post-mortem template, and the build-vs-buy decision.</strong></p>
+
+<h2>Bonney's two purposes of forensics</h2>
+
+<p>Bonney opens with the most important framing: <em>"you will have two primary purposes for your forensics activities: preserving evidence for potential criminal investigation or civil litigation discovery and understanding your organisation's vulnerabilities so that you can take additional preventive actions as warranted."</em></p>
+
+<p>For your firm, this means the forensic playbook serves two distinct stakeholders:</p>
+
+<ol>
+  <li><strong>Legal evidence for criminal investigation or civil litigation.</strong> UBCK examiner findings. Customer lawsuit. Insurance claim dispute. PDPD enforcement. Law enforcement (MPS) referral.</li>
+  <li><strong>Vulnerability understanding for preventive action.</strong> What was the attack vector? How did lateral movement work? What controls need to be added? What training needs to be updated?</li>
+</ol>
+
+<p>Each stakeholder has different requirements. Legal evidence requires chain of custody, forensically-sound images, integrity hashes, and admissible documentation. Vulnerability understanding requires root-cause analysis, kill-chain mapping, and corrective-action tracking. <strong>The same evidence serves both, but the way it is collected and documented differs.</strong></p>
+
+<h2>The rules of evidence &mdash; why chain-of-custody matters</h2>
+
+<p>Bonney's most distinctive contribution is the legal-evidence framing. Two fundamental forces shape how evidence is gathered: courts' admissibility requirements (centuries of evolution) and the digital world's rapid change (decades). The chapter's key framing: <em>"Best evidence is a legal term that seeks to address the evolving nature of introducing 'copies' into evidence given advances in printing, photocopying, and now, copying a computer file... additional focus on the ability to establish the authenticity of a copy, perhaps using an unalterable watermark or, where necessary, establishing a chain of custody, such as by showing the generation and demonstrating that the copy has been stored in an unaltered state using a WORM disk."</em></p>
+
+<p>For your firm, the practical moves:</p>
+
+<ul>
+  <li><strong>Hash every piece of evidence at collection time.</strong> SHA-256 or stronger. Record hash + timestamp + collector identity.</li>
+  <li><strong>Document chain of custody.</strong> Who collected, who transported, who stored, who accessed, when.</li>
+  <li><strong>Use WORM storage for original evidence.</strong> Write-Once-Read-Many media prevents accidental or deliberate modification.</li>
+  <li><strong>Pre-validate evidence collection procedures with legal counsel.</strong> Stamper: <em>"CISOs should proactively work with their legal counsel to pre-validate evidence collection procedures in a manner consistent with the organisation's objectives, priorities, and legal requirements."</em></li>
+</ul>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 17</span>
+  Preserving evidence is also required due care that organisations must take, and courts can summarily rule against your organisation or sanction (fine, impose a consent decree on) your organisation due to egregious errors in this regard.
+</div>
+
+<p>The chapter's warning: courts can sanction firms for poor evidence handling. This is the legal risk that makes "we'll figure it out later" a losing strategy. Pre-staged procedures + chain-of-custody discipline + WORM storage are the fix.</p>
+
+<h2>The Cyber Kill Chain &mdash; the forensic analysis framework</h2>
+
+<p>Bonney's most operationally useful framework is the Lockheed Martin Cyber Kill Chain. 7 stages:</p>
+
+<ol>
+  <li><strong>Reconnaissance.</strong> Research, identification, selection of targets. Email harvesting from websites. Tech stack research.</li>
+  <li><strong>Weaponisation.</strong> Coupling remote access trojan with exploit into deliverable payload. Weaponiser tool. PDF or Office documents as the deliverable.</li>
+  <li><strong>Delivery.</strong> Transmission of the weapon. Email attachment, website, USB removable media.</li>
+  <li><strong>Exploitation.</strong> Triggering of attacker code. Application or OS vulnerability. User manipulation. Auto-execute features.</li>
+  <li><strong>Installation.</strong> Remote access trojan or backdoor on victim system. Persistence inside the environment.</li>
+  <li><strong>Command and Control (C2).</strong> Beacon outbound to controller. Manual interaction. Hands-on-keyboard access.</li>
+  <li><strong>Actions on Objectives.</strong> Data exfiltration. Integrity violation. Availability violation. Lateral movement for further compromise.</li>
+</ol>
+
+<p>For your firm, the forensic analysis maps to the kill chain: at which stage did the attacker succeed? Which control(s) failed to detect? Which control(s) failed to deny? The kill-chain analysis drives the preventive-action list.</p>
+
+<p>Bonney's six questions to ask of every incident:</p>
+
+<ol>
+  <li><strong>How might you detect, deny, disrupt, degrade, or deceive the activities you discovered?</strong> (D5 - Department of Defence methodology)</li>
+  <li><strong>How did the attackers gain access and move laterally within your network?</strong></li>
+  <li><strong>What were the compromised assets, what was taken, altered or destroyed, and what business processes were affected?</strong></li>
+  <li><strong>What else do you need to monitor?</strong></li>
+  <li><strong>Who do you need to train and what training do they need?</strong></li>
+  <li><strong>What do you need to patch, upgrade, or retire?</strong></li>
+</ol>
+
+<h2>The post-mortem review &mdash; Bonney's 7 questions</h2>
+
+<p>Bonney's most distinctive contribution is the post-mortem discipline. 7 questions to address with all audiences (the framing varies by audience):</p>
+
+<ol>
+  <li><strong>Was the organisation properly trained?</strong> Did we detect in time? Did we report correctly? Did we respond promptly?</li>
+  <li><strong>Were our communications appropriate?</strong> Workforce, management, customers, media, law enforcement, regulators.</li>
+  <li><strong>Are our technical capabilities adequate?</strong> Staffing, skill sets, tools, service providers.</li>
+  <li><strong>What was the total impact?</strong> Hard costs (damaged assets, lost revenue). Contractual impact. Intangible costs (brand, lost opportunity). Duration of business-process impact. Legal ramifications.</li>
+  <li><strong>What corrective actions do we need to take?</strong> Short-term (eradication, recovery). Other systems vulnerable to the same attack. Medium-term to long-term actions (upgrades, replacements, new service providers).</li>
+  <li><strong>Did third parties contribute?</strong> Inappropriate action or lack of action. Addressed appropriately?</li>
+  <li><strong>How confident are we the corrective actions prevent a recurrence?</strong> Reasonable assurance?</li>
+</ol>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 17</span>
+  The post-mortem is most effective when pairing findings with actions. It might be cathartic or provide a sense of closure to identify the root cause, but unless you are just as forthcoming with the behaviours that need to change and the required actions, your workforce is not likely to make the changes necessary to avoid a repeat of the incident. They will feel lectured and picked on if the post-mortem is exclusively about what mistakes they made, and they will be confused about how they can help or what they must do unless it is explicitly spelled out.
+</div>
+
+<p>This is the chapter's most operationally important line. The post-mortem that names-and-shames without prescribing behaviour change is a wasted post-mortem. The post-mortem that names + prescribes + assigns owners + sets deadlines is the post-mortem that improves the firm.</p>
+
+<h2>The post-mortem summation &mdash; the board-ready template</h2>
+
+<p>Bonney gives the post-mortem summation structure that the board (and UBCK examiner, and insurance carrier) wants to see:</p>
+
+<ol>
+  <li><strong>The chronology of the incident.</strong> When attack began (or best estimate). When detected. When contained. When recovery steps taken. When systems back in service. When incident closed.</li>
+  <li><strong>The root cause.</strong> Single sentence or paragraph. Without blame; with evidence.</li>
+  <li><strong>The corrective actions taken.</strong> What changed as a result.</li>
+  <li><strong>The next steps.</strong> What will change in the next 30/60/90 days.</li>
+  <li><strong>The costs incurred.</strong> Hard and soft. Direct and indirect. Insurance recovery.</li>
+  <li><strong>The potential legal impacts.</strong> Pending litigation. Regulatory actions. Contract penalties.</li>
+  <li><strong>The 30, 60, and 90-day plans.</strong> Training. Repairs. Legal actions. Changes to third-party relationships.</li>
+</ol>
+
+<h2>Stamper's 5 stages of a forensic process</h2>
+
+<p>Stamper's essay is the most operationally structured in the chapter. 5 stages of the forensic process &mdash; the lifecycle that drives the playbook:</p>
+
+<ol>
+  <li><strong>Identification.</strong> Threat-modelling. Know network, gateways, segments, applications. Where to conduct packet captures (PCAP). Specialised tools placement.</li>
+  <li><strong>Collection.</strong> In-house team or pre-vetted forensic vendor. Forensically-sound copies. Chain-of-custody integrity. Mobile devices, volatile memory, network flows, social media.</li>
+  <li><strong>Preservation.</strong> Forensically-sound duplicate images. Integrity hash. Chain of custody withstands legal review. Address the Heisenberg principle &mdash; observation techniques must not materially affect evidence.</li>
+  <li><strong>Analysis.</strong> Legally acceptable + technically accurate fact pattern. Not subjective or speculative. State uncertainty explicitly. Indicate blind spots.</li>
+  <li><strong>Attribution.</strong> "Attribution is a four-letter word." For external actors, often costlier than its value. For insiders, more definitive. Pre-determined with exec + legal + board.</li>
+</ol>
+
+<p>Stamper's most operationally distinctive recommendation: <strong>forensics-by-design.</strong> Build the forensic lifecycle into security and IT infrastructure practices &mdash; including vendor engagements &mdash; so evidence collection is structurally possible without heroic effort.</p>
+
+<h2>The Heisenberg principle &mdash; why evidence handling matters</h2>
+
+<p>Stamper names the principle that governs forensic collection: <em>"Forensic analysis will always be challenged by the Heisenberg principle if not addressed correctly. Due care must be given to ensure that the observation (collection and preservation) techniques do not materially affect the evidence."</em></p>
+
+<p>For your firm, the practical implications:</p>
+
+<ul>
+  <li><strong>Use a hardware write-blocker when imaging disks.</strong> Prevents accidental write to source.</li>
+  <li><strong>Use a forensically-sound image format.</strong> EWF (Expert Witness Format) or AFF (Advanced Forensic Format). Both include hash + metadata + compression.</li>
+  <li><strong>Collect volatile memory before powering down.</strong> RAM contents lost on shutdown. Use tools like FTK Imager or WinPmem.</li>
+  <li><strong>Hash the image at collection time + verify at analysis time.</strong> SHA-256. Any mismatch = chain-of-custody broken.</li>
+</ul>
+
+<h2>The attribution decision</h2>
+
+<p>Stamper's most underrated contribution is the attribution-decision framework. The framing: <em>"Unless we are dealing with a rogue employee where attribution can be more definitive, attribution is challenging when dealing with outside actors. Attribution requires context. If your forensic analysis is focused on a legal case with an outside actor, you will need to determine whether having definitive attribution is cost effective."</em></p>
+
+<p>For your firm, the attribution decision tree:</p>
+
+<ol>
+  <li><strong>Insider (rogue employee).</strong> Attribution definitive. Pursue HR + legal action. Forensic evidence used for disciplinary + civil + criminal proceedings.</li>
+  <li><strong>External criminal group.</strong> Attribution costly. Extradition treaties uncertain. Prosecution unlikely. Insurance recovery may be the practical objective.</li>
+  <li><strong>State-sponsored actor.</strong> Attribution may be national-security concern. Coordinate with MPS / national CERT. Beyond the scope of routine CISO work.</li>
+  <li><strong>Critical infrastructure impact.</strong> Different rules. UBCK + sectoral regulator + national CERT. Pre-determined with board.</li>
+</ol>
+
+<div class="callout">
+  <strong>Forensics is a tool, not an end game.</strong> Stamper: <em>"Don't spend $50,000 on forensics to solve a $10,000 problem. Forensics is a tool, not an end game. It should inform business decisions and be cost-effective."</em> For your firm, the practical discipline is to scope the forensic effort to the incident's materiality. A $1,000 phishing-induced credential compromise does not require $50,000 of forensic analysis. A $10M ransomware attack on the custody ledger does.
+</div>
+
+<h2>Hayslip's 6 forensic methods</h2>
+
+<p>Hayslip's essay is the most operationally broad. 6 forensic methods that apply across the technology stack:</p>
+
+<table>
+  <thead>
+    <tr><th>Method</th><th>What it covers</th><th>Volatile?</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Computer Forensics</strong></td>
+      <td>Hard drives, removable media, fixed storage</td>
+      <td>No (after power-down)</td>
+    </tr>
+    <tr>
+      <td><strong>Network Forensics</strong></td>
+      <td>Network traffic monitoring + analysis. Volatile evidence live on the wire.</td>
+      <td>Yes (live capture)</td>
+    </tr>
+    <tr>
+      <td><strong>Software Forensics</strong></td>
+      <td>Malicious code + malware reverse engineering</td>
+      <td>No (analysis of preserved samples)</td>
+    </tr>
+    <tr>
+      <td><strong>Live System Forensics</strong></td>
+      <td>Volatile memory. Powering down erases evidence.</td>
+      <td>Yes (capture before shutdown)</td>
+    </tr>
+    <tr>
+      <td><strong>Mobile Device Forensics</strong></td>
+      <td>Smartphones, tablets. Encryption challenges (FBI v. Apple).</td>
+      <td>Partial</td>
+    </tr>
+    <tr>
+      <td><strong>IoT / ICS / SCADA Forensics</strong></td>
+      <td>Cars, HVAC, manufacturing plants. Industrial control systems.</td>
+      <td>Varies</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For your firm, the priority methods are: computer + network + live system. Mobile device forensics is emerging (BYOD + corporate phones). IoT/ICS/SCADA is not yet a major concern (most operations are software-defined), but worth tracking as IT/OT convergence continues (lesson 0007 Stamper).</p>
+
+<h2>Internal + external requirements &mdash; the demand taxonomy</h2>
+
+<p>Hayslip's most useful contribution is the demand taxonomy for forensic services. Two categories:</p>
+
+<ol>
+  <li><strong>Internal requirements.</strong> Corporate policies. Internal audits. Anomaly investigation. Standards compliance. Legal e-discovery. Employee misconduct investigation. Risk management framework compliance.</li>
+  <li><strong>External requirements.</strong> Regulated industries (finance, healthcare). Industry-specific laws. Country-specific laws. Competitive differentiation (NIST/ISO/COBIT certification). UBCK + PDPD expectations.</li>
+</ol>
+
+<p>For your firm: PDPD creates external forensic-requirement pressure (breach investigation). UBCK creates external forensic-requirement pressure (incident reporting with evidence). Insurance carrier creates contractual forensic-requirement pressure (claim substantiation). HR + legal create internal forensic-requirement pressure (employee misconduct, e-discovery). The forensic playbook serves all four.</p>
+
+<h2>Build vs buy &mdash; the staffing decision</h2>
+
+<p>Hayslip's most operationally distinctive contribution is the staffing model options. 4 approaches:</p>
+
+<ol>
+  <li><strong>Build internally (full lab + team).</strong> Highest cost. Best integration with corporate context. Slow to stand up.</li>
+  <li><strong>Train existing security staff as forensic first responders.</strong> Moderate cost. Internal context + basic forensic capability. Good starting point.</li>
+  <li><strong>Partner with corporate forensic firm.</strong> Shared lab + team. Lower individual cost. Less direct control.</li>
+  <li><strong>First responder + retainer with trusted third party.</strong> Lowest cost. Internal team handles initial triage + collection. Third-party handles deep analysis + reporting. Most common in practice.</li>
+</ol>
+
+<p>For your firm, the practical recommendation is option 4: first-responder trained internally (2&ndash;3 security engineers with forensic training) + retainer with a trusted external firm for deep analysis + expert testimony. Option 1 (full in-house lab) is too expensive for a 600-person securities firm; option 4 produces the same outcome at a fraction of the cost.</p>
+
+<div class="callout">
+  <strong>Check the cyber-insurance rider.</strong> Hayslip's most underrated practical recommendation: <em>"if you decide this is your path I would have your in-house legal counsel review your cyber-insurance policy to see if you have a rider to pay for these types of service and what triggers must occur before you can use them."</em> For your firm, the insurance carrier likely has a panel of approved forensic firms. Using a non-panel firm can void coverage. The first call after a major incident is to the insurance broker &mdash; before engaging the forensic firm.
+</div>
+
+<h2>Building the lab &mdash; the facilities checklist</h2>
+
+<p>Hayslip's facilities list is exhaustive:</p>
+
+<ul>
+  <li><strong>Anti-static flooring.</strong> Protects equipment from ESD damage.</li>
+  <li><strong>Soundproof walls.</strong> Sensitive discussions stay inside the work area.</li>
+  <li><strong>Backup power + UPS.</strong> Forensic services cannot be interrupted by power loss.</li>
+  <li><strong>Environmental controls.</strong> Temperature, humidity &mdash; preserve evidence integrity.</li>
+  <li><strong>Evidence lockers + safes.</strong> Physical security for evidence storage.</li>
+  <li><strong>Restricted access.</strong> Only authorised personnel can access the lab.</li>
+  <li><strong>Network connectivity assessment.</strong> Forensic workstations may need isolated networks.</li>
+  <li><strong>Work benches + forensic workstations.</strong> Unique hardware/software requirements.</li>
+</ul>
+
+<p>For a 600-person firm with option 4 staffing, you do not need a full lab. You need a small secured evidence-storage room (1&ndash;2 lockers, restricted access) + 1&ndash;2 forensic workstations for the trained first responders + a retainer relationship with an external lab for deep work.</p>
+
+<h2>Where Bonney, Stamper, and Hayslip actually agree</h2>
+
+<p>The three authors converge on a single principle: <strong>forensic capability must be designed in advance, evidence must be preserved with chain-of-custody discipline, the post-mortem must pair findings with actions, and the cost of forensics must be proportionate to the materiality of the incident.</strong></p>
+
+<ul>
+  <li><strong>Bonney</strong> emphasises the two purposes (legal + prevention) + the rules of evidence + the Cyber Kill Chain + the post-mortem 7-question framework + the board-ready summation.</li>
+  <li><strong>Stamper</strong> emphasises the 5 forensic stages + forensics-by-design + the Heisenberg principle + the attribution-as-four-letter-word framing + cost-effectiveness discipline.</li>
+  <li><strong>Hayslip</strong> emphasises the 6 forensic methods + the internal+external demand taxonomy + the build-vs-buy staffing options + the lab facilities checklist + the insurance-rider recommendation.</li>
+</ul>
+
+<p>For your CEO briefing on forensics, lead with Bonney (the two purposes + the post-mortem summation), support with Stamper (the 5 stages + the attribution decision), close with Hayslip (the build-vs-buy + the insurance rider).</p>
+
+<h2>The interview artifact: forensics + post-mortem playbook (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Sổ tay Điều tra số &amp; Rút kinh nghiệm (Forensics &amp; Post-Mortem Playbook)</h3>
+
+<p><strong>Use case:</strong> the artefact that turns an incident's end into permanent improvement. One Vietnamese-language playbook: 5 forensic stages, chain-of-custody discipline, kill-chain mapping, post-mortem template, build-vs-buy decision.</p>
+
+<h3 style="margin-top:18px;">1. Hai mục đích của forensics (Bonney)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Mục đích</th><th>Stakeholder</th><th>Yêu cầu</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Bằng chứng pháp lý</strong></td>
+      <td>Tòa án, MPS, UBCK, PDPD, khách hàng (civil), insurance carrier</td>
+      <td>Chain of custody, forensically-sound images, integrity hash, admissible documentation</td>
+    </tr>
+    <tr>
+      <td><strong>Hiểu lỗ hổng để phòng ngừa</strong></td>
+      <td>CISO, InfoSec, IT, training, audit committee</td>
+      <td>Root-cause analysis, kill-chain mapping, corrective-action tracking</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">2. 5 giai đoạn của forensic process (Stamper)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Giai đoạn</th><th>Hoạt động</th><th>Đầu ra</th><th>Công cụ</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Identification</strong></td>
+      <td>Threat modelling. Xác định network, gateways, applications. Vị trí PCAP.</td>
+      <td>Threat model + IOC list + monitoring placement</td>
+      <td>STRIDE, attack trees, network diagrams</td>
+    </tr>
+    <tr>
+      <td><strong>2. Collection</strong></td>
+      <td>Forensically-sound copy. Chain of custody. Hash. Volatile memory + disk image + logs + network capture.</td>
+      <td>Evidence bag + manifest + hash + collector identity</td>
+      <td>FTK Imager, WinPmem, tcpdump/Wireshark, EWF format</td>
+    </tr>
+    <tr>
+      <td><strong>3. Preservation</strong></td>
+      <td>WORM storage. Chain of custody withstands legal review. Heisenberg principle &mdash; observation không làm thay đổi evidence.</td>
+      <td>WORM-locked evidence + signed chain-of-custody log</td>
+      <td>WORM media, write-blockers, SHA-256 hash</td>
+    </tr>
+    <tr>
+      <td><strong>4. Analysis</strong></td>
+      <td>Fact pattern. Legally acceptable + technically accurate. State uncertainty. Indicate blind spots.</td>
+      <td>Forensic analysis report + kill-chain mapping</td>
+      <td>Autopsy, EnCase, Volatility, YARA, MISP</td>
+    </tr>
+    <tr>
+      <td><strong>5. Attribution</strong></td>
+      <td>Insider → definitive. External → cost-benefit. Pre-determined với exec + legal + board.</td>
+      <td>Attribution assessment + decision (pursue / do not pursue)</td>
+      <td>Threat intel, peer-CISO network, law enforcement</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">3. Chain-of-custody template (mẫu)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Trường</th><th>Mô tả</th><th>Ví dụ</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Evidence ID</td><td>Mã định danh duy nhất</td><td>EV-2026-001</td>
+    </tr>
+    <tr>
+      <td>Loại evidence</td><td>Disk image, memory dump, log file, network capture, document</td><td>Disk image (EWF)</td>
+    </tr>
+    <tr>
+      <td>Nguồn</td><td>Máy / hệ thống / địa điểm</td><td>OMS-PROD-03, DC HCM</td>
+    </tr>
+    <tr>
+      <td>Ngày giờ thu thập</td><td>Timestamp chính xác</td><td>2026-07-15 14:23 ICT</td>
+    </tr>
+    <tr>
+      <td>Người thu thập</td><td>Tên + chữ ký + chức danh</td><td>Nguyễn Văn A, IR Lead</td>
+    </tr>
+    <tr>
+      <td>Hash (SHA-256)</td><td>Hash tại thời điểm thu thập</td><td>a4f3e9b2c1d8...</td>
+    </tr>
+    <tr>
+      <td>Phương pháp</td><td>Công cụ + procedure</td><td>FTK Imager + write-blocker</td>
+    </tr>
+    <tr>
+      <td>Nơi lưu trữ</td><td>WORM storage location</td><td>Evidence locker A, HCM DC</td>
+    </tr>
+    <tr>
+      <td>Chain of custody log</td><td>Mỗi lần truy cập: người + lý do + ngày giờ</td><td>2026-07-16 09:00 &mdash; Lê Thị B, forensic analyst, for analysis</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">4. Cyber Kill Chain mapping (Bonney)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Giai đoạn</th><th>Mô tả</th><th>Detection</th><th>Prevention</th><th>Phát hiện trong incident của bạn</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1. Reconnaissance</td><td>Nghiên cứu target</td><td>Threat intel</td><td>Brand monitoring, employee awareness</td><td></td>
+    </tr>
+    <tr>
+      <td>2. Weaponisation</td><td>Tạo payload</td><td>Không detect được</td><td>Threat intel feeds</td><td></td>
+    </tr>
+    <tr>
+      <td>3. Delivery</td><td>Gửi payload (email, web, USB)</td><td>Email gateway, web proxy, EDR</td><td>Email filtering, web filtering, USB control</td><td></td>
+    </tr>
+    <tr>
+      <td>4. Exploitation</td><td>Trigger code</td><td>EDR, IDS/IPS</td><td>Patching, configuration hardening, user training</td><td></td>
+    </tr>
+    <tr>
+      <td>5. Installation</td><td>Cài RAT/backdoor</td><td>EDR, file integrity monitoring</td><td>Application allowlisting, least privilege</td><td></td>
+    </tr>
+    <tr>
+      <td>6. C2</td><td>Beacon outbound</td><td>Network monitoring, DNS monitoring, NetFlow</td><td>Egress filtering, DNS sinkhole</td><td></td>
+    </tr>
+    <tr>
+      <td>7. Actions on Objectives</td><td>Exfiltration / integrity violation</td><td>DLP, UEBA, SIEM correlation</td><td>DLP, segmentation, encryption at rest</td><td></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">5. Post-mortem template (Bonney &mdash; cho board)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Mục</th><th>Nội dung</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Chronology</strong></td>
+      <td>Attack began (best estimate), detected, contained, recovery started, systems back in service, incident closed</td>
+    </tr>
+    <tr>
+      <td><strong>2. Root cause</strong></td>
+      <td>One sentence / paragraph. Evidence-backed. No blame.</td>
+    </tr>
+    <tr>
+      <td><strong>3. Corrective actions taken</strong></td>
+      <td>What changed as a result. With owners + dates.</td>
+    </tr>
+    <tr>
+      <td><strong>4. Next steps (30/60/90)</strong></td>
+      <td>Training. Repairs. Legal actions. Third-party changes. With owners + dates.</td>
+    </tr>
+    <tr>
+      <td><strong>5. Costs incurred</strong></td>
+      <td>Hard costs (forensics, remediation, notification). Soft costs (lost revenue, brand damage). Insurance recovery.</td>
+    </tr>
+    <tr>
+      <td><strong>6. Legal impacts</strong></td>
+      <td>Pending litigation. Regulatory actions. Contract penalties. Insurance claim status.</td>
+    </tr>
+    <tr>
+      <td><strong>7. Post-mortem summation</strong></td>
+      <td>What we learned. What we change. Why we believe recurrence is less likely.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">6. Build-vs-buy decision (Hayslip)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Mô hình</th><th>Chi phí</th><th>Khả năng</th><th>Phù hợp với</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Full in-house lab + team</strong></td>
+      <td>Rất cao (labor, equipment, training, retention)</td>
+      <td>Cao nhất</td>
+      <td>Large FS firms, MNCs, government agencies</td>
+    </tr>
+    <tr>
+      <td><strong>First responder + retainer</strong></td>
+      <td>Trung bình (training + retainer)</td>
+      <td>Trung bình-cao</td>
+      <td>Mid-size firms (Recommended)</td>
+    </tr>
+    <tr>
+      <td><strong>Partner / shared lab</strong></td>
+      <td>Trung bình</td>
+      <td>Trung bình</td>
+      <td>Industry consortium</td>
+    </tr>
+    <tr>
+      <td><strong>Fully outsource</strong></td>
+      <td>Thấp nhất (per-incident cost)</td>
+      <td>Thấp nhất</td>
+      <td>Small firms (khuyến nghị: nâng cấp lên first responder)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">7. Lab facilities checklist (Hayslip &mdash; cho option 4 first responder)</h3>
+<ul>
+  <li><strong>Evidence storage:</strong> 1&ndash;2 locked cabinets, restricted access, in secure room.</li>
+  <li><strong>Forensic workstations:</strong> 1&ndash;2 isolated workstations with forensic software (Autopsy / FTK / EnCase).</li>
+  <li><strong>Write-blockers:</strong> Hardware write-blockers for disk imaging.</li>
+  <li><strong>WORM media:</strong> For evidence preservation.</li>
+  <li><strong>Hash verification tools:</strong> SHA-256 verification utility.</li>
+  <li><strong>Chain-of-custody forms:</strong> Pre-printed, sequentially numbered.</li>
+  <li><strong>Evidence bags + tamper-evident seals:</strong> For physical evidence (laptops, mobile devices).</li>
+  <li><strong>Camera:</strong> For documenting physical evidence.</li>
+  <li><strong>Reference materials:</strong> NIST SP 800-86 (forensic guide), playbooks, vendor docs.</li>
+  <li><strong>Pre-staged vendor retainer:</strong> Contract with external forensic firm + pre-staged contact.</li>
+</ul>
+
+<h3 style="margin-top:18px;">8. Điểm chạm quy định (Regulatory touchpoints)</h3>
+<ul>
+  <li><strong>UBCK:</strong> Forensics + post-mortem report là bằng chứng cho yêu cầu quản trị rủi ro ICT. Examiner sẽ xem khi thanh tra. Thông tư UBCK yêu cầu thông báo sự cố nghiêm trọng + báo cáo chi tiết.</li>
+  <li><strong>PDPD:</strong> Nghị định 13/2023 &mdash; thông báo trong 72h cho vi phạm dữ liệu cá nhân. Forensic evidence hỗ trợ xác định scope + impact.</li>
+  <li><strong>Luật An toàn thông tin mạng 2015:</strong> Sự cố an toàn thông tin phải được báo cáo. Forensic analysis cung cấp bằng chứng kỹ thuật.</li>
+  <li><strong>Cyber insurance:</strong> Policy thường yêu cầu notification 24&ndash;72h, sử dụng panel forensic firm, chain-of-custody evidence. Failure → voided coverage.</li>
+  <li><strong>ISO 27001 A.5.28 (Collection of evidence) + A.5.27 (Learning from incidents):</strong> Forensic procedure + post-mortem records là bằng chứng audit.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the playbook template above and fill in your firm's specifics. Spend 30 minutes on section 3 (the chain-of-custody template &mdash; this is the single most important discipline for legal evidence) and section 5 (the post-mortem template &mdash; this is what the board + UBCK examiner see after every major incident). Schedule a 2-day tabletop exercise within the next 60 days using the Stamper hospital hypothetical as the scenario &mdash; walk through identification → collection → preservation → analysis → attribution.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does Bonney insist that forensics has two purposes (legal + prevention) and what are the operational implications?</summary>
+<p>Because the same evidence serves two distinct stakeholders with different requirements. Legal evidence (for court, regulators, insurance carriers) requires chain of custody, forensically-sound images, integrity hashes, and admissible documentation. Vulnerability understanding (for the CISO, InfoSec, audit committee) requires root-cause analysis, kill-chain mapping, and corrective-action tracking. Operational implication: the same collection effort must satisfy both &mdash; the collection procedures must produce evidence that is both legally defensible AND technically informative. This means SHA-256 hashing at collection, WORM storage, chain-of-custody logging, and full-context documentation. Skimping on any of these compromises both stakeholders.</p>
+</details>
+
+<details>
+<summary>What is "forensics-by-design" and why does Stamper argue for it?</summary>
+<p>Forensics-by-design is the practice of building the forensic lifecycle into security and IT infrastructure practices &mdash; including vendor engagements &mdash; so evidence collection is structurally possible without heroic effort. Examples: SIEM retention sized for forensic timeline (90+ days), PCAP capability pre-positioned at network gateways, EDR with memory-acquisition capability, identity-provider logs with sufficient detail to reconstruct authentication, and cloud-provider logs (AWS CloudTrail / Azure Activity Log) with immutable storage. Stamper argues for it because the day of the breach is not the day to start thinking about where to get packet captures from. Without forensics-by-design, the team spends the first 48 hours of an incident figuring out where the evidence is, while the adversary continues to operate.</p>
+</details>
+
+<details>
+<summary>Why does Stamper call attribution a "four-letter word" and what is the operational decision tree?</summary>
+<p>Because attribution to external actors is technically difficult, legally costly, and rarely produces business value. Extradition treaties are uncertain. Prosecution of foreign actors is expensive and slow. The exception: insider threats, where attribution is definitive and HR + legal action is the objective. The operational decision tree: (1) insider → pursue HR + legal + criminal referral, forensic evidence used for disciplinary + civil + criminal proceedings; (2) external criminal → cost-benefit analysis; insurance recovery may be the practical objective; (3) state-sponsored → national-security concern, coordinate with MPS / national CERT; (4) critical infrastructure → different rules, UBCK + sectoral regulator. Stamper's discipline: pre-determine the attribution decision with exec + legal + board BEFORE the incident, so the decision is policy-driven not pressure-driven.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 17 (Forensics and Post-Mortem) of Volume 2. The three essays give you Bonney's two purposes + the rules of evidence + the Cyber Kill Chain + the post-mortem 7-question framework + the board-ready summation, Stamper's 5 forensic stages + forensics-by-design + the Heisenberg principle + the attribution-as-four-letter-word framing + cost-effectiveness discipline, and Hayslip's 6 forensic methods + the internal+external demand taxonomy + the build-vs-buy staffing options + the lab facilities checklist + the insurance-rider recommendation. The chapter's 5-points-5-actions summary is your fallback when the CEO asks "what does the book say about this?"</p>
+
+<p><strong>Read next:</strong> Chapter 17 in full &mdash; it is the chapter that determines whether the firm learns from incidents. Pay particular attention to Bonney's post-mortem summation (the board-ready template), Stamper's 5 forensic stages (the lifecycle that drives the playbook), and Hayslip's first-responder-plus-retainer model (the right staffing pattern for a 600-person firm).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to handle the Heisenberg principle in practice, how to negotiate the panel-counsel requirement with insurance carriers, how to integrate the post-mortem with the BC/DR test cycle, how to handle multi-entity incidents (which entity's forensic team leads?), how to scope the forensic effort proportionate to the materiality of the incident &mdash; ask. The next lesson (0010: Security Operations &mdash; The Day Job) transitions from Arc 2 (incident response) to Arc 3 (the ongoing operational programme that turns lessons learned into permanent security improvement).
+</div>
+
+<div class="lesson-nav">
+  <a href="0008-recovery-resuming-operations.html">&larr; Lesson 0008: Recovery &mdash; Resuming Operations</a>
+  <a href="0010-security-operations-day-job.html">Lesson 0010: Security Operations &mdash; The Day Job &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

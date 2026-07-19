@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0008 — Recovery, Resuming Operations</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0008 &middot; CISO playbook &middot; Arc 2: Run the program when something goes wrong</div>
+<h1>Recovery &mdash; Resuming Operations</h1>
+<p class="subtitle">Containment is the tourniquet. Recovery is the surgery. Most teams are good at the first and bad at the second.</p>
+
+<h2>Why this lesson eighth</h2>
+
+<p>Lessons 0001&ndash;0007 built prevention + response readiness. Lesson 0008 builds what you do after containment &mdash; the structured approach to bringing the firm back to normal operations without leaving persistence behind.</p>
+
+<p>Chapter 16 opens with the framing line: <em>"There is a fine line between incident response and recovery and resuming operations. To some extent, that line is only academically useful."</em> The chapter is the bridge from "we stopped the bleeding" to "we are back in business, with evidence."</p>
+
+<p>For your 9-entity VN securities firm, three specific weights. First, the trading window (9:00&ndash;14:30 HOSE / 9:00&ndash;15:00 HNX) means recovery decisions are time-boxed in minutes, not hours. Second, persistence is the chapter's central technical warning &mdash; modern attacks aim to persist past initial discovery, so a "clean" recovery that re-introduces persistence is worse than no recovery. Third, PDPD notification clock is 72 hours from "awareness" &mdash; your recovery timeline cannot extend the regulatory clock without consequence.</p>
+
+<p>By the end of this lesson you will have <strong>drafted the recovery playbook &mdash; in Vietnamese &mdash; covering the business-process-vs-asset distinction, the validation sequence, the persistence-detection approach, and the post-incident activities.</strong></p>
+
+<h2>Bonney's central insight: recover the process, not the asset</h2>
+
+<p>Bonney opens with the chapter's most important distinction: <em>"it's important to distinguish between recovering the business process and recovering the asset. Certainly, many business processes will be entirely dependent on the availability and integrity of a specific set of critical assets. But keeping the focus on the business process as your key recovery objective will allow you and your organisation to make crisper decisions about when to use backups, alternative sites, or other options defined in your recovery plans."</em></p>
+
+<p>For your firm, this is the discipline that prevents two common recovery errors:</p>
+
+<ol>
+  <li><strong>The asset-first trap.</strong> The team focuses on restoring the server. The server comes back. The business process is still broken because dependent services, data feeds, or integrations were not restored first.</li>
+  <li><strong>The all-at-once trap.</strong> The team tries to restore everything simultaneously. Sequencing is missed. Parent-child dependencies are violated. RTO is blown.</li>
+</ol>
+
+<p>The discipline: identify the business process (BIA output from lesson 0006), identify the minimum asset chain required to deliver it, then restore in sequence with the asset chain. The RTO is measured at the business process level, not at the server level.</p>
+
+<h2>The five-stage recovery sequence &mdash; Bonney's framework</h2>
+
+<p>Bonney's recovery sequence is the operational spine:</p>
+
+<ol>
+  <li><strong>Restore the assets.</strong> Responsibility of business + IT teams. CISO/InfoSec assists with validation.</li>
+  <li><strong>Validate the assets.</strong> Not just virus scan. Connect to monitoring suite. Look for IOCs. Perform health checks. State with confidence that the asset is ready.</li>
+  <li><strong>Determine when to place back in service.</strong> The moment when validation is complete, not when the asset is online. These are different moments.</li>
+  <li><strong>Monitor the assets.</strong> High-priority watching until normal baseline is reestablished. Increased diligence for some period, then spot checks over extended period.</li>
+  <li><strong>Communicate the status.</strong> Business process owners communicate service availability. CISO/InfoSec declares incident closed. Communication plan governs all other channels.</li>
+</ol>
+
+<div class="callout">
+  <strong>The five stages look linear. They are not.</strong> Bonney: <em>"It is not unusual to cycle back through the detect, contain, and eradicate steps if you either detect the same compromise on a system that was thought to be secure or you detect other malware or compromises such as inappropriate accounts or improper applications or exfiltration code. You will need to iterate through the process until you validate that all assets are operational and secure."</em> For your firm, the recovery playbook must explicitly authorise iteration. Otherwise the team will declare "done" when the asset is online rather than when it is secure.
+</div>
+
+<h2>The persistence problem &mdash; Bonney's most important warning</h2>
+
+<p>Bonney's most distinctive technical contribution to the chapter is the persistence warning. The framing: <em>"it is important to realize that outside of the family of ransomware attacks, a major objective of a modern attack is persistence. Verifying that the recovered asset is truly back to acceptable baseline takes planning and diligence."</em></p>
+
+<p>Three practical implications for your firm:</p>
+
+<ol>
+  <li><strong>Don't restore from a compromised backup.</strong> Attackers who have had weeks of access have likely planted persistence in backup snapshots too. Immutable / air-gapped backups (lesson 0006) are the structural fix.</li>
+  <li><strong>Assume persistence will survive "clean-up."</strong> A virus scan that returns clean is not evidence of a clean system. Look for IOCs in behaviour (network connections, scheduled tasks, registry changes, account activity) &mdash; not just file signatures.</li>
+  <li><strong>Validate parent-child impact.</strong> If the OMS was compromised, what other systems share credentials, service accounts, or scheduled-task infrastructure with the OMS? Validate each. Bonney: <em>"You must also determine if the cause of the event has had or will have an impact on other assets. Has file replication and propagation been affected for any adjacent processes?"</em></li>
+</ol>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 16</span>
+  As tempting as it may be to get the operation up quickly and declare the incident over, you must try to avoid leaving vulnerabilities still active while operations appear unaffected. The cybercriminals might be back, and you might be tired or complacent when they start round two.
+</div>
+
+<p>This is the line the playbook must carry. The pressure to declare "back to normal" comes from the trading window, the regulators, the board, the customers. The CISO must hold the line: validation is complete when evidence shows no persistence, not when the clock says it should be.</p>
+
+<h2>Records preservation and the legal/IR boundary</h2>
+
+<p>Bonney's second important contribution is the records-preservation discipline. <em>"Before any of these activities can take place, it is essential that your organisation's process for determining the regulatory or contractual impact of the outage or disruption is executed to catalog and, if necessary, that you sequester all assets needed for forensics activities and follow-up analysis."</em></p>
+
+<p>For your firm, the practical moves:</p>
+
+<ul>
+  <li><strong>Copy all logs involved in the incident.</strong> SIEM, EDR, firewall, application, identity provider.</li>
+  <li><strong>Preserve the state of any systems.</strong> VM snapshot. Disk image. Memory dump if possible.</li>
+  <li><strong>Handle sensitive records per the data-handling policy.</strong> Bonney: <em>"a simple downtime event can turn into a breach notification event if recovery personnel inadvertently review restricted PHI records while reviewing for record integrity."</em> For VN securities, this maps to: a recovery engineer who views customer PII during recovery validation can convert a "system outage" into a "personal-data breach" under PDPD.</li>
+</ul>
+
+<div class="callout">
+  <strong>The data-handling policy applies during recovery.</strong> This is the most under-appreciated point in the chapter. When systems are offline, the application safeguards (access controls, audit logs) may not be functioning. A recovery engineer who opens a customer record to validate integrity is &mdash; from a PDPD perspective &mdash; an "unauthorised access." Pre-designated personnel with pre-approved validation routines are the fix. Without this discipline, your recovery creates a new breach.
+</div>
+
+<h2>Stamper's hypothetical &mdash; "your first exercise is not an exercise"</h2>
+
+<p>Stamper's essay is the most operationally honest in the chapter. He walks through a hypothetical hospital breach: 25,000 PHI records being traded in nefarious circles. New CISO. Less than a month in. Two FBI agents at the door. No predecessor playbook. No documentation. <em>"Welcome to your new role!"</em></p>
+
+<p>The 7-swim-lane response he sketches under "less-than-ideal circumstances" is the operational template:</p>
+
+<ol>
+  <li><strong>Define key stakeholders.</strong> HR, Legal, IT/helpdesk, Communications, executives, board. RACI matrix built in 30 minutes.</li>
+  <li><strong>Validate contractual and regulatory obligations.</strong> PHI → state attorneys general, federal regulators. PDPD equivalent: VNCERT/CC + personal-data protection authority within 72h.</li>
+  <li><strong>Communications.</strong> Crisis comms plan activated. Fact pattern provided. Update cadence agreed (every 4 hours, or hourly for material developments).</li>
+  <li><strong>Technical response.</strong> External forensic firm engaged. TTP analysis. Insider threat theory vs credential compromise theory.</li>
+  <li><strong>What to tell executive management.</strong> Known items. Unknown items. Timeline. Security debt to be paid.</li>
+  <li><strong>Remediation and lessons learned.</strong> Immediate remediation (MFA, credential management, monitoring gaps). Threat modelling on critical platforms.</li>
+  <li><strong>Moving forward.</strong> Larger budget. CIO partnership. Talent retention. Post-mortem.</li>
+</ol>
+
+<p>Stamper's closing line: <em>"For many CISOs, breach response is a watershed moment. You are held to account for infrastructure and business practices that are mostly out of your control, and breach response can be a nightmare. We must proactively manage this component of our roles."</em></p>
+
+<p>For your firm, the Stamper move is to read the hypothetical carefully, then ask: <em>"What would the equivalent incident look like for our firm?"</em> The answer is probably: customer PII exfiltrated from KYC platform, FBI/MPS notification at the door, no playbook, no documentation. The lesson 0007 playbook (incident response) and the lesson 0008 playbook (recovery) exist so that day is not the first time the team sees the swim-lane diagram.</p>
+
+<h2>Hayslip's DOJ 8-step framework</h2>
+
+<p>Hayslip's essay cites the US Department of Justice's 2015 8-step framework for reducing the impact of cyber intrusions. The 8 steps are the most practical list in the chapter for any firm formalising their recovery programme:</p>
+
+<ol>
+  <li><strong>Data Classification/Governance.</strong> Know what data you have, where it lives, who owns it, what protections it requires.</li>
+  <li><strong>Have an Actionable Plan.</strong> IRP (lesson 0007) with focused workflows, activation criteria, stakeholder list, forensic preservation guidance.</li>
+  <li><strong>Have the Technology, Security Controls, and Services Required.</strong> Patched + configured + monitored. Contracts with third-party forensic firms pre-staged.</li>
+  <li><strong>Have Real-Time Monitoring/Logging.</strong> SIEM + EDR + IDS/IPS + UEBA. Logging repository sized for retention requirements.</li>
+  <li><strong>Make Legal Part of Incident Response Efforts.</strong> In-house or external counsel. Privacy expertise. Liability expertise.</li>
+  <li><strong>Review and Align Organisational Policies.</strong> HR's account-deactivation policy must align with security's. Otherwise shadow IT emerges.</li>
+  <li><strong>Establish Relationships with Law Enforcement.</strong> MPS, VNCERT/CC, sectoral ISACs. Pre-staged contacts.</li>
+  <li><strong>Cyber Insurance.</strong> Carrier relationships, coverage limits, notification requirements, breach coach / panel-counsel relationships.</li>
+</ol>
+
+<p>For your firm, the move is to score yourself 0&ndash;2 on each step (0 = no coverage, 1 = partial, 2 = mature). The total score (out of 16) is your recovery-readiness number. Below 8 is materially exposed; 12+ is reasonable.</p>
+
+<h2>The human-network role in recovery</h2>
+
+<p>Bonney returns to the human-network theme: <em>"Ask your colleagues, and with appropriate advice from your legal team, ask your law enforcement contacts what telltale signs you should be watching for as a result of this attack."</em></p>
+
+<p>For your firm, the move is to treat the peer CISO network (lesson 0005) as a recovery resource, not just a threat-intel resource. When you have been hit by a specific adversary, your peers may be the first to know the adversary's persistence indicators. The Chatham House Rule (lesson 0005) is what makes this sharing safe.</p>
+
+<h2>The legal-team expansion during recovery</h2>
+
+<p>Bonney names five legal-team functions during recovery that are often under-appreciated:</p>
+
+<ol>
+  <li><strong>Contractual obligations for incident notification to third parties.</strong></li>
+  <li><strong>Notification on breaches that may have occurred.</strong> Including regulator notifications within statutory deadlines.</li>
+  <li><strong>Records handling and preservation.</strong> Chain of custody for forensic artefacts.</li>
+  <li><strong>Public communication.</strong> Privileged review of customer/regulator statements before release.</li>
+  <li><strong>Industry regulator engagement.</strong> For VN securities: UBCK examiner liaison under the IRP's regulatory touchpoints.</li>
+</ol>
+
+<h2>Where Bonney, Stamper, and Hayslip actually agree</h2>
+
+<p>The three authors converge on a single principle: <strong>recovery requires explicit sequencing, evidence-based validation, persistence detection, and tight legal/regulatory coordination. Without these, "back to normal" is wishful thinking.</strong></p>
+
+<ul>
+  <li><strong>Bonney</strong> emphasises the process-vs-asset distinction, the validation sequence, the persistence warning, and the records-preservation discipline.</li>
+  <li><strong>Stamper</strong> emphasises the watershed moment, the security-debt-to-pay framing, the 7-swim-lane response, and the talent-surprises-during-crisis observation.</li>
+  <li><strong>Hayslip</strong> emphasises the DOJ 8-step framework, the post-incident activities, the cyber-insurance integration, and the law-enforcement relationship.</li>
+</ul>
+
+<p>For your CEO briefing on a recovery event, lead with Stamper (the watershed moment + the 7 swim lanes + the security-debt-to-pay), support with Bonney (the persistence warning + the validation sequence), close with Hayslip (the DOJ 8-step framework + the insurance integration).</p>
+
+<h2>The interview artifact: recovery playbook (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Sổ tay Khôi phục &amp; Tái vận hành (Recovery &amp; Resuming Operations Playbook)</h3>
+
+<p><strong>Use case:</strong> the artefact that turns the playbook's "contain + eradicate" → "recover" phase into an executed routine. One Vietnamese-language playbook: phân biệt process vs asset, trình tự khôi phục 5 giai đoạn, validation checklist, persistence hunting approach, post-incident activities.</p>
+
+<h3 style="margin-top:18px;">1. Phân biệt khôi phục quy trình vs khôi phục tài sản (Bonney)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Khôi phục quy trình</th><th>Khôi phục tài sản</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Focus: business process (BIA)</td>
+      <td>Focus: server / application / system</td>
+    </tr>
+    <tr>
+      <td>Đo lường: RTO của process</td>
+      <td>Đo lường: thời gian restore server</td>
+    </tr>
+    <tr>
+      <td>Quyết định: restore primary vs switch to backup vs fail-over</td>
+      <td>Quyết định: rebuild vs restore-from-backup</td>
+    </tr>
+    <tr>
+      <td>Owner: business process owner</td>
+      <td>Owner: IT/engineering</td>
+    </tr>
+    <tr>
+      <td>Tiêu chí: process hoạt động bình thường (output đúng)</td>
+      <td>Tiêu chí: server online, scan clean</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:13px;color:var(--ink-soft);"><strong>Discipline:</strong> keep focus on process as recovery objective. Asset is the means; process is the end.</p>
+
+<h3 style="margin-top:18px;">2. Trình tự khôi phục 5 giai đoạn (Bonney)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Giai đoạn</th><th>Hoạt động</th><th>Người chịu trách nhiệm</th><th>Tiêu chí hoàn thành</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td><td>Restore assets</td><td>Restore server/application/system từ immutable backup. VM snapshot nếu cần forensic preservation.</td>
+      <td>IT/engineering + CISO oversight</td>
+      <td>Asset online, restore verified</td>
+    </tr>
+    <tr>
+      <td>2</td><td>Validate assets</td><td>Connect to monitoring suite. Scan IOC. Health check. Parent-child dependency verify. Behaviour-based persistence check.</td>
+      <td>CISO + InfoSec team</td>
+      <td>No IOC. Behaviour matches baseline. Parent-child clean.</td>
+    </tr>
+    <tr>
+      <td>3</td><td>Place back in service</td><td>Decision point: validation complete → place back. Validation incomplete → iterate (back to detect/contain/eradicate).</td>
+      <td>CISO + business owner</td>
+      <td>Written declaration</td>
+    </tr>
+    <tr>
+      <td>4</td><td>Monitor assets</td><td>High-priority watching until baseline reestablished. Increased diligence + spot checks over extended period.</td>
+      <td>SOC + InfoSec</td>
+      <td>Baseline reestablished + 30 days clean</td>
+    </tr>
+    <tr>
+      <td>5</td><td>Communicate status</td><td>Business owner: service availability. CISO: incident closed. Communication plan governs all other channels.</td>
+      <td>Comms + CISO + business owner</td>
+      <td>All stakeholders notified per plan</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">3. Validation checklist (không chỉ virus scan)</h3>
+<ul>
+  <li><strong>File integrity:</strong> System files match known-good baseline. Critical files checksum-verified.</li>
+  <li><strong>Process integrity:</strong> Running processes match expected list. No unexpected services, scheduled tasks, startup items.</li>
+  <li><strong>Network integrity:</strong> Outbound connections match expected destinations. No C2 beacons. No unusual DNS queries.</li>
+  <li><strong>Account integrity:</strong> No unauthorised accounts. No privilege escalation. Service accounts unchanged.</li>
+  <li><strong>Registry / config integrity:</strong> No persistence mechanisms (registry run keys, cron jobs, systemd services, scheduled tasks).</li>
+  <li><strong>Behaviour integrity:</strong> First-hour activity matches baseline. SIEM/UEBA shows no anomalous patterns.</li>
+  <li><strong>Data integrity:</strong> Customer PII unchanged in custody ledger. Trade ledger balances. KYC records match counts.</li>
+  <li><strong>Parent-child integrity:</strong> All systems sharing credentials, service accounts, or scheduled-task infrastructure with restored system &mdash; also validated.</li>
+</ul>
+
+<h3 style="margin-top:18px;">4. Persistence hunting approach (Bonney)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Vector</th><th>What to look for</th><th>Tool</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Scheduled tasks</td><td>New or modified cron jobs, Windows scheduled tasks, systemd timers</td>
+      <td>EDR + manual audit</td>
+    </tr>
+    <tr>
+      <td>Startup items</td><td>New entries in startup folder, registry run keys, launchd, init scripts</td>
+      <td>EDR + autoruns tool</td>
+    </tr>
+    <tr>
+      <td>Services</td><td>New or modified Windows services, systemd services, launchd plists</td>
+      <td>EDR + manual audit</td>
+    </tr>
+    <tr>
+      <td>Accounts</td><td>New local/domain accounts, service accounts with elevated privileges, OAuth apps, API keys</td>
+      <td>IAM audit + SIEM</td>
+    </tr>
+    <tr>
+      <td>Network</td><td>Outbound C2 connections, unusual DNS, new firewall rules, port forwards</td>
+      <td>Firewall logs + NetFlow + DNS logs</td>
+    </tr>
+    <tr>
+      <td>Files</td><td>Modified system binaries, hidden files, web shells, new DLLs</td>
+      <td>File integrity monitoring + EDR</td>
+    </tr>
+    <tr>
+      <td>Memory</td><td>In-memory only malware, hollow processes, injected code</td>
+      <td>EDR + memory forensics (Volatility)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">5. 7 swim-lane response (Stamper &mdash; trong trường hợp chưa có playbook)</h3>
+<ol>
+  <li><strong>Define stakeholders</strong> &mdash; HR, Legal, IT/helpdesk, Comms, Execs. RACI matrix in 30 minutes.</li>
+  <li><strong>Validate obligations</strong> &mdash; UBCK examiner notification, PDPD 72h clock, law enforcement (MPS), insurance carrier.</li>
+  <li><strong>Communications</strong> &mdash; crisis comms plan. Fact pattern. Update cadence (4h normal, 1h material).</li>
+  <li><strong>Technical response</strong> &mdash; external forensic firm. TTP analysis. Insider vs credential theory.</li>
+  <li><strong>Tell executive management</strong> &mdash; known/unknown items. Timeline. Security debt.</li>
+  <li><strong>Remediation + lessons</strong> &mdash; MFA, credential mgmt, monitoring gaps, threat modelling.</li>
+  <li><strong>Moving forward</strong> &mdash; budget, CIO partnership, talent retention, post-mortem.</li>
+</ol>
+
+<h3 style="margin-top:18px;">6. DOJ 8-step framework checklist (Hayslip)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>#</th><th>Bước</th><th>Mức độ hiện tại (0&ndash;2)</th><th>Gap</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td><td>Data classification/governance</td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>2</td><td>Actionable IR plan</td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>3</td><td>Technology, controls, services</td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>4</td><td>Real-time monitoring/logging</td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>5</td><td>Legal part of IR</td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>6</td><td>Policy alignment (HR + Security + IT)</td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>7</td><td>Law enforcement relationships</td><td></td><td></td>
+    </tr>
+    <tr>
+      <td>8</td><td>Cyber insurance + breach coach</td><td></td><td></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align:right"><strong>Tổng (max 16)</strong></td><td></td><td></td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:13px;color:var(--ink-soft);"><strong>Score interpretation:</strong> 0&ndash;7 materially exposed; 8&ndash;11 partial; 12&ndash;16 reasonable care demonstrated.</p>
+
+<h3 style="margin-top:18px;">7. Post-incident activities</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Activity</th><th>Owner</th><th>Deadline</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Lessons-learned workshop (blameless)</td>
+      <td>CISO + IR lead</td>
+      <td>Trong 7 ngày</td>
+    </tr>
+    <tr>
+      <td>Post-mortem report</td>
+      <td>CISO + IR lead + Legal review</td>
+      <td>Trong 14 ngày</td>
+    </tr>
+    <tr>
+      <td>Playbook update</td>
+      <td>CISO + IR lead</td>
+      <td>Trong 30 ngày</td>
+    </tr>
+    <tr>
+      <td>Board briefing</td>
+      <td>CISO + CEO</td>
+      <td>Tại phiên HĐQT kế tiếp</td>
+    </tr>
+    <tr>
+      <td>UBCK examiner notification (nếu applicable)</td>
+      <td>General Counsel + CISO</td>
+      <td>Theo quy định UBCK</td>
+    </tr>
+    <tr>
+      <td>PDPD notification (nếu PII breach)</td>
+      <td>General Counsel + CISO</td>
+      <td>72h từ "awareness"</td>
+    </tr>
+    <tr>
+      <td>Cyber insurance claim (nếu applicable)</td>
+      <td>General Counsel + Finance</td>
+      <td>Theo policy</td>
+    </tr>
+    <tr>
+      <td>Threat intel sharing (anonymised)</td>
+      <td>CISO</td>
+      <td>Trong 30 ngày</td>
+    </tr>
+    <tr>
+      <td>Peer-CISO sharing (Chatham House)</td>
+      <td>CISO</td>
+      <td>Tại quarterly meeting</td>
+    </tr>
+    <tr>
+      <td>Training update (awareness)</td>
+      <td>CISO + HR</td>
+      <td>Trong 30 ngày</td>
+    </tr>
+    <tr>
+      <td>Tabletop exercise với learnings</td>
+      <td>CISO + IR team</td>
+      <td>Tại quarterly cycle tiếp theo</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">8. Điểm chạm quy định (Regulatory touchpoints)</h3>
+<ul>
+  <li><strong>UBCK:</strong> Recovery playbook là bằng chứng cho yêu cầu quản trị rủi ro ICT. Examiner sẽ xem trong thanh tra. Notification trong 24h cho sự cố nghiêm trọng theo Thông tư UBCK.</li>
+  <li><strong>PDPD:</strong> Nghị định 13/2023 &mdash; thông báo trong 72h cho vi phạm dữ liệu cá nhân. Recovery timeline không được extend regulatory clock.</li>
+  <li><strong>Luật An toàn thông tin mạng 2015:</strong> Sự cố an toàn thông tin phải được báo cáo cho cơ quan chức năng.</li>
+  <li><strong>Cyber insurance:</strong> Coverage typically requires notification within policy-specified timeframe (24&ndash;72h). Failure to notify can void coverage.</li>
+  <li><strong>ISO 27001 A.5.27 (Learning from incidents):</strong> Lessons-learned + post-mortem records là bằng chứng audit.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the recovery playbook template above and fill in your firm's specifics. Spend 30 minutes on section 3 (the validation checklist &mdash; this is the single most important thing to do right to avoid re-introducing persistence) and section 6 (the DOJ 8-step scoring &mdash; your total score tells you where you stand on "reasonable care"). Schedule the first post-incident activity workshop within 14 days of any incident that triggers recovery.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does Bonney insist on distinguishing "recovering the business process" from "recovering the asset"?</summary>
+<p>Because the business process is the actual objective &mdash; it is what customers, regulators, and the board care about. The asset (server, application, system) is the means to that objective. Focusing on the asset first leads to two common errors: (1) the team restores a server but the dependent services or data feeds are not yet ready, so the business process is still broken; (2) the team tries to restore everything at once, missing parent-child sequencing, and blows the RTO. The discipline: identify the business process, identify the minimum asset chain required to deliver it, restore in sequence. The RTO is measured at the business process level, not at the server level. This is the single most important discipline in recovery.</p>
+</details>
+
+<details>
+<summary>What is the persistence problem and why does Bonney call it out?</summary>
+<p>Persistence is the modern attacker's primary objective (outside of ransomware). The attacker wants to survive initial detection and remain in your environment for months or years. Restoring from a backup does not eliminate persistence if the attacker planted persistence mechanisms in the backup, in the credentials shared across systems, or in scheduled tasks that survive the restore. A virus scan returning clean is not evidence of a clean system &mdash; attackers use behavioural persistence (network connections, scheduled tasks, registry changes) that signatures miss. The structural fix is immutable / air-gapped backups (lesson 0006) + behaviour-based persistence hunting (this lesson). Bonney's warning: <em>"As tempting as it may be to get the operation up quickly and declare the incident over, you must try to avoid leaving vulnerabilities still active while operations appear unaffected. The cybercriminals might be back."</em></p>
+</details>
+
+<details>
+<summary>What is the "first exercise is not an exercise" warning?</summary>
+<p>Stamper's framing of what happens when a new CISO inherits a programme with no playbook, no documentation, and no runbooks &mdash; and a breach lands on day 25. The 7-swim-lane response (define stakeholders / validate obligations / communications / technical / tell execs / remediation / moving forward) is what gets built in 30 minutes under crisis pressure. It is the implicit argument for lessons 0007 and 0008: build the playbook and runbook before you need them, so the day a breach lands is not the day you are writing your first RACI matrix under FBI-agent pressure. Stamper's exact warning: <em>"For many CISOs, breach response is a watershed moment. You are held to account for infrastructure and business practices that are mostly out of your control, and breach response can be a nightmare."</em></p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 16 (Recovery and Resuming Operations) of Volume 2. The three essays give you Bonney's process-vs-asset distinction + the 5-stage recovery sequence + the persistence warning + the records-preservation discipline, Stamper's hypothetical hospital scenario as the watershed moment + the 7-swim-lane response + the security-debt-to-pay framing, and Hayslip's DOJ 8-step framework + the post-incident activities list + the cyber-insurance integration. The chapter's 5-points-5-actions summary is your fallback when the CEO asks "what does the book say about this?"</p>
+
+<p><strong>Read next:</strong> Chapter 16 in full &mdash; it is the bridge from "stopped the bleeding" to "back to normal." Pay particular attention to Bonney's persistence warning (the structural risk in any recovery), Stamper's 7-swim-lane response (the template for your first incident if you have no playbook), and Hayslip's DOJ 8-step framework (the maturity scoring for your programme).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to scope the persistence-hunting checklist for your specific stack (Windows/Linux/cloud), how to handle the records-preservation discipline when PDPD applies, how to structure the post-mortem workshop, how to score the DOJ 8-step framework honestly, how to integrate cyber-insurance panel counsel into the IRP &mdash; ask. The next lesson (0009: Forensics &mdash; Post-Mortem) builds on the post-incident activities list: when the recovery is complete, the forensic analysis + lessons-learned are how the firm turns one incident into permanent improvement.
+</div>
+
+<div class="lesson-nav">
+  <a href="0007-incident-response-playbook.html">&larr; Lesson 0007: Incident Response &mdash; The Playbook</a>
+  <a href="0009-forensics-post-mortem.html">Lesson 0009: Forensics &mdash; Post-Mortem &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

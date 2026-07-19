@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0006 — Continuity, Backups, RTO/RPO</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0006 &middot; CISO playbook &middot; Arc 2: Run the program when something goes wrong</div>
+<h1>Continuity, Backups, RTO/RPO</h1>
+<p class="subtitle">If the broker can't trade, the custodian can't settle, or the regulator can't file &mdash; you have an incident. The book teaches how to make sure that day is rare and short.</p>
+
+<h2>Why this lesson sixth</h2>
+
+<p>Lessons 0001&ndash;0005 built the prevention programme: 90-day plan, team, awareness, monitoring, threat intel. Lesson 0006 builds the response-foundation &mdash; the artefacts that determine whether a disruption lasts 30 minutes or 30 days.</p>
+
+<p>Chapter 14 is one of the most underrated in Volume 2 because most CISOs treat backup-and-recovery as "IT's job." The book's argument is sharper: <strong>cyber-resilience is the CISO's job</strong>, the BC/DR community has been doing it since before cybersecurity was a thing, and the CISO must partner with BC/DR to make the firm's recovery posture defensible.</p>
+
+<p>For your 9-entity VN securities firm, the lesson lands with operational urgency. Three specific reasons:</p>
+
+<ol>
+  <li><strong>UBCK examiners will ask for RTO/RPO documentation.</strong> A single global number ("4 hours") is what most firms provide. The book teaches you to produce per-process, per-entity RTO/RPO. That is what ISO 27001 and UBCK both expect.</li>
+  <li><strong>Trading hours are non-negotiable.</strong> A 30-minute outage during the HOSE/HNX trading window is existential. Your RTO for trading systems has to be measured in minutes, not hours.</li>
+  <li><strong>Custody and settlement have a T+1 cascade.</strong> If you cannot settle T+1, the counter-party and market-operator cascade begins. Your RTO for custody ledger is measured in hours &mdash; and your RPO for in-flight transactions is near zero.</li>
+</ol>
+
+<p>By the end of this lesson you will have <strong>drafted the BIA + RTO/RPO matrix for your firm's critical business processes &mdash; in Vietnamese &mdash; and identified the backup strategy per criticality tier.</strong></p>
+
+<h2>Stamper's structural argument &mdash; cybersecurity owes a debt to BC/DR</h2>
+
+<p>Stamper's essay is the most important in the chapter for a CISO formalising into the role. His central observation: <em>"our two disciplines shared similar common neglect. Like security, everyone knows and recognizes that business continuity and disaster recovery are important elements to an organization's overall resilience... most organizations only pay lip service to this critical discipline with incomplete and untested BC/DR plans."</em></p>
+
+<p>The historical framing matters. BC/DR has been doing resilience professionally for 30+ years. Cybersecurity is, in scheme terms, a newcomer. The CISO move is to <strong>stand on BC/DR's shoulders</strong>: adopt the Business Impact Analysis (BIA) as the spine of the programme, adopt MAD/RPO/RTO as the universal metrics, adopt fault-tolerance / fail-over / active-active architecture as the technical options. Without that adoption, the CISO builds a security programme that talks only to itself and not to the firm's existing resilience language.</p>
+
+<div class="quote">
+  <span class="cite">Stamper, CISO DRG Vol. 2 Ch. 14</span>
+  Too many security programs attempt to apply ubiquitous security to all systems, infrastructure, and employees. The consequences of a blanket, cover-all approach to security are challenging... Critical systems are under-resourced and under-secured while we effectively overprotect non-critical systems.
+</div>
+
+<p>This is the most quoted line from the chapter, and it applies directly to backup-and-recovery. The temptation is to back up everything with the same frequency and the same retention. The CISO move is to use the BIA to tier backup strategies by criticality &mdash; so the trading-system backup that needs 15-minute RPO and 1-hour RTO gets the active-active architecture, and the marketing-archive backup that needs 24-hour RPO and 7-day RTO gets the tape.</p>
+
+<h2>The BIA &mdash; the spine of the entire programme</h2>
+
+<p>The BIA is the most important artefact in this lesson. Without it, every decision about backup frequency, replication architecture, hot-site vs cold-site, and recovery testing is a guess. With it, every decision is a lookup.</p>
+
+<p>The book's BIA covers three types of impact per business process:</p>
+
+<ol>
+  <li><strong>Operational impact.</strong> Impact on customers, back-office, regulatory reporting, market operations.</li>
+  <li><strong>Financial impact.</strong> Lost revenue, expense impact, regulatory fines, remediation cost, brand damage cost.</li>
+  <li><strong>Technological dependencies.</strong> Systems, networks, sequencing, vendor dependencies, third-party APIs.</li>
+</ol>
+
+<p>For each process, the BIA produces four numbers: <strong>MAD (Maximum Allowable Downtime), RTO, RPO, and criticality tier</strong> (Low / Moderate / High, per FIPS 199). With those numbers in hand, the recovery strategy becomes a lookup:</p>
+
+<table>
+  <thead>
+    <tr><th>Criticality (FIPS 199)</th><th>MAD</th><th>RTO</th><th>RPO</th><th>Architecture</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>High</strong></td>
+      <td>&lt;1 hour</td>
+      <td>&lt;1 hour</td>
+      <td>Near-zero (minutes)</td>
+      <td>Active/active data center or active/passive with disk replication, hot site. Synchronous replication. Real-time fail-over.</td>
+    </tr>
+    <tr>
+      <td><strong>Moderate</strong></td>
+      <td>1&ndash;24 hours</td>
+      <td>4&ndash;24 hours</td>
+      <td>1&ndash;4 hours</td>
+      <td>Warm site. Asynchronous replication. Tape + cloud restore. Tested quarterly.</td>
+    </tr>
+    <tr>
+      <td><strong>Low</strong></td>
+      <td>&gt;24 hours</td>
+      <td>1&ndash;7 days</td>
+      <td>24 hours</td>
+      <td>Cold site. Tape backup. Off-site storage. Tested annually.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For your 9-entity firm, the BIA at the group level is the first draft. The per-entity refinement is where the asset-by-asset work happens. <strong>Without the BIA, you cannot have a defensible RTO/RPO conversation with UBCK, the auditors, or the board.</strong></p>
+
+<h2>Hayslip's BCP lifecycle &mdash; the operational plan</h2>
+
+<p>Hayslip's BCP lifecycle is the most useful sequence in the chapter. Six steps:</p>
+
+<ol>
+  <li><strong>BCP Steering Committee.</strong> Executive sponsor. Members with cross-functional authority. Training for members on their roles.</li>
+  <li><strong>Business Impact Analysis.</strong> Stakeholders from each business unit identify critical services. Risk analysis + criticality tier. Budget derived from criticality.</li>
+  <li><strong>Developing the BCP.</strong> Recovery team identified, areas of responsibility assigned. Backup and recovery requirements per critical service. Scenarios for activation. Escalation procedures. Communication/notification requirements.</li>
+  <li><strong>Plan creation.</strong> Walk through emergency response procedures. Decide on response model (command centre, alternate HQ, distributed). Communications matrix. Recovery services contracts.</li>
+  <li><strong>BCP testing and training.</strong> Scenario-based testing (one possible scenario each cycle). Post-test report. Training updates. Schedule next scenario. Critical: <em>"the BCP gets exercised on a regular ongoing basis to increase awareness in the organisation and provide team members with the experience they need so that when the emergency is real their response is coordinated and efficient."</em></li>
+  <li><strong>BCP maintenance.</strong> Periodic review. Update for changes in business operations. Distribute to recovery team. Test the new plan.</li>
+</ol>
+
+<p>For a 600-person firm, the standing test cadence is: tabletop quarterly (per entity), functional test semi-annually, full DR test annually. Less than that and the plan atrophies. More than that and the operations team burns out.</p>
+
+<h2>Bonney's "plan to defend your backups" &mdash; the new backup threat</h2>
+
+<p>Bonney's most distinctive contribution to the chapter is the recognition that <strong>backup is now an attack surface, not just a recovery tool.</strong> Ransomware specifically targets backups to deny the victim the recovery option. The framing shift: in the old world, you backed up to recover from natural disaster and equipment failure. In the new world, you back up to recover from <em>your backups being attacked</em>.</p>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 14</span>
+  Because of this new form of attack, the CISO has two new problems to address. First, you must now become familiar with and take part in the planning around day-to-day operational backups. In the past, you only had to focus on continuity in the face of significant disruption. Second, you must now focus on protecting your backups from direct or indirect attack.
+</div>
+
+<p>Bonney's "unholy trinity" of poor backup hygiene: <em>untested backups + unpatched systems + unenforced access controls.</em> Address all three and you close the backup-as-attack-surface problem. Address any one and the other two still let the attacker in.</p>
+
+<p>For your firm, the practical implications:</p>
+
+<ul>
+  <li><strong>Backups must be physically or logically separated from operational data.</strong> Air-gapped where possible (rotating offline tapes, immutable cloud storage).</li>
+  <li><strong>Access privileges to backup servers must be strictly enforced.</strong> Most firms have the same admin accessing production and backup &mdash; which means a single credential compromise takes both.</li>
+  <li><strong>Backups must be routinely tested for validity.</strong> A backup that has not been restored is a backup you do not have.</li>
+  <li><strong>Patching and vulnerability management extend to backup infrastructure.</strong> The backup server is part of the attack surface, not separate from it.</li>
+</ul>
+
+<h2>Hayslip's $4M / $158 per record data-breach math &mdash; the business case</h2>
+
+<p>Hayslip opens his essay with the IBM/Ponemon data: <em>"the costs organizations face for managing the fallout of a data breach continue to rise, and now average $4 million per incident, up from $3.79 million in 2015. This number equates to average triage costs of $158 per data record and depending on the company's industry the price could go as high as $355 per record (e.g., in the medical industry)."</em></p>
+
+<p>For your firm, run the numbers. Custody ledger holds ~50K customer records (estimate). At $158 per record (the average), a breach costs $7.9M. At $355 per record (the high end), $17.75M. Even at the low end, that is 5&ndash;10% of annual revenue. <strong>This is the number the board sees.</strong></p>
+
+<p>Hayslip's Target example is the cautionary tale: <em>"Target has spent over $200 million to reissue new credit cards, upgrade their networks, notify affected consumers, and engage third-party forensics teams... These costs do not take into account the brand damage they suffered, the resulting 46% drop in revenue, nor current ongoing lawsuits and regulatory actions."</em></p>
+
+<div class="callout">
+  <strong>The 46% revenue drop.</strong> This is the number that should keep you awake. It is not the $200M in remediation costs. It is the 46% drop in revenue that happened <em>because customers stopped trusting Target with their cards.</em> For a securities firm, the equivalent is institutional clients pulling their custody mandate and retail clients closing their brokerage accounts. Recovery time for that trust is years, not months. The backup-and-recovery programme exists to prevent this scenario.
+</div>
+
+<h2>Virtual assets and cloud &mdash; Bonney's modern-section</h2>
+
+<p>Bonney spends a section on virtual-asset backup that is essential for any firm with cloud or VM-heavy infrastructure. Three questions he says you must answer:</p>
+
+<ol>
+  <li><strong>Virtual Technology Assets.</strong> How are your virtual components configured and orchestrated? What backup and recovery challenges does this present? What are the regulatory, contractual, policy implications?</li>
+  <li><strong>Data Assets.</strong> Do you have a data availability / redundancy / replication strategy that accounts for cloud data? Do you need replication at the storage unit, data center, or region level? What geographical boundaries apply for personal data?</li>
+  <li><strong>Micro-Services and "Appification".</strong> Do you understand the interdependencies between micro-services and how to restore functionality? Have you mapped which services depend on which?</li>
+</ol>
+
+<p>For your firm, three concrete implications: (1) the OMS / custody ledger running in VM must be backed up at the VM level, not just the storage level &mdash; because restoring the storage does not restore the configuration. (2) For PDPD purposes, customer PII must reside in VN-region cloud storage; the DR site must also be in VN. (3) Market-data feed handlers (HOSE/HNX APIs) are dependency chains &mdash; if you don't know the chain, you can't restore it.</p>
+
+<h2>CMDB extension &mdash; the technical anchor</h2>
+
+<p>Bonney's recommendation on the CMDB is the most operationally useful: <em>"Incorporate virtual asset inventory into your organisation's configuration management process by extending your configuration management database (CMDB) to accommodate cloud components using native cloud tools. Do not try to retrofit your legacy CMDB; it will not likely scale. If your organisation doesn't utilise a CMDB, now is a great time to establish one, at the very least for your virtual assets."</em></p>
+
+<p>For a 9-entity firm, this is the move that wins the most battles. A CMDB with cloud-extension (using native cloud tools like AWS Config / Azure Resource Graph) is the artefact that makes every other recovery decision easier. Without it, the BIA is built on tribal knowledge and the RTO/RPO numbers are guesses.</p>
+
+<h2>The DRP structure &mdash; Hayslip's template</h2>
+
+<p>Hayslip gives a high-level DRP table that is the operational template for any DRP. The matrix maps: critical system | RTO | RPO | current threats | prevention strategies | response procedures | recovery procedures. For each critical system. <strong>This is what your BC/DR steering committee needs to deliver for the audit committee.</strong></p>
+
+<p>The structure of the DRP document itself is similar to the Incident Response Plan (covered in lesson 0007):</p>
+
+<ol>
+  <li>Introduction (purpose, scope).</li>
+  <li>Roles and responsibilities.</li>
+  <li>System description and inventory.</li>
+  <li>Risk assessment + BIA summary.</li>
+  <li>Recovery objectives (RTO/RPO per system).</li>
+  <li>Recovery procedures (step-by-step per system).</li>
+  <li>Communication and escalation.</li>
+  <li>Test and exercise plan.</li>
+  <li>Maintenance and review.</li>
+</ol>
+
+<h2>Where Bonney, Stamper, and Hayslip actually agree</h2>
+
+<p>The three authors converge on a single principle: <strong>cyber-resilience requires the CISO to partner with BC/DR, build the BIA, tier the backup strategy by criticality, defend the backup infrastructure from attack, and test the recovery continuously.</strong></p>
+
+<ul>
+  <li><strong>Bonney</strong> emphasises BIA-driven RPO/RTO, the unholy trinity of backup hygiene, and the modern realities of virtual/cloud assets.</li>
+  <li><strong>Stamper</strong> emphasises the structural debt cybersecurity owes to BC/DR, the cover-all anti-pattern, and the alignment of security programme to organisational strategy.</li>
+  <li><strong>Hayslip</strong> emphasises the BCP lifecycle, the operational DRP structure, and the $4M-per-record business case for the board.</li>
+</ul>
+
+<p>For your CEO briefing, lead with Hayslip (the $4M / $158-per-record number is what the board hears), support with Stamper (the BIA is the artefact that aligns cyber and business), close with Bonney (defend the backups is the new threat).</p>
+
+<h2>The interview artifact: BIA matrix (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Phân tích Tác động Kinh doanh (BIA) &amp; Ma trận RTO/RPO</h3>
+
+<p><strong>Use case:</strong> the artefact for ISO 27001 (A.5.30 + A.8), UBCK examiner evidence, and the basis for the DRP. One Vietnamese-language matrix: quy trình kinh doanh, mức độ quan trọng (FIPS 199), MAD, RTO, RPO, hạ tầng sao lưu, kiến trúc dự phòng, tần suất kiểm thử, người chịu trách nhiệm.</p>
+
+<h3 style="margin-top:18px;">1. Quy trình kinh doanh cốt lõi (Critical business processes)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>#</th><th>Quy trình</th><th>Công ty thành viên</th><th>Mô tả</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Giao dịch chứng khoán (Trading)</td><td>Công ty chứng khoán</td><td>Order matching, market-data ingestion, OMS</td></tr>
+    <tr><td>2</td><td>Lưu ký chứng khoán (Custody)</td><td>Công ty chứng khoán</td><td>Custody ledger, PII khách hàng, settlement</td></tr>
+    <tr><td>3</td><td>Settlement T+1</td><td>Công ty chứng khoán</td><td>Clearing, payment, securities settlement</td></tr>
+    <tr><td>4</td><td>Customer onboarding + KYC/AML</td><td>Công ty chứng khoán</td><td>Customer PII, ID verification, sanctions screening</td></tr>
+    <tr><td>5</td><td>Quản lý quỹ (Fund management)</td><td>Công ty QLQ</td><td>Fund NAV, portfolio management</td></tr>
+    <tr><td>6</td><td>Tư vấn đầu tư (Advisory)</td><td>Công ty chứng khoán</td><td>Client advisory, suitability assessment</td></tr>
+    <tr><td>7</td><td>Báo cáo UBCK (Regulatory reporting)</td><td>Group</td><td>Daily/periodic filings to UBCK + HOSE/HNX</td></tr>
+    <tr><td>8</td><td>Market-data + connectivity</td><td>Group</td><td>HOSE/HNX feeds, news, third-party data</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">2. Ma trận BIA &mdash; RTO/RPO theo quy trình</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Quy trình</th><th>Mức (FIPS 199)</th><th>MAD</th><th>RTO</th><th>RPO</th><th>Kiến trúc dự phòng</th><th>Hạ tầng sao lưu</th><th>Test</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1. Trading</td>
+      <td><strong>High</strong></td>
+      <td>&lt;1h</td>
+      <td>&lt;1h</td>
+      <td>~0 phút (sync replication)</td>
+      <td>Active/active DC hoặc active/passive + hot site</td>
+      <td>Real-time replication + 15-min snapshots</td>
+      <td>Functional test mỗi quý + tabletop bán niên</td>
+    </tr>
+    <tr>
+      <td>2. Custody ledger</td>
+      <td><strong>High</strong></td>
+      <td>&lt;2h</td>
+      <td>&lt;2h</td>
+      <td>~15 phút (async)</td>
+      <td>Active/passive DC + DR site VN-region</td>
+      <td>Continuous replication + hourly snapshots + immutable cloud backup</td>
+      <td>Quarterly DR test (full restore in DR site)</td>
+    </tr>
+    <tr>
+      <td>3. Settlement T+1</td>
+      <td><strong>High</strong></td>
+      <td>&lt;4h</td>
+      <td>&lt;4h</td>
+      <td>~30 phút</td>
+      <td>Active/passive DC</td>
+      <td>Continuous replication + 30-min snapshots</td>
+      <td>Quarterly DR test + bán niên với counter-party + market operator</td>
+    </tr>
+    <tr>
+      <td>4. Customer onboarding/KYC</td>
+      <td><strong>Moderate</strong></td>
+      <td>&lt;24h</td>
+      <td>&lt;8h</td>
+      <td>~4h</td>
+      <td>Warm site + cloud DR</td>
+      <td>Hourly incremental + daily full + cloud archive</td>
+      <td>Semi-annual test</td>
+    </tr>
+    <tr>
+      <td>5. Fund management/NAV</td>
+      <td><strong>High</strong></td>
+      <td>&lt;4h</td>
+      <td>&lt;4h</td>
+      <td>~0 phút (market hours)</td>
+      <td>Active/passive DC + market-hours replication</td>
+      <td>Real-time replication + 15-min snapshots</td>
+      <td>Quarterly test</td>
+    </tr>
+    <tr>
+      <td>6. Advisory</td>
+      <td><strong>Moderate</strong></td>
+      <td>&lt;24h</td>
+      <td>&lt;8h</td>
+      <td>~4h</td>
+      <td>Warm site + cloud DR</td>
+      <td>Hourly incremental + daily full</td>
+      <td>Semi-annual test</td>
+    </tr>
+    <tr>
+      <td>7. UBCK/HOSE/HNX reporting</td>
+      <td><strong>High</strong></td>
+      <td>&lt;2h (deadline)</td>
+      <td>&lt;2h</td>
+      <td>~15 phút</td>
+      <td>Active/passive + DR site</td>
+      <td>Continuous replication + immutable archive</td>
+      <td>Quarterly + tabletop với UBCK examiner scenario</td>
+    </tr>
+    <tr>
+      <td>8. Market-data + connectivity</td>
+      <td><strong>High</strong></td>
+      <td>&lt;30 phút</td>
+      <td>&lt;30 phút</td>
+      <td>~0 phút (live feed)</td>
+      <td>Redundant ISP + secondary feed provider</td>
+      <td>Real-time + secondary path</td>
+      <td>Continuous monitoring + monthly failover test</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">3. Chiến lược sao lưu theo mức (Backup strategy by tier)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Mức (FIPS 199)</th><th>Cách tiếp cận</th><th>Lưu trữ</th><th>Test frequency</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>High</strong></td>
+      <td>Active/active DC + real-time replication + immutable cloud</td>
+      <td>VN-region (PDPD) + immutable cloud archive</td>
+      <td>Quarterly DR test (full fail-over)</td>
+    </tr>
+    <tr>
+      <td><strong>Moderate</strong></td>
+      <td>Async replication to warm site + cloud restore</td>
+      <td>Tape + cloud (encrypted)</td>
+      <td>Semi-annual test</td>
+    </tr>
+    <tr>
+      <td><strong>Low</strong></td>
+      <td>Cold site + tape backup</td>
+      <td>Off-site tape + cloud archive</td>
+      <td>Annual test</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">4. Bảo vệ hạ tầng sao lưu (Defend-the-backups &mdash; Bonney)</h3>
+<ul>
+  <li><strong>Tách biệt vật lý hoặc logic:</strong> Immutable cloud storage hoặc tape offline luân chuyển.</li>
+  <li><strong>Truy cập:</strong> Tài khoản backup-admin tách biệt khỏi production admin. MFA bắt buộc. Privileged access review hàng quý.</li>
+  <li><strong>Kiểm thử:</strong> Backup phải được restore định kỳ (quarterly cho High, semi-annual cho Moderate, annual cho Low).</li>
+  <li><strong>Patching:</strong> Backup server là một phần attack surface. Patched cùng SLA với production.</li>
+  <li><strong>Phát hiện:</strong> Giám sát backup server riêng. Alert khi backup bị xóa hoặc modified bất thường.</li>
+  </ul>
+
+<h3 style="margin-top:18px;">5. CMDB extension (Cloud + virtual assets &mdash; Bonney)</h3>
+<ul>
+  <li>CMDB phải include VM configs + cloud resources (AWS Config / Azure Resource Graph).</li>
+  <li>Mỗi application trong BIA phải map đến VM instance + cloud storage + network config trong CMDB.</li>
+  <li>Đối với OMS / custody ledger: backup phải capture toàn bộ VM state + storage + network, không chỉ data.</li>
+</ul>
+
+<h3 style="margin-top:18px;">6. Kế hoạch kiểm thử (Test cadence &mdash; Hayslip)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Test type</th><th>Frequency</th><th>Scope</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tabletop</td>
+      <td>Quarterly (per entity)</td>
+      <td>Scenario walk-through. Decision rights. Communication matrix.</td>
+    </tr>
+    <tr>
+      <td>Functional</td>
+      <td>Semi-annual (per entity)</td>
+      <td>Single-system fail-over test. Verify RTO/RPO achieved.</td>
+    </tr>
+    <tr>
+      <td>Full DR</td>
+      <td>Annual (group level)</td>
+      <td>Full site fail-over. All High-criticality systems. Multi-entity coordination.</td>
+    </tr>
+    <tr>
+      <td>Backup restore</td>
+      <td>Per FIPS 199 tier</td>
+      <td>High: quarterly. Moderate: semi-annual. Low: annual.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">7. Điểm chạm quy định (Regulatory touchpoints)</h3>
+<ul>
+  <li><strong>UBCK:</strong> Chương trình BC/DR là bằng chứng cho yêu cầu quản trị rủi ro ICT. BIA + RTO/RPO matrix phải có.</li>
+  <li><strong>ISO 27001 A.5.30 (ICT readiness for business continuity) + A.8 (operations security):</strong> BIA, DRP, test records.</li>
+  <li><strong>PDPD:</strong> DR site phải ở VN-region. Bằng chứng cho Nghị định 13/2023 requirements về "biện pháp kỹ thuật và tổ chức phù hợp."</li>
+  <li><strong>Cyber insurance:</strong> Chương trình BC/DR + DR test records là điều kiện bồi thường.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the BIA matrix above and customise it for your firm's actual 8 (or more) critical business processes. Spend 20 minutes on each row: what is the actual MAD, RTO, RPO your business owner will commit to? What is the actual architecture you have today? Where is the gap between committed RTO and actual capability? When the matrix is filled in, you have the artefact that justifies the DR-investment ask to the board.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does Stamper say cybersecurity owes a debt to BC/DR?</summary>
+<p>Because BC/DR has been doing organisational resilience professionally for 30+ years, while cybersecurity as a discipline is much younger. BC/DR developed the BIA, MAD/RPO/RTO metrics, fault-tolerance / fail-over / active-active architectures, and the test-and-exercise discipline &mdash; all of which are the operational backbone the CISO needs to make resilience defensible. The CISO move is to stand on BC/DR's shoulders: adopt the BIA as the spine of the cyber programme, adopt MAD/RPO/RTO as the universal metrics, and partner with BC/DR on testing. Without that partnership, the CISO builds a security programme that is structurally separate from the firm's existing resilience language and rituals.</p>
+</details>
+
+<details>
+<summary>What is Bonney's "unholy trinity" and why does each matter?</summary>
+<p>Untested backups + unpatched systems + unenforced access controls. Each one alone is a vulnerability. Together they are the structural condition that allows ransomware to disable both production and backup, leaving the firm with no recovery option. Address all three: test backups by restoring them, patch backup infrastructure to the same SLA as production, and separate backup-admin access from production-admin access. The chapter's argument is that the same preventive measures that stop cyber-attacks also protect backups &mdash; but only if all three are addressed, because attackers will exploit whichever one is missing.</p>
+</details>
+
+<details>
+<summary>How does the BIA actually drive backup strategy?</summary>
+<p>The BIA produces four numbers per critical business process: MAD, RTO, RPO, and criticality tier. With those numbers, the backup strategy becomes a lookup: High-criticality processes (MAD &lt; 1 hour) need active/active architecture with synchronous replication and 15-minute snapshots; Moderate-criticality processes (MAD 1&ndash;24 hours) need warm-site with async replication and hourly incremental backups; Low-criticality processes (MAD &gt; 24 hours) need cold-site with tape. Without the BIA, every decision about backup frequency, retention, and architecture is a debate. With the BIA, it is a lookup. The BIA is what makes RTO/RPO defensible to UBCK examiners, auditors, and the board.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 14 (Continuity Planning and Your Approach to Backups) of Volume 2. The three essays give you Bonney's BIA-driven RPO/RTO + the unholy trinity of backup hygiene + the modern virtual/cloud asset section + the CMDB extension, Stamper's structural argument about cybersecurity's debt to BC/DR + the cover-all anti-pattern + MAD as the bridging metric, and Hayslip's BCP lifecycle + DRP structure + the $4M-per-record business case. The chapter's five-points-five-actions summary is your fallback when the CEO asks "what does the book say about this?"</p>
+
+<p><strong>Read next:</strong> Chapter 14 in full &mdash; it is long and the three essays are structured. Pay particular attention to Hayslip's BCP lifecycle (your sequencing template), Stamper's cover-all anti-pattern (the diagnostic for whether your current backup strategy is over- or under-investing), and Bonney's defend-the-backups section (the new structural requirement).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to structure the BIA workshop, how to negotiate RTO/RPO with business owners who always want tighter than you can deliver, how to defend against ransomware destroying backups specifically, how to handle the PDPD data-residency requirement for DR sites, how to scope DR test cost-effectively for 9 entities &mdash; ask. The next lesson (0007: Incident Response &mdash; the playbook) builds directly on this lesson: when the BIA's business processes are interrupted, the IR playbook is what you execute.
+</div>
+
+<div class="lesson-nav">
+  <a href="0005-threat-intel-as-a-program.html">&larr; Lesson 0005: Threat Intel as a Program</a>
+  <a href="0007-incident-response-playbook.html">Lesson 0007: Incident Response — The Playbook &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

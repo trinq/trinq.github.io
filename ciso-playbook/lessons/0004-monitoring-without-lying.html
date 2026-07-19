@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0004 — Monitoring Without Lying</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0004 &middot; CISO playbook &middot; Arc 1: Become the CISO the firm already needs</div>
+<h1>Monitoring Without Lying</h1>
+<p class="subtitle">The board will ask "are we secure?" Your job is to answer honestly. The book teaches you how.</p>
+
+<h2>Why this lesson fourth</h2>
+
+<p>Lessons 0001&ndash;0003 gave you the 90-day plan, the blended-capability team, and the awareness programme. The board has now seen you do three things &mdash; and the next question they will ask is the one every CISO dreads: <em>"are we secure?"</em></p>
+
+<p>If you answer "yes," you are lying. If you answer "no," you are fired. If you answer "we have a comprehensive monitoring programme and here is what it tells us," you are doing the CISO job. Chapter 12 is the lesson that teaches you to do that third thing.</p>
+
+<p>The chapter is almost entirely Hayslip's voice, with Bonney setting up the network-and-endpoint landscape and Stamper doing the most underrated move in the chapter: <strong>separating Technical Monitoring from Security Program Governance Monitoring.</strong> That separation is the CISO-level move. Most security leaders only do the first half. The second half is what gets you the CISO title.</p>
+
+<p>For your 9-entity Vietnamese securities firm, the lesson lands with extra weight. Two reasons:</p>
+
+<ol>
+  <li><strong>UBCK and ISO 27001 both require continuous monitoring as evidence of "reasonable care."</strong> The phrase <em>reasonable care</em> is Hayslip's central concept in this chapter, and it is the legal and regulatory standard you will be held to if a breach occurs. The monitoring programme you build is what proves you met it.</li>
+  <li><strong>Multi-entity monitoring is structurally harder than single-entity monitoring.</strong> Logs from 9 entities, different entity-level IT teams, different tooling per entity, different UBCK examiner relationships. The centralisation question &mdash; group SOC vs entity-level SOC &mdash; is one you must answer explicitly. The lesson gives you the framework.</li>
+</ol>
+
+<p>By the end of this lesson you will have <strong>drafted the monitoring-programme one-pager for the board &mdash; in Vietnamese &mdash; that answers "are we secure?" honestly, in business terms, and points to the specific dashboard they can view.</strong></p>
+
+<h2>Hayslip's "reasonable care" doctrine &mdash; the legal frame</h2>
+
+<p>Hayslip opens with a story that should keep every CISO up at night: a CISO named Alice gets a 2 AM phone call. Her firm has been breached. The forensic team is on site. The cyber-insurance policy is being activated. The board will want answers. And the question that will be asked of Alice is: <em>"did you implement a cybersecurity program to the best of your ability that met industry best practices and met the standards of care for protecting the critical data your company had stored within its enterprise networks?"</em></p>
+
+<div class="quote">
+  <span class="cite">Hayslip, CISO DRG Vol. 2 Ch. 12</span>
+  As a CISO, it is essential to understand the idea of "reasonable care" and why it is a minimum strategic standard for the business.
+</div>
+
+<p>Hayslip's three-part test for reasonable care:</p>
+
+<ol>
+  <li><strong>An industry-standard framework was used</strong> (NIST, ISO 27001, COBIT, CIS) and there is a current documented information security programme.</li>
+  <li><strong>Security control measures were implemented and are documented</strong> in the organisation's information security policies, with managerial, technical, operational, and physical controls at a maturity level commensurate with the sensitivity of the data being protected.</li>
+  <li><strong>Security procedures are certified or audited on a regular basis by an independent auditor.</strong> The audit of reasonable security practices and procedures must be current &mdash; i.e., conducted within the last year.</li>
+</ol>
+
+<p>For your firm, this is the test the UBCK examiner will apply if a breach triggers regulatory scrutiny. It is the test the PDPD enforcement team will apply if personal data is exposed. It is the test the cyber-insurance carrier will apply before paying out. The monitoring programme is the artefact that demonstrates you met the test. If you cannot show the artefact, you cannot demonstrate reasonable care.</p>
+
+<div class="callout">
+  <strong>The implication for VN securities firms specifically.</strong> PDPD (Nghị định 13/2023) requires data controllers to demonstrate "appropriate technical and organisational measures" to protect personal data. UBCK circulars require ICT risk-management programmes with monitoring evidence. ISO 27001 (where certified) requires documented monitoring and continual improvement. <em>All three converge on the same artefact: a documented, currently-active monitoring programme with evidence of operation.</em> This is the artefact the lesson teaches you to build.
+</div>
+
+<h2>Stamper's two-form split &mdash; the CISO-level move</h2>
+
+<p>Stamper's contribution to the chapter is the most underrated move in the book. He separates monitoring into two distinct forms. Most security leaders only do the first. The second is what makes you a CISO.</p>
+
+<table>
+  <thead>
+    <tr><th>Form</th><th>What it covers</th><th>What most people get wrong</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Technical Monitoring</strong></td>
+      <td>Network traffic, endpoints, packets, anomalies, user behaviour, DLP, threat intel. The SIEM and SOC layer.</td>
+      <td>Treating this as the whole of monitoring. Reporting SIEM dashboard metrics to the board as if they answered the "are we secure?" question.</td>
+    </tr>
+    <tr>
+      <td><strong>Security Program Governance Monitoring</strong></td>
+      <td>Legal obligations, regulatory obligations, programme budget, board communication, procurement &amp; line-of-business initiatives, training &amp; professional team development. The CISO's own surveillance layer over the programme itself.</td>
+      <td>Ignoring it entirely. Treating it as "not my job" or "that's compliance's job." Noticing it only when an audit or breach surfaces a gap.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Stamper's argument is sharp: <em>"CISOs who excel at this type of monitoring will have stronger, more effective security programs than those that ignore these critical competencies. The C-suite views these CISOs as trusted advisors and colleagues. The pay for these individuals is higher than that of purely technical CISOs &mdash; who are frequently a layer or two below in the org chart."</em></p>
+
+<p>For your 9-entity firm, the governance-monitoring layer translates into specific recurring activities. The lesson names them. Stamper's six elements of governance monitoring:</p>
+
+<ol>
+  <li><strong>Legal obligations monitoring.</strong> Review every material contract for security clauses, log retention requirements, breach-notification SLAs. Surface gaps to legal counsel. <em>This is not legal's job alone; you are the technical resource.</em></li>
+  <li><strong>Regulatory obligations monitoring.</strong> UBCK circulars, PDPD, ISO 27001 controls, market-operator rules. Map every regulatory requirement to a specific control with evidence of operation. <em>"Declare war on ambiguity"</em> &mdash; assume nothing about who owns what until it is in writing.</li>
+  <li><strong>Programme budget monitoring.</strong> Maintain a "reasonable" budget (minimum requirements) and an "aspirational" budget (wish list). Quarterly review with the CFO. No surprises to the board.</li>
+  <li><strong>Board communication monitoring.</strong> Periodic status updates. Risk-translation briefings. Help the board understand there is no such thing as absolute security &mdash; only reasonable care.</li>
+  <li><strong>Procurement &amp; line-of-business monitoring.</strong> Know what vendors are connecting to your network. Know what new initiatives are being launched by the business. Surface risks before they hit production.</li>
+  <li><strong>Training &amp; team-development monitoring.</strong> One-on-ones. Career conversations. Engagement signals. People who feel unseen leave; people who leave take institutional knowledge with them.</li>
+</ol>
+
+<p>This is the layer that separates a senior security engineer from a CISO. If you are not doing all six, you are not yet at CISO level. Period.</p>
+
+<h2>Hayslip's continuous-monitoring lifecycle</h2>
+
+<p>Hayslip's operational framing is the most useful in the chapter for your day-to-day work. He defines a five-stage cybersecurity lifecycle: <strong>inventory, assessment, scanning, remediation, monitoring.</strong> Monitoring is the last stage but it loops back into the first three &mdash; it is the feedback mechanism.</p>
+
+<p>His design checklist for a continuous monitoring programme (the seven questions he asks before deploying a SIEM):</p>
+
+<ol>
+  <li><strong>Purpose.</strong> Why are we monitoring? Compliance? Technical? Both? What is the business reason?</li>
+  <li><strong>Requirements.</strong> What are the technical, security, legal, business, and compliance requirements for the programme?</li>
+  <li><strong>What to monitor.</strong> Which systems, applications, and data? (This is the hardest question. Get it wrong and you drown in noise.)</li>
+  <li><strong>How to implement.</strong> On-premises, cloud, or hybrid? Sensor deployment model?</li>
+  <li><strong>Data, data, data.</strong> Where will it be stored? Retention policy? Access control?</li>
+  <li><strong>Metrics &amp; reports.</strong> What is the story? Which audience?</li>
+  <li><strong>911.</strong> Who responds when an alert fires? (A SOC nobody staffs is decoration.)</li>
+</ol>
+
+<p>For a 9-entity firm, question 3 (<em>what to monitor</em>) is where the multi-entity overlay bites hardest. Different entities have different critical business processes: trading systems for the brokerage, custody ledger for the custodian, fund NAV calculation for fund management. The "what to monitor" answer is not uniform across entities. The lesson gives you the framework for handling this.</p>
+
+<h2>Bonney's 13-item watch list &mdash; the technical monitoring scope</h2>
+
+<p>Bonney's list of things to monitor is exhaustive and useful as the scope-checklist for your technical monitoring programme. The list:</p>
+
+<ol>
+  <li>Accounts (human and system) provisioned in your environment, including privileged access (root, admin). Account creation, change in access rights.</li>
+  <li>The assets these accounts access and attempt to access.</li>
+  <li>The data flow across your network (to internal and external destinations).</li>
+  <li>The vulnerabilities left unpatched in your environment.</li>
+  <li>Viruses detected and remediated on your network and endpoint devices.</li>
+  <li>The dark web market for your firm's information.</li>
+  <li>The unapproved traffic on your network.</li>
+  <li>The configuration drift for both physical and virtual assets from approved secure baselines (servers, endpoints, network infrastructure, network protection).</li>
+  <li>The third-party applications (approved and unapproved) deployed on or accessed from your network.</li>
+  <li>The devices (approved and unapproved) connected (physically or wirelessly) to your network and the traffic they generate.</li>
+  <li>The applications (approved and unapproved) generating traffic on your network.</li>
+  <li>The third-party accounts that have access to your network, especially service accounts.</li>
+  <li>The events generated by system accounts.</li>
+</ol>
+
+<p>You cannot monitor all 13 with equal intensity. The CISO move is to rank them by business impact and assign monitoring depth accordingly. Bonney's framing: <em>"you must continually assess your most critical business processes and make sure that you have event monitoring in place to detect indicators of compromise for potential breaches with the greatest potential to do your organisation harm."</em></p>
+
+<p>For your firm, the top three are almost certainly:</p>
+
+<ul>
+  <li><strong>Trading systems and order management</strong> &mdash; breach here is existential for the brokerage entities.</li>
+  <li><strong>Custody ledger and customer PII</strong> &mdash; breach here triggers PDPD notification and reputational damage.</li>
+  <li><strong>Privileged accounts</strong> &mdash; admin/domain/root/service accounts are the attackers' real target.</li>
+</ul>
+
+<h2>Bonney's "semi-permeable gateways and mist" framing &mdash; the perimeter is gone</h2>
+
+<p>Bonney's most quoted line from the chapter: <em>"the firewall that promised a thick, hard shell to protect the soft, chewy center no longer &mdash; if it ever did &mdash; offers the protection that it was theoretically intended to provide."</em> His replacement framing: <em>"semi-permeable gateways and mist where our firewalls used to be."</em></p>
+
+<p>This is not paranoia. It is the operating reality for any VN securities firm in 2026. Your traders work from home. Your brokers use mobile apps. Your custody team accesses the ledger via VPN. Your customer onboarding is online. Your market-data feed comes from HOSE / HNX via APIs. Your clearing happens through counter-party connections. There is no perimeter. There are semi-permeable gateways. There is mist.</p>
+
+<p>The implication: <strong>your monitoring cannot assume the perimeter will catch the attack.</strong> You must monitor the inside (east-west traffic, user behaviour, data flows) with the same intensity you monitor the outside (north-south traffic, perimeter, threat intel). The shift is from perimeter monitoring to <em>behavioural monitoring</em> &mdash; which is exactly what modern SIEM + UEBA (User and Entity Behaviour Analytics) + EDR (Endpoint Detection and Response) provide.</p>
+
+<h2>AI in monitoring &mdash; Bonney's last move</h2>
+
+<p>Bonney closes with a structural argument: <em>"you must be right 100% of the time, but the cybercriminals only need to be right once."</em> The asymmetry is unsolvable by human-only monitoring. AI tools &mdash; behaviour analysis, anomaly detection, clustering, predictive analytics &mdash; are how you tilt the asymmetry back. Not a replacement for human analysts. An augmentation. The chapter's framing: AI in monitoring is not optional, it is structural.</p>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 12</span>
+  Given the sheer volume of attacks and the number of endpoints, systems, and approved communications channels you are protecting, it's going to be essential to incorporate products that use AI into your tools portfolio and train your staff to include AI in their experiments and ad hoc tools.
+</div>
+
+<p>For a 600-person firm, the practical move is to <strong>buy AI from your MSSP, not build it</strong>. Modern MSSPs deliver AI-augmented tier-1 triage, anomaly detection, and behavioural baselining as part of the standard SOC contract. The lesson's recommendation: when you negotiate the MSSP contract (lesson 0002's blended model), explicitly ask what AI capability they include and what detection-engineering support they provide.</p>
+
+<h2>Application security &mdash; Hayslip's second move</h2>
+
+<p>Hayslip's section on application security is short but it is the part most CISO monitoring programmes skip. His argument: <em>weaknesses in software code are doorways for exploitation if the security controls of an organization are not mature enough to prevent the attack from an outside agent.</em> For a securities firm, the applications that matter most are the trading platform, the order management system, the customer portal, and the market-data feed handler. These are the highest-value assets. They are also where most breaches start.</p>
+
+<p>The framework recommendation: <strong>OWASP</strong> to establish the programme (Top 10, ASVS, SAMM for maturity); <strong>BSIMM</strong> to grade the maturity of the development team's practices. For a VN securities firm, the practical first move is to ensure the development team (in-house or outsourced) is following OWASP Top 10 as the minimum baseline and that code reviews include security testing before production deployment.</p>
+
+<h2>The metrics &mdash; the 10 board questions</h2>
+
+<p>Hayslip's most useful single artefact is the list of 10 questions executive management will ask. Your monitoring programme must produce metrics that answer each one &mdash; honestly, in business terms.</p>
+
+<ol>
+  <li><strong>How secure are we?</strong></li>
+  <li><strong>How secure are we relative to company X or company Y?</strong></li>
+  <li><strong>Which are our strongest or weakest security issues?</strong></li>
+  <li><strong>What are our most significant security threats or risks? What are you doing about them?</strong></li>
+  <li><strong>Are we spending the right amount on cybersecurity? Is there a baseline against which we could measure ourselves?</strong></li>
+  <li><strong>Are our security suite and assets deployed optimally?</strong></li>
+  <li><strong>Are we meeting the standard of reasonable care? Are we using best practices to address all reasonable, identifiable risks?</strong></li>
+  <li><strong>Are we resilient? Can we handle a compromise without losing the ability to operate?</strong></li>
+  <li><strong>Are we going to be able to meet our compliance requirements?</strong></li>
+  <li><strong>How do we rank versus other peers/competitors/partners in our business vertical?</strong></li>
+</ol>
+
+<p>The honest CISO answer to most of these is <em>"here is what our monitoring tells us, here is what we are doing about it, here is what we cannot yet see."</em> The dishonest answer is "yes, we are secure." The first answer keeps you in seat. The second gets you fired after the breach.</p>
+
+<div class="callout">
+  <strong>The metrics that actually answer the board's questions.</strong> Mapped from Hayslip's list to what your SIEM, awareness programme, and governance-monitoring layer actually produce: <em>mean time to detect</em> (MTTD), <em>mean time to respond</em> (MTTR), <em>percentage of critical assets under continuous monitoring</em>, <em>vulnerability patch SLA compliance</em>, <em>phishing click-through rate</em> (from lesson 0003), <em>privileged-access review completion</em>, <em>third-party risk-assessment completion</em>, <em>audit findings closed on time</em>, <em>tabletop participation rate</em>, <em>budget variance</em>. The board does not want 50 metrics. They want the 10 that answer their 10 questions.
+</div>
+
+<h2>Multi-entity overlay &mdash; where to centralise, where to keep local</h2>
+
+<p>For your 9-entity firm, the monitoring-programme design question is: what lives at the group SOC, what lives at entity-level IT, and what is the entity-level coordination layer?</p>
+
+<table>
+  <thead>
+    <tr><th>Monitoring layer</th><th>Group SOC?</th><th>Entity IT?</th><th>Coordination</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>SIEM aggregation</strong></td>
+      <td>Yes &mdash; single SIEM, multi-tenant.</td>
+      <td>Entity-level log sources feed the central SIEM.</td>
+      <td>Group SOC owns the SIEM; entity IT owns the log sources and the first-line investigation.</td>
+    </tr>
+    <tr>
+      <td><strong>Threat intel</strong></td>
+      <td>Yes &mdash; single intel function.</td>
+      <td>Entity-tailored use cases.</td>
+      <td>Group intel produces the feed + the use-case library; entity IT operationalises the use cases.</td>
+    </tr>
+    <tr>
+      <td><strong>Endpoint (EDR)</strong></td>
+      <td>Standards + central console.</td>
+      <td>Day-to-day ops on entity-managed devices.</td>
+      <td>Group owns the EDR contract + the central console; entity IT manages the agents + the response.</td>
+    </tr>
+    <tr>
+      <td><strong>Vulnerability management</strong></td>
+      <td>Central scanner + central dashboard.</td>
+      <td>Entity-level patch deployment.</td>
+      <td>Group owns the scanning; entity IT owns the remediation SLA per system.</td>
+    </tr>
+    <tr>
+      <td><strong>Application security</strong></td>
+      <td>Standards + central review for shared apps.</td>
+      <td>Entity-specific app testing.</td>
+      <td>Group defines OWASP baseline; entity dev teams implement.</td>
+    </tr>
+    <tr>
+      <td><strong>Governance monitoring</strong></td>
+      <td>Yes &mdash; single programme.</td>
+      <td>Entity compliance officers feed entity-level evidence.</td>
+      <td>Group owns the programme; entity compliance officers own the entity-level evidence + the UBCK examiner relationship.</td>
+    </tr>
+    <tr>
+      <td><strong>Board communication</strong></td>
+      <td>Yes &mdash; single quarterly briefing.</td>
+      <td>Entity leadership feeds the group briefing.</td>
+      <td>CISO presents to group board; entity leadership presents within entity.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The default for VN multi-entity firms is to duplicate the SOC at each entity. The right answer for most is the group-SOC + entity-log-sources model above. It saves 60&ndash;80% on monitoring spend and gives 24/7 coverage that no single entity can afford.</p>
+
+<h2>Where Bonney, Stamper, and Hayslip agree</h2>
+
+<p>The three authors converge on a single principle: <strong>monitoring is not just SIEM dashboards, it is the entire feedback system that lets you prove reasonable care and avoid being the CISO Alice on a 2 AM phone call.</strong></p>
+
+<p>Specific points of agreement:</p>
+
+<ul>
+  <li><strong>Indicators of compromise are the right things to look for.</strong> Not just known-bad signatures. Behavioural anomalies. Configuration drift. Unusual account activity.</li>
+  <li><strong>The perimeter is gone.</strong> Monitoring must be inside-out as well as outside-in.</li>
+  <li><strong>AI is structural, not optional.</strong> The volume asymmetry is unsolvable without it.</li>
+  <li><strong>Frameworks matter.</strong> NIST SP800-137 for continuous monitoring. OWASP for application security. ISO 27001 for the management system. CIS for the controls.</li>
+  <li><strong>Application security is part of monitoring.</strong> Not a separate concern.</li>
+  <li><strong>Governance monitoring is CISO work.</strong> Not "compliance's job."</li>
+</ul>
+
+<p>Where they diverge: <em>emphasis.</em> Bonney emphasises the network-and-endpoint landscape and the AI response. Stamper emphasises the governance layer (the CISO differentiator). Hayslip emphasises the lifecycle, the SIEM design checklist, and the reasonable-care doctrine. In your board briefing, lead with Hayslip (reasonable care is the legal frame), support with Stamper (governance monitoring is CISO work), close with Bonney (the perimeter is gone, here is what we are doing about it).</p>
+
+<h2>The interview artifact: monitoring-programme one-pager (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Đề án Chương trình Giám sát An ninh mạng Liên tục (Continuous Monitoring Programme One-Pager)</h3>
+
+<p><strong>Use case:</strong> submit to CEO / Audit Committee / UBCK examiner as evidence of a documented, currently-active monitoring programme that meets reasonable-care standards. One Vietnamese-language page: mục tiêu, hai hình thức giám sát, watch list, công cụ, chỉ số, mô hình 9 công ty, điểm chạm quy định.</p>
+
+<h3 style="margin-top:18px;">1. Mục tiêu (Objective)</h3>
+<p>Chứng minh <strong>giám sát hợp lý (reasonable care)</strong> theo tiêu chuẩn NIST SP800-137, ISO 27001, UBCK, PDPD. Cung cấp câu trả lời trung thực cho HĐQT khi được hỏi "chúng ta có an toàn không?" thông qua dashboard và báo cáo định kỳ.</p>
+
+<h3 style="margin-top:18px;">2. Hai hình thức giám sát (Two forms of monitoring)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Hình thức</th><th>Phạm vi</th><th>Người chịu trách nhiệm</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Giám sát kỹ thuật (Technical Monitoring)</strong></td>
+      <td>SIEM tập trung + EDR + vulnerability scanning + threat intel + DLP + dark-web monitoring</td>
+      <td>Group SOC (MSSP hỗ trợ 24/7)</td>
+    </tr>
+    <tr>
+      <td><strong>Giám sát quản trị chương trình (Security Program Governance Monitoring)</strong></td>
+      <td>Nghĩa vụ pháp lý, nghĩa vụ quy định, ngân sách, truyền thông HĐQT, mua sắm, phát triển đội ngũ</td>
+      <td>CISO trực tiếp</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">3. Watch list &mdash; 13 mục (Bonney's list, ranked by business impact)</h3>
+<ol>
+  <li><strong>Tài khoản đặc quyền (privileged accounts)</strong> &mdash; SIEM rule + monthly access review.</li>
+  <li><strong>Hệ thống giao dịch &amp; quản lý lệnh (trading &amp; OMS)</strong> &mdash; real-time monitoring + entity-tailored use cases.</li>
+  <li><strong>Sổ cái lưu ký &amp; dữ liệu khách hàng (custody ledger &amp; PII)</strong> &mdash; DLP + access monitoring + PDPD-aligned retention.</li>
+  <li><strong>Lỗ hổng chưa vá (unpatched vulnerabilities)</strong> &mdash; weekly vulnerability scan + SLA-tracked remediation.</li>
+  <li><strong>Tài khoản hệ thống &amp; service accounts</strong> &mdash; behavioural baselining + quarterly review.</li>
+  <li><strong>Malware / endpoint compromise</strong> &mdash; EDR + phishing-simulation integration.</li>
+  <li><strong>Configuration drift</strong> &mdash; CIS Benchmark monitoring + automated remediation where possible.</li>
+  <li><strong>Third-party access</strong> &mdash; vendor access logging + quarterly access review.</li>
+  <li><strong>Dark-web mentions</strong> &mdash; threat-intel feed.</li>
+  <li><strong>Unapproved traffic &amp; shadow IT</strong> &mdash; network monitoring + entity coordinator reporting.</li>
+  <li><strong>Unapproved devices</strong> &mdash; NAC + Wi-Fi monitoring.</li>
+  <li><strong>Unapproved applications</strong> &mdash; application allow-list + CASB.</li>
+  <li><strong>Data exfiltration signals</strong> &mdash; DLP + UEBA + outbound traffic baselining.</li>
+</ol>
+
+<h3 style="margin-top:18px;">4. Công cụ (Tools)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Lớp</th><th>Công cụ</th><th>Sở hữu</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SIEM</td>
+      <td>[Vendor] &mdash; multi-tenant, 9 entities</td>
+      <td>Group SOC</td>
+    </tr>
+    <tr>
+      <td>EDR</td>
+      <td>[Vendor] &mdash; agent trên tất cả endpoint</td>
+      <td>Group + entity IT</td>
+    </tr>
+    <tr>
+      <td>Vulnerability management</td>
+      <td>[Vendor] &mdash; weekly scan toàn group</td>
+      <td>Group security</td>
+    </tr>
+    <tr>
+      <td>Threat intel feed</td>
+      <td>[Vendor] + open-source + VNPT/ISAC</td>
+      <td>Group security</td>
+    </tr>
+    <tr>
+      <td>DLP</td>
+      <td>[Vendor] &mdash; bao phủ PII theo PDPD</td>
+      <td>Group security + entity DPO</td>
+    </tr>
+    <tr>
+      <td>UEBA</td>
+      <td>[Module trong SIEM hoặc vendor riêng]</td>
+      <td>Group SOC</td>
+    </tr>
+    <tr>
+      <td>MSSP 24/7</td>
+      <td>[Vendor] &mdash; tier-1 alert triage</td>
+      <td>Group SOC quản lý hợp đồng</td>
+    </tr>
+    <tr>
+      <td>Phishing simulation</td>
+      <td>[Vendor] &mdash; từ lesson 0003</td>
+      <td>Group security</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">5. Chỉ số trả lời 10 câu hỏi của HĐQT (Metrics)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Câu hỏi HĐQT</th><th>Chỉ số</th><th>Mục tiêu</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chúng ta có an toàn không?</td>
+      <td>% tài sản quan trọng được giám sát liên tục</td>
+      <td>&ge;95%</td>
+    </tr>
+    <tr>
+      <td>Rủi ro lớn nhất?</td>
+      <td>Top-5 rủi ro theo business impact + trạng thái xử lý</td>
+      <td>Cập nhật mỗi quý</td>
+    </tr>
+    <tr>
+      <td>Chi tiêu có đúng mức?</td>
+      <td>Budget variance vs. aspirational budget</td>
+      <td>±5%</td>
+    </tr>
+    <tr>
+      <td>Reasonable care?</td>
+      <td>Audit findings đóng đúng hạn</td>
+      <td>100%</td>
+    </tr>
+    <tr>
+      <td>Có resilient không?</td>
+      <td>MTTD / MTTR / RTO / RPO</td>
+      <td>MTTD &lt; 24h, MTTR &lt; 72h</td>
+    </tr>
+    <tr>
+      <td>Đạt tuân thủ?</td>
+      <td>% kiểm soát UBCK/ISO/PDPD có bằng chứng hoạt động</td>
+      <td>&ge;90%</td>
+    </tr>
+    <tr>
+      <td>Mức độ so với ngành?</td>
+      <td>Benchmark với [industry peer group]</td>
+      <td>Top quartile</td>
+    </tr>
+    <tr>
+      <td>Privileged access hygiene?</td>
+      <td>% tài khoản đặc quyền được review hàng quý</td>
+      <td>100%</td>
+    </tr>
+    <tr>
+      <td>Patch SLA?</td>
+      <td>% lỗ hổng critical/high vá trong SLA</td>
+      <td>&ge;95%</td>
+    </tr>
+    <tr>
+      <td>Phishing resilience?</td>
+      <td>Click-through rate + report rate (từ lesson 0003)</td>
+      <td>Click &lt;5%, Report +200%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">6. Mô hình 9 công ty (Multi-entity overlay)</h3>
+<ul>
+  <li><strong>Group SOC (1):</strong> SIEM tập trung, 24/7 MSSP, threat intel, AI-augmented tier-1 triage.</li>
+  <li><strong>Entity IT (9):</strong> Log sources, EDR agents, vulnerability remediation, first-line investigation.</li>
+  <li><strong>Entity compliance officers (9):</strong> UBCK examiner relationship, entity-level evidence, DPO responsibilities per entity.</li>
+  <li><strong>Trusted-agent layer (9 &mdash; từ lesson 0003):</strong> Near-miss reporting feeds the SIEM use-case library.</li>
+</ul>
+
+<h3 style="margin-top:18px;">7. Điểm chạm quy định (Regulatory touchpoints)</h3>
+<ul>
+  <li><strong>UBCK:</strong> Chương trình giám sát liên tục là bằng chứng tuân thủ ICT risk management. Cung cấp báo cáo theo yêu cầu thanh tra.</li>
+  <li><strong>ISO 27001 A.8 (operations security) + A.12.4 (logging and monitoring):</strong> Chương trình phải có bằng chứng vận hành + continual improvement.</li>
+  <li><strong>PDPD:</strong> Giám sát truy cập dữ liệu cá nhân + phát hiện vi phạm trong 72h. DLP phải bao phủ personal data inventory.</li>
+  <li><strong>Luật An toàn thông tin mạng 2015:</strong> Giám sát hệ thống thông tin quan trọng.</li>
+  <li><strong>Cyber insurance:</strong> Hầu hết hợp đồng yêu cầu chương trình giám sát liên tục là điều kiện bồi thường.</li>
+</ul>
+
+<h3 style="margin-top:18px;">8. Giám sát quản trị chương trình (Governance monitoring &mdash; CISO's own layer)</h3>
+<ul>
+  <li><strong>Nghĩa vụ pháp lý:</strong> Review hợp đồng quan trọng mỗi quý &mdash; mỗi hợp đồng có security clauses gì, log retention gì, breach-notification SLA gì.</li>
+  <li><strong>Nghĩa vụ quy định:</strong> Map UBCK + PDPD + ISO 27001 + market-operator rules vào bảng kiểm soát &mdash; mỗi kiểm soát có owner + evidence.</li>
+  <li><strong>Ngân sách:</strong> "Reasonable" budget + "aspirational" budget. Đánh giá hàng quý với CFO.</li>
+  <li><strong>Truyền thông HĐQT:</strong> Báo cáo quý cho HĐQT theo 10 câu hỏi Hayslip.</li>
+  <li><strong>Mua sắm &amp; sáng kiến:</strong> Họp định kỳ với procurement &mdash; vendor nào đang kết nối, sáng kiến nào đang triển khai.</li>
+  <li><strong>Phát triển đội ngũ:</strong> 1:1 hàng tháng với từng thành viên. Theo dõi engagement signals.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the 8-section Vietnamese one-pager above and fill it in for your firm. Spend 20 minutes on section 3 (Bonney's watch list &mdash; rank by business impact for your 9 entities) and section 5 (the 10 metrics &mdash; which ones can you actually report today, which ones need new instrumentation?). When the one-pager is filled in, you have the artefact for the next board briefing <em>and</em> the evidence pack for the next UBCK examiner visit.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does Stamper split monitoring into Technical and Governance forms?</summary>
+<p>Because the CISO role is broader than running a SIEM. Technical monitoring (network, endpoint, behaviour) is the SOC layer &mdash; important, but it is the work a senior security engineer can do. Security Program Governance Monitoring (legal obligations, regulatory obligations, budget, board communication, procurement, team development) is the CISO layer &mdash; the work that no one below the CISO can do. If you are not doing governance monitoring, you are not yet at CISO level. The board, the regulators, and the cyber-insurance carrier will all notice the gap. The chapter's most under-appreciated move is the second form.</p>
+</details>
+
+<details>
+<summary>What does "reasonable care" actually mean for a VN securities firm in 2026?</summary>
+<p>It means you can demonstrate three things to the UBCK examiner, the PDPD enforcement team, and the cyber-insurance carrier if a breach triggers scrutiny: (1) an industry-standard framework was used (NIST, ISO 27001, CIS) and there is a current documented information security programme; (2) security controls are documented in policies with maturity commensurate with the sensitivity of the data; (3) security procedures are audited by an independent auditor within the last year. The monitoring programme is the artefact that proves all three. Without it, reasonable care cannot be demonstrated, and the CISO becomes personally exposed.</p>
+</details>
+
+<details>
+<summary>Why does Bonney say "you must be right 100% of the time, attackers only need to be right once"?</summary>
+<p>Because the defender's job is to prevent every attack; the attacker's job is to find one way in. The asymmetry is structural. It cannot be solved by human-only monitoring because the volume of events is too high for any human team to review in real time. It cannot be solved by signature-based tools because novel attacks have no signatures. The only structural response is AI-augmented monitoring &mdash; behaviour analysis, anomaly detection, clustering, predictive analytics. For a 600-person firm, the practical move is to buy AI capability from your MSSP, not to build it. The chapter's structural argument is: AI in monitoring is not optional, it is the only response to the asymmetry.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 12 (Monitoring Your Environment) of Volume 2. The three essays give you Bonney's network-and-endpoint landscape + the 13-item watch list + the AI structural argument, Stamper's two-form split (Technical vs Governance) + the six elements of governance monitoring, and Hayslip's reasonable-care doctrine + the continuous-monitoring lifecycle + the SIEM design checklist + the OWASP/BSIMM application-security framework. The chapter's five-points-five-actions summary is your fallback when the board asks "what does the book say about this?"</p>
+
+<p><strong>Read next:</strong> Chapter 12 in full &mdash; it is long but the three essays are structured. Pay particular attention to the Alice Bentlee story (Hayslip's opening &mdash; this is the framing for the entire reasonable-care argument), Stamper's six elements of governance monitoring (the CISO differentiator), and the 10 executive-management questions (the metrics you must answer).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to negotiate the MSSP contract for AI-augmented tier-1, how to handle the entity-level vs group-SOC politics, how to scoreboard a board that asks "are we secure?" without lying, how to handle PDPD's 72-hour breach notification clock operationally &mdash; ask. The next lesson (0005: Threat Intel as a Program) builds directly on the SIEM use-case library: threat intel is what populates the library with relevant detection content.
+</div>
+
+<div class="lesson-nav">
+  <a href="0003-awareness-that-changes-behaviour.html">&larr; Lesson 0003: Awareness That Changes Behaviour</a>
+  <a href="0005-threat-intel-as-a-program.html">Lesson 0005: Threat Intel as a Program &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

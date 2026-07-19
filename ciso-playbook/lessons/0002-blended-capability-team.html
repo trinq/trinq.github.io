@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0002 — The Blended-Capability Team Across 9 Entities</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0002 &middot; CISO playbook &middot; Arc 1: Become the CISO the firm already needs</div>
+<h1>The Blended-Capability Team Across 9 Entities</h1>
+<p class="subtitle">You cannot hire your way out of the talent shortage. You can design your way out.</p>
+
+<h2>Why this lesson second</h2>
+
+<p>Lesson 0001 gave you the 90-day plan as Security Leader &rarr; CISO. The very first thing the plan asks you to do in days 0&ndash;30 is look at the team. That is not a metaphor. <strong>The team is the constraint on every other decision you will make.</strong> If you do not have the right people &mdash; or the right mix of people, vendors, automation, and evangelists &mdash; you cannot run the program. Everything else collapses into the question "do I have the capability to execute this?"</p>
+
+<p>Chapter 10 of Volume 2 is the first chapter in the build half of the book for that reason. The three authors spend most of their pages on one question: how do you build the security team when the talent market is broken? That question is doubly sharp in your situation: a 9-entity Vietnamese securities firm, mid-size, regulated, with a security function that is already in seat but not yet at CISO maturity.</p>
+
+<p>By the end of this lesson you will have <strong>drafted the blended-capability operating model for the firm &mdash; in Vietnamese &mdash; that you can take to your CEO / board to justify the FY security investment plan.</strong> Not an HR hiring plan. A security operating model that names what is in-house, what is shared, what is outsourced, what is automated, and what is enforced through the rest of the business.</p>
+
+<h2>The book's four pillars, and how they break in Vietnam</h2>
+
+<p>Bonney's opening framing &mdash; the four pillars of talent management (recruitment, learning, performance, compensation) &mdash; is universal. What is <em>not</em> universal is how each pillar breaks in the Vietnamese securities-firm context:</p>
+
+<table>
+  <thead>
+    <tr><th>Pillar</th><th>Book's framing</th><th>What it looks like at a 9-entity VN securities firm</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Recruitment</strong></td>
+      <td>"Always recruiting." Network and brand are the hiring pipeline.</td>
+      <td>VN cyber talent market is shallow at senior levels; you compete with banks, fintechs, MSSPs, and Big 4. Your 9-entity footprint is a recruitment asset (variety of work) and a liability (perceived complexity). <strong>Use the firm's brand carefully.</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Learning</strong></td>
+      <td>Pink / Schwartz / Porath: purpose, mastery, autonomy.</td>
+      <td>VN security professionals are unusually certification-driven (CISSP, CISM, ISO 27001 LA). Certifications are a status signal here in a way they are not in the US. <strong>Use this.</strong> Sponsor certifications as part of retention, not as a hiring filter.</td>
+    </tr>
+    <tr>
+      <td><strong>Performance</strong></td>
+      <td>Metrics &mdash; MTTD, MTTR, % incidents detected internally, customer service surveys.</td>
+      <td>The book's metrics apply. The VN-specific addition is <strong>regulator-facing metrics</strong>: UBCK reporting cycle adherence, ISO 27001 KPI dashboards, PDPD personal-data inventory coverage. Add these to your metrics tree.</td>
+    </tr>
+    <tr>
+      <td><strong>Compensation</strong></td>
+      <td>"Salary premium over IT" is real, but not the only motivator.</td>
+      <td>VN security compensation lags regional benchmarks (Singapore, HK) by 30&ndash;50%. You will lose senior people to MSSPs and banks. <strong>Compete on mission + growth + certification sponsorship, not on salary alone.</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The honest assessment the book keeps returning to.</strong> Bonney says it bluntly: <em>"The cost (in hard cost and opportunity loss) of competing for and hiring fully formed senior security engineers for all positions has already become prohibitive."</em> In Vietnam, this is doubly true at senior levels and triply true if you are trying to staff a 9-entity security function with full-time equivalents. The book's answer is the blended-capability model. Your answer is the same, with the multi-entity lens layered on.
+</div>
+
+<h2>What "blended capability" actually means</h2>
+
+<p>The book's blended-capability model has four components. Naming them explicitly makes the design choices visible to the CEO and the board.</p>
+
+<ol>
+  <li><strong>Full-Time Equivalents (FTE).</strong> The core in-house team. Holds institutional knowledge, owns the program, cannot be outsourced.</li>
+  <li><strong>Cross-training and upskilling of existing IT staff.</strong> Your IT helpdesk, sysadmins, network engineers, and DBA team can carry significant security workload if trained. They know the systems better than any external hire will for the first 18 months.</li>
+  <li><strong>Security evangelists across the business.</strong> Not full-time security people. People in each entity and each business function (trading, brokerage ops, custody, compliance, HR) who carry part-time security responsibility. This is how you scale "awareness" into actual ownership.</li>
+  <li><strong>Third-party service delivery (outsourcing / MSSP).</strong> Functions where specialist depth is required and continuous coverage is required: 24/7 SOC monitoring, threat-intel feeds, penetration testing, IR retainer, forensic capability. These are the natural MSSP candidates.</li>
+</ol>
+
+<p>The book's central insight, repeated across all three essays, is that <strong>most CISOs treat all four as either-or, when they should be treated as a portfolio.</strong> The right design has all four components, with explicit roles and explicit boundaries.</p>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 10</span>
+  It is essential to recognize that the CISO, and the entire Information Security team, are continually recruiting. Every opportunity to interact with your community is an opportunity to assess and impress the people that can help you succeed.
+</div>
+
+<h2>Bonney's three questions for every role</h2>
+
+<p>Before you create a new security position, before you renew an MSSP contract, before you buy an AI-augmented tool &mdash; ask Bonney's three questions. They are the cleanest single decision-framework in the chapter:</p>
+
+<ol>
+  <li><strong>Is the best way to address this gap to hire a person, or to contract the service from a trusted vendor?</strong></li>
+  <li><strong>Is this job best filled, or only filled, by a security professional with specialised skills?</strong></li>
+  <li><strong>With my limited budget, is this a priority for me to hire, as opposed to another department?</strong></li>
+</ol>
+
+<p>For a 9-entity VN securities firm, the most under-used of these is question 2. Most job descriptions in Vietnam (and in the book, frankly) assume "yes, must be a security specialist" for jobs that are mostly <em>IT operations with security awareness added.</em> Examples:</p>
+
+<ul>
+  <li>Identity and access management reviews &mdash; mostly IT operations, security-specialist advisory only.</li>
+  <li>Endpoint hardening baselines &mdash; mostly sysadmin work, security-standard-setting by specialist.</li>
+  <li>Backup verification &mdash; mostly IT operations, security-policy enforcement by specialist.</li>
+  <li>Vendor security questionnaires &mdash; mostly procurement, security-review only.</li>
+</ul>
+
+<p>Rebadging these as security positions inflates your team count and your budget ask. Rebadging them as IT operations with security SLAs gives you the coverage at lower cost. This is one of the book's most under-appreciated moves and it is directly applicable to your situation.</p>
+
+<h2>The multi-entity overlay: where shared services make sense</h2>
+
+<p>The book's blended-capability model is built for one company. You have nine. This is where the lesson becomes specific to your firm.</p>
+
+<p>The right question is not "what does the blended model look like for entity A?" &mdash; it is "for each function, is this a <em>group-level shared service</em>, an <em>entity-level capability</em>, or both?" The default answer in most multi-entity firms is to duplicate the function at each entity. The right answer is usually to consolidate at the group level where the work is the same across entities, and to specialise at the entity level where the business is genuinely different.</p>
+
+<table>
+  <thead>
+    <tr><th>Function</th><th>Group-level shared service?</th><th>Entity-level?</th><th>Notes for your firm</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>24/7 SOC monitoring</strong></td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>One SOC serves all 9 entities. Significant cost saving; standard pattern. Watch for entity-specific log sources.</td>
+    </tr>
+    <tr>
+      <td><strong>Threat intelligence</strong></td>
+      <td>Yes</td>
+      <td>Tailoring only</td>
+      <td>One threat-intel function. Entity-specific tailoring (e.g., brokerage vs. custody) handled via use-case library, not separate teams.</td>
+    </tr>
+    <tr>
+      <td><strong>IR retainer / forensics</strong></td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>External MSSP / IR firm retainer, shared across entities. Cheaper than 9 retainers; standard pattern.</td>
+    </tr>
+    <tr>
+      <td><strong>GRC (policy, audit, regulator)</strong></td>
+      <td>Yes (policy)</td>
+      <td>Yes (compliance)</td>
+      <td>Group sets policy; entity-level compliance officer implements. UBCK examiners usually deal with each entity separately &mdash; entity-level ownership is non-negotiable.</td>
+    </tr>
+    <tr>
+      <td><strong>Identity / access management</strong></td>
+      <td>Mostly group</td>
+      <td>App-specific</td>
+      <td>Core IAM platform and policies at group; entity-specific application access handled by entity IT with security oversight.</td>
+    </tr>
+    <tr>
+      <td><strong>Awareness / training</strong></td>
+      <td>Core program</td>
+      <td>Entity-tailored delivery</td>
+      <td>Group designs and owns the program; entity HR delivers. Compliance-tracking lives at group.</td>
+    </tr>
+    <tr>
+      <td><strong>Endpoint / network security ops</strong></td>
+      <td>Standards at group</td>
+      <td>Mostly entity</td>
+      <td>Where entities have separate infrastructure teams, day-to-day security ops stays at the entity. Group sets standards, monitors compliance, runs the SIEM.</td>
+    </tr>
+    <tr>
+      <td><strong>Data protection / PDPD ownership</strong></td>
+      <td>Policy at group</td>
+      <td>Yes (data owner per entity)</td>
+      <td>PDPD requires a designated data controller per processing activity. This is <em>not</em> centralisable &mdash; it is by design distributed.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The 80/20 rule the book hints at but does not name.</strong> For most 9-entity securities firms, about 80% of security capability can be consolidated at the group level (SOC, threat intel, IR, GRC policy, awareness program, IAM platform). About 20% must remain entity-specific (compliance officers, data-protection ownership per entity, app-specific access management, entity-level incident coordination). The cost-saving argument to the CEO is the 80%; the regulator-trust argument is the 20%. Both must be in your blended-capability design.
+</div>
+
+<h2>Hayslip's skills matrix &mdash; adapted for your firm</h2>
+
+<p>Hayslip's skills matrix is the chapter's most under-used artefact. It is also the most useful thing you can produce in the next two weeks. He scores every team member on every required skill, on a 0&ndash;5 scale:</p>
+
+<ul>
+  <li><strong>0</strong> &mdash; no capability</li>
+  <li><strong>1</strong> &mdash; beginner</li>
+  <li><strong>2</strong> &mdash; capable of executing with coaching or oversight</li>
+  <li><strong>3</strong> &mdash; adequate to the task</li>
+  <li><strong>4</strong> &mdash; capable of assessing, executing, and directing projects on their own</li>
+  <li><strong>5</strong> &mdash; expert / teacher</li>
+</ul>
+
+<p>For a 9-entity VN securities firm, the skills matrix should be done at <strong>two levels:</strong></p>
+
+<ol>
+  <li><strong>Group security team skills matrix.</strong> Who you have, what they can do, what they cannot.</li>
+  <li><strong>Entity-level security coordinators skills matrix.</strong> Often the IT manager at each entity, sometimes a designated security coordinator. Same matrix, lower resolution. This is the "evangelist" layer.</li>
+</ol>
+
+<p>The output of the matrix is a single document that lets you answer questions the CEO and the board will ask:</p>
+
+<ul>
+  <li>Where are we over-staffed? (Unlikely at most VN firms, but possible at the group level.)</li>
+  <li>Where are we under-staffed? (Almost everywhere, frankly.)</li>
+  <li>Where can we cross-train existing IT staff instead of hiring? (Often: endpoint, IAM, backup verification, vendor reviews.)</li>
+  <li>Where do we genuinely need a new FTE? (Often: security architect, GRC lead, dedicated IR coordinator.)</li>
+  <li>Where do we genuinely need an MSSP? (Almost always: 24/7 SOC, IR retainer, advanced threat intel.)</li>
+  <li>Where can an AI-augmented tool replace headcount? (Tier-1 alert triage, log summarisation, baseline anomaly detection. Bonney's "augmentation using artificial intelligence" essay is the most relevant here.)</li>
+</ul>
+
+<div class="quote">
+  <span class="cite">Hayslip, CISO DRG Vol. 2 Ch. 10</span>
+  Tracking the improvement in current capability over time allows you to track the progress of members of your team. Tracking the delta between current capability and ideal capability over time allows you to track your progress in improving your organization's ability to address the goals of talent management identified at the beginning of this chapter.
+</div>
+
+<p>The matrix is not a one-time artefact. It is the foundation of your quarterly security-operations review with the CEO. <em>"Three skills moved from 2 to 3 this quarter. Two skills moved from 0 to 2 via cross-training. We added one FTE. We extended MSSP coverage to two entities."</em> That is a CISO-level conversation. That is the conversation the book is teaching you to have.</p>
+
+<h2>Where Bonney, Stamper, and Hayslip actually disagree</h2>
+
+<p>The three authors are unusually aligned on the blended-capability spine. Where they diverge is on the <em>emphasis</em> &mdash; useful to know because the panel and the CEO will hear all three voices in any serious discussion:</p>
+
+<ul>
+  <li><strong>Bonney</strong> leans heaviest on <em>outsourcing and AI augmentation</em>. His essays close with the AI section &mdash; he sees automation as the structural answer to scarcity, with MSSPs as the second-best. If you want to make the cost-saving case to the CEO, lead with Bonney's framing.</li>
+  <li><strong>Stamper</strong> leans heaviest on <em>realistic job design and environmental fit</em>. His essay is the most sceptical of the "we just can't find the people" narrative &mdash; he argues the shortage is partly a self-inflicted wound from over-spec'd job descriptions. If the board is asking why you cannot hire faster, lead with Stamper's framing: realistic JDs, geography, industry fit, certification-vs-experience trade-offs.</li>
+  <li><strong>Hayslip</strong> leans heaviest on <em>data, metrics, and the customer-service mindset</em>. His essay ends with the customer-service survey &mdash; treating the security team as a service organisation to the rest of the business. If the board is asking how you will know the team is effective, lead with Hayslip's metrics and customer survey.</li>
+</ul>
+
+<p>In your CEO / board conversation, you will probably need all three. Use Bonney for cost. Use Stamper for "we tried to hire but the JDs were wrong." Use Hayslip for "we will measure success this way." That is the blended capability <em>of the authors</em> &mdash; you are about to do the same thing for your team.</p>
+
+<h2>The interview artifact: blended-capability operating model (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Mô hình vận hành An ninh mạng theo năng lực hỗn hợp (Blended-Capability Operating Model)</h3>
+
+<p><strong>Use case:</strong> submit to your CEO / board as the FY security investment plan, in Vietnamese. Tie each row to a budget line. The four columns map to Bonney's blended-capability model. The seventh column is the UBCK / PDPD touchpoint &mdash; non-negotiable for a VN securities firm.</p>
+
+<h3 style="margin-top:18px;">Cấu trúc 4 trụ cột (4 Pillars)</h3>
+<ol>
+  <li><strong>FTE</strong> &mdash; Nhân sự chính thức của nhóm An ninh mạng tập đoàn.</li>
+  <li><strong>Cross/Upskill</strong> &mdash; Đào tạo nâng cao năng lực cho nhân sự IT hiện tại của 9 công ty thành viên.</li>
+  <li><strong>Evangelists</strong> &mdash; Cán bộ an ninh mạng kiêm nhiệm tại mỗi công ty thành viên (thường là Trưởng phòng IT hoặc cán bộ được chỉ định).</li>
+  <li><strong>MSSP / Outsource</strong> &mdash; Dịch vụ thuê ngoài từ các nhà cung cấp chuyên ngành (SOC 24/7, IR retainer, threat intel, pentest, forensic).</li>
+</ol>
+
+<h3 style="margin-top:18px;">Mẫu bảng phân bổ (Allocation Table)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Chức năng</th><th>FTE (Group)</th><th>Cross/Upskill (IT)</th><th>Evangelists (Entity)</th><th>MSSP / Outsource</th><th>Cấp dịch vụ</th><th>Điểm chạm UBCK / PDPD</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Giám sát SOC 24/7</td>
+      <td>1 lead</td>
+      <td>&mdash;</td>
+      <td>&mdash;</td>
+      <td>Toàn bộ tier 1&ndash;2</td>
+      <td>Group</td>
+      <td>Báo cáo UBCK theo quy định</td>
+    </tr>
+    <tr>
+      <td>Threat Intelligence</td>
+      <td>1 lead</td>
+      <td>&mdash;</td>
+      <td>Theo dõi feed</td>
+      <td>Feed thương mại + open source</td>
+      <td>Group</td>
+      <td>Liên kết với UBCK về threat alert</td>
+    </tr>
+    <tr>
+      <td>IR / Forensics retainer</td>
+      <td>1 coordinator</td>
+      <td>1&ndash;2 IT leads</td>
+      <td>Liên lạc viên tại mỗi entity</td>
+      <td>IR retainer + forensic lab</td>
+      <td>Group</td>
+      <td>PDPD: thông báo vi phạm trong 72h</td>
+    </tr>
+    <tr>
+      <td>GRC &amp; Chính sách</td>
+      <td>1 lead GRC</td>
+      <td>&mdash;</td>
+      <td>Compliance officer tại mỗi entity</td>
+      <td>&mdash;</td>
+      <td>Group (policy) / Entity (compliance)</td>
+      <td>ISO 27001, UBCK ICT, PDPD</td>
+    </tr>
+    <tr>
+      <td>IAM (Identity &amp; Access)</td>
+      <td>1 lead IAM</td>
+      <td>IT tại mỗi entity</td>
+      <td>App owner tại mỗi entity</td>
+      <td>IAM platform (SaaS / on-prem)</td>
+      <td>Group (platform) / Entity (access mgmt)</td>
+      <td>Audit trail cho UBCK</td>
+    </tr>
+    <tr>
+      <td>Awareness &amp; Training</td>
+      <td>1 chuyên viên</td>
+      <td>HR tại entity</td>
+      <td>Evangelist tại mỗi entity</td>
+      <td>Nền tảng LMS + phishing sim</td>
+      <td>Group (chương trình) / Entity (triển khai)</td>
+      <td>Bằng chứng training theo yêu cầu UBCK</td>
+    </tr>
+    <tr>
+      <td>Endpoint / Network security ops</td>
+      <td>1 kiến trúc sư</td>
+      <td>Sysadmin / Network tại entity</td>
+      <td>&mdash;</td>
+      <td>EDR vendor</td>
+      <td>Group (chuẩn) / Entity (vận hành)</td>
+      <td>Audit theo ISO 27001 A.8</td>
+    </tr>
+    <tr>
+      <td>Data Protection / PDPD</td>
+      <td>1 DPO (kiêm nhiệm hoặc chính thức)</td>
+      <td>&mdash;</td>
+      <td>Data owner tại mỗi entity</td>
+      <td>Legal counsel (ngoài)</td>
+      <td>Group (chính sách) / Entity (ownership)</td>
+      <td>PDPD Nghị định 13/2023</td>
+    </tr>
+    <tr>
+      <td>Vulnerability / Pentest</td>
+      <td>1 coordinator</td>
+      <td>&mdash;</td>
+      <td>&mdash;</td>
+      <td>Pentest firm (định kỳ)</td>
+      <td>Group</td>
+      <td>Báo cáo pentest theo yêu cầu UBCK</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Cách trình bày trước HĐQT (How to present to the board)</h3>
+<ol>
+  <li>Mở đầu bằng <strong>3 rủi ro</strong> mà mô hình này giải quyết &mdash; không phải 30. (Lesson 0001's framing: brief the board in their language.)</li>
+  <li>Trình bày bảng trên &mdash; mỗi dòng là một quyết định đầu tư, mỗi cột là một loại chi phí (lương FTE / đào tạo / chi phí MSSP / chứng cứ regulator).</li>
+  <li>Đóng lại bằng <strong>3 chỉ số</strong> sẽ đo lường hiệu quả trong 12 tháng tới: MTTD, MTTR, % nhân sự được cross-train lên level 3+. (Hayslip's metrics tree.)</li>
+  <li>Có sẵn <strong>1 trang FAQ</strong> cho câu hỏi của HĐQT: tại sao không tuyển thêm FTE? Tại sao thuê MSSP? Tại sao đào tạo IT hiện tại? (Stamper's "realistic JDs" + Bonney's "build vs buy" framing.)</li>
+</ol>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the table above and fill it in for your actual 9 entities. Spend 20 minutes on each row. The hard part is the entity-specific tailoring: which entities need more entity-level capability because their business model is genuinely different (e.g., proprietary trading vs. brokerage vs. custody vs. fund management)? When you have the table filled in, you have the FY security operating model. Take it to your CEO before the next session &mdash; that is the 20-minute task that matters.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does the book put the talent chapter first in Volume 2, before the technical chapters?</summary>
+<p>Because the team is the constraint, not the tools. The book's framing is that a CISO who arrives and starts buying tools before understanding the team is a CISO who will spend the budget without moving the risk. The first 30 days of your 90-day plan are about understanding who you have, what they can do, and what's missing &mdash; then making the people decisions that everything else depends on. For your 9-entity firm, this also answers the consolidation question: what is group-shared vs entity-specific. Both decisions &mdash; team design and entity structure &mdash; flow from the same underlying skills matrix.</p>
+</details>
+
+<details>
+<summary>What is the difference between Bonney's "outsourcing" and the MSSP option in your blended model?</summary>
+<p>Bonney's "outsourcing" is the broader category: any function you decide is cheaper or better sourced from outside. The MSSP option is the specific shape of outsourcing for 24/7 SOC, threat intel feeds, and IR retainer &mdash; where you need continuous coverage and specialised depth that does not make sense to staff internally at a 9-entity firm. The design rule: outsource what is <em>continuously required and specialist</em>. Keep in-house what is <em>judgment-heavy and context-specific</em>. Examples of the latter: GRC, security architecture, security awareness program design, entity-level compliance.</p>
+</details>
+
+<details>
+<summary>How do you justify consolidation at the group level to entity-level leadership?</summary>
+<p>Three arguments work. <em>Cost:</em> one SOC vs nine saves 60&ndash;80% on monitoring spend. <em>Coverage:</em> 24/7 is impossible at a single mid-size entity; trivial at group level. <em>Standardisation:</em> UBCK examiners see one consistent posture across the group, not nine different ones. The counter-argument &mdash; that entity leadership loses control &mdash; is real but addressable: give each entity a service-level agreement (SLA) with the group SOC and a named liaison. The entity pays for the service (or it is charged through group cost-allocation); the entity gets visibility through dashboards; the entity owns the response within their environment.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 10 (Finding Talent and Developing Your Team) of Volume 2. The three essays give you Bonney's three-question framework (build / buy / augment), Stamper's nine environmental variables that shape your talent pool, and Hayslip's skills matrix + customer-service-survey approach to metrics. The chapter's five-points-five-actions summary is your fallback when the CEO asks "what does the book say about this?"</p>
+
+<p><strong>Read next:</strong> Chapter 10 in full &mdash; it is short and reads well. Pay particular attention to the Bonney "core vs context" matrix (Figure 10.4) and the Hayslip skills-matrix spreadsheet (Figure 10.6). Both are templates you can repurpose directly into your FY operating model.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to read Hayslip's 0&ndash;5 scoring in a VN context, where the lines fall between "cross-train" and "FTE," how to handle the entity-vs-group tension when entities are regulated separately &mdash; ask. The next lesson (0003: Awareness Training That Changes Behaviour) builds directly on the evangelist layer of the blended model: those entity-level evangelists are the people who will own awareness delivery.
+</div>
+
+<div class="lesson-nav">
+  <a href="0001-the-first-90-days.html">&larr; Lesson 0001: The First 90 Days</a>
+  <a href="0003-awareness-that-changes-behaviour.html">Lesson 0003: Awareness That Changes Behaviour &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

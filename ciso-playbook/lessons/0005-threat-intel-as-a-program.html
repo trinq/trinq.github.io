@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0005 — Threat Intel as a Program</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0005 &middot; CISO playbook &middot; Arc 2: Run the program when something goes wrong</div>
+<h1>Threat Intel as a Program</h1>
+<p class="subtitle">Most CISOs buy threat-intel feeds. The book's argument: build the program around what you actually have to protect, then subscribe to feeds that map to that exposure.</p>
+
+<h2>Why this lesson fifth</h2>
+
+<p>Lessons 0001&ndash;0004 built the inside-out programme: 90-day plan, team, awareness, monitoring. Lesson 0005 turns the camera outward &mdash; to the threats your monitoring programme has to detect.</p>
+
+<p>Chapter 13 is the most underrated chapter in Volume 2. Most CISOs read it as "we should buy a threat-intel feed." The book argues something sharper: <strong>threat intel without context is just a laundry list that produces fear, uncertainty, and doubt &mdash; or "boy who cried wolf" syndrome.</strong> The chapter's central move is Stamper's "Six Keys" &mdash; a structured way to make threat intel relevant to <em>your</em> environment rather than to the global threat landscape in general.</p>
+
+<p>For your 9-entity VN securities firm, the chapter lands with two specific weights. First, the financial-services sector has its own intel-sharing infrastructure (FS-ISAC, national CSIRTs, sectoral ISACs) that you should be plugged into &mdash; but the VN equivalents are smaller, less mature, and harder to find. Second, your monitoring programme (lesson 0004) needs threat intel to populate the SIEM use-case library. Without intel, the SIEM is rules you wrote yourself; with intel, it is rules informed by what adversaries are actually doing against your sector.</p>
+
+<p>By the end of this lesson you will have <strong>drafted the threat-intelligence programme outline for your firm &mdash; in Vietnamese &mdash; that maps intel sources to the Six Keys, defines internal vs external feeds, and names the specific actions intel triggers.</strong></p>
+
+<h2>Bonney's situational awareness frame &mdash; the "look outside" move</h2>
+
+<p>Bonney opens with the most quoted definition of threat intel in the book: <em>"evidence-based knowledge, including context, mechanisms, indicators, implications and action-oriented advice about an existing or emerging menace or hazard to assets."</em> The key word is <strong>context</strong>. A feed that tells you "ransomware group X is targeting financial services" is not actionable. A feed that tells you "ransomware group X is targeting financial-services firms in APAC using phishing emails impersonating UBCK notifications, with the initial-access technique matching your trading-desk email profile" is actionable.</p>
+
+<p>Bonney's seven tactical questions are the situational-awareness checklist. Every CISO should answer them out loud once a quarter:</p>
+
+<ol>
+  <li><strong>What is our current working relationship with law enforcement?</strong> (For VN: A05 / Ministry of Public Security, VNCERT/CC, the VNPT ISC and Viettel CSIRT teams. These are the closest equivalents to FBI InfraGard.)</li>
+  <li><strong>What are our sources of international cyber threat intelligence?</strong> (FS-ISAC, regional CERTs, vendor feeds that include APAC coverage.)</li>
+  <li><strong>What organizations are we sharing cyber threat knowledge with, and what are we learning from them?</strong> (Your peer network &mdash; peer CISO roundtables at VN Security Summit, the SecurityWorld community.)</li>
+  <li><strong>What is our working relationship with the most high-profile firms who have had breaches?</strong> (For VN: not formalised. The closest is informal post-incident sharing through trusted-agent networks.)</li>
+  <li><strong>Do we track social media sites and blogs referencing us for clues about our vulnerabilities?</strong> (Brand monitoring &mdash; cheap and high-value. Often catches early signals of phishing campaigns or activist chatter.)</li>
+  <li><strong>When we hear of a breach in another organization, what do we do?</strong> (Bonney's standard: validate if the threat applies, assess nature of asset under attack, scan your environment, patch if needed.)</li>
+  <li><strong>As we look at the data for intrusions, what has been the primary category of threat actors?</strong> (Track this. Over 12 months it tells you who is actually interested in your firm.)</li>
+</ol>
+
+<div class="quote">
+  <span class="cite">Bonney, CISO DRG Vol. 2 Ch. 13</span>
+  Effective threat intelligence programs should make you aware of threats that are specific to your industry before you read about them in the national news.
+</div>
+
+<p>That last sentence is the bar. If you are reading about a threat in the news after it has hit your peers, your intel programme is failing. The 24-72 hour lead time Bonney describes is what makes threat intel valuable.</p>
+
+<h2>The human network &mdash; Bonney's structural argument</h2>
+
+<p>Bonney's most distinctive contribution to the chapter is the human-network framing. He argues that the most valuable threat intel comes not from feeds but from peer relationships &mdash; with law enforcement, with peer CISOs, with vendors, with partners. The mechanisms:</p>
+
+<ul>
+  <li><strong>InfraGard (US).</strong> FBI public-private partnership. VN equivalent: A05 / MPS liaison through VNCERT/CC.</li>
+  <li><strong>ISACs (US).</strong> Sector-specific Information Sharing and Analysis Centers. Financial Services ISAC (FS-ISAC) is the financial-sector model. VN equivalent: emerging; check VNISA sectoral working groups.</li>
+  <li><strong>LECCs (US).</strong> Law Enforcement Coordination Centers. VN equivalent: provincial-level police cybercrime units.</li>
+  <li><strong>Chatham House Rule.</strong> The standard ground rule for peer sharing: <em>"share what you've learned, but do not attribute specific comments to a person or organisation."</em> This is what makes peer sharing safe.</li>
+</ul>
+
+<p>For your firm, the practical move is to <strong>build a 6-person peer circle</strong>: 2 peer CISOs from other VN securities firms, 1 from a VN bank, 1 from a VN insurer, 1 from a regional financial-services CISO (Singapore or HK), 1 from your MSSP's senior SOC staff. Quarterly meeting under Chatham House Rule. Two-hour agenda: what each of you is seeing, what worked, what failed. This is the highest-ROI threat intel you will get &mdash; because it is contextualised to your actual peers, in your actual jurisdiction.</p>
+
+<h2>Stamper's Six Keys &mdash; the contextualisation method</h2>
+
+<p>Stamper's essay is the chapter's most under-appreciated contribution. He gives you a structured way to make threat intel relevant to <em>your</em> environment. The Six Keys:</p>
+
+<ol>
+  <li><strong>Know your industry.</strong> Which sector are you in? What are the sector-specific threat actors? What recent attacks have hit peer firms? For VN securities: phishing campaigns impersonating UBCK, ransomware targeting trading desks, abuse of customer onboarding flows for AML evasion.</li>
+  <li><strong>Know the profile of your business.</strong> Board and executive profiles (are they targets? do they have unusual public visibility?), revenue model (where does income come from?), client profile (HNW individuals? institutional? retail?). Each profile shapes who is interested in attacking you.</li>
+  <li><strong>Know the critical business processes.</strong> Trading, custody, settlement, customer onboarding, KYC/AML, market-data ingestion. For each, what is the CIA impact if availability is interrupted?</li>
+  <li><strong>Know which applications support which processes.</strong> OMS, custody ledger, KYC platform, market-data feed handler. For each: manufacturer, version, custom or off-the-shelf, source-code location if in-house.</li>
+  <li><strong>Know your infrastructure.</strong> CMDB. For each material application: OS, server/VM, storage, network, backup dependencies. Hardware manufacturers, firmware versions, OS patch status.</li>
+  <li><strong>Know your vendors and suppliers.</strong> Map vendors to specific business processes. SaaS providers: which data centers? Which sub-processors? Contract clauses: right-to-audit, breach notification, minimum security practices?</li>
+</ol>
+
+<div class="callout">
+  <strong>Stamper's load-bearing insight.</strong> Threat intel without the Six Keys is a feed that produces noise. Threat intel <em>with</em> the Six Keys is a feed that produces action. The workflow: (1) build the Six Keys inventory; (2) for each Key, identify the 3&ndash;5 threat-actor categories most likely to target it; (3) subscribe to intel sources that cover those categories; (4) when intel arrives, triage against the Six Keys to determine relevance; (5) trigger a specific action (SIEM rule update, vulnerability scan, awareness campaign, vendor review). Without the Six Keys, step 4 is impossible. With them, it is a 10-minute triage.
+</div>
+
+<p>For your 9-entity firm, the Six Keys inventory is the bridge between Stamper's framework and your monitoring programme. Build it once at the group level. Refine it at the entity level for the highest-risk business processes.</p>
+
+<h2>Hayslip's strategic framing &mdash; the operational spine</h2>
+
+<p>Hayslip's essay is the most operational of the three. He starts with Gartner's definition (which Bonney also uses), then makes the move that drives the rest of the chapter: <strong>threat intel must be actionable to be valuable.</strong> A feed that informs your team about a threat they cannot act on is wasted.</p>
+
+<p>His key operational framework: <strong>internal vs external sources</strong>.</p>
+
+<table>
+  <thead>
+    <tr><th>Source type</th><th>What it gives you</th><th>How to use it</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Internal</strong></td>
+      <td>Your own attack history: IOCs, attack patterns, vulnerabilities exploited, business processes that were targets, legacy issues that keep recurring.</td>
+      <td>Feed your SIEM with your own IOC history. Run quarterly review of recurring patterns. Use the history to identify business processes with structural exposure.</td>
+    </tr>
+    <tr>
+      <td><strong>External &mdash; commercial feeds</strong></td>
+      <td>Sector-specific IOCs, threat-actor profiles, dark-web monitoring, vulnerability disclosures, exploit availability.</td>
+      <td>Tier by relevance to your Six Keys inventory. Subscribe to 2&ndash;3 high-quality feeds; ignore the rest.</td>
+    </tr>
+    <tr>
+      <td><strong>External &mdash; industry sharing</strong></td>
+      <td>FS-ISAC alerts, peer CISO sharing, sectoral ISACs.</td>
+      <td>Highest-ROI for contextualised intel. Join at least one industry sharing community.</td>
+    </tr>
+    <tr>
+      <td><strong>External &mdash; law enforcement</strong></td>
+      <td>VNCERT/CC alerts, MPS cybercrime notices, international CERT feeds.</td>
+      <td>Free, often timely, sector-agnostic. Use as baseline coverage.</td>
+    </tr>
+    <tr>
+      <td><strong>External &mdash; crowdsourced</strong></td>
+      <td>OTX (AlienVault), MISP community feeds, threat-crowdsourced platforms.</td>
+      <td>Free or low-cost. Useful for community-sourced visibility.</td>
+    </tr>
+    <tr>
+      <td><strong>External &mdash; vendor / MSSP</strong></td>
+      <td>Vendor-specific threat intel (Microsoft, Cisco, your EDR vendor, your SIEM vendor, your firewall vendor).</td>
+      <td>Tied to the technology you have deployed. Often under-used. Build into your MSSP contract.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The polymorphic-malware / 24-hour phishing-site / ransomware-as-a-service reality</h2>
+
+<p>Hayslip opens his essay with three observations that explain why traditional intel is breaking:</p>
+
+<ul>
+  <li><strong>94% of malware observed in 2016 was being seen for the first time</strong> (Webroot data). Polymorphism &mdash; automated file modification &mdash; means signature-based detection is structurally losing.</li>
+  <li><strong>84% of phishing sites live less than 24 hours</strong>. Blocklists are structurally losing.</li>
+  <li><strong>Ransomware-as-a-service</strong> has lowered the entry barrier for would-be attackers. Anyone with a grudge and a few hundred dollars can launch a credible attack.</li>
+</ul>
+
+<p>The implication for your programme: <strong>signature-based intel is no longer enough.</strong> You need behavioural intel (what attackers do, not what their tools look like), contextual intel (what is being targeted in your sector), and TTP-based intel (tactics, techniques, procedures &mdash; mapped to MITRE ATT&CK). The OSINT catalogue Hayslip gives is biased toward TTP-based intel. That is the right bias.</p>
+
+<h2>The OSINT starter kit &mdash; what you can build this quarter for free</h2>
+
+<p>For a 600-person firm in VN, the cost-effective threat-intel programme is built on free OSINT. Hayslip's catalogue is the foundation. Here is the curated starter kit &mdash; what to deploy first, in order:</p>
+
+<table>
+  <thead>
+    <tr><th>Component</th><th>Tool / source</th><th>Cost</th><th>Why</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Framework spine</strong></td>
+      <td><a href="https://attack.mitre.org/">MITRE ATT&CK</a></td>
+      <td>Free</td>
+      <td>The universal vocabulary for adversary TTPs. Use it as the indexing scheme for your use-case library, IOC documentation, and post-incident reporting.</td>
+    </tr>
+    <tr>
+      <td><strong>Platform</strong></td>
+      <td><a href="http://www.misp-project.org/">MISP</a></td>
+      <td>Free (open source)</td>
+      <td>Self-hosted threat-intel platform. Stores, correlates, shares IOCs. STIX/TAXII compatible.</td>
+    </tr>
+    <tr>
+      <td><strong>Feed 1 (aggregated)</strong></td>
+      <td><a href="https://www.cymon.io/">Cymon</a></td>
+      <td>Free tier</td>
+      <td>Aggregated IP/domain reputation. Good baseline.</td>
+    </tr>
+    <tr>
+      <td><strong>Feed 2 (email/spam)</strong></td>
+      <td><a href="https://www.spamhaus.org/">Spamhaus</a></td>
+      <td>Free for lookup, paid for feed</td>
+      <td>Industry-standard for spam and known-malicious infrastructure. Block-list backbone.</td>
+    </tr>
+    <tr>
+      <td><strong>Feed 3 (crowdsourced)</strong></td>
+      <td><a href="https://www.alienvault.com/open-threat-exchange">OTX (AlienVault)</a></td>
+      <td>Free</td>
+      <td>Community-sourced IOCs. Direct ingestion into MISP via API.</td>
+    </tr>
+    <tr>
+      <td><strong>Feed 4 (financial sector)</strong></td>
+      <td><a href="https://www.fsisac.com/">FS-ISAC</a></td>
+      <td>Membership required (free for qualifying financial-sector firms)</td>
+      <td>Financial-sector-specific intel. The single highest-value subscription for your firm.</td>
+    </tr>
+    <tr>
+      <td><strong>Feed 5 (Vietnam)</strong></td>
+      <td>VNCERT/CC + VNPT ISC + Viettel CSIRT public reports</td>
+      <td>Free</td>
+      <td>VN-sector-specific. Lower volume than international feeds but directly relevant.</td>
+    </tr>
+    <tr>
+      <td><strong>Format standard</strong></td>
+      <td>STIX / TAXII</td>
+      <td>Free (OASIS standard)</td>
+      <td>The standard format for structured threat-intel sharing. Required for SIEM ingestion.</td>
+    </tr>
+    <tr>
+      <td><strong>Analysis tooling</strong></td>
+      <td><a href="https://github.com/PaloAltoNetworks/minemeld/wiki">MineMeld</a> (Palo Alto) or <a href="https://capec.mitre.org/">CAPEC</a> (MITRE)</td>
+      <td>Free</td>
+      <td>Feed aggregation / transformation into SIEM-consumable format.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The total cost: zero license fees, plus ~0.5 FTE engineering to integrate into your SIEM. The result: a functioning threat-intel pipeline that any 600-person firm can operate.</p>
+
+<div class="callout">
+  <strong>The 11 questions to ask before subscribing to any commercial feed.</strong> Hayslip's due-diligence checklist &mdash; use it the next time a vendor pitches you: (1) How many feeds, what types? (2) File formats &mdash; CSV, XML, STIX/TAXII? (3) API available? (4) Can you ingest? (5) Sources &mdash; beware "confidential." (6) Currency &mdash; real-time or near real-time? (7) Reports for executive briefings? (8) Cost structure? (9) Tiered service? (10) Multi-year discount? (11) Customer support &mdash; 24/7, response-time SLA? If a vendor cannot answer all 11 cleanly, the feed is not ready for your programme.
+</div>
+
+<h2>What threat intel actually triggers &mdash; the action chain</h2>
+
+<p>The most under-discussed part of threat intel is what happens after a feed surfaces something. Most programmes collect but do not act. The action chain Hayslip describes:</p>
+
+<ol>
+  <li><strong>Triage.</strong> Apply the Six Keys inventory. Does this threat target assets we have? Does it use techniques we are vulnerable to? Is the threat actor relevant to our sector?</li>
+  <li><strong>Indicator ingestion.</strong> Push relevant IOCs into the SIEM, EDR, firewall, and email gateway. Automated where possible.</li>
+  <li><strong>Vulnerability scan.</strong> If the threat exploits a specific CVE, scan the environment for that CVE.</li>
+  <li><strong>Historical search.</strong> Search past logs for the IOC. Have we already been targeted?</li>
+  <li><strong>Defence update.</strong> Patch, configure, disable, segment, or back up &mdash; whatever is appropriate.</li>
+  <li><strong>Awareness update.</strong> If the threat uses a phishing pattern, update the awareness programme and run a targeted simulation.</li>
+  <li><strong>Stakeholder communication.</strong> Brief the CISO, the relevant entity leadership, the board if material.</li>
+  <li><strong>Sharing.</strong> Anonymised sharing back to the community. Chatham House Rule applies.</li>
+</ol>
+
+<p>Without the action chain, threat intel is noise. With it, threat intel is a programme.</p>
+
+<h2>Where Bonney, Stamper, and Hayslip actually agree</h2>
+
+<p>The three authors converge on a single principle: <strong>threat intel without context and action is wasted.</strong></p>
+
+<ul>
+  <li><strong>Bonney</strong> emphasises the human network &mdash; peer sharing, law-enforcement relationships, Chatham House Rule. His argument: feeds tell you what is happening; the human network tells you what it means for you.</li>
+  <li><strong>Stamper</strong> emphasises the Six Keys &mdash; contextualise to your industry, business profile, processes, applications, infrastructure, vendors. His argument: intel without context is a laundry list.</li>
+  <li><strong>Hayslip</strong> emphasises the action chain &mdash; internal vs external sources, the 11 vendor questions, the OSINT catalogue, the polymorphic-malware reality. His argument: intel without action is wasted spend.</li>
+</ul>
+
+<p>Where they diverge: <em>emphasis.</em> For your CEO briefing, lead with Stamper (the Six Keys are the bridge between intel and your actual business), support with Hayslip (the action chain shows operational discipline), close with Bonney (the human network is the long-term asset).</p>
+
+<h2>The interview artifact: threat-intel programme outline (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Đề án Chương trình Tình báo Mối đe dọa (Threat Intelligence Programme Outline)</h3>
+
+<p><strong>Use case:</strong> submit to CEO / board / UBCK examiner as evidence of a structured threat-intelligence programme aligned with the firm's actual exposure. One Vietnamese-language page: mục tiêu, sáu chìa khóa (Six Keys), nguồn intel, pipeline xử lý, action chain, chỉ số, điểm chạm quy định.</p>
+
+<h3 style="margin-top:18px;">1. Mục tiêu (Objective)</h3>
+<p>Cung cấp <strong>tình báo có bối cảnh và hành động được</strong> cho chương trình an ninh mạng, dựa trên tài sản thực tế của tập đoàn (Stamper's Six Keys). Không chỉ thu thập feed &mdash; mà phải chuyển thành hành động cụ thể (Hayslip's action chain) và kết nối với mạng lưới con người (Bonney's human network).</p>
+
+<h3 style="margin-top:18px;">2. Sáu chìa khóa (Six Keys &mdash; Stamper)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>#</th><th>Chìa khóa</th><th>Áp dụng cho tập đoàn</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Biết ngành</td>
+      <td>Chứng khoán VN &mdash; threat actors chính: phishing mạo UBCK, ransomware targeting trading desk, AML abuse qua customer onboarding</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Biết hồ sơ doanh nghiệp</td>
+      <td>9 công ty, 600 người. HĐQT + Ban lãnh đạo có mức độ công khai cao (whaling risk). Khách hàng: tổ chức + cá nhân</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Biết quy trình kinh doanh cốt lõi</td>
+      <td>Giao dịch, lưu ký, settlement T+1, customer onboarding, KYC/AML, market-data ingestion</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Biết ứng dụng hỗ trợ</td>
+      <td>OMS, custody ledger, KYC platform, market-data feed handler, CRM. Inventory: nhà sản xuất, version, custom/OOTS, source-code location</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Biết hạ tầng</td>
+      <td>CMDB với OS, server/VM, storage, network, backup cho mỗi ứng dụng quan trọng. Firmware + patch status</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Biết nhà cung cấp</td>
+      <td>Map vendor &rarr; business process. SaaS providers: data center location, sub-processors. Hợp đồng: right-to-audit, breach notification, security clauses</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">3. Nguồn intel (Sources)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Loại</th><th>Nguồn cụ thể</th><th>Chi phí</th><th>Sử dụng cho</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Nội bộ (Internal)</strong></td>
+      <td>SIEM + EDR + IR history + vulnerability scan history</td>
+      <td>Hiện có</td>
+      <td>Tấn công đã xảy ra với tập đoàn. Patterns tái diễn. Business process exposure</td>
+    </tr>
+    <tr>
+      <td><strong>Ngành (Industry sharing)</strong></td>
+      <td>FS-ISAC + VNISA sectoral working group</td>
+      <td>Membership (free&ndash;low)</td>
+      <td>Intel ngành tài chính. Highest ROI cho tập đoàn</td>
+    </tr>
+    <tr>
+      <td><strong>Law enforcement</strong></td>
+      <td>VNCERT/CC + MPS cybercrime notices + VCS (Viettel CSIRT) public reports</td>
+      <td>Free</td>
+      <td>Baseline coverage. Sector-agnostic</td>
+    </tr>
+    <tr>
+      <td><strong>OSINT</strong></td>
+      <td>MITRE ATT&amp;CK (framework) + MISP (platform) + Cymon + Spamhaus + OTX + CAPEC</td>
+      <td>Free</td>
+      <td>TTP-based intel. Baseline coverage cho feed pipeline</td>
+    </tr>
+    <tr>
+      <td><strong>Vendor / MSSP</strong></td>
+      <td>EDR vendor threat feed + SIEM vendor feed + firewall vendor feed + MSSP curated intel</td>
+      <td>Theo hợp đồng</td>
+      <td>Tied to technology đã triển khai. Build vào MSSP contract</td>
+    </tr>
+    <tr>
+      <td><strong>Brand monitoring</strong></td>
+      <td>Google Alerts + social media listening + domain-registration monitoring</td>
+      <td>Free&ndash;low</td>
+      <td>Phishing campaigns sớm. Activist chatter. Lookalike domains</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">4. Pipeline xử lý (Processing pipeline)</h3>
+<ol>
+  <li><strong>Thu thập:</strong> MISP tự host làm central store. STIX/TAXII ingestion từ feeds.</li>
+  <li><strong>Triage:</strong> Áp dụng Six Keys &mdash; threat này target asset nào của tập đoàn?</li>
+  <li><strong>Phân loại:</strong> Critical / High / Medium / Low theo business impact.</li>
+  <li><strong>Hành động:</strong> SIEM rule update + EDR signature + firewall block + awareness update + scan + patch.</li>
+  <li><strong>Lưu trữ:</strong> MISP giữ IOC + context + action history. Searchable cho future use.</li>
+  <li><strong>Chia sẻ:</strong> Anonymised sharing với FS-ISAC + peer CISO network.</li>
+</ol>
+
+<h3 style="margin-top:18px;">5. Action chain &mdash; 8 bước (Hayslip)</h3>
+<ol>
+  <li><strong>Triage</strong> qua Six Keys (10 phút).</li>
+  <li><strong>IOC ingestion</strong> vào SIEM / EDR / firewall / email gateway.</li>
+  <li><strong>Vulnerability scan</strong> cho CVE liên quan.</li>
+  <li><strong>Historical search</strong> trong logs cho IOC (đã từng bị target?).</li>
+  <li><strong>Defence update</strong> &mdash; patch / config / disable / segment / backup.</li>
+  <li><strong>Awareness update</strong> nếu threat dùng phishing pattern.</li>
+  <li><strong>Stakeholder communication</strong> &mdash; CISO + entity leadership + board nếu material.</li>
+  <li><strong>Sharing</strong> anonymised back to community.</li>
+</ol>
+
+<h3 style="margin-top:18px;">6. Mạng lưới con người (Human network &mdash; Bonney)</h3>
+<ul>
+  <li><strong>Peer CISO circle (6 người):</strong> 2 peer CISO công ty chứng khoán VN + 1 CISO ngân hàng VN + 1 CISO bảo hiểm VN + 1 CISO khu vực (SG/HK) + 1 senior SOC lead MSSP. Quarterly meeting, Chatham House Rule.</li>
+  <li><strong>Law enforcement liaison:</strong> VNCERT/CC quarterly touch + MPS khi cần.</li>
+  <li><strong>Vendor intelligence partnership:</strong> MSSP + EDR vendor + SIEM vendor + firewall vendor. Quarterly intel review.</li>
+</ul>
+
+<h3 style="margin-top:18px;">7. Chỉ số (Metrics)</h3>
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>Chỉ số</th><th>Mục tiêu</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Số feed được subscribe</td>
+      <td>5&ndash;7 (có tier, không trùng lặp)</td>
+    </tr>
+    <tr>
+      <td>% intel được triage trong 24h</td>
+      <td>&ge;90%</td>
+    </tr>
+    <tr>
+      <td>% intel relevant đến tập đoàn</td>
+      <td>&ge;30% (qua Six Keys)</td>
+    </tr>
+    <tr>
+      <td>Lead time trước public news</td>
+      <td>24&ndash;72 giờ (Bonney bar)</td>
+    </tr>
+    <tr>
+      <td>Số IOC ingested / tuần</td>
+      <td>Theo dõi trend</td>
+    </tr>
+    <tr>
+      <td>Số action triggered / tháng</td>
+      <td>Theo dõi &mdash; mục tiêu là action rate tăng theo thời gian</td>
+    </tr>
+    <tr>
+      <td>Historical-search hits</td>
+      <td>Báo cáo mỗi quý &mdash; "đã từng bị target chưa?"</td>
+    </tr>
+    <tr>
+      <td>Số lần chia sẻ anonymised với community</td>
+      <td>Mục tiêu &ge;4 / năm</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">8. Điểm chạm quy định (Regulatory touchpoints)</h3>
+<ul>
+  <li><strong>UBCK:</strong> Threat intel là bằng chứng "nhận thức tình hình" (situational awareness) cho chương trình ICT risk management.</li>
+  <li><strong>ISO 27001 A.5.7 (threat intelligence):</strong> Từ ISO 27001:2022 &mdash; yêu cầu thu thập và phân tích threat intel. Chương trình phải có bằng chứng.</li>
+  <li><strong>PDPD:</strong> Threat intel về personal-data breaches feeds breach-notification readiness (lesson 0008).</li>
+  <li><strong>Cyber insurance:</strong> Threat intel programme là điều kiện ngày càng phổ biến cho bồi thường.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Take the 8-section Vietnamese outline above and fill it in for your firm. Spend 20 minutes on section 2 (the Six Keys inventory &mdash; especially #3 critical business processes per entity) and section 3 (which feeds you can subscribe to this quarter). The hard part is section 6 (the peer CISO circle &mdash; identify 6 names you can approach for quarterly meetings under Chatham House Rule). When the outline is filled in, you have the artefact for the next board briefing <em>and</em> the foundation for the SIEM use-case library that lesson 0004 monitors.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why does Stamper say threat intel without context is a "laundry list"?</summary>
+<p>Because most intel feeds report threats in the abstract &mdash; "ransomware group X targeting financial sector," "APT group Y exploiting CVE-Z." Without context, you cannot tell whether the threat is relevant to <em>your</em> environment. Does your firm use the vulnerable software? Are you in the targeted sector geography? Does your attack surface include the technique being used? Stamper's Six Keys is the structured way to answer these questions, so that when intel arrives, you can triage it in 10 minutes against an inventory you have already built. Without the Six Keys, triage is guesswork; with them, triage is a checklist.</p>
+</details>
+
+<details>
+<summary>What is the Chatham House Rule and why does Bonney argue for it?</summary>
+<p>Chatham House Rule: <em>"participants are free to use the information received, but neither the identity nor the affiliation of the speaker(s), nor that of any other participant, may be revealed."</em> Bonney argues for it because peer sharing is the highest-ROI threat intel you can get &mdash; but only if participants trust that what they share will not be attributed back to them. Without that trust, peer sharing collapses into vendor pitches and press-release quotes. For your firm, the practical move is to convene a 6-person peer CISO circle and explicitly adopt the Chatham House Rule for every meeting. The first meeting will be stiff; the second will be productive; by the fourth, you will have actionable intel no commercial feed can match.</p>
+</details>
+
+<details>
+<summary>Why does Hayslip argue that polymorphic malware and 24-hour phishing sites make signature-based intel "structurally losing"?</summary>
+<p>Because 94% of malware observed in 2016 was being seen for the first time, and 84% of phishing sites lived less than 24 hours. Signature-based detection &mdash; matching files against known-bad hashes, matching URLs against known-bad blocklists &mdash; is structurally outpaced by attackers who automate polymorphism and rotate infrastructure hourly. The implication is that threat intel must shift from "what does the bad thing look like?" to "what is the adversary doing?" &mdash; i.e., from signatures to TTPs. MITRE ATT&CK is the indexing scheme for this shift. For your programme, the practical move is to use ATT&CK to organise your SIEM use-case library, so that detection is based on adversary behaviour, not on file hashes that change daily.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Chapter 13 (Threat Intelligence) of Volume 2. The three essays give you Bonney's situational-awareness frame + the seven tactical questions + the human-network structural argument, Stamper's Six Keys contextualisation method + the workflow that makes intel actionable, and Hayslip's strategic framing + internal-vs-external source taxonomy + the 11 vendor due-diligence questions + the OSINT catalogue (MISP, MITRE ATT&CK, STIX/TAXII, Cymon, OTX, Spamhaus, CAPEC, MineMeld). The chapter's five-points-five-actions summary is your fallback when the CEO asks "what does the book say about this?"</p>
+
+<p><strong>Read next:</strong> Chapter 13 in full &mdash; it is the chapter most CISOs read too quickly. Pay particular attention to the human-network section (Bonney &mdash; the long-term asset you build), the Six Keys (Stamper &mdash; the bridge between intel and your environment), and the OSINT catalogue (Hayslip &mdash; the foundation for a free starter kit).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> Anything unclear &mdash; how to set up MISP without engineering overhead, how to integrate MITRE ATT&CK into your SIEM use-case library, how to approach peer CISOs for the Chatham House Rule circle, how to write the FS-ISAC membership application for a VN securities firm, how to handle the polymorphic-malware reality in your monitoring stack &mdash; ask. The next lesson (0006: Continuity, Backups, RTO/RPO) builds directly on the action chain: when the threat intel triggers an action and the action is "recover from backup," you need to know your RTO and RPO.
+</div>
+
+<div class="lesson-nav">
+  <a href="0004-monitoring-without-lying.html">&larr; Lesson 0004: Monitoring Without Lying</a>
+  <a href="0006-continuity-backups-rto-rpo.html">Lesson 0006: Continuity, Backups, RTO/RPO &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>
