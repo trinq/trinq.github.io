@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0007 &mdash; Respond + Recover: IR Metrics and PDPD 72-Hour Clock</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 15px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .predecessor {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-size: 16px;
+  }
+  .predecessor strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0007 &middot; Data-driven cybersecurity &middot; Arc 2: Measure every program area</div>
+<h1>Respond + Recover: IR Metrics and the PDPD 72-Hour Clock</h1>
+<p class="subtitle">Every minute an incident runs past the PDPD notification window is a regulatory finding waiting to happen. The IR metrics exist to make sure that clock never moves.</p>
+
+<div class="predecessor">
+<strong>Predecessor lessons (ciso-playbook course).</strong> This lesson measures the IR + Recovery layer designed by <a href="../../ciso-playbook/lessons/0004-soc-playbook.html">ciso-playbook 0004 (SOC playbook)</a> and the continuity layer designed by <a href="../../ciso-playbook/lessons/0006-continuity-backups-rto-rpo.html">ciso-playbook 0006 (continuity, backups, RTO/RPO)</a>. The Vietnamese IRP + BIA matrix + continuity artifacts from those lessons are the input. This lesson adds the measurement layer: when an incident happens, are the metrics in place to prove the response was fast, effective, and compliant?
+</div>
+
+<h2>Why this lesson seventh</h2>
+
+<p>Lessons <a href="0004-govern-identify.html">0004</a>&ndash;<a href="0006-detect.html">0006</a> measured the strategic foundation, the controls, and the detection layer. Lesson 0007 measures the function that runs when those layers fail &mdash; <em>Respond</em> and <em>Recover</em>. Per Mattei (chapter 9), the IR framework has 10 steps: planning, testing, detection, triage, notification, containment, evidence, eradication, recovery, post-incident. Each step has metrics; together they tell the story of whether the firm can recover from an incident without regulatory exposure.</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 9.1</span>
+  Incident management is a systematic approach to detecting, responding to, and recovering from cybersecurity incidents. It is designed with the primary objective of minimizing the effects of incidents on the organization.
+</div>
+
+<p>For your 9-entity Vietnamese securities firm, Respond + Recover lands with three pressures:</p>
+
+<ol>
+  <li><strong>The PDPD 72-hour notification clock is a regulatory ceiling, not a target.</strong> Vietnam's Personal Data Protection Act (PDPD, Decree 13/2023) requires notification to the Personal Data Protection Commission and affected data subjects within 72 hours of becoming aware of a personal-data breach. UBCK adds its own notification requirements for securities firms. The 72-hour clock starts at "awareness," which means <em>time-to-detect</em> (lesson 0006's D5) eats directly into the notification window. A firm that takes 48 hours to detect a breach has 24 hours left to notify. The IR metric set must be designed to give the notification team a fighting chance.</li>
+  <li><strong>IR is the most-tested CSF function by UBCK.</strong> Mattei (chapter 9.3) frames tabletop exercises as the discipline for testing the IRP. UBCK examiners ask for evidence of the last 12 months of tabletop exercises, the action plans from each, and the improvements tracked back into the IRP. The IRP-test metric is the audit-defensible answer.</li>
+  <li><strong>Recovery is the function that gets tested only in a crisis.</strong> Mattei (chapter 9.10) is direct: "Communication is key during the recovery phase." But the actual recovery is the function that gets tested only in a crisis &mdash; when it's too late to discover that the backup doesn't restore, the RTO is wrong, or the BIA-criticality list missed a system. The recovery metric set is the discipline that prevents the crisis-day discovery.</li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the Respond + Recover metric catalogue (in Vietnamese) &mdash; the MTTC-I / MTTR-I / IRSR-I containment-and-remediation dashboard, the PDPD 72-hour notification metric, the IR communication metrics (ICT/SSR/CRR), and the recovery validation metrics (RTO/RPO compliance)</strong>. This is what the IR Lead reviews per-incident, what the CISO presents quarterly, and what UBCK examines under the "incident response and continuity" theme.</p>
+
+<h2>The IR metric categories</h2>
+
+<p>Mattei (chapter 9) organises IR metrics into three categories: <em>incident management metrics</em> (chapter 9.4.6), <em>incident response metrics</em> (chapter 9.9.1), and <em>incident reporting and communication metrics</em> (chapter 9.11.1). The lesson adds the <em>recovery metrics</em> (from chapter 7.3.5 and 9.10) and the <em>PDPD regulatory metrics</em>.</p>
+
+<table>
+  <thead>
+    <tr><th>Category</th><th>Mattei chapter</th><th>What it measures</th><th>Typical metric count</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Incident management</strong></td>
+      <td>9.4.6</td>
+      <td>Detection quality, severity classification, documentation quality</td>
+      <td>2&ndash;3 metrics</td>
+    </tr>
+    <tr>
+      <td><strong>Incident response (containment + remediation)</strong></td>
+      <td>9.9.1</td>
+      <td>MTTC-I, MTTR-I, IRSR-I</td>
+      <td>3 metrics</td>
+    </tr>
+    <tr>
+      <td><strong>Reporting &amp; communication</strong></td>
+      <td>9.11.1</td>
+      <td>ICT, SSR, CRR</td>
+      <td>3 metrics</td>
+    </tr>
+    <tr>
+      <td><strong>Recovery</strong></td>
+      <td>7.3.5, 9.10</td>
+      <td>RTO compliance, RPO compliance, recovery-test success</td>
+      <td>3 metrics</td>
+    </tr>
+    <tr>
+      <td><strong>PDPD regulatory ceiling</strong></td>
+      <td>PDPD Decree 13/2023 Art. 12.1</td>
+      <td>72-hour notification clock, scope-classification accuracy</td>
+      <td>2 metrics</td>
+    </tr>
+    <tr>
+      <td><strong>Tabletop exercise discipline</strong></td>
+      <td>9.3</td>
+      <td>IRP test cadence, action-plan closure rate</td>
+      <td>2 metrics</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>15&ndash;16 metrics is the full catalogue. The board pack subset is 1&ndash;2; the rest are IR-Lead weekly and per-incident review.</p>
+
+<h2>The PDPD 72-hour clock &mdash; the regulatory ceiling</h2>
+
+<p>Vietnam's Decree 13/2023 (PDPD) Article 12.1 establishes a 72-hour notification window: when a personal-data breach is detected, the Personal Data Protection Commission and affected data subjects must be notified within 72 hours. The 72-hour clock is a <em>regulatory ceiling</em> &mdash; the absolute maximum, not a target. A firm that uses the full 72 hours has no buffer for the notification to fail, the scope to expand, or the regulator to ask follow-up questions.</p>
+
+<p>The metric design must account for three distinct phases within the 72-hour window:</p>
+
+<table>
+  <thead>
+    <tr><th>Phase</th><th>Duration</th><th>What happens</th><th>Owner</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Detection → confirmation</strong></td>
+      <td>Variable (typically 1&ndash;48h)</td>
+      <td>Confirm the breach is real, scope the affected personal-data records, classify under PDPD Article 2</td>
+      <td>SOC + DPO + Legal</td>
+    </tr>
+    <tr>
+      <td><strong>Confirmation → notification</strong></td>
+      <td>Variable (typically 1&ndash;24h)</td>
+      <td>Draft notification to PDPC, draft data-subject notification, coordinate with PR/Comms</td>
+      <td>DPO + Legal + Comms</td>
+    </tr>
+    <tr>
+      <td><strong>Notification → regulator response</strong></td>
+      <td>Ongoing (no fixed window)</td>
+      <td>Handle PDPC follow-up, supplement information as scope expands</td>
+      <td>DPO + Legal</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The clock starts at "awareness," not "detection."</strong> PDPD Article 12.1 uses "phát hiện" (becomes aware), which the PDPC interprets as the moment the firm has sufficient information to confirm a breach has occurred &mdash; not the moment the SIEM fires. A firm that detects an anomaly but takes 48 hours to confirm it's a breach has already lost 48 hours of the 72-hour window. The lesson's metric set distinguishes between <em>time-to-detect</em> (TTD, lesson 0006 D5) and <em>time-to-confirm</em> (a new IR-specific metric), and uses both to track the total clock.
+</div>
+
+<h2>PDPD-specific metrics &mdash; the regulatory pair</h2>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>R1 &mdash; Total time from awareness → PDPD notification</strong> (P95)</td>
+      <td>The full 72-hour clock &mdash; the regulatory-ceiling metric. <em>This is the single most-defensible IR metric at the UBCK + PDPC examination table.</em></td>
+      <td>DPO + IR Lead</td>
+      <td>Xanh &le; 24h (gives 48h buffer); Đỏ &gt; 60h (within ceiling but no buffer); Critical &gt; 72h (regulatory violation)</td>
+    </tr>
+    <tr>
+      <td><strong>R2 &mdash; Time-to-confirm</strong> (awareness → confirmed breach)</td>
+      <td>The detection-to-confirmation phase &mdash; whether scope classification is fast enough</td>
+      <td>SOC + DPO</td>
+      <td>Xanh P95 &le; 8h; Đỏ &gt; 24h</td>
+    </tr>
+    <tr>
+      <td><strong>R3 &mdash; PDPD scope-classification accuracy</strong> (within 24h of confirmation)</td>
+      <td>Whether the affected records are correctly identified as "personal data" under PDPD Article 2</td>
+      <td>DPO + Legal</td>
+      <td>Xanh 100% confirmed scope matches actual; Đỏ &lt; 90%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Containment + remediation metrics &mdash; the IR-quality pair</h2>
+
+<p>Mattei (chapter 9.9.1) introduces the three core IR metrics: MTTC-I (mean time to contain), MTTR-I (mean time to remediate), IRSR-I (incident response success rate). These are the lagging measures of IR effectiveness.</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>R4 &mdash; MTTC-I P50 / P95</strong> (mean time to contain)</td>
+      <td>How quickly containment is achieved once an incident is confirmed &mdash; the speed metric</td>
+      <td>IR Lead + SOC Manager</td>
+      <td>Xanh P50 &le; 4h, P95 &le; 24h; Đỏ P95 &gt; 72h</td>
+    </tr>
+    <tr>
+      <td><strong>R5 &mdash; MTTR-I P50 / P95</strong> (mean time to remediate)</td>
+      <td>How quickly the incident is fully resolved &mdash; the closure metric</td>
+      <td>IR Lead + SOC Manager</td>
+      <td>Xanh P50 &le; 24h, P95 &le; 7 ngày; Đỏ P95 &gt; 30 ngày</td>
+    </tr>
+    <tr>
+      <td><strong>R6 &mdash; IRSR-I</strong> (incident response success rate)</td>
+      <td>% of incidents successfully contained without recurrence within 30 days &mdash; the effectiveness metric</td>
+      <td>IR Lead</td>
+      <td>Xanh &ge; 90%; Vàng 80&ndash;90%; Đỏ &lt; 80%</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 9.9.1</span>
+  CyberSecure Solutions implemented a comprehensive incident response plan and tracked specific metrics to gauge their effectiveness. Containment time was reduced to an average of 3 hours; recovery time to 6 hours; incident response success rate increased to 85%.
+</div>
+
+<p>The CyberSecure before/after (MTTC-I from 8h to 3h; MTTR-I from 16h to 6h; IRSR-I from 60% to 85%) shows the realistic target trajectory. The lesson's thresholds (P95 &le; 24h for MTTC-I; P95 &le; 7 days for MTTR-I; &ge; 90% for IRSR-I) are calibrated against this benchmark, with the strategic-plan risk-appetite overlay applied per firm.</p>
+
+<h2>Reporting &amp; communication metrics &mdash; the stakeholder-trust pair</h2>
+
+<p>Mattei (chapter 9.11.1) introduces three communication metrics: ICT (incident communication time), SSR (stakeholder satisfaction rate), CRR (compliance reporting rate). These measure the quality of communication during and after an incident.</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>R7 &mdash; ICT</strong> (incident communication time, internal)</td>
+      <td>Time to inform internal stakeholders (CEO, board, affected BUs) &mdash; the internal trust metric</td>
+      <td>IR Lead + Comms</td>
+      <td>Xanh &le; 4h cho CEO/board; &le; 24h cho BUs</td>
+    </tr>
+    <tr>
+      <td><strong>R8 &mdash; SSR</strong> (stakeholder satisfaction rate, post-incident)</td>
+      <td>% of stakeholders satisfied with the IR communication &mdash; measured via post-incident survey</td>
+      <td>IR Lead + Comms</td>
+      <td>Xanh &ge; 80%; Vàng 60&ndash;80%; Đỏ &lt; 60%</td>
+    </tr>
+    <tr>
+      <td><strong>R9 &mdash; CRR</strong> (compliance reporting rate)</td>
+      <td>% of required regulatory reports filed on time &mdash; PDPD 72h, UBCK 24h, sector-specific</td>
+      <td>DPO + Legal</td>
+      <td>Xanh 100%; Đỏ &lt; 100% (any miss is a finding)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Recovery metrics &mdash; the validate-by-testing discipline</h2>
+
+<p>Mattei (chapter 7.3.5 and 9.10) frames recovery through two validating disciplines: meeting the committed RTO and RPO, and proving the recovery actually works through periodic testing. The metrics cluster around three questions:</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>R10 &mdash; RTO compliance rate</strong> (covered in lesson 0005 as P14)</td>
+      <td>% of recovery tests that meet the committed RTO &mdash; the contractual question</td>
+      <td>Infrastructure Lead + BIA owner</td>
+      <td>Xanh &ge; 95%; Đỏ &lt; 85%</td>
+    </tr>
+    <tr>
+      <td><strong>R11 &mdash; RPO compliance rate</strong> (data-loss tolerance)</td>
+      <td>% of recovery tests that meet the committed RPO &mdash; the data-integrity question</td>
+      <td>Infrastructure Lead + BIA owner</td>
+      <td>Xanh 100%; Đỏ &lt; 95%</td>
+    </tr>
+    <tr>
+      <td><strong>R12 &mdash; Recovery test cadence</strong> (covered in lesson 0005 as P13)</td>
+      <td>Whether critical assets are tested at the committed cadence (monthly/quarterly/annual per BIA tier)</td>
+      <td>Infrastructure Lead</td>
+      <td>Xanh 100% theo BIA cadence; Đỏ &lt; 80%</td>
+    </tr>
+    <tr>
+      <td><strong>R13 &mdash; Recovery test success rate</strong> (no data integrity issues found)</td>
+      <td>% of recovery tests that fully restore data and services without integrity issues</td>
+      <td>Infrastructure Lead</td>
+      <td>Xanh &ge; 95%; Đỏ &lt; 85%</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Why recovery is tested, not assumed.</strong> Mattei (chapter 9.10) is direct: "Post-recovery validation and documentation is the final step in the recovery phase." The recovery test is not optional &mdash; it is the validation that the recovery plan actually works. The audit-defensible answer is: <em>"Show me the last 12 months of recovery tests for the Tier 1 assets, with the RTO achieved vs committed."</em> If the tests don't exist or the RTO was missed, the firm has a finding: recovery is documented, not validated.
+</div>
+
+<h2>Tabletop exercise metrics &mdash; the IRP-test discipline</h2>
+
+<p>Mattei (chapter 9.3) frames tabletop exercises as the discipline for testing the IRP. The metrics cluster around two questions:</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>R14 &mdash; IRP-test cadence adherence</strong></td>
+      <td>Whether tabletop exercises are held at the committed cadence (annual for whole IRP; quarterly for high-risk scenarios)</td>
+      <td>IR Lead + CISO</td>
+      <td>Xanh 100% theo cadence; Đỏ &lt; 80%</td>
+    </tr>
+    <tr>
+      <td><strong>R15 &mdash; Action-plan closure rate</strong> (from tabletop findings)</td>
+      <td>% of tabletop action items closed within the committed timeframe</td>
+      <td>IR Lead</td>
+      <td>Xanh &ge; 90%; Đỏ &lt; 75%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The 10-step IR framework and where each step's metric lives</h2>
+
+<p>Mattei (chapter 9.1) introduces the 10-step IR framework. The metric catalogue maps each step to the metrics that measure it. The mapping makes the coverage visible: a step with no metric is a measurement gap.</p>
+
+<table>
+  <thead>
+    <tr><th>IR step (Mattei 9.1)</th><th>Step description</th><th>Primary metric(s)</th><th>Coverage check</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Planning &amp; preparation</td><td>IRP exists + last reviewed (G1 from lesson 0004)</td><td>✓</td></tr>
+    <tr><td>2</td><td>Testing</td><td>R14 (tabletop cadence)</td><td>✓</td></tr>
+    <tr><td>3</td><td>Detection &amp; documentation</td><td>D5/D6 (lesson 0006); R2 (time-to-confirm)</td><td>✓</td></tr>
+    <tr><td>4</td><td>Triage</td><td>D8 (classification accuracy, lesson 0006)</td><td>✓</td></tr>
+    <tr><td>5</td><td>Notification &amp; communication</td><td>R1 (PDPD 72h); R7 (ICT); R9 (CRR)</td><td>✓</td></tr>
+    <tr><td>6</td><td>Containment</td><td>R4 (MTTC-I)</td><td>✓</td></tr>
+    <tr><td>7</td><td>Evidence &amp; forensics</td><td>Per-incident metric (chain of custody quality)</td><td>Partial &mdash; covered per-incident, not aggregate</td></tr>
+    <tr><td>8</td><td>Eradication</td><td>R6 (IRSR-I &mdash; 30-day no-recurrence)</td><td>✓</td></tr>
+    <tr><td>9</td><td>Recovery</td><td>R10 (RTO compliance); R11 (RPO compliance); R12 (test cadence); R13 (success rate)</td><td>✓</td></tr>
+    <tr><td>10</td><td>Post-incident &amp; lessons learned</td><td>R15 (action-plan closure); R8 (SSR)</td><td>✓</td></tr>
+  </tbody>
+</table>
+
+<p>All 10 steps have at least one measurement. Step 7 (evidence &amp; forensics) is measured per-incident through chain-of-custody documentation quality rather than as an aggregate metric &mdash; this is appropriate because forensic effectiveness is case-specific.</p>
+
+<h2>The Respond + Recover board-pack subset &mdash; one or two metrics</h2>
+
+<p>Of the 15&ndash;16 Respond + Recover metrics, one or two belong on the board pack (joining the metrics from lessons 0004&ndash;0006):</p>
+
+<ul>
+  <li><strong>R1</strong> &mdash; Total time from awareness → PDPD notification (the regulatory-ceiling metric, the most-defensible IR metric at the UBCK + PDPC table)</li>
+  <li>OR <strong>R4 / R5 / R6</strong> &mdash; MTTC-I, MTTR-I, IRSR-I (the IR-effectiveness trio, presented together as a single line)</li>
+</ul>
+
+<p>The rest live at the IR Lead's per-incident review and weekly dashboard. The board sees the trend: is IR getting faster? is the success rate climbing? are we staying inside the 72-hour window?</p>
+
+<h2>Where Respond + Recover metrics connect to the rest of the program</h2>
+
+<p>Respond + Recover metrics are the lagging indicators that validate everything upstream. The R4 (MTTC-I) metric is bounded by D5/D6 (lesson 0006) and by the IAM metrics from lesson 0005 &mdash; if de-provisioning is slow, the access-revocation containment step is slow. The R1 (PDPD 72h) metric is bounded by R2 (time-to-confirm) and by the PDPD scope-classification accuracy (lesson 0004/0005).</p>
+
+<table>
+  <thead>
+    <tr><th>Respond + Recover metric</th><th>Upstream dependency</th><th>Why it matters</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>R1 (PDPD 72h clock)</td><td>R2 (time-to-confirm), PDPD scope accuracy (M7 from lesson 0001)</td><td>If scope is wrong or confirmation is slow, the 72h clock collapses</td></tr>
+    <tr><td>R4 (MTTC-I)</td><td>D5/D6 (lesson 0006 TTD/TTR); P2 (lesson 0005 de-provisioning)</td><td>Containment depends on detection and access control</td></tr>
+    <tr><td>R10/R11 (RTO/RPO compliance)</td><td>P13/P14 (lesson 0005 backup/RTO)</td><td>Recovery is the validation of protect controls</td></tr>
+    <tr><td>R14 (tabletop cadence)</td><td>IRP artifact from ciso-playbook 0004</td><td>Tabletop tests the IRP, not just the people</td></tr>
+    <tr><td>R15 (action-plan closure)</td><td>Post-incident review discipline</td><td>Lessons learned only matter if they are acted on</td></tr>
+  </tbody>
+</table>
+
+<h2>The artifact &mdash; the Respond + Recover metric catalogue (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Danh mục chỉ số Phản ứng &amp; Phục hồi (Respond + Recover Metric Catalogue)</h3>
+
+<p><strong>Use case:</strong> 15 metrics across six categories (incident management, IR, reporting, recovery, PDPD regulatory, tabletop). Vietnamese-language artifact; updated per-incident + quarterly review.</p>
+
+<h3 style="margin-top:18px;">Bảng chỉ số PDPD Regulatory Ceiling (MỚI &mdash; regulatory-ceiling category)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>R1</td><td>Total time: awareness → PDPD notification (P95)</td><td>DPO + IR Lead</td><td>Xanh &le; 24h; Đỏ &gt; 60h; Critical &gt; 72h</td></tr>
+    <tr><td>R2</td><td>Time-to-confirm (awareness → confirmed breach)</td><td>SOC + DPO</td><td>Xanh P95 &le; 8h; Đỏ &gt; 24h</td></tr>
+    <tr><td>R3</td><td>PDPD scope-classification accuracy (within 24h)</td><td>DPO + Legal</td><td>Xanh 100%; Đỏ &lt; 90%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Containment + Remediation (Mattei 9.9.1)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>R4</td><td>MTTC-I P50 / P95 (mean time to contain)</td><td>IR Lead + SOC Manager</td><td>Xanh P50 &le; 4h, P95 &le; 24h</td></tr>
+    <tr><td>R5</td><td>MTTR-I P50 / P95 (mean time to remediate)</td><td>IR Lead + SOC Manager</td><td>Xanh P50 &le; 24h, P95 &le; 7 ngày</td></tr>
+    <tr><td>R6</td><td>IRSR-I (incident response success rate, 30-day no-recurrence)</td><td>IR Lead</td><td>Xanh &ge; 90%; Đỏ &lt; 80%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Reporting &amp; Communication (Mattei 9.11.1)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>R7</td><td>ICT — internal communication time</td><td>IR Lead + Comms</td><td>Xanh &le; 4h CEO/board; &le; 24h BUs</td></tr>
+    <tr><td>R8</td><td>SSR — stakeholder satisfaction rate (post-incident)</td><td>IR Lead + Comms</td><td>Xanh &ge; 80%; Đỏ &lt; 60%</td></tr>
+    <tr><td>R9</td><td>CRR — compliance reporting rate (PDPD + UBCK)</td><td>DPO + Legal</td><td>Xanh 100%; Đỏ &lt; 100% (any miss is finding)</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Recovery (Mattei 7.3.5, 9.10)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>R10</td><td>RTO compliance rate (P14 from lesson 0005)</td><td>Infrastructure Lead + BIA owner</td><td>Xanh &ge; 95%; Đỏ &lt; 85%</td></tr>
+    <tr><td>R11</td><td>RPO compliance rate</td><td>Infrastructure Lead + BIA owner</td><td>Xanh 100%; Đỏ &lt; 95%</td></tr>
+    <tr><td>R12</td><td>Recovery test cadence (P13 from lesson 0005)</td><td>Infrastructure Lead</td><td>Xanh 100% theo BIA cadence</td></tr>
+    <tr><td>R13</td><td>Recovery test success rate (no data integrity issues)</td><td>Infrastructure Lead</td><td>Xanh &ge; 95%; Đỏ &lt; 85%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Tabletop Exercise (Mattei 9.3)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>R14</td><td>IRP-test cadence adherence</td><td>IR Lead + CISO</td><td>Xanh 100% theo cadence; Đỏ &lt; 80%</td></tr>
+    <tr><td>R15</td><td>Action-plan closure rate (from tabletop findings)</td><td>IR Lead</td><td>Xanh &ge; 90%; Đỏ &lt; 75%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Board pack subset (1&ndash;2 metric)</h3>
+<ul>
+  <li><strong>R1</strong> &mdash; Total time awareness → PDPD notification (the regulatory-ceiling metric)</li>
+  <li><strong>R4/R5/R6</strong> &mdash; MTTC-I, MTTR-I, IRSR-I (the IR-effectiveness trio)</li>
+</ul>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>Bind cùng với runbook cards (lesson 0002), cross-reference matrix (lesson 0003), Govern+Identify (0004), Protect (0005), Detect (0006). R1, R2, R3, R4, R5, R6, R7, R9 tracked per-incident. R8, R10, R11, R13, R14, R15 tracked quarterly. R12 tracked monthly (recovery-test calendar). UBCK examination &mdash; evidence for "incident response and continuity" theme.</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Pull the last 12 months of incidents (if none, run the first tabletop exercise and document the metrics from it). For each incident: (1) calculate R1, R2, R4, R5, R6, R7, R9 per-incident; (2) calculate R14, R15 across tabletop exercises; (3) identify the slow-incident cases and the lessons-learned-action-plan closures. By next session you should have the IR-metric baseline established, the 72h-clock-distribution known (P50, P95, P99), and the tabletop-exercise calendar scheduled for the next 12 months.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is the 72-hour PDPD clock treated as a regulatory ceiling, not a target?</summary>
+<p>Because it is the maximum, set by Decree 13/2023 Article 12.1, beyond which the firm is in regulatory violation. A firm that uses the full 72 hours has no buffer for the notification to fail, the scope to expand, or the regulator to ask follow-up questions. The clock also starts at "awareness" — the moment the firm has sufficient information to confirm a breach — not at SIEM detection. A firm that detects an anomaly but takes 48 hours to confirm has already lost 48 hours of the window. The metric design must give the notification team a fighting chance: target ≤ 24h for the total clock (a 48h buffer); critical threshold &gt; 72h (regulatory violation). The defensible answer is documented in the metric card with the regulator minimum (Decree 13/2023), the industry benchmark, and the firm risk appetite.</p>
+</details>
+
+<details>
+<summary>Why is the IRSR-I metric defined as 30-day no-recurrence?</summary>
+<p>Because incident response success is not "we contained it" — it is "we contained it and it did not come back." A containment that lasts a day and then the threat resurfaces is not a containment; it is a pause. The 30-day no-recurrence window is the audit-defensible test: if the same incident recurs within 30 days, the original response failed to address the root cause. This is consistent with Mattei's chapter 9.9.1 framing: "incidents that were successfully mitigated and did not result in further security breaches." The IRSR-I threshold of ≥ 90% is calibrated against the CyberSecure before/after (60% → 85%); the 90% target is realistic but not easy. The metric must distinguish between recurrence (same threat actor, same vector, same scope) and new incidents (different vector) — only the former counts against IRSR-I.</p>
+</details>
+
+<details>
+<summary>Why is recovery tested, not assumed?</summary>
+<p>Because the recovery plan is a hypothesis until it is validated. A backup that has never been restored is not a backup — it is a copy. An RTO of 4 hours that has never been timed is a number on a page, not a commitment. Mattei (chapter 9.10) is direct: "Post-recovery validation and documentation is the final step in the recovery phase." The audit-defensible answer is: show me the last 12 months of recovery tests for the Tier 1 assets, with the RTO achieved vs committed, the RPO achieved vs committed, and the data-integrity check passed. If the tests don't exist or the RTO was missed, the firm has a finding: recovery is documented, not validated. The cadence (monthly/quarterly/annual per BIA tier) is the discipline that prevents the crisis-day discovery.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapter 9 (Incident response &mdash; sections 9.2 planning, 9.3 testing, 9.4 detection + management metrics, 9.5 triage, 9.6 notification, 9.7 containment, 9.9 eradication + IR metrics, 9.10 recovery, 9.11 post-incident + communication metrics) and chapter 7.3.5 (data security metrics for the RTO/RPO framing). The book's MTTC-I / MTTR-I / IRSR-I metrics from 9.9.1 and the ICT / SSR / CRR from 9.11.1 are the spine; this lesson adds the PDPD 72-hour regulatory-ceiling metric category (R1, R2, R3) which is the most-defensible IR metric at the UBCK + PDPC examination table for a Vietnamese securities firm.</p>
+
+<p><strong>Read next:</strong> chapter 9.5 (incident triage) and chapter 9.11 (post-incident review) for the IR-deep-dive reading. With lesson 0007, Arc 2 (Measure every program area) is complete: Govern + Identify (0004), Protect (0005), Detect (0006), Respond + Recover (0007). Arc 3 (Beyond the basics &mdash; lessons 0008–0010) covers Mattei's chapters 10–13: predictive analytics, statistical methods, AI-for-metrics.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear — how to define the "awareness" moment for the 72h clock when the breach is discovered days after the actual incident, how to operationalise the PDPD scope classification within 24h when contractor data is in scope, how to structure the tabletop exercise to test the 72h-clock-notification path, how to handle a recovery test that fails — ask. Arc 3 begins with lesson 0008: Predictive analytics for the REI / PTI from Mattei chapter 10.
+</div>
+
+<div class="lesson-nav">
+  <a href="0006-detect.html">&larr; Lesson 0006</a>
+  <a href="0008-predictive.html">Lesson 0008: Predictive Analytics &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

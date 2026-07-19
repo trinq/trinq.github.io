@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0001 &mdash; Stop Counting Vulnerabilities: Start Measuring Program Health</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0001 &middot; Data-driven cybersecurity &middot; Arc 1: The metric discipline</div>
+<h1>Stop Counting Vulnerabilities. Start Measuring Program Health.</h1>
+<p class="subtitle">Joseph Steinberg spent three decades watching boards and CISOs use metrics that quietly destroyed them. This lesson is about not being one of them.</p>
+
+<h2>Why this lesson first</h2>
+
+<p>You just finished eleven lessons designing a CISO program &mdash; governance, talent, awareness, monitoring, IR, continuity, recovery, forensics, the strategic plan, the handover. <a href="../../ciso-playbook/index.html">That program</a> produced eleven Vietnamese artifacts that sit on your desk, your CEO's desk, and your board's deck right now.</p>
+
+<p>Every one of those artifacts generates data. Some of it you already measure. Most of what you measure is, by Mattei's foreword-writer's argument, <em>dangerously misleading</em>. You do not know which.</p>
+
+<p>This first lesson is the lesson before any new metric is defined, any new dashboard is built, any new KPI is briefed to the board. It is the deconstruction phase. Until you can look at every metric currently in production at your firm and classify it as <em>useful, lagging-only, leading-only, vanity, or misleading</em> &mdash; and act on the classification &mdash; every metric you add in lessons 0002&ndash;0010 will simply join the pile of metrics that look like measurement but aren't.</p>
+
+<div class="quote">
+  <span class="cite">Joseph Steinberg, Foreword to <em>Data-Driven Cybersecurity</em></span>
+  When metrics show that an organization is consistently experiencing a reduced number of breaches with diminishing financial effects on a quarter-over-quarter basis, does that translate to a notable and commendable improvement? Or does it indicate that the organization's cybersecurity management has deteriorated relative to emerging threats and that the organization is increasingly failing to both recognize when it has been breached and properly account for the business effects accumulating beneath the surface?
+</div>
+
+<p>Steinberg has watched this exact failure mode &mdash; the "we're getting better because the dashboards are green" failure &mdash; repeatedly over thirty years. The question is not "do we have dashboards?" It is "what would have to be true for our dashboards to mislead us, and how would we know?"</p>
+
+<p>By the end of this lesson you will have produced <strong>the single board-facing metric page (in Vietnamese) for your 9-entity securities firm &mdash; 8&ndash;12 metrics, each with an owner, a source, a cadence, a threshold, and a decision it drives.</strong> It is the artifact the auditor, the board, and your successor will look at. Everything else is downstream of it.</p>
+
+<h2>What you probably measure today &mdash; and why it lies</h2>
+
+<p>Most security programs at mid-size financial-services firms measure some subset of these. Mark each one you currently produce:</p>
+
+<table>
+  <thead>
+    <tr><th>Metric you probably produce</th><th>What it appears to say</th><th>Why it can mislead</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Number of vulnerabilities open</strong></td>
+      <td>"We have fewer vulnerabilities than last quarter."</td>
+      <td>Often a coverage artefact: you scanned fewer systems, or you stopped tracking the long tail. Mattei's recurring point: "fewer vulnerabilities" can mean "we are looking less hard," not "we are more secure."</td>
+    </tr>
+    <tr>
+      <td><strong>Number of incidents detected</strong></td>
+      <td>"Our detection is improving."</td>
+      <td>Inverse problem. If you detect more, is that better detection or worse threat environment? If you detect fewer, are you safer or blind? Incidents detected is meaningless without incidents <em>expected</em>.</td>
+    </tr>
+    <tr>
+      <td><strong>Number of phishing emails blocked</strong></td>
+      <td>"Our email security is working."</td>
+      <td>Vanity metric. The phish that <em>got through</em> is the only one that matters; you cannot measure the got-through from the block-count.</td>
+    </tr>
+    <tr>
+      <td><strong>Mean time to detect (MTTD)</strong></td>
+      <td>"We detect faster than last quarter."</td>
+      <td>MTTD can improve because your detection logic is faster, or because your detection logic now only catches the easy stuff. Pair with mean time to <em>contain</em> (MTTC) and mean time to <em>recover</em> (MTTR) &mdash; never alone.</td>
+    </tr>
+    <tr>
+      <td><strong>Patch compliance %</strong></td>
+      <td>"95% of systems patched within SLA."</td>
+      <td>Coverage question: 95% of <em>what</em>? The 5% unpatched is where the breach lives. Steinberg's warning made concrete: a 95% patch rate is irrelevant if the 5% contains your most-exposed internet-facing assets.</td>
+    </tr>
+    <tr>
+      <td><strong>Phishing simulation click-rate</strong></td>
+      <td>"Click rate dropped from 18% to 12%."</td>
+      <td>Gaming risk. Users learn to recognise the simulation template and ignore it; behaviour on real phishing may not have changed. Pair with a real-phish reporting metric (leading) and post-training behaviour observation.</td>
+    </tr>
+    <tr>
+      <td><strong>Number of alerts closed</strong></td>
+      <td>"SOC is processing alerts."</td>
+      <td>Volume metric. Closes 10,000 alerts a week tells you nothing about whether any of them mattered. Pair with detection-quality metrics (chapter 8.5 &mdash; FAR, FRR, EER).</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The pattern: every metric above is a <em>lagging</em> indicator that, in isolation, can be gamed, can decay silently, or can improve for the wrong reason. Mattei calls these <em>traditional metrics</em> (chapter 1.3) &mdash; simple, tangible, but reactive. They measure what already happened. They cannot tell the board whether the program is getting better.</p>
+
+<h2>Steinberg's three failure modes &mdash; and the Vietnamese-context overlay</h2>
+
+<p>Steinberg's foreword identifies three structural failures that produce misleading metrics. Each one lands differently in a Vietnamese securities firm.</p>
+
+<h3>1. Operators gaming their own numbers</h3>
+
+<p>Steinberg's first failure mode is the team that optimises the metric rather than the underlying risk. Awareness click-rate is the canonical example (above). The Vietnamese-context variant: <em>awareness training completion rate</em> at a securities firm that UBCK expects to be 100%. The completion rate will hit 100%. The behaviour change will not. The metric that satisfies the regulator is the metric that least reflects reality.</p>
+
+<div class="callout">
+  <strong>The UBCK-induced trap.</strong> When a regulator sets a numeric expectation (e.g., 100% awareness training completion), the metric stops measuring security and starts measuring compliance theatre. The fix is to add a <em>leading</em> metric that the regulator did not ask for: behaviour-change rate, phishing-report-rate, suspicious-activity escalation count. Keep the lagging metric for the regulator; lead with the leading metric for the board.
+</div>
+
+<h3>2. Boards obsessing over detailed figures that should be irrelevant</h3>
+
+<p>Steinberg's second failure mode is the board that descends into operational detail &mdash; arguing about whether the alert count went up by 3% or 5% &mdash; while ignoring the strategic question of whether the program is fit for purpose. The Vietnamese-context variant: an audit committee that requests the same three metrics every quarter (patch compliance, awareness completion, incident count) because those are the ones the previous CISO briefed, regardless of whether they map to the firm's actual risk.</p>
+
+<div class="callout">
+  <strong>The fix is not more metrics. It is fewer, better metrics, framed in business language.</strong> The board does not need to see 30 metrics. The board needs to see the 8&ndash;12 metrics that map to the firm's business decisions: what products are at risk, what regulators expect, what customers would care about. Detail belongs in the program-owners' dashboards; strategy belongs in the board pack.
+</div>
+
+<h3>3. Communication gap between cyber and business</h3>
+
+<p>Steinberg's third failure mode is the metrics that are too technical for the board ("we have 14 unresolved CVSS-9.8+ vulnerabilities") or too abstract for the SOC ("we have 'good' cyber maturity"). The Vietnamese-context variant: the CISO briefs in English or French-cited regulatory acronyms, and the CEO nods politely without understanding what action they just approved.</p>
+
+<p>This is the failure mode that the ciso-playbook course's lesson 0010 (strategic plan) and lesson 0004 (monitoring) tried to address structurally &mdash; with the audit-ready dashboard and the reasonable-care doctrine. This lesson inherits both, and adds the measurement discipline that turns "reasonable care" from a doctrine into evidence.</p>
+
+<h2>Mattei's framework: leading vs lagging, possible vs direct, derived vs indirect</h2>
+
+<p>Mattei (chapter 1.1) gives a categorisation that is more useful than the obvious "leading vs lagging" split. Every metric in your catalog should be classified along all four axes:</p>
+
+<table>
+  <thead>
+    <tr><th>Axis</th><th>Question</th><th>Examples</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Quantitative vs Qualitative</strong></td>
+      <td>Is it a number, or a judgement?</td>
+      <td>Q: MTTD, vulnerability count. Qual: training effectiveness, board confidence.</td>
+    </tr>
+    <tr>
+      <td><strong>Leading vs Lagging</strong></td>
+      <td>Does it predict the future or describe the past?</td>
+      <td>Leading: phishing reports per 100 users, high-risk-asset coverage. Lagging: incidents detected, breach cost.</td>
+    </tr>
+    <tr>
+      <td><strong>Possible vs Direct</strong></td>
+      <td>Is it standard, or custom to your firm?</td>
+      <td>Possible: patch compliance (industry standard). Direct: time-to-provision a brokerage trading account (firm-specific).</td>
+    </tr>
+    <tr>
+      <td><strong>Direct vs Derived vs Indirect</strong></td>
+      <td>Is it measured, calculated, or inferred?</td>
+      <td>Direct: failed-login count. Derived: ratio of successful-to-failed logins. Indirect: cyber-incident reduction after awareness training.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The discipline: every board-facing metric must answer all four axes. If you cannot say "this is a <em>leading</em> metric because it predicts X," the metric is lagging-only and belongs on the program-owner dashboard, not the board pack.</p>
+
+<h2>The 8&ndash;12 board-facing metrics &mdash; how to choose</h2>
+
+<p>The first job is to choose. The choice is the artifact. Mattei's book is ~80 metric candidates across chapters 5&ndash;9. You will produce ~10. The rest will be classified as <em>program-owner metrics</em> (managed by the SOC, the IR lead, the awareness program owner &mdash; not by the board).</p>
+
+<p>Three filters apply:</p>
+
+<ol>
+  <li><strong>Does the metric drive a business decision?</strong> If the only response to "the metric moved" is "interesting," the metric does not belong on the board page. The board needs metrics where the response is <em>action</em>: allocate budget, change a vendor, brief a regulator, approve a hire.</li>
+  <li><strong>Is the metric leading or lagging?</strong> The board pack needs at least 3 leading indicators. Pure-lagging packs are the failure mode Steinberg warns against &mdash; the dashboard is always green, until the breach happens.</li>
+  <li><strong>Does the metric survive a regulator's question?</strong> If a UBCK examiner asks "where does this number come from, and how do you know it's accurate," can you answer in one sentence? If not, the metric is not audit-ready. Lesson 0003 builds the audit-ready pack; lesson 0001 just selects the candidates.</li>
+</ol>
+
+<p>For your firm, the candidates from the ciso-playbook program's measurement perspective look like this. Each is grounded in the program area from the previous course, with the data sources you already have (or can quickly produce).</p>
+
+<table>
+  <thead>
+    <tr><th>#</th><th>Metric</th><th>Type</th><th>CSF function</th><th>Business decision it drives</th><th>Source</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td><strong>High-risk-asset patch SLA compliance</strong> (not all-asset patch SLA)</td>
+      <td>Leading</td>
+      <td>Protect</td>
+      <td>Whether to delay a market event until patches land; whether to compensate-control an unpatchable system.</td>
+      <td>Vulnerability scanner + asset criticality tag</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>Phishing-report rate per 100 users per month</strong> (not click rate)</td>
+      <td>Leading</td>
+      <td>Protect</td>
+      <td>Whether the awareness program is moving behaviour, not just completion; whether to invest more in reporting culture.</td>
+      <td>Email security gateway + awareness platform</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>Time-to-contain for Severity-1 incidents (P95)</strong></td>
+      <td>Lagging (acceptable)</td>
+      <td>Respond</td>
+      <td>Whether the IR runbook and SOC staffing are fit for purpose; whether to invest in containment automation.</td>
+      <td>IR case management</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>% of critical assets covered by tested, working backups (last 30 days)</strong></td>
+      <td>Leading</td>
+      <td>Recover</td>
+      <td>Whether to commit to a recovery-time SLA in the customer / regulator contract; whether to consolidate backup platforms.</td>
+      <td>Backup platform + BIA matrix</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><strong>Detection false-positive rate (FAR) for top-10 SOC use cases</strong></td>
+      <td>Lagging (acceptable)</td>
+      <td>Detect</td>
+      <td>Whether SOC capacity is being burned by noise; whether to invest in tuning or ML-based suppression.</td>
+      <td>SIEM / SOAR detection logs</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><strong>Vendor-critical-tier review cadence adherence</strong></td>
+      <td>Leading</td>
+      <td>Govern</td>
+      <td>Whether third-party-risk findings are aging without remediation; whether to escalate contractually.</td>
+      <td>TPRM platform</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><strong>% of personal-data inventory classified under PDPD scope</strong></td>
+      <td>Leading</td>
+      <td>Identify</td>
+      <td>Whether the firm is ready for the next PDPD examination; whether to pause a product launch.</td>
+      <td>Data inventory + PDPD scope tag</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><strong>Tabletop exercise participation by executive team (last 12 months)</strong></td>
+      <td>Leading</td>
+      <td>Respond</td>
+      <td>Whether the executive team has muscle memory (the ciso-playbook lesson 0007 standard); whether to escalate to the board.</td>
+      <td>Tabletop calendar + attendance log</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><strong>Open audit findings by tier and age (Regulator + Internal Audit)</strong></td>
+      <td>Lagging</td>
+      <td>Govern</td>
+      <td>Whether to accept a regulatory risk; whether to accelerate remediation budget.</td>
+      <td>Audit tracking system</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td><strong>% of entity-level control exceptions consolidated to group policy (or with group-approved rationale)</strong></td>
+      <td>Leading</td>
+      <td>Govern</td>
+      <td>Whether the 9-entity governance model is consolidating as designed; whether to harden group-policy enforcement.</td>
+      <td>Policy exception register</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Ten metrics. Two more if you have the data: <em>security-training behaviour-change rate</em> (replacing completion-rate) and <em>UBCK circular-compliance score</em> (mapped to the latest ICT risk circular). Eleven is the right number for a mid-size securities firm; twelve is the upper limit before the board starts ignoring.</p>
+
+<div class="callout">
+  <strong>The multi-entity test.</strong> For a 9-entity firm, every metric above has two layers: <em>group-aggregated</em> (one number, all entities, consolidated) and <em>entity-level</em> (nine numbers, one per entity, with group-aggregated colour-coded against them). Group-level metrics drive group-level decisions (consolidate the backup platform, hire a group CISO). Entity-level metrics drive entity-level decisions (remediate the brokerage's phishing-report rate). The board pack shows the group-aggregated number; the entity CEOs see their own number with peer comparison. This is the structural answer to "how do we measure across 9 entities?"
+</div>
+
+<h2>What to drop &mdash; the deconstruction discipline</h2>
+
+<p>For every metric currently in production at your firm, classify it. The classification is the artifact:</p>
+
+<table>
+  <thead>
+    <tr><th>Classification</th><th>Action</th><th>Example</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Useful, leading</strong></td>
+      <td>Keep on board pack</td>
+      <td>Phishing-report rate (leading behaviour-change metric)</td>
+    </tr>
+    <tr>
+      <td><strong>Useful, lagging (paired with a leading)</strong></td>
+      <td>Keep on board pack with a partner metric</td>
+      <td>Time-to-contain paired with tabletop exercise participation</td>
+    </tr>
+    <tr>
+      <td><strong>Lagging only, no leading partner</strong></td>
+      <td>Move to program-owner dashboard, not board pack</td>
+      <td>Total vulnerabilities open (no leading partner at the metric level)</td>
+    </tr>
+    <tr>
+      <td><strong>Vanity</strong> (counts things that don't matter)</td>
+      <td>Drop or replace with the underlying business metric</td>
+      <td>Phishing emails blocked (replace with phish-that-got-through, if detectable)</td>
+    </tr>
+    <tr>
+      <td><strong>Misleading</strong> (improvement can mean decay)</td>
+      <td>Replace or pair with the inverse metric</td>
+      <td>Patch compliance % (pair with high-risk-asset coverage; report both)</td>
+    </tr>
+    <tr>
+      <td><strong>Regulator-required but lagging-only</strong></td>
+      <td>Keep for regulator; lead with a different metric for board</td>
+      <td>Awareness training completion % (required by UBCK; lead with behaviour-change for board)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The discipline: <em>for every metric currently produced, write down its classification.</em> The list of dropped metrics is itself an artifact. When the audit committee asks "why did we stop reporting X?", the answer is on the list.</p>
+
+<h2>The artifact &mdash; your board-facing metric page (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Bảng chỉ số an toàn thông tin trình HĐQT (Security Metrics Board Pack)</h3>
+
+<p><strong>Use case:</strong> this is the single page the CEO and board see. Every quarter. Every metric has an owner, a source, a cadence, a threshold, and a decision it drives. Vietnamese-language artifact; can be circulated as-is to the CEO, board, audit committee, and UBCK examiner.</p>
+
+<h3 style="margin-top:18px;">Cấu trúc (structure &mdash; one metric per row)</h3>
+
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Loại</th><th>CSF</th><th>Owner</th><th>Nguồn dữ liệu</th><th>Cadence</th><th>Threshold</th><th>Quyết định kích hoạt</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Tỷ lệ patch SLA tài sản rủi ro cao</td><td>Leading</td><td>Protect</td><td>Platform Security Lead</td><td>Vuln scanner + asset criticality</td><td>Tuần</td><td>&lt; 95% = đỏ; 95&ndash;98% = vàng; &gt; 98% = xanh</td><td>Trì hoãn sự kiện thị trường? Bù đắp control?</td></tr>
+    <tr><td>2</td><td>Phishing-report rate / 100 users / tháng</td><td>Leading</td><td>Protect</td><td>Awareness Lead</td><td>Email gateway + awareness platform</td><td>Tháng</td><td>&lt; 5 = đỏ; 5&ndash;15 = vàng; &gt; 15 = xanh</td><td>Đầu tư thêm văn hóa báo cáo?</td></tr>
+    <tr><td>3</td><td>Time-to-contain (P95) cho sự cố Severity-1</td><td>Lagging (paired)</td><td>Respond</td><td>IR Lead</td><td>IR case management</td><td>Quý</td><td>&gt; 4h = đỏ; 2&ndash;4h = vàng; &lt; 2h = xanh</td><td>Tự động hóa containment? Tăng cường SOC?</td></tr>
+    <tr><td>4</td><td>% tài sản trọng yếu có backup tested (30 ngày)</td><td>Leading</td><td>Recover</td><td>Infrastructure Lead</td><td>Backup platform + BIA</td><td>Tháng</td><td>&lt; 90% = đỏ; 90&ndash;98% = vàng; &gt; 98% = xanh</td><td>Cam kết RTO với UBCK? Hợp nhất platform?</td></tr>
+    <tr><td>5</td><td>False-positive rate (FAR) top-10 SOC use cases</td><td>Lagging (paired)</td><td>Detect</td><td>SOC Manager</td><td>SIEM/SOAR detection logs</td><td>Tháng</td><td>&gt; 80% = đỏ; 50&ndash;80% = vàng; &lt; 50% = xanh</td><td>Tuning? ML suppression?</td></tr>
+    <tr><td>6</td><td>Vendor-critical review cadence adherence</td><td>Leading</td><td>Govern</td><td>TPRM Lead</td><td>TPRM platform</td><td>Quý</td><td>&lt; 80% = đỏ; 80&ndash;95% = vàng; &gt; 95% = xanh</td><td>Leo thang hợp đồng?</td></tr>
+    <tr><td>7</td><td>% dữ liệu cá nhân đã phân loại theo PDPD</td><td>Leading</td><td>Identify</td><td>Data Governance Lead</td><td>Data inventory + PDPD scope</td><td>Quý</td><td>&lt; 60% = đỏ; 60&ndash;85% = vàng; &gt; 85% = xanh</td><td>Dừng launch sản phẩm? Leo thang kiểm toán?</td></tr>
+    <tr><td>8</td><td>Tabletop exercise &mdash; tham dự của exec team (12 tháng)</td><td>Leading</td><td>Respond</td><td>CISO</td><td>Tabletop calendar</td><td>Quý</td><td>0 = đỏ; 1 = vàng; &ge; 2 = xanh</td><td>Leo thang HĐQT?</td></tr>
+    <tr><td>9</td><td>Open audit findings theo tier và tuổi (Regulator + IA)</td><td>Lagging</td><td>Govern</td><td>GRC Lead</td><td>Audit tracker</td><td>Quý</td><td>Bất kỳ finding &gt; 90 ngày = đỏ</td><td>Chấp nhận rủi ro? Tăng budget remediation?</td></tr>
+    <tr><td>10</td><td>% ngoại lệ control entity-level được hợp nhất về group</td><td>Leading</td><td>Govern</td><td>Governance Lead</td><td>Policy exception register</td><td>Quý</td><td>&lt; 70% = đỏ; 70&ndash;90% = vàng; &gt; 90% = xanh</td><td>Cứng hóa group-policy?</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Quy tắc trình bày (presentation rules)</h3>
+<ul>
+  <li>Mỗi chỉ số: 1 dòng trend 12 tháng + 1 dòng đánh giá rủi ro còn lại. Không hơn.</li>
+  <li>Trang bổ sung (Appendix): chi tiết kỹ thuật cho SOC, IR Lead, Awareness Lead &mdash; không trình HĐQT.</li>
+  <li>Mỗi quý: một "metric of the quarter" được phân tích sâu (1 trang) &mdash; luân phiên giữa 10 chỉ số.</li>
+  <li>Mỗi metric có một "decision-ready" sentence: <em>"Nếu chỉ số này xuống đỏ, quyết định cần đưa ra là X."</em></li>
+</ul>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>Trang này thay thế mọi dashboard hiện có trình HĐQT. In ra, gửi CEO trước cuộc họp 48 giờ, walk through 15 phút. Các chỉ số thuộc layer program-owner (không trình HĐQT) vẫn tiếp tục chạy ở dashboard riêng.</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Inventory every metric currently produced at your firm (security KPIs, awareness stats, IR metrics, anything reported up the chain). Classify each using the six-class framework above. Drop the vanity and misleading metrics; promote leading metrics to the board pack. By the next session, you should have a draft of the Vietnamese board pack with 8&ndash;12 metrics filled in with real numbers. This is the artifact that anchors every subsequent lesson in this course.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is "phishing emails blocked" a vanity metric while "phishing-report rate" is a leading metric?</summary>
+<p>Phishing emails blocked counts what the system stopped. The breach-relevant quantity is what got through &mdash; which is, by definition, unmeasurable from the block count. Phishing-report rate (the number of suspicious emails users actively report to the security team) is a leading indicator of behaviour change: a culture that reports suspicious emails surfaces phishing attempts that the email gateway missed. The metric you cannot measure (phish that got through) becomes visible via the metric you can measure (user reports).</p>
+</details>
+
+<details>
+<summary>Why does the board need leading metrics if they're harder to interpret than lagging metrics?</summary>
+<p>Because lagging metrics are always late. By the time a lagging metric tells the board "we had a breach," the breach is six months old and the cost has been incurred. Leading metrics are the board's only signal of whether the program is <em>preventing</em> the next breach. A board pack that is all-lagging is a board pack that learns about cyber risk from the news, not from the CISO. This is exactly Steinberg's second failure mode (boards obsessing over detailed figures that should be irrelevant) inverted: a board pack that is only lagging is a board that is not actually overseeing cyber risk, just acknowledging past damage.</p>
+</details>
+
+<details>
+<summary>What is the UBCK-induced trap in awareness metrics?</summary>
+<p>When a regulator sets a numeric expectation (e.g., 100% awareness training completion), the metric stops measuring security and starts measuring compliance theatre. The completion rate will hit 100% because the program is designed to hit 100%, not because behaviour has changed. The fix: keep the lagging completion-rate metric to satisfy the regulator, and add a leading behaviour-change metric (phishing-report rate, suspicious-activity escalation, post-training observation) that the regulator did not ask for. Lead with the leading metric for the board; lead with the lagging metric for the regulator. Same data, two different stories, both honest.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Joseph Steinberg's foreword (the misleading-metric warning), Mattei's chapter 1.1 (the four-axis metric categorisation), chapter 1.3 (traditional vs innovative metrics), and chapter 3.6 (the seven common pitfalls in metrics programs &mdash; overreliance on quantitative, misalignment with business, stagnation, and the others). The book does not give you your 8&ndash;12 board metrics; it gives you the discipline to choose them.</p>
+
+<p><strong>Read next:</strong> chapter 3 (the METRICS methodology &mdash; the governance wrapper around every metric you just selected). Lesson 0002 builds the per-owner runbook that wraps each of the 8&ndash;12 metrics in the seven-step lifecycle: Measure &rarr; Evaluate &rarr; Threshold &rarr; Report &rarr; Improve &rarr; Communicate &rarr; Sustain.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that is unclear &mdash; how to defend a misleading metric when the previous CISO briefed it for three years, how to set thresholds without historical data, how to consolidate metrics across 9 entities when each entity has different tooling &mdash; ask. The next lesson (0002: The METRICS Methodology) builds the runbook that makes the board pack actually executable.
+</div>
+
+<div class="lesson-nav">
+  <a href="../index.html">&larr; Course index</a>
+  <a href="0002-metrics-methodology.html">Lesson 0002: The METRICS Methodology &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

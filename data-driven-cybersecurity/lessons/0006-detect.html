@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0006 &mdash; Detect: FAR/FRR/EER + ATLAS Coverage</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 15px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .predecessor {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-size: 16px;
+  }
+  .predecessor strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0006 &middot; Data-driven cybersecurity &middot; Arc 2: Measure every program area</div>
+<h1>Detect: FAR/FRR/EER + ATLAS Coverage</h1>
+<p class="subtitle">Your SIEM generates 12,000 alerts per day. Analysts triage 200. The other 11,800 either fire too often or never should have fired. That gap &mdash; between what the system says and what is real &mdash; is what Detect metrics measure.</p>
+
+<div class="predecessor">
+<strong>Predecessor lesson (ciso-playbook course).</strong> This lesson measures the SOC layer designed by <a href="../../ciso-playbook/lessons/0004-soc-playbook.html">ciso-playbook 0004 (SOC playbook)</a> and the alert-threshold layer designed by the detection-engineering workstream in ciso-playbook 0005. The Vietnamese SOC playbook artifact (ciso-playbook 0004) is the input; this lesson adds the measurement layer: are the alerts accurate, are the thresholds tuned, is the SOC catching what matters?
+</div>
+
+<h2>Why this lesson sixth</h2>
+
+<p>Lessons <a href="0004-govern-identify.html">0004</a> and <a href="0005-protect.html">0005</a> measured the inputs to detection: governance, asset inventory, IAM, awareness, data security, platform. Lesson 0006 measures the detection function itself &mdash; the SOC's alert quality, threshold tuning, and coverage of the threats that matter. Per Mattei (chapter 8), the detection function has three measurable surfaces: the <em>sensor coverage</em> (what we can see), the <em>alert quality</em> (FAR/FRR/EER), and the <em>analyst throughput</em> (TTD/TTR/event volume).</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 8.4</span>
+  ATLAS is designed to combat the problem of alert fatigue, where analysts are overwhelmed by the volume of alerts, leading to desensitization and potential oversight of critical alerts.
+</div>
+
+<p>For your 9-entity Vietnamese securities firm, Detect lands with three pressures the ciso-playbook course did not address:</p>
+
+<ol>
+  <li><strong>Alert fatigue is the SOC's biggest failure mode.</strong> A SOC that generates 12,000 alerts per day and triages 200 has a 98.3% alert-desertion rate. The genuine threats that should have triggered action are buried in the noise. The FAR (false acceptance rate) and FRR (false rejection rate) metrics &mdash; borrowed from biometric authentication theory and applied to anomaly detection per Mattei chapter 8.5 &mdash; are the way to measure and fix this.</li>
+  <li><strong>ATLAS is the methodology, not a product.</strong> Mattei (chapter 8.4) introduces ATLAS (Alert Threshold Lifecycle Assessment System) as a seven-step methodology: Select, Define, Categorize, Collect, Analyze, Implement, Measure. The output is not a tool &mdash; it is a disciplined approach to threshold tuning. Most SOCs have a SIEM; few have a documented ATLAS process. The audit-defensible answer is the ATLAS spreadsheet, maintained as a living document.</li>
+  <li><strong>Top-10 SOC use cases are the coverage spine.</strong> Mattei (chapter 8.3) lists the canonical SOC use cases: ransomware detection, C2 beaconing, crypto-mining, data exfiltration, external IP communication, malware C2, signature-based threats, brute-force, DDoS. A SOC that has tuned thresholds for all 10 has coverage; a SOC that has tuned thresholds for 3 has gaps. The coverage metric is the audit-defensible answer to "do you detect what matters?"</li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the Detect metric catalogue (in Vietnamese) &mdash; the FAR/FRR/EER detection-quality dashboard, the ATLAS-tuned top-10 SOC use cases with documented thresholds, and the TTD/TTR event-throughput metrics</strong>. This is what the SOC manager reviews daily, what the CISO presents monthly, and what UBCK examines under the "monitoring and detection" theme.</p>
+
+<h2>The three measurable surfaces of Detect</h2>
+
+<p>Mattei (chapter 8) organises the detection function into three measurable surfaces:</p>
+
+<table>
+  <thead>
+    <tr><th>Surface</th><th>What it measures</th><th>Key metrics</th><th>Cadence</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sensor coverage</strong></td>
+      <td>Whether the SOC can see the threats &mdash; is the data being collected?</td>
+      <td>% asset coverage by EDR/NDR/Cloud/SIEM sensors; % log source online</td>
+      <td>Continuous (real-time dashboard)</td>
+    </tr>
+    <tr>
+      <td><strong>Alert quality (FAR/FRR/EER)</strong></td>
+      <td>Whether the alerts the SOC sees are accurate &mdash; are the thresholds tuned?</td>
+      <td>FAR, FRR, EER per top-10 use case; alert volume; true-positive rate</td>
+      <td>Daily / weekly review; ATLAS update quarterly</td>
+    </tr>
+    <tr>
+      <td><strong>Analyst throughput (TTD/TTR)</strong></td>
+      <td>Whether the SOC can respond &mdash; is the team keeping pace?</td>
+      <td>TTD P50/P95; TTR P50/P95; event volume per analyst per shift</td>
+      <td>Weekly / monthly review</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The three surfaces feed each other. Sensor coverage without alert quality is high-volume noise. Alert quality without sensor coverage is a tuned SIEM watching nothing. Analyst throughput without either is burnout.</p>
+
+<h2>Sensor coverage metrics &mdash; can we see?</h2>
+
+<p>Sensor coverage is the most basic question: is data flowing from the assets that matter? Mattei's chapter 8.1.2 frames the architecture: sensors on endpoints, servers, network devices, cloud workloads, applications. The metric set has four categories.</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>D1 &mdash; % in-scope assets with EDR coverage</strong> (covered in lesson 0005 as P17)</td>
+      <td>Whether every endpoint has functioning endpoint detection</td>
+      <td>SOC Manager</td>
+      <td>Xanh &ge; 98%; Đỏ &lt; 95%</td>
+    </tr>
+    <tr>
+      <td><strong>D2 &mdash; % in-scope network segments with NDR coverage</strong></td>
+      <td>Whether network sensors are placed at the segments that matter (DMZ, internal east-west, egress)</td>
+      <td>Network/Security Engineering Lead</td>
+      <td>Xanh 100% critical segments; Vàng &ge; 90% all</td>
+    </tr>
+    <tr>
+      <td><strong>D3 &mdash; % cloud workloads with detection coverage</strong> (CWPP / CSPM)</td>
+      <td>Whether cloud workloads have parity with on-prem detection &mdash; the cloud-shadow trap from lesson 0004</td>
+      <td>Cloud Security Lead</td>
+      <td>Xanh &ge; 95%; Đỏ &lt; 85%</td>
+    </tr>
+    <tr>
+      <td><strong>D4 &mdash; % critical log sources online in SIEM</strong></td>
+      <td>Whether the SIEM is receiving the logs it expects &mdash; the data-pipeline integrity check</td>
+      <td>SOC Manager + Platform Lead</td>
+      <td>Xanh 100% critical; Vàng &ge; 95% all; Đỏ &lt; 90%</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The asset-coverage-denominator trap.</strong> D1 (EDR coverage) is calculated as <em>endpoints with EDR / total endpoints in inventory</em>. The denominator is lesson 0004's I1 (in-scope assets in authoritative inventory). If the inventory is 70% accurate, D1 is calculated over the wrong denominator &mdash; the gap of 30% may have EDR or not; the metric doesn't know. The lesson 0004/0006 dependency is real: fix the inventory first, then fix the coverage metric. Same pattern for D2 (network), D3 (cloud), D4 (log sources).
+</div>
+
+<h2>Alert quality metrics &mdash; the FAR/FRR/EER framework</h2>
+
+<p>Mattei (chapter 8.5) borrows three metrics from biometric authentication theory and applies them to anomaly detection. The framework is direct: every detection rule has two error types, and the trade-off between them is the core detection-engineering decision.</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Why it matters</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>FAR (False Acceptance Rate)</strong></td>
+      <td>% of malicious activity that the system <em>fails to flag</em> &mdash; the detection miss</td>
+      <td>A high FAR means real threats pass through undetected. The most dangerous failure mode.</td>
+      <td>Xanh &le; 1%; Vàng 1&ndash;5%; Đỏ &gt; 5%</td>
+    </tr>
+    <tr>
+      <td><strong>FRR (False Rejection Rate)</strong></td>
+      <td>% of benign activity that the system <em>incorrectly flags</em> &mdash; the false alarm</td>
+      <td>A high FRR means alert fatigue. Analysts tune out, and the FAR worsens as a side-effect.</td>
+      <td>Xanh &le; 5%; Vàng 5&ndash;20%; Đỏ &gt; 20%</td>
+    </tr>
+    <tr>
+      <td><strong>EER (Equal Error Rate)</strong></td>
+      <td>The point at which FAR = FRR &mdash; the balanced operating point</td>
+      <td>The lower the EER, the better the threshold is tuned for the trade-off.</td>
+      <td>Xanh &le; 2%; Vàng 2&ndash;5%; Đỏ &gt; 5%</td>
+    </tr>
+    <tr>
+      <td><strong>True-Positive Rate (TPR)</strong></td>
+      <td>% of malicious activity correctly flagged &mdash; 1 &minus; FAR</td>
+      <td>The complement to FAR. A more intuitive metric for non-security audiences.</td>
+      <td>Xanh &ge; 99%; Đỏ &lt; 95%</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 8.5</span>
+  The EER is a critical metric representing the point at which the FRR and FAR are equal. It serves as a balanced measure of the system's overall accuracy. The lower the EER, the more reliable the system is at distinguishing between legitimate and illegitimate activities.
+</div>
+
+<p>The FAR/FRR trade-off is the central detection-engineering decision. Tightening thresholds lowers FRR (fewer false alarms) but raises FAR (more real threats missed). Loosening thresholds lowers FAR but raises FRR. The EER is the operating point where both error rates are equal &mdash; the most-balanced tuning. In practice, SOCs tune slightly <em>above</em> the EER (in the direction of higher TPR), accepting more false alarms to catch more real threats. The exact operating point is a risk-appetite decision documented in the strategic plan.</p>
+
+<h2>The ATLAS methodology &mdash; seven steps to tuned thresholds</h2>
+
+<p>Mattei (chapter 8.4) introduces ATLAS (Alert Threshold Lifecycle Assessment System) as a seven-step methodology for threshold tuning. The output is not a product &mdash; it is a disciplined process, with the ATLAS spreadsheet as the living document. For each top-10 use case, ATLAS produces a documented threshold that is reviewed quarterly.</p>
+
+<table>
+  <thead>
+    <tr><th>Step</th><th>What it does</th><th>Output</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>1. Select</strong></td><td>Identify the alert to be added; use a meaningful name (not PROD1AL2)</td><td>Alert name + use case ID</td></tr>
+    <tr><td><strong>2. Define</strong></td><td>Document what you are monitoring, why, and how it contributes to the program</td><td>Alert description (the "why")</td></tr>
+    <tr><td><strong>3. Categorize</strong></td><td>Classify as Zero-tolerance (notify immediately), Policy violation (threshold-based), or Anomaly detection (statistical)</td><td>Category + initial threshold direction</td></tr>
+    <tr><td><strong>4. Collect</strong></td><td>Gather the historical log data needed to establish a baseline (typically 6&ndash;12 months)</td><td>Baseline dataset</td></tr>
+    <tr><td><strong>5. Analyze</strong></td><td>Apply statistical analysis: weekly percentiles, mean, standard deviation, slide positivity rate, slope of weekly data on a log scale</td><td>Recommended threshold (typically Mean + 2&times;SD)</td></tr>
+    <tr><td><strong>6. Implement</strong></td><td>Deploy the threshold in the SIEM with documented false-positive tracking</td><td>Production threshold + FP-tracking mechanism</td></tr>
+    <tr><td><strong>7. Measure</strong></td><td>Continuously document false positives and adjust; review quarterly</td><td>Updated threshold + ATLAS spreadsheet row updated</td></tr>
+  </tbody>
+</table>
+
+<p>The audit-defensible answer is: <em>"Show me your ATLAS spreadsheet for the top-10 SOC use cases."</em> If the spreadsheet exists, is current, and shows the threshold history, you pass. If it doesn't exist, you have a finding: thresholds are tuned ad-hoc, not systematically.</p>
+
+<h2>The top-10 SOC use cases &mdash; Mattei's chapter 8.3 catalogue</h2>
+
+<p>Mattei (chapter 8.3) lists the canonical SOC use cases. The Detect metric catalogue applies ATLAS to each, with a documented threshold, a measured FAR/FRR, and an improvement playbook.</p>
+
+<table>
+  <thead>
+    <tr><th>#</th><th>Use case</th><th>What it detects</th><th>Typical ATLAS threshold direction</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Ransomware detection</td><td>Unique file extensions being modified/encrypted rapidly</td><td>Anomaly (count of encrypted files per hour per server)</td></tr>
+    <tr><td>2</td><td>C2 beaconing</td><td>Periodic outbound traffic to suspicious destinations</td><td>Anomaly (regularity + destination reputation)</td></tr>
+    <tr><td>3</td><td>Crypto-mining detection</td><td>Sustained high CPU/GPU utilisation on servers</td><td>Anomaly (mean+2SD on per-server baseline)</td></tr>
+    <tr><td>4</td><td>Data exfiltration</td><td>Total bytes transferred from critical servers</td><td>Anomaly (bytes per hour per server-segment)</td></tr>
+    <tr><td>5</td><td>External IP communication (north-south)</td><td>Connections to external/unknown IPs from assigned sources</td><td>Policy violation (deny-by-default with allow-list)</td></tr>
+    <tr><td>6</td><td>Malware C2 communication</td><td>Destination IP/domains of outgoing connections</td><td>Policy violation (threat-intel deny-list)</td></tr>
+    <tr><td>7</td><td>Signature-based threats</td><td>Connections to known malicious hosts</td><td>Zero-tolerance (any single event)</td></tr>
+    <tr><td>8</td><td>Brute-force attack detection</td><td>Failed login events on auth servers, VPN, critical systems</td><td>Policy violation (e.g., &gt;5 failures in 5 min)</td></tr>
+    <tr><td>9</td><td>DDoS detection</td><td>Packets/bytes per second from internet-facing segments</td><td>Anomaly (per-segment baseline)</td></tr>
+    <tr><td>10</td><td>Insider threat / data leakage</td><td>Unusual data access patterns by authenticated users</td><td>Anomaly (UBA + DLB on PDPD-scope assets)</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Use case 10 is the PDPD-aware detection.</strong> Insider threat / data leakage is the use case that most directly intersects PDPD scope (from lesson 0003 and 0005). The ATLAS threshold for use case 10 must operate over the PDPD-scope data inventory &mdash; a baseline built only on non-PDPD data is missing the most-sensitive assets. The same principle applies to use case 4 (data exfiltration): the threshold for "anomalous bytes transferred" is meaningless unless the asset is in the PDPD-scope inventory.
+</div>
+
+<h2>Analyst throughput metrics &mdash; the TTD/TTR pair</h2>
+
+<p>Mattei (chapter 8.6) frames analyst throughput through three metrics: time-to-detect (TTD), time-to-respond (TTR), and event volume. The first two are the lagging measures of detection quality; the third is the lagging measure of capacity.</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>D5 &mdash; TTD P50 / P95</strong> (time-to-detect, from event occurrence to alert generation)</td>
+      <td>How quickly the system identifies a real adverse event &mdash; the detection latency</td>
+      <td>SOC Manager</td>
+      <td>Xanh P50 &le; 1h, P95 &le; 4h; Đỏ P95 &gt; 24h</td>
+    </tr>
+    <tr>
+      <td><strong>D6 &mdash; TTR P50 / P95</strong> (time-to-respond, from alert to first response action)</td>
+      <td>How quickly the analyst responds to an alert &mdash; the response latency</td>
+      <td>SOC Manager</td>
+      <td>Xanh P50 &le; 30 min, P95 &le; 4h; Đỏ P95 &gt; 24h</td>
+    </tr>
+    <tr>
+      <td><strong>D7 &mdash; Daily event volume per analyst per shift</strong></td>
+      <td>Whether the workload is sustainable &mdash; the burnout indicator</td>
+      <td>SOC Manager + HR</td>
+      <td>Xanh &le; 50 events/shift; Đỏ &gt; 100 events/shift</td>
+    </tr>
+    <tr>
+      <td><strong>D8 &mdash; Incident classification accuracy</strong></td>
+      <td>% of events correctly categorised by severity &mdash; the analyst judgement quality</td>
+      <td>SOC Manager</td>
+      <td>Xanh &ge; 90%; Đỏ &lt; 75%</td>
+    </tr>
+    <tr>
+      <td><strong>D9 &mdash; Root-cause resolution rate</strong></td>
+      <td>% of identified root causes that have been addressed &mdash; the closing-the-loop indicator</td>
+      <td>SOC Manager + IR Lead</td>
+      <td>Xanh &ge; 80%; Đỏ &lt; 60%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The alert-fatigue cascade &mdash; why FRR matters more than it looks</h2>
+
+<p>Alert fatigue is a cascade, not a single failure. The pattern at most SOCs:</p>
+
+<ol>
+  <li><strong>High FRR</strong> &mdash; thresholds are too loose, generating many false alarms.</li>
+  <li><strong>Analyst desensitisation</strong> &mdash; after weeks of false alarms, analysts start dismissing alerts by default.</li>
+  <li><strong>FAR creeps up</strong> &mdash; because the real threats are buried in the noise, genuine attacks slip through unnoticed.</li>
+  <li><strong>True-positive detection drops</strong> &mdash; TPR falls, even though the SIEM is still firing alerts.</li>
+  <li><strong>Incident response degrades</strong> &mdash; TTD/TTR worsen because the analysts are now triaging by gut feel, not by alert priority.</li>
+</ol>
+
+<p>Breaking the cascade requires intervention at step 1 (lower the FRR with ATLAS) or at step 5 (improve triage discipline through playbooks + automation). The FAR/FRR/EER metric set is the only way to detect the cascade early.</p>
+
+<div class="callout">
+  <strong>The SecureData case study.</strong> Mattei (chapter 8.6.2) describes SecureData Inc.'s before-and-after: TTD from 6 hours to 1 hour, TTR from 4 hours to 30 minutes, FPR from 60% to 20%, classification accuracy from 70% to 90%, root-cause resolution from 50% to 80%. All five metrics moved together because they were treated as a system, not as individual KPIs. The lesson: detection-quality improvements are multiplicative; addressing one metric without addressing the others produces marginal gains.
+</div>
+
+<h2>The Detect board-pack subset &mdash; one or two metrics</h2>
+
+<p>Of the nine Detect metrics, one or two belong on the board pack (joining the 4 from Govern + Identify + Protect):</p>
+
+<ul>
+  <li><strong>D4</strong> — % critical log sources online in SIEM (the sensor-coverage integrity check)</li>
+  <li>OR <strong>D5/D6 combined</strong> — TTD P95 + TTR P95 (the detection-and-response latency pair)</li>
+</ul>
+
+<p>The FAR/FRR/EER per use case is too operational for the board; it lives at the SOC manager's daily review. The board sees the trend: is detection getting faster? is alert volume sustainable? is the SOC catching what matters?</p>
+
+<h2>Where Detect metrics connect to the rest of the program</h2>
+
+<p>Detect metrics are the bridge between Protect (lesson 0005) and Respond (lesson 0007). The D5/D6 metrics (TTD/TTR) are the leading indicators for M3 (time-to-contain P95 from lesson 0001) and the IR-specific metrics in lesson 0007. The D1 metric (EDR coverage) is bounded by lesson 0005's P17 and lesson 0004's I1 (asset inventory accuracy).</p>
+
+<table>
+  <thead>
+    <tr><th>Detect metric</th><th>Upstream dependency</th><th>Downstream consumer</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>D1 (EDR coverage)</td><td>Lesson 0004 I1 (inventory), Lesson 0005 P17 (EDR target)</td><td>Lesson 0007 IR metrics (endpoint-triage time)</td></tr>
+    <tr><td>D4 (log sources online)</td><td>Platform engineering (sensor deployment)</td><td>Lesson 0007 IR metrics (forensic-readiness)</td></tr>
+    <tr><td>D5/D6 (TTD/TTR)</td><td>SOC staffing (capacity)</td><td>Lesson 0007 M3 (time-to-contain P95)</td></tr>
+    <tr><td>D2/D3 (network/cloud coverage)</td><td>Lesson 0004 I1 (inventory), Cloud security</td><td>Lesson 0007 IR scenarios (cloud-aware containment)</td></tr>
+    <tr><td>FAR/FRR/EER per use case</td><td>ATLAS process discipline</td><td>All IR scenarios (false-positive review)</td></tr>
+  </tbody>
+</table>
+
+<h2>The artifact &mdash; the Detect metric catalogue (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Danh mục chỉ số Phát hiện (Detect Metric Catalogue)</h3>
+
+<p><strong>Use case:</strong> 9 metrics across three surfaces (sensor coverage, alert quality, analyst throughput) + the ATLAS-tuned top-10 SOC use cases. Vietnamese-language artifact; updated quarterly with the ATLAS process.</p>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Sensor Coverage</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>D1</td><td>% tài sản có EDR (P17 from lesson 0005)</td><td>SOC Manager</td><td>Xanh &ge; 98%; Đỏ &lt; 95%</td></tr>
+    <tr><td>D2</td><td>% network segment có NDR</td><td>Network/Sec Eng Lead</td><td>Xanh 100% critical; Vàng &ge; 90% all</td></tr>
+    <tr><td>D3</td><td>% cloud workload có CWPP/CSPM</td><td>Cloud Security Lead</td><td>Xanh &ge; 95%; Đỏ &lt; 85%</td></tr>
+    <tr><td>D4</td><td>% critical log source online trong SIEM</td><td>SOC Manager + Platform Lead</td><td>Xanh 100%; Vàng &ge; 95%; Đỏ &lt; 90%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Alert Quality (FAR/FRR/EER)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>QA1</td><td>FAR per use case (top-10)</td><td>SOC Manager + Detection Engineer</td><td>Xanh &le; 1%; Vàng 1&ndash;5%; Đỏ &gt; 5%</td></tr>
+    <tr><td>QA2</td><td>FRR per use case (top-10)</td><td>SOC Manager + Detection Engineer</td><td>Xanh &le; 5%; Vàng 5&ndash;20%; Đỏ &gt; 20%</td></tr>
+    <tr><td>QA3</td><td>EER per use case (top-10)</td><td>SOC Manager + Detection Engineer</td><td>Xanh &le; 2%; Đỏ &gt; 5%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Analyst Throughput</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>D5</td><td>TTD P50 / P95</td><td>SOC Manager</td><td>Xanh P50 &le; 1h, P95 &le; 4h</td></tr>
+    <tr><td>D6</td><td>TTR P50 / P95</td><td>SOC Manager</td><td>Xanh P50 &le; 30 min, P95 &le; 4h</td></tr>
+    <tr><td>D7</td><td>Event volume per analyst per shift</td><td>SOC Manager + HR</td><td>Xanh &le; 50; Đỏ &gt; 100</td></tr>
+    <tr><td>D8</td><td>Incident classification accuracy</td><td>SOC Manager</td><td>Xanh &ge; 90%; Đỏ &lt; 75%</td></tr>
+    <tr><td>D9</td><td>Root-cause resolution rate</td><td>SOC Manager + IR Lead</td><td>Xanh &ge; 80%; Đỏ &lt; 60%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Board pack subset (1&ndash;2 metric)</h3>
+<ul>
+  <li><strong>D4</strong> &mdash; % critical log sources online in SIEM (the integrity check)</li>
+  <li><strong>D5/D6</strong> &mdash; TTD P95 + TTR P95 (the latency pair)</li>
+</ul>
+
+<h3 style="margin-top:18px;">Top-10 SOC Use Cases với ATLAS threshold</h3>
+<table style="font-size:12px;">
+  <thead>
+    <tr><th>#</th><th>Use case</th><th>Category</th><th>ATLAS threshold (sơ khởi)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Ransomware detection</td><td>Anomaly</td><td>Mean+2&times;SD trên encrypted-file-count/hour/server</td></tr>
+    <tr><td>2</td><td>C2 beaconing</td><td>Anomaly</td><td>Regularity (low variance) + TI deny-list</td></tr>
+    <tr><td>3</td><td>Crypto-mining</td><td>Anomaly</td><td>Mean+2&times;SD trên CPU-utilisation/server (sustained 30 min)</td></tr>
+    <tr><td>4</td><td>Data exfiltration</td><td>Anomaly</td><td>Mean+2&times;SD trên bytes-out/hour/server-segment (PDPD scope aware)</td></tr>
+    <tr><td>5</td><td>External IP (north-south)</td><td>Policy violation</td><td>Deny-by-default với allow-list exception</td></tr>
+    <tr><td>6</td><td>Malware C2</td><td>Policy violation</td><td>TI deny-list hit &rarr; zero-tolerance</td></tr>
+    <tr><td>7</td><td>Signature-based threats</td><td>Zero-tolerance</td><td>Any single event &rarr; immediate notify</td></tr>
+    <tr><td>8</td><td>Brute-force</td><td>Policy violation</td><td>&gt;5 failures in 5 min &rarr; alert + auto-lockout</td></tr>
+    <tr><td>9</td><td>DDoS</td><td>Anomaly</td><td>Mean+2&times;SD trên pps/Bps per segment</td></tr>
+    <tr><td>10</td><td>Insider / data leakage</td><td>Anomaly</td><td>UBA baseline + DLB trên PDPD-scope assets</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>Bind cùng với runbook cards (lesson 0002), cross-reference matrix (lesson 0003), Govern+Identify catalogue (lesson 0004), Protect catalogue (lesson 0005). ATLAS spreadsheet là living document, updated quarterly. Daily: SOC manager reviews D4, D5, D6, D7, alert volume. Monthly: CISO reviews trend trên 9 metric. Quarterly: ATLAS threshold review (top-10 use cases).</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Pick the top-3 SOC use cases (typically: brute-force, signature-based threats, ransomware detection — these are the highest-confidence detections with the cleanest baselines). For each: (1) document the current threshold; (2) calculate the FAR / FRR over the past 30 days; (3) document the false-positive rate; (4) propose the next ATLAS tuning cycle. By the next session you should have 3 ATLAS-tuned use cases with measured FAR/FRR/EER + 1 detection-quality improvement playbook.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is FAR treated as the more dangerous failure mode than FRR, even though FRR is more visible?</summary>
+<p>Because FAR measures the threats that pass through undetected — the attacks you don't know about. FRR measures the false alarms — visible, noisy, but ultimately benign. The danger of FAR is that a high FAR looks the same as a working system: the SIEM is firing, alerts are being generated, dashboards are populated. The only way to detect a high FAR is to measure it explicitly — through red-team testing, breach-and-attack simulation (BAS), or retrospective analysis of confirmed incidents that should have triggered alerts. Mattei's SecureData case study shows the inverse: a low FRR with a high FAR is the worst combination, because the system appears quiet and effective while missing real threats. The operating-point decision (above or below EER) is a risk-appetite choice; most SOCs operate slightly above EER, accepting higher FRR to drive FAR toward zero.</p>
+</details>
+
+<details>
+<summary>Why is the ATLAS spreadsheet the audit-defensible answer, not a SIEM rule configuration?</summary>
+<p>Because the audit question is not "what thresholds are configured in the SIEM?" — that answer is one SELECT query away and tells the examiner nothing about whether the thresholds are actually tuned. The audit question is "show me your process for setting, reviewing, and updating thresholds." The ATLAS spreadsheet answers this: it documents the Select, Define, Categorize, Collect, Analyze, Implement, Measure steps for each use case; it shows the threshold history (when was it last reviewed, what was changed, why); it shows the false-positive rate over time and the tuning iterations. If the spreadsheet exists, is current, and shows evidence of quarterly review, the audit passes. If the thresholds live only in the SIEM and the rationale lives only in someone's head, the audit has a finding: thresholds are tuned ad-hoc, not systematically. ATLAS is a methodology, not a product — its value is the discipline it imposes, evidenced by the spreadsheet.</p>
+</details>
+
+<details>
+<summary>Why does PDPD scope matter for the data-exfiltration use case?</summary>
+<p>Because the data-exfiltration threshold (use case 4) is built on a baseline of "normal" bytes-out per hour per server. If the baseline is built only on non-PDPD data, the most-sensitive assets (customer PII, financial records, employee data) are not in the baseline. Anomalous exfiltration from those assets may not trigger the threshold — because the threshold is calibrated against the wrong population. The fix: scope the baseline to include PDPD-scope assets, then compute the anomaly threshold separately for PDPD and non-PDPD segments. The same principle applies to use case 10 (insider threat / data leakage): the user-behaviour-analytics baseline must be built on the user's normal access patterns against PDPD-scope data, not against generic access patterns.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapter 8 (Continuous threat detection &mdash; sections 8.1 ISCM strategy, 8.3 continuous monitoring metrics, 8.4 ATLAS methodology, 8.5 FAR/FRR/EER framework, 8.6 adverse event analysis metrics). The book's framing is generic; this lesson curates the 9-metric catalogue + the top-10 SOC use cases + the ATLAS threshold table for a 9-entity Vietnamese securities firm, with the PDPD-scope overlay on use cases 4 and 10 and the FAR/FRR/EER framework applied to each use case as a per-use-case measurement (not just a single system-wide number).</p>
+
+<p><strong>Read next:</strong> chapter 8.6 (adverse event analysis in detail) for the TTD/TTR/event-volume metric construction, and chapter 9 (Incident response &mdash; which lesson 0007 maps to). Lesson 0007 builds the IR + Recovery metric catalogue, with the PDPD 72-hour notification metric as a regulatory-ceiling category distinct from the maturity indicators in lessons 0004&ndash;0006.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear &mdash; how to populate the ATLAS spreadsheet from scratch, how to calculate EER for an existing SIEM rule, how to handle the FAR/FRR trade-off when the strategic-plan risk appetite is "above EER" or "below EER", how to scope the data-exfiltration baseline to PDPD assets, what to do when the SOC lacks the staffing to operate 24/7, how to defend the top-10 use-case list to a UBCK examiner — ask. The next lesson (0007: Respond + Recover) measures the IR + Recovery layer with the PDPD 72-hour regulatory ceiling.
+</div>
+
+<div class="lesson-nav">
+  <a href="0005-protect.html">&larr; Lesson 0005</a>
+  <a href="0007-respond-recover.html">Lesson 0007: Respond + Recover &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

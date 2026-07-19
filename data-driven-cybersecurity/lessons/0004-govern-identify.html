@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0004 &mdash; Govern + Identify: Strategic Foundation Metrics</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .predecessor {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-size: 16px;
+  }
+  .predecessor strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0004 &middot; Data-driven cybersecurity &middot; Arc 2: Measure every program area</div>
+<h1>Govern + Identify: Strategic Foundation Metrics</h1>
+<p class="subtitle">You already have the strategic plan and the BIA. Now measure whether they are doing what they were written to do.</p>
+
+<div class="predecessor">
+<strong>Predecessor lesson (ciso-playbook course).</strong> This lesson measures the program areas covered by <a href="../../ciso-playbook/lessons/0010-strategic-plan-day-job.html">ciso-playbook 0010 (strategic plan)</a> and <a href="../../ciso-playbook/lessons/0006-continuity-backups-rto-rpo.html">ciso-playbook 0006 (continuity &amp; BIA matrix)</a>. The Vietnamese artifacts from those lessons are the input &mdash; specifically the strategic plan's mission/vision/governance structure (lesson 0010) and the 8-process &times; 7-column BIA matrix (lesson 0006). This lesson adds the measurement layer to both.
+</div>
+
+<h2>Why this lesson fourth</h2>
+
+<p>Arc 1 (lessons <a href="0001-stop-counting-vulnerabilities.html">0001</a>&ndash;<a href="0003-audit-ready-pack.html">0003</a>) gave you the metric discipline: which 8&ndash;12 metrics, the seven-step lifecycle, the cross-framework evidence pack. Arc 2 starts the per-CSF-function work. We begin with <em>Govern</em> and <em>Identify</em> because they sit at the top of the program &mdash; if you measure the foundation, everything downstream inherits the discipline.</p>
+
+<p>Mattei (chapter 5) frames <strong>Govern</strong> as "how authority is exercised and accountability rendered for managing organizational risk" &mdash; policies, processes, procedures, organizational structure, defined roles. <strong>Identify</strong> (chapter 6) is the function that maps what you have (assets), what could go wrong (vulnerabilities, threats), and how you prioritise (risk assessment). Together, Govern + Identify are the strategic foundation. Without them measured, the rest of the program operates on assumptions.</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 5.2</span>
+  When cybersecurity initiatives are misaligned with board expectations, organizations risk underfunding critical security measures or overinvesting in areas that do not directly mitigate the most pressing threats.
+</div>
+
+<p>This is the lesson's spine: misalignment is invisible until you measure it. The ciso-playbook course designed the strategic plan (lesson 0010) and the BIA matrix (lesson 0006). Both are <em>design</em> artifacts. This lesson is the <em>measurement</em> layer: are the design artifacts actually doing the work they were written to do?</p>
+
+<p>For your 9-entity Vietnamese securities firm, Govern + Identify lands with three pressures:</p>
+
+<ol>
+  <li><strong>Multi-entity governance is the hard problem.</strong> One strategic plan can serve nine entities only if governance is consolidated where it should be and specialised where it must be. Mattei (chapter 5.6) introduces <em>governance metrics</em> &mdash; the kind that measure "are the right decisions being made by the right people at the right cadence?" Without measurement, multi-entity governance is either uniform-but-misaligned (group policy forced on entities that don't fit) or specialised-but-uncontrolled (each entity doing its own thing). The lesson gives you the metric set that distinguishes healthy multi-entity governance from drift.</li>
+  <li><strong>Asset inventory accuracy is the unknown unknown.</strong> A typical mid-size firm's asset inventory is 30&ndash;50% wrong on a good day. Subsidiaries, contractor laptops, cloud workloads, shadow IT &mdash; none of it shows up in the inventory. UBCK examiners know this. The asset-management metric (chapter 6.2) is the leading indicator that determines whether every other Identify metric is real.</li>
+  <li><strong>Risk-assessment cadence is the lagging trap.</strong> A firm that does a risk assessment once a year and files it is not managing risk; it's documenting compliance. The risk-assessment metric (chapter 6.3) measures whether risk is being <em>re-assessed</em> at the cadence the threat environment demands, not just at the cadence the calendar demands.</li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the Govern + Identify metric catalogue (in Vietnamese) &mdash; 8&ndash;10 metrics, each cross-referenced to the ciso-playbook strategic-plan artifact and the BIA matrix it measures.</strong> This catalogue is what you present when the board asks "is the strategic plan working?" and when the UBCK examiner asks "show me your risk-management cadence."</p>
+
+<h2>Govern metrics &mdash; the strategic-foundation layer</h2>
+
+<p>Govern metrics answer one question: <em>is the program being run by the right people, with the right authority, at the right cadence, against the right objectives?</em> Mattei (chapter 5.6) frames oversight as the spine of governance. The metric set falls into four categories.</p>
+
+<table>
+  <thead>
+    <tr><th>Category</th><th>Metric</th><th>What it measures</th><th>Ciso-playbook artifact it measures</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="2"><strong>Authority &amp; reporting structure</strong></td>
+      <td>% of security decisions with documented accountable owner</td>
+      <td>Whether every decision in the program has a named accountable person (per the RACI in ciso-playbook 0007's playbook + strategic-plan governance structure)</td>
+      <td>Strategic plan (ciso-playbook 0010) &mdash; governance section</td>
+    </tr>
+    <tr>
+      <td>% of entities with CISO-defined reporting structure (group vs entity)</td>
+      <td>Whether each of the 9 entities has a documented security reporting line that does not bypass the group CISO</td>
+      <td>Strategic plan &mdash; multi-entity governance section</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><strong>Cadence &amp; oversight</strong></td>
+      <td>Cadence adherence: strategic-plan review (quarterly), audit-committee briefing (quarterly), entity-CEO cyber call (monthly)</td>
+      <td>Whether the governance cadence is actually held (not just calendared)</td>
+      <td>Strategic plan &mdash; cadence section</td>
+    </tr>
+    <tr>
+      <td>% of audit-committee meetings where cyber is on the agenda (12-month rolling)</td>
+      <td>Whether the audit committee treats cyber as a standing agenda item, not a fire-drill item</td>
+      <td>Strategic plan &mdash; board reporting section</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><strong>Policy &amp; exception management</strong></td>
+      <td>% of group policies adopted across all 9 entities (or with group-approved exception)</td>
+      <td>Whether the policy baseline is actually group-wide, with documented exceptions where entity-specific</td>
+      <td>Strategic plan &mdash; policy consolidation section</td>
+    </tr>
+    <tr>
+      <td>Mean age of open policy exceptions (P50, P95)</td>
+      <td>Whether exceptions are aging without remediation (the leading indicator of accumulated policy drift)</td>
+      <td>Strategic plan &mdash; exception register</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><strong>Budget &amp; resource authority</strong></td>
+      <td>Security budget as % of IT budget (and trend)</td>
+      <td>Whether the security function has the resources to do what the strategic plan commits to (not just what last year's budget allowed)</td>
+      <td>Strategic plan &mdash; budget section</td>
+    </tr>
+    <tr>
+      <td>% of strategic-plan initiatives funded vs planned (12-month rolling)</td>
+      <td>Whether the plan is being delivered, not just promised</td>
+      <td>Strategic plan &mdash; initiative tracker</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Of these 8 metrics, only 2&ndash;3 belong on the board pack. The rest are program-owner metrics. Specifically, the board pack gets: <em>cadence adherence</em> (you either had the audit-committee briefing or you didn't), <em>% strategic-plan initiatives funded vs planned</em> (the plan is being delivered or it isn't), and <em>% policy exceptions consolidated</em> (the multi-entity governance is working or drifting).</p>
+
+<div class="callout">
+  <strong>The "is the plan working" metric.</strong> The single most important Govern metric is the one the ciso-playbook course did not name explicitly: <em>strategic-plan initiative delivery rate</em>. Of the initiatives committed in the strategic plan (ciso-playbook 0010), how many were funded, started, and delivered on schedule in the past 12 months? This metric is the answer to the board's question "is the cybersecurity plan working?" It is also the metric that forces honest governance &mdash; if delivery rate is &lt; 60%, the strategic plan is aspirational, not operational, and the board should know.
+</div>
+
+<h2>Identify metrics &mdash; the asset-and-risk layer</h2>
+
+<p>Identify metrics answer the question: <em>do we know what we have, what could go wrong, and what we are doing about it?</em> Mattei (chapter 6) frames this as the function that produces the inputs every other function consumes. The metric set falls into three categories.</p>
+
+<table>
+  <thead>
+    <tr><th>Category</th><th>Metric</th><th>What it measures</th><th>Ciso-playbook artifact it measures</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3"><strong>Asset management (ch. 6.2)</strong></td>
+      <td>% of in-scope assets in authoritative inventory (with entity attribution)</td>
+      <td>The accuracy of the asset inventory &mdash; the leading indicator that determines whether every other Identify metric is real</td>
+      <td>BIA matrix (ciso-playbook 0006) &mdash; critical asset register</td>
+    </tr>
+    <tr>
+      <td>% of critical assets with documented criticality tier (Tier 1/2/3 per BIA)</td>
+      <td>Whether the assets that matter most are documented as such</td>
+      <td>BIA matrix &mdash; criticality column</td>
+    </tr>
+    <tr>
+      <td>Mean time from asset onboarding to inventory entry (P95)</td>
+      <td>Whether new assets (cloud workloads, contractor laptops, vendor-managed systems) appear in the inventory quickly enough to be governed</td>
+      <td>BIA matrix &mdash; freshness of inventory</td>
+    </tr>
+    <tr>
+      <td rowspan="3"><strong>Risk assessment (ch. 6.3)</strong></td>
+      <td>Risk-assessment refresh cadence adherence (% of entities assessed on schedule per the strategic-plan cadence)</td>
+      <td>Whether risk is being re-assessed at the cadence the threat environment demands, not just the calendar</td>
+      <td>Strategic plan &mdash; risk-management cadence</td>
+    </tr>
+    <tr>
+      <td>% of identified risks with documented treatment (mitigate / transfer / accept / avoid)</td>
+      <td>Whether every identified risk has a documented treatment &mdash; the lagging indicator that determines whether risk assessment is operational or theatrical</td>
+      <td>Strategic plan &mdash; risk register</td>
+    </tr>
+    <tr>
+      <td>Mean age of un-treated risks (P50, P95) by severity</td>
+      <td>Whether risks are aging without action &mdash; the leading indicator of accumulated risk exposure</td>
+      <td>Strategic plan &mdash; risk register</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><strong>Continuous improvement (ch. 6.4)</strong></td>
+      <td>% of strategic-plan objectives with measured progress (vs aspirational only)</td>
+      <td>Whether the strategic plan is being measured at all &mdash; the structural check that prevents the plan from drifting into a binder on a shelf</td>
+      <td>Strategic plan &mdash; objectives tracker</td>
+    </tr>
+    <tr>
+      <td>Number of program improvements shipped per quarter (from post-mortems, audit findings, threat-intel updates)</td>
+      <td>The continuous-improvement velocity &mdash; whether the program is actually adapting</td>
+      <td>Strategic plan &mdash; continuous-improvement section</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Of these 8 metrics, 2 belong on the board pack: <em>% in-scope assets in authoritative inventory</em> (asset-management discipline) and <em>risk-assessment refresh cadence adherence</em> (risk-management discipline). The rest are program-owner and entity-level metrics.</p>
+
+<h2>The strategic-plan-vs-reality metric &mdash; the one UBCK will ask first</h2>
+
+<p>Of all Govern + Identify metrics, the single most audit-defensible one is the <em>strategic-plan-vs-reality</em> metric. It has four components, each a separate metric that feeds the same audit defence:</p>
+
+<ol>
+  <li><strong>Plan exists.</strong> Documented strategic plan, last reviewed within 12 months, approved by the board / CEO. (Leading: yes/no.)</li>
+  <li><strong>Plan is funded.</strong> % of strategic-plan initiatives with allocated budget for the current fiscal year. (Leading indicator of execution capacity.)</li>
+  <li><strong>Plan is in motion.</strong> % of initiatives with documented progress against milestones (not just "in progress" but actual milestone dates hit/missed). (Leading indicator of execution discipline.)</li>
+  <li><strong>Plan is delivered.</strong> % of initiatives completed within the planned quarter, and aggregate delivery rate over the past 12 months. (Lagging indicator of execution capability.)</li>
+</ol>
+
+<p>The four metrics tell the same story at four altitudes. UBCK examiner asks "is your strategic plan being executed?" The answer is the four-metric dashboard. If all four are green, the plan is alive. If any one is yellow or red, the plan has a problem at that altitude.</p>
+
+<div class="callout">
+  <strong>The audit-defence pattern.</strong> A UBCK examination of the strategic plan typically asks three questions, in this order: (1) "Show me your strategic plan." (Documented artifact from ciso-playbook 0010.) (2) "Show me progress against the plan." (The four-metric dashboard above.) (3) "When a milestone slipped, what did you do?" (The Improve-step playbook from lesson 0002.) If all three answers are clean, the audit passes. The fourth question &mdash; "what did you change in the plan as a result?" &mdash; is the follow-up that distinguishes a mature program from a compliant one.
+</div>
+
+<h2>The asset-inventory accuracy problem &mdash; the unknown unknown</h2>
+
+<p>Mattei (chapter 6.2) treats asset inventory as the foundation of Identify. The book's framing is straightforward: you cannot protect what you do not know you have. The reality at most firms is harder: the inventory is <em>incomplete in ways that are systematically biased</em> toward missing the assets that are most at risk.</p>
+
+<p>Three patterns dominate the inventory-accuracy problem at mid-size firms:</p>
+
+<table>
+  <thead>
+    <tr><th>Pattern</th><th>What's missing</th><th>Why it's missing</th><th>How to measure the gap</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Cloud-shadow</strong></td>
+      <td>Cloud workloads spun up by business units without IT involvement</td>
+      <td>Self-service cloud provisioning; no central gatekeeper</td>
+      <td>Cloud-provider billing export vs inventory &mdash; the delta is the shadow</td>
+    </tr>
+    <tr>
+      <td><strong>Contractor-blind</strong></td>
+      <td>Contractor laptops, contractor-managed systems, vendor-owned devices with access to firm data</td>
+      <td>Contractor onboarding bypasses IT; vendor devices are out of scope by default</td>
+      <td>Active Directory / IAM joiners report vs inventory &mdash; the delta is the contractor gap</td>
+    </tr>
+    <tr>
+      <td><strong>Entity-silo</strong></td>
+      <td>Assets held at the entity level but not surfaced to group IT</td>
+      <td>9 entities have different IT teams, different tooling, different reporting cadences</td>
+      <td>Group IT asset count vs sum of entity IT asset counts &mdash; the delta is the silo gap</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For your firm, the multi-entity pattern is the most acute. A 9-entity portfolio has at least three different IT operating models: entities with their own IT team, entities that outsource to a shared service, and entities that operate on group IT infrastructure. The asset inventory must reconcile across all three. The metric <em>% of in-scope assets in authoritative inventory (with entity attribution)</em> is the integrity check.</p>
+
+<p>Lesson 0006 (Detect) revisits asset inventory in the context of detection coverage &mdash; you cannot detect threats to assets you don't know you have.</p>
+
+<h2>The risk-assessment cadence question &mdash; annual vs continuous</h2>
+
+<p>Mattei (chapter 6.3) frames risk assessment as a recurring process, not an annual event. NIST SP 800-30 (which Mattei cites as the formal reference) supports both cadences &mdash; a comprehensive annual assessment and continuous updates as the threat environment changes. The metric is which one your firm actually does.</p>
+
+<table>
+  <thead>
+    <tr><th>Cadence</th><th>What it looks like</th><th>What the metric says</th><th>What UBCK sees</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Annual-only</strong></td>
+      <td>Big assessment in Q1, filed, not revisited until next Q1</td>
+      <td>Risk-assessment refresh cadence adherence: 100% on the annual cycle, 0% on the continuous cycle</td>
+      <td>Risk assessment is a compliance artifact, not a management tool</td>
+    </tr>
+    <tr>
+      <td><strong>Triggered</strong></td>
+      <td>Annual comprehensive + ad-hoc reassessments on material changes (new product, new vendor, new regulation)</td>
+      <td>Risk-assessment refresh cadence adherence: 100% annual + N triggered per year (documented)</td>
+      <td>Risk assessment is operational but uneven &mdash; the trigger list must be documented</td>
+    </tr>
+    <tr>
+      <td><strong>Continuous</strong></td>
+      <td>Risks are tracked continuously; quarterly review of every risk register; monthly review of top-10 risks</td>
+      <td>Risk-assessment refresh cadence adherence: 100% annual + 100% quarterly + continuous monitoring</td>
+      <td>Risk assessment is a management discipline &mdash; the gold standard</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For your firm, the realistic target is <em>triggered</em> in year one, <em>continuous</em> by year two. The metric <em>risk-assessment refresh cadence adherence</em> tells the story regardless of which cadence you adopt.</p>
+
+<h2>Where governance metrics connect to the rest of the program</h2>
+
+<p>Govern + Identify metrics are not isolated. They are the inputs to every other CSF function's metrics:</p>
+
+<table>
+  <thead>
+    <tr><th>Govern + Identify metric</th><th>Downstream consumer</th><th>What it enables</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>% of in-scope assets in inventory</td><td>Protect (lesson 0005), Detect (lesson 0006)</td><td>Without an inventory, every downstream metric is built on sand</td></tr>
+    <tr><td>Strategic-plan delivery rate</td><td>All functions &mdash; the governance wrapper</td><td>If the plan isn't being delivered, every other metric is reporting on a program that is aspirational</td></tr>
+    <tr><td>% of risks with documented treatment</td><td>Protect (controls), Respond (runbooks), Recover (continuity)</td><td>Risk-treatment decisions drive the controls catalogue, the IR scenarios, the recovery priorities</td></tr>
+    <tr><td>Cadence adherence (audit committee, entity-CEO calls)</td><td>All functions &mdash; the oversight wrapper</td><td>Cadence is the only thing that turns a plan into a program</td></tr>
+    <tr><td>% policy exceptions consolidated to group</td><td>All functions &mdash; the multi-entity wrapper</td><td>Multi-entity governance is consolidated or it has drifted</td></tr>
+  </tbody>
+</table>
+
+<p>Lesson 0004 produces the catalogue; lessons 0005&ndash;0007 inherit it.</p>
+
+<h2>The artifact &mdash; the Govern + Identify metric catalogue (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Danh mục chỉ số Quản trị &amp; Nhận diện (Govern + Identify Metric Catalogue)</h3>
+
+<p><strong>Use case:</strong> 8&ndash;10 metrics for the strategic foundation of the program, cross-referenced to the ciso-playbook strategic-plan and BIA-matrix artifacts. Each metric has owner, source, threshold, decision it drives. Vietnamese-language artifact; updated quarterly as part of the Sustain step.</p>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Quản trị (Govern metrics)</h3>
+
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Loại</th><th>Owner</th><th>Threshold</th><th>Ciso-playbook artifact</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>G1</td><td>% quyết định an ninh có chủ sở hữu được ghi nhận</td><td>Leading</td><td>CISO</td><td>Xanh &ge; 95%; Đỏ &lt; 80%</td><td>Strategic plan &mdash; governance section</td></tr>
+    <tr><td>G2</td><td>% entity có cấu trúc báo cáo an ninh rõ ràng</td><td>Leading</td><td>CISO</td><td>Xanh 9/9; Vàng 7&ndash;8/9; Đỏ &lt; 7/9</td><td>Strategic plan &mdash; multi-entity governance</td></tr>
+    <tr><td>G3</td><td>Cadence adherence (audit committee + entity-CEO call)</td><td>Lagging (acceptable)</td><td>CISO</td><td>Xanh &ge; 90%; Đỏ &lt; 75%</td><td>Strategic plan &mdash; cadence section</td></tr>
+    <tr><td>G4</td><td>% chính sách nhóm được áp dụng tại 9 entity (hoặc có ngoại lệ được duyệt)</td><td>Leading</td><td>Governance Lead</td><td>Xanh &ge; 90%; Đỏ &lt; 70%</td><td>Strategic plan &mdash; policy consolidation</td></tr>
+    <tr><td>G5</td><td>% sáng kiến trong kế hoạch chiến lược đã được cấp ngân sách</td><td>Leading</td><td>CFO + CISO</td><td>Xanh &ge; 80%; Đỏ &lt; 60%</td><td>Strategic plan &mdash; budget section</td></tr>
+    <tr><td>G6</td><td>% sáng kiến đã giao trong quý (P50 delivery rate)</td><td>Lagging (acceptable)</td><td>CISO</td><td>Xanh &ge; 70%; Đỏ &lt; 50%</td><td>Strategic plan &mdash; initiative tracker</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Nhận diện (Identify metrics)</h3>
+
+<table style="font-size:14px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Loại</th><th>Owner</th><th>Threshold</th><th>Ciso-playbook artifact</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>I1</td><td>% tài sản trong phạm vi có trong inventory chính thức (ghi rõ entity)</td><td>Leading</td><td>Asset Manager</td><td>Xanh &ge; 95%; Đỏ &lt; 80%</td><td>BIA matrix &mdash; critical asset register</td></tr>
+    <tr><td>I2</td><td>% tài sản trọng yếu có criticality tier được ghi nhận</td><td>Leading</td><td>Asset Manager</td><td>Xanh 100%; Vàng 90&ndash;99%; Đỏ &lt; 90%</td><td>BIA matrix &mdash; criticality column</td></tr>
+    <tr><td>I3</td><td>Mean time từ khi tài sản onboard → vào inventory (P95)</td><td>Leading</td><td>Asset Manager</td><td>Xanh &le; 24h; Đỏ &gt; 7 ngày</td><td>BIA matrix &mdash; freshness</td></tr>
+    <tr><td>I4</td><td>Risk-assessment refresh cadence adherence</td><td>Leading</td><td>Risk Lead</td><td>Xanh 100% theo cadence; Đỏ &lt; 80%</td><td>Strategic plan &mdash; risk-management cadence</td></tr>
+    <tr><td>I5</td><td>% rủi ro được nhận diện có treatment document</td><td>Lagging (acceptable)</td><td>Risk Lead</td><td>Xanh 100%; Đỏ &lt; 90%</td><td>Strategic plan &mdash; risk register</td></tr>
+    <tr><td>I6</td><td>Mean age of untreated risks (P95) theo severity</td><td>Leading</td><td>Risk Lead</td><td>Xanh: high &le; 30 ngày; Đỏ: high &gt; 90 ngày</td><td>Strategic plan &mdash; risk register</td></tr>
+    <tr><td>I7</td><td>% mục tiêu chiến lược có measured progress</td><td>Leading</td><td>CISO</td><td>Xanh &ge; 90%; Đỏ &lt; 70%</td><td>Strategic plan &mdash; objectives tracker</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Board pack subset (2 metric)</h3>
+<p>From the catalogue above, the two metrics that belong on the board pack (per the 8&ndash;12 board-pack discipline from lesson 0001):</p>
+<ul>
+  <li><strong>G5</strong> &mdash; % strategic-plan initiatives funded vs planned (the "is the plan being executed" metric)</li>
+  <li><strong>I1</strong> &mdash; % in-scope assets in authoritative inventory (the "do we know what we have" metric)</li>
+</ul>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>Bind cùng với runbook cards (lesson 0002) và cross-reference matrix (lesson 0003). Quarterly review: xem trend 12 tháng của mỗi chỉ số, cập nhật threshold nếu cần. Khi UBCK examination, đây là evidence cho "governance + asset management + risk management" &mdash; ba trong số các function họ sẽ hỏi.</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Pick the two metrics that are most operationally critical for your firm &mdash; typically <em>% strategic-plan initiatives funded vs planned</em> (G5) and <em>% in-scope assets in authoritative inventory</em> (I1). For each, do three things: (1) name the actual owner (group consolidator + per-entity owners); (2) document the data source (which system, which export, which frequency); (3) calculate the threshold basis (what number is defensible given the firm's actual baseline, not a textbook number). The other 11 metrics can be skeleton-filled in week 2. By the next session you should have at least two Govern + Identify metrics fully operationalised, with real numbers, real owners, and real thresholds.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is asset inventory accuracy treated as the foundation of Identify?</summary>
+<p>Because every other Identify metric is built on the inventory. If the inventory is 70% accurate, then "100% of critical assets are protected" is a meaningless claim &mdash; 30% of the critical assets are unknown and therefore unprotected by definition. The asset-inventory-accuracy metric is the integrity check for the entire Identify function. Mattei (chapter 6.2) is direct on this: you cannot protect what you do not know you have. The hard part is not building the inventory; it is keeping it accurate as cloud workloads spin up, contractor laptops join the network, and entity-level IT teams operate outside the group perimeter.</p>
+</details>
+
+<details>
+<summary>Why does annual-only risk-assessment cadence fail the audit?</summary>
+<p>Because the threat environment does not wait for the calendar. A firm that assesses risk once a year in Q1 and files the document is documenting compliance, not managing risk. The metric <em>risk-assessment refresh cadence adherence</em> exposes this: if the firm assesses annually but never triggered a re-assessment when a new vendor came online, a new product launched, or a new regulation came into force, the cadence adherence is 100% on the annual cycle and 0% on the triggered cycle. The audit-defensible pattern is "annual comprehensive + documented trigger list + triggered re-assessments on material change" (or continuous, in mature programs). The trigger list must be documented &mdash; "we re-assess when something changes" is not enough; "we re-assess when any of these 8 triggers fire" is.</p>
+</details>
+
+<details>
+<summary>What is the single most audit-defensible Govern metric, and why?</summary>
+<p><em>Strategic-plan initiative delivery rate</em>: of the initiatives committed in the strategic plan (ciso-playbook 0010), how many were funded, started, and delivered on schedule in the past 12 months. This metric is the answer to the board's question "is the cybersecurity plan working?" It is also the metric that forces honest governance &mdash; if delivery rate is &lt; 60%, the strategic plan is aspirational, not operational. The four-component version (plan exists / funded / in motion / delivered) tells the same story at four altitudes. UBCK examiners ask this in three questions: "show me your plan," "show me progress," "when a milestone slipped, what did you do?" If all three answers are clean, the audit passes.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapter 5 (Govern &mdash; sections 5.2 organizational context, 5.3 risk management, 5.4 roles &amp; responsibilities, 5.5 policies &amp; procedures, 5.6 oversight, 5.7 supply chain risk, 5.8 governance metrics) and chapter 6 (Identify &mdash; 6.2 asset management, 6.3 risk assessments, 6.4 continuous improvement). The book's framing is generic; this lesson applies it to the ciso-playbook strategic-plan and BIA-matrix artifacts and to the 9-entity Vietnamese securities firm context.</p>
+
+<p><strong>Read next:</strong> chapter 5.7 (Cybersecurity supply chain risk management) and chapter 6.3 (Risk assessments with NIST SP 800-30 reference) for the formal measurement frameworks behind the Govern + Identify metric set. Lesson 0005 continues Arc 2 with <em>Protect</em> &mdash; identity, data security, platform security, awareness training. It maps to ciso-playbook 0002 (blended-capability team) and 0003 (awareness training).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear &mdash; how to set the asset-inventory-accuracy threshold when you've never measured it before, how to operationalise the trigger list for risk re-assessment, what to do when an entity-level IT team resists the group inventory consolidation, how to defend a delivery rate below 70% to the board &mdash; ask. The next lesson (0005: Protect) measures the identity / data / platform / awareness layer of your program.
+</div>
+
+<div class="lesson-nav">
+  <a href="0003-audit-ready-pack.html">&larr; Lesson 0003</a>
+  <a href="0005-protect.html">Lesson 0005: Protect &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

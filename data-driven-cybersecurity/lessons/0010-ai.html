@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0010 &mdash; AI for Metrics: ML Models and Generative Reporting</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 15px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .predecessor {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-size: 16px;
+  }
+  .predecessor strong { color: var(--accent); }
+  .course-capstone {
+    margin: 36px 0;
+    padding: 28px;
+    border: 3px solid var(--ink);
+    border-radius: 4px;
+    background: #f3efe6;
+  }
+  .course-capstone h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .course-capstone p { font-size: 17px; }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0010 (final) &middot; Data-driven cybersecurity &middot; Arc 3: Beyond the basics</div>
+<h1>AI for Metrics: ML Models and Generative Reporting</h1>
+<p class="subtitle">ML models catch what statistical methods miss. Generative AI drafts what humans would take a week to write. Lesson 0010 teaches the pattern, the guardrails, and the audit-defensible answer for both.</p>
+
+<div class="predecessor">
+<strong>Predecessor lesson.</strong> Lesson <a href="0009-statistics.html">0009</a> taught the statistical spine (correlation, SMA/EMA, Bayesian, Poisson). This lesson adds the two AI layers: (1) unsupervised ML models (DBSCAN, random forest, SVM) for threat detection and behavioural baselining at scale; (2) generative AI for incident-response automation, reporting, and trend summarisation. The ethics chapter (13.10) is the guardrail: human-in-the-loop, data privacy, accuracy validation &mdash; the things that make the audit answer defensible rather than embarrassing.
+</div>
+
+<h2>Why this lesson tenth and final</h2>
+
+<p>Lessons <a href="0001-board-pack.html">0001</a>&ndash;<a href="0009-statistics.html">0009</a> built the metric catalogue (lessons 0004&ndash;0007), the predictive layer (0008), the statistical spine (0009). Lesson 0010 closes the loop with the AI layer that makes the catalogue scalable. Per Mattei (chapter 12.2), DBSCAN identifies clusters of network behaviour and flags outliers as anomalies &mdash; the unsupervised ML pattern that catches what rule-based detection misses. Per Mattei (chapter 13.8), generative AI automates incident-response recommendations and trend analysis &mdash; the language-model pattern that scales reporting without scaling headcount.</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 12.2</span>
+  DBSCAN identifies clusters based on two parameters: Epsilon (eps) — the maximum distance between two points to be considered part of the same cluster; Minimum samples — the minimum number of points required to form a dense cluster. Points that don't belong to any cluster are labeled as noise or anomalies.
+</div>
+
+<p>For your 9-entity Vietnamese securities firm, the AI layer lands with four pressures the previous lessons did not address:</p>
+
+<ol>
+  <li><strong>Rule-based detection has a ceiling.</strong> Lesson 0006 ATLAS taught rule-based detection (SIEM correlations) for the top-10 SOC use cases. That works for known patterns &mdash; signature, threshold, anomaly. It breaks on novel patterns: an attacker who probes the trading platform at 3am from a residential Vietnamese IP is, by ATLAS rules, within the "unusual login" threshold. Unsupervised ML (DBSCAN clustering of network behaviour, chapter 12.2) catches the pattern: this device's behaviour doesn't cluster with any peer group. The detection surface widens.</li>
+  <li><strong>Random forest and SVM scale the classification.</strong> Mattei (chapter 12.3) introduces random forest for ensemble classification and SVM for separating benign from malicious traffic. Both can scale to the 9-entity firm without scaling the SOC headcount. The trade-off: training data must be labelled, and labelled data is scarce for novel attack types. The audit-defensible answer: only deploy supervised ML where labelled data is sufficient; fall back to DBSCAN + Bayesian + statistical thresholds where it isn't.</li>
+  <li><strong>Generative AI cuts reporting latency from days to minutes.</strong> Mattei (chapter 13.7) shows how generative AI transforms raw incident data into structured summaries. For a firm producing quarterly board packs, weekly SOC dashboards, and incident reports on demand, the time saved is material. The trade-off: GenAI outputs must be reviewed by humans before publication. Chapter 13.10 is direct: "Decisions involving breach response, regulatory compliance, or insider threat detection require human expertise."</li>
+  <li><strong>The privacy + auditability gap is the dominant risk.</strong> Cloud-based GenAI APIs (OpenAI, Anthropic) process the firm's security data on third-party servers &mdash; a PDPD compliance issue for a Vietnamese firm. Mattei (chapter 13.10) recommends local models (LM Studio, Ollama) when data sensitivity is high. The audit-defensible answer: <em>"Show me where the data is processed, who has access, and what the data-retention policy is."</em></li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the AI-for-Metrics playbook (in Vietnamese) &mdash; three ML model patterns (DBSCAN, random forest, SVM) for threat detection and behavioural baselining; four GenAI patterns (incident recommendation, reporting, scenario generation, trend analysis) with audit-defensible guardrails; and the human-in-the-loop decision policy that keeps the AI assistive, not autonomous</strong>. This is what the data-science team and the security-strategy team reference when scaling beyond the rule-based catalogue.</p>
+
+<h2>The two AI layers</h2>
+
+<p>Mattei (chapters 12 &amp; 13) organises AI for cybersecurity into two distinct layers with different risk profiles:</p>
+
+<table>
+  <thead>
+    <tr><th>Layer</th><th>What it does</th><th>Mattei chapter</th><th>Data sensitivity</th><th>Audit risk</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>ML models (unsupervised + supervised)</strong></td>
+      <td>Detects patterns, clusters behaviour, classifies events</td>
+      <td>12</td>
+      <td>Medium &mdash; processes behavioural data; can run locally</td>
+      <td>Moderate &mdash; model outputs are explainable; risk is false positives/negatives</td>
+    </tr>
+    <tr>
+      <td><strong>Generative AI (LLMs)</strong></td>
+      <td>Drafts reports, recommends responses, summarises trends</td>
+      <td>13</td>
+      <td>High &mdash; processes narrative data; cloud APIs are a privacy risk</td>
+      <td>High &mdash; outputs are not deterministic; hallucinations possible</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The two layers have different deployment patterns and different guardrails. The ML layer can be deployed quietly (model runs, alerts fire, humans review). The GenAI layer must be deployed with humans-in-the-loop (model drafts, humans approve, then publish).</p>
+
+<h2>DBSCAN for unsupervised threat detection</h2>
+
+<p>Mattei (chapter 12.2) uses DBSCAN to cluster network communication patterns and flag outliers as anomalies. The DBSCAN algorithm doesn't require labelled training data and doesn't require the number of clusters to be specified &mdash; it identifies clusters based on density and labels sparse points as noise.</p>
+
+<pre>import pandas as pd
+from sklearn.cluster import DBSCAN
+import matplotlib.pyplot as plt
+
+# Network communication patterns: external vs internal comms
+df = pd.DataFrame({
+    'Device': ['Laptop_A','Phone_B','Printer_C','Laptop_B','Server_D'],
+    'External_Comm': [10, 15, 3, 8, 120],
+    'Internal_Comm': [100, 95, 200, 90, 80]
+})
+
+# Extract features
+X = df[['External_Comm', 'Internal_Comm']]
+
+# DBSCAN: eps=15, min_samples=2
+dbscan = DBSCAN(eps=15, min_samples=2)
+df['Cluster'] = dbscan.fit_predict(X)
+
+# Server_D is labelled -1 (noise/anomaly) — it makes 120 external comms
+# vs the cluster of normal devices making 3–15 external comms.</pre>
+
+<p>In Mattei's example, Server_D is the anomaly: 120 external communications vs the 3&ndash;15 range of normal devices. For your firm, DBSCAN can be applied to:</p>
+
+<ul>
+  <li><strong>Per-user login behaviour:</strong> cluster users by (login_hour, geographic_region, devices_used); outliers are likely compromised accounts.</li>
+  <li><strong>Per-asset network behaviour:</strong> cluster servers by (egress_volume, destination_diversity, protocol_mix); outliers are likely compromised servers or exfiltration attempts.</li>
+  <li><strong>Per-entity financial behaviour:</strong> cluster entities by (transaction_volume, transaction_size, counterparty_diversity); outliers are likely fraud patterns.</li>
+</ul>
+
+<div class="callout">
+  <strong>DBSCAN's parameter problem.</strong> The algorithm's two parameters — <code>eps</code> (max cluster distance) and <code>min_samples</code> (min cluster size) — are chosen by the analyst. The audit-defensible answer is: <em>"Show me the parameter selection method, the sensitivity analysis, and the validation against known incidents."</em> A model trained with <code>eps=15</code> that catches a different set of anomalies than <code>eps=20</code> is not deterministic. Run the analysis at multiple parameter settings, document which setting catches which incident type, and lock the production setting with rationale.
+</div>
+
+<h2>Random forest + SVM for supervised classification</h2>
+
+<p>Mattei (chapter 12.3) introduces random forest (ensemble of decision trees) and SVM (support vector machine) for classifying events as malicious or benign. Both require labelled training data: a dataset of confirmed-benign events and confirmed-malicious events. The model learns the boundary and classifies new events.</p>
+
+<table>
+  <thead>
+    <tr><th>Model</th><th>Strength</th><th>Weakness</th><th>Cybersecurity application</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Random Forest</strong></td>
+      <td>Handles many features; resist overfitting; gives feature importance</td>
+      <td>Less interpretable than single tree; can be slow on huge datasets</td>
+      <td>Phishing-email classification (many features: sender, subject, body, links)</td>
+    </tr>
+    <tr>
+      <td><strong>SVM</strong></td>
+      <td>Effective in high-dimensional spaces; works well on small-to-medium datasets</td>
+      <td>Doesn't scale to millions of samples; kernel choice matters</td>
+      <td>Malware classification (binary: malicious/benign from feature vector)</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The labelled-data bottleneck.</strong> Random forest and SVM are only as good as the labelled dataset. For a 9-entity Vietnamese securities firm with limited historical incident data (fewer than 100 labelled phishing incidents per entity), the model may overfit. The audit-defensible answer is: <em>"Show me the dataset size, the labelling protocol, the train/test split, the cross-validation result."</em> A model trained on 50 samples with 80% accuracy is not audit-defensible; a model trained on 5,000 samples with 95% accuracy is.
+</div>
+
+<h2>The ML-model decision policy — when to use which</h2>
+
+<table>
+  <thead>
+    <tr><th>Detection task</th><th>Recommended model</th><th>Reason</th><th>Labelled data needed</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Unknown pattern (novel attack)</td><td><strong>DBSCAN</strong></td><td>Unsupervised; works without labels</td><td>None</td></tr>
+    <tr><td>Known pattern (phishing, malware)</td><td><strong>Random Forest</strong></td><td>Many features; robust</td><td>1,000+ labelled samples</td></tr>
+    <tr><td>Binary classification (malicious/benign)</td><td><strong>SVM</strong></td><td>Works well on small datasets</td><td>500+ labelled samples</td></tr>
+    <tr><td>Behavioural baselining (UBA)</td><td><strong>DBSCAN + cluster profiling</strong></td><td>Identifies peer groups automatically</td><td>None</td></tr>
+    <tr><td>Time-series forecasting</td><td><strong>ARIMA</strong> (lesson 0009)</td><td>Statistically grounded</td><td>1+ years of history</td></tr>
+  </tbody>
+</table>
+
+<h2>Generative AI patterns — four use cases</h2>
+
+<p>Mattei (chapter 13) introduces four generative-AI patterns for cybersecurity. Each has a clear use case and a clear guardrail.</p>
+
+<h3>Pattern 1 — incident-response recommendation (Mattei 13.8)</h3>
+
+<p>For each incident in the queue, generate an immediate-response recommendation. Mattei's example iterates over incident rows, prompts the LLM with the incident type + severity, and appends the recommendation to the dataset. The output is a draft for the SOC analyst to review.</p>
+
+<pre>from openai import OpenAI
+
+# Local LLM (LM Studio, Ollama) recommended for PDPD compliance
+client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
+
+for index, row in incident_data.iterrows():
+    prompt = (
+        f"Incident type '{row['Incident Type']}', "
+        f"severity '{row['Severity']}'. "
+        "Provide an immediate-response recommendation (3 lines max)."
+    )
+    completion = client.chat.completions.create(
+        model="TheBloke/Mistral-7B-Instruct-v0.2-GGUF",
+        messages=[
+            {"role": "system", "content": "You are a cybersecurity incident handler."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
+    )
+    incident_data.at[index, 'Recommendation'] = (
+        completion.choices[0].message.content.strip()
+    )
+
+# SOC analyst reviews and approves before publishing.</pre>
+
+<p>The guardrail: the analyst <em>must review</em> the recommendation before acting. The LLM's output is a draft, not an instruction. Mattei (chapter 13.10) is explicit: "AI should serve as a decision-support tool rather than an autonomous decision-maker."</p>
+
+<h3>Pattern 2 — automated reporting (Mattei 13.7)</h3>
+
+<p>For weekly SOC dashboards, quarterly board packs, and incident reports on demand, use generative AI to transform raw metric data into a structured summary. Mattei's chapter 13.7 example uses the LLM to generate JSON data + summary + visualisation. The output replaces hours of analyst work.</p>
+
+<div class="callout">
+  <strong>The hallucination risk.</strong> LLM outputs are not deterministic; they can fabricate numbers, summarise events that never happened, or contradict the source data. The guardrail is required: every AI-generated number must trace back to the source dataset. Mattei (chapter 13.10): "Check generative AI outputs for accuracy and reliability; be aware of the data quality used." The audit-defensible answer is: <em>"Show me the source dataset, the prompt, the model's output, and the human reviewer's sign-off."</em> Without all four, the AI-generated report is unverified.
+</div>
+
+<h3>Pattern 3 — scenario generation for tabletop exercises (Mattei 13.6)</h3>
+
+<p>For the IRP tabletop exercises (lesson 0007 R14), generative AI can draft scenario variations: instead of using the same phishing scenario for every quarterly exercise, the LLM generates 5 variations tailored to the firm's threat landscape. The IR Lead reviews the variations and selects the final scenario.</p>
+
+<h3>Pattern 4 — trend analysis and executive briefing (Mattei 13.7)</h3>
+
+<p>For the quarterly CISO briefing, generative AI drafts the executive summary from the metric dataset. The output is a 1-page narrative with trend statements (e.g., "MTTC-I has improved 40% quarter-over-quarter, driven by the SOC playbook rollout in February"). The CISO reviews and edits before the board sees it.</p>
+
+<table>
+  <thead>
+    <tr><th>Pattern</th><th>Mattei chapter</th><th>Use case</th><th>Human review required</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1 Incident-response recommendation</td><td>13.8</td><td>SOC playbook per-incident</td><td>Yes &mdash; analyst reviews before acting</td></tr>
+    <tr><td>2 Automated reporting</td><td>13.7</td><td>Weekly dashboard + quarterly board pack</td><td>Yes &mdash; reviewer validates every number</td></tr>
+    <tr><td>3 Scenario generation</td><td>13.6</td><td>Tabletop exercise variations</td><td>Yes &mdash; IR Lead selects final scenario</td></tr>
+    <tr><td>4 Trend analysis + briefing</td><td>13.7</td><td>Executive summary</td><td>Yes &mdash; CISO edits before publishing</td></tr>
+  </tbody>
+</table>
+
+<h2>The privacy + locality decision — local vs cloud LLM</h2>
+
+<p>Mattei (chapter 13.10) is direct on privacy: cloud-based GenAI APIs process data on third-party servers, which "can introduce privacy risks." For a Vietnamese securities firm subject to PDPD, the firm should default to <strong>local LLMs</strong> (LM Studio, Ollama) and reserve cloud APIs (OpenAI, Anthropic) for non-PDPD-scope data.</p>
+
+<table>
+  <thead>
+    <tr><th>Data class</th><th>Recommended LLM deployment</th><th>Reason</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>PDPD-scope data</strong> (customer PII, employee records, financial transactions)</td>
+      <td>Local LM Studio / Ollama</td>
+      <td>No third-party processing</td>
+    </tr>
+    <tr>
+      <td><strong>Internal security telemetry</strong> (SIEM events, SOC alerts)</td>
+      <td>Local or private cloud (Llama-3-70B fine-tuned)</td>
+      <td>May include PDPD-scope data in logs</td>
+    </tr>
+    <tr>
+      <td><strong>Public threat intelligence</strong> (CVE feeds, MITRE ATT&amp;CK)</td>
+      <td>Cloud API acceptable</td>
+      <td>No sensitive data; processing on third-party servers is OK</td>
+    </tr>
+    <tr>
+      <td><strong>Synthetic / test data</strong></td>
+      <td>Cloud API acceptable</td>
+      <td>No real data; no compliance risk</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The audit-defensible answer for GenAI deployment.</strong> When the UBCK examiner (or the PDPC) asks "where is your security data processed?", the answer is: <em>"PDPD-scope data is processed by local LLMs on our own infrastructure. Non-PDPD data may use cloud APIs with anonymised inputs and zero-retention configuration. All AI-generated outputs are reviewed by humans before acting on them. The model + prompt + review chain is logged for every AI-assisted decision."</em> This is the answer the 13.10 chapter is preparing the reader for.
+</div>
+
+<h2>Where AI-for-metrics connects to the rest of the catalogue</h2>
+
+<table>
+  <thead>
+    <tr><th>AI pattern</th><th>Feeds catalogue metric(s)</th><th>Lesson</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>DBSCAN clustering</td><td>QA1–QA3 (lesson 0006); P5 UBA (lesson 0005)</td><td>0006 + 0010</td></tr>
+    <tr><td>Random Forest</td><td>QA1–QA3 (lesson 0006 accuracy with model-based detection)</td><td>0006 + 0010</td></tr>
+    <tr><td>SVM</td><td>QA1–QA3 (binary classification of malicious/benign)</td><td>0006 + 0010</td></tr>
+    <tr><td>GenAI Pattern 1</td><td>R4/R5 (lesson 0007 IR-recommendation)</td><td>0007 + 0010</td></tr>
+    <tr><td>GenAI Pattern 2</td><td>All metrics (automated reporting)</td><td>0001–0010 + 0010</td></tr>
+    <tr><td>GenAI Pattern 3</td><td>R14/R15 (lesson 0007 tabletop exercise)</td><td>0007 + 0010</td></tr>
+    <tr><td>GenAI Pattern 4</td><td>Board-pack narrative (lesson 0001)</td><td>0001 + 0010</td></tr>
+  </tbody>
+</table>
+
+<h2>Human-in-the-loop policy — the operational guardrail</h2>
+
+<p>Mattei (chapter 13.10) is explicit: "Decisions involving breach response, regulatory compliance, or insider threat detection require human expertise." The human-in-the-loop policy for the firm:</p>
+
+<table>
+  <thead>
+    <tr><th>Decision type</th><th>AI role</th><th>Human role</th><th>Authority</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Auto-containment (high-confidence threat)</td><td>Recommend</td><td>Approve within 5 minutes</td><td>Human approves; AI executes</td></tr>
+    <tr><td>Alert triage</td><td>Recommend</td><td>Triage decision</td><td>Human decides</td></tr>
+    <tr><td>Reporting draft</td><td>Generate</td><td>Review + edit</td><td>Human publishes</td></tr>
+    <tr><td>Tabletop scenario selection</td><td>Generate variations</td><td>Select final</td><td>Human selects</td></tr>
+    <tr><td>PDPD notification drafting</td><td>Generate</td><td>Approve + sign</td><td>DPO signs; AI supports</td></tr>
+    <tr><td>Quarterly board-pack narrative</td><td>Generate draft</td><td>Review + edit</td><td>CISO publishes</td></tr>
+    <tr><td>Threat-hunting insight</td><td>Surface pattern</td><td>Confirm</td><td>Hunter confirms; AI surfaces</td></tr>
+  </tbody>
+</table>
+
+<p>Every AI-assisted decision must have a human accountable for the decision. The audit-defensible answer is: <em>"Show me the log of the AI's output, the human reviewer's sign-off, and the resulting action."</em> Without the three (log + review + action), the AI was operating autonomously &mdash; a policy violation.</p>
+
+<h2>The artifact — the AI-for-Metrics playbook (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact — Playbook AI cho Chỉ số (AI-for-Metrics Playbook)</h3>
+
+<p><strong>Use case:</strong> Three ML model patterns (DBSCAN, Random Forest, SVM) + four GenAI patterns (incident rec, reporting, scenario, briefing) + human-in-the-loop policy + locality decision (local vs cloud). References all 9 prior lessons.</p>
+
+<h3 style="margin-top:18px;">Bảng ML Models</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Model</th><th>Use case</th><th>Labelled data needed</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>M1</td><td>DBSCAN</td><td>Unsupervised anomaly detection; UBA; novel-pattern discovery</td><td>None</td></tr>
+    <tr><td>M2</td><td>Random Forest</td><td>Phishing email classification; multi-feature detection</td><td>1,000+</td></tr>
+    <tr><td>M3</td><td>SVM</td><td>Malware binary classification; medium-dataset detection</td><td>500+</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng GenAI Patterns</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Pattern</th><th>Use case</th><th>Human review</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>G1</td><td>Incident-response recommendation</td><td>SOC playbook per-incident</td><td>Analyst review trước khi hành động</td></tr>
+    <tr><td>G2</td><td>Automated reporting</td><td>Weekly dashboard + quarterly board pack</td><td>Reviewer validate every number</td></tr>
+    <tr><td>G3</td><td>Scenario generation</td><td>Tabletop exercise variations</td><td>IR Lead chọn scenario cuối</td></tr>
+    <tr><td>G4</td><td>Trend analysis + briefing</td><td>Executive summary draft</td><td>CISO edit trước khi publish</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng Locality Decision (PDPD compliance)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Data class</th><th>LLM deployment</th><th>Lý do</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PDPD-scope (PII, financial)</td><td>Local (LM Studio / Ollama)</td><td>No third-party processing</td></tr>
+    <tr><td>Security telemetry</td><td>Local hoặc private cloud</td><td>Có thể chứa PDPD-scope data</td></tr>
+    <tr><td>Public threat intel</td><td>Cloud API OK</td><td>No sensitive data</td></tr>
+    <tr><td>Synthetic / test data</td><td>Cloud API OK</td><td>No compliance risk</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Human-in-the-loop policy</h3>
+<p>Mọi AI-assisted decision phải có: (1) log of AI output, (2) human reviewer sign-off, (3) resulting action. AI chỉ hỗ trợ; human chịu trách nhiệm.</p>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>M1–M3 deployed by data-science team với labelled ground-truth dataset (lesson 0008). G1 deployed với SOC playbook (per-incident recommendation; analyst reviews). G2 deployed cho weekly dashboard + quarterly board pack (reviewer validates). G3 deployed cho tabletop exercise (IR Lead selects). G4 deployed cho executive briefing (CISO edits). All AI outputs logged for audit (model + prompt + review chain + action).</p>
+</div>
+
+<div class="callout">
+  <strong>Before closing the course.</strong> Pick one ML model and one GenAI pattern from the playbook and run a validation. For M1 (DBSCAN): apply to the firm's network communication data (or a synthetic copy), identify outliers, document the parameter choice. For G2 (automated reporting): generate a sample weekly dashboard for one SOC metric, validate every number against the source dataset, document the prompt + review chain. By next session you should have one ML model with documented parameters + one GenAI pattern with documented guardrails. The audit-ready pack from lesson 0003 should now reference both.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why must every AI-assisted decision have a human accountable, and how is that enforced at the audit table?</summary>
+<p>Because AI outputs are not deterministic and not legally accountable. A model can fabricate numbers (hallucinate), summarise events that never happened, or recommend actions that contradict business context. Mattei (chapter 13.10) is explicit: "Decisions involving breach response, regulatory compliance, or insider threat detection require human expertise." The enforcement mechanism is the log: every AI-assisted decision must produce (1) the AI's output (model + prompt + raw output), (2) the human reviewer's sign-off (who, when, what was changed), (3) the resulting action (what was actually done). Without all three, the audit-defensible answer is unavailable — the firm cannot show who made the decision, on what evidence, and with what accountability. The three-log pattern is the discipline that keeps AI assistive and the firm in compliance with PDPD + UBCK + the firm's own governance policy.</p>
+</details>
+
+<details>
+<summary>Why default to local LLMs for PDPD-scope data, and what is the fallback when local is not feasible?</summary>
+<p>Because Vietnamese PDPD (Decree 13/2023) regulates the processing of personal data, including data processed by third-party AI services. Sending PDPD-scope data to a cloud API (OpenAI, Anthropic) means the data leaves Vietnamese jurisdiction and is processed on infrastructure controlled by a foreign entity — a clear PDPD compliance gap. Local LLMs (LM Studio, Ollama) keep the data on the firm's own infrastructure, eliminating the third-party-processing risk. The fallback when local is not feasible: (1) anonymise data before sending to cloud (strip PII, redact names); (2) use a private-cloud deployment with a Vietnam-resident vendor (VinAI, FPT.AI, etc.); (3) accept the residual risk and document the compensating controls. The audit-defensible answer is the chosen option + the rationale + the documented controls. There is no AI value that justifies processing PDPD-scope data on unverified third-party infrastructure.</p>
+</details>
+
+<details>
+<summary>Why is DBSCAN's parameter selection a documentation problem, not a modeling problem?</summary>
+<p>Because DBSCAN's two parameters (eps and min_samples) are chosen by the analyst. Two reasonable analysts can pick different values and detect different anomaly sets. The model itself is sound; the parameter choice is the documentation gap. The audit-defensible answer is: (1) document the parameter selection method (rule of thumb, k-distance graph, sensitivity analysis); (2) show the sensitivity analysis (which eps catches which incident type); (3) lock the production parameter with rationale; (4) validate against known incidents. A model trained with eps=15 that catches X% of known incidents is defensible if the eps was chosen by a documented method. The same model without the documentation is unverified — the analyst picked a number and the firm trusted it. The parameter choice is the auditing problem.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapters 12 and 13. Chapter 12 covers DBSCAN (12.2) for unsupervised anomaly detection, random forest and SVM (12.3) for supervised classification, NLP (12.4) for log analysis, deep learning (12.5) for advanced pattern recognition, and reinforcement learning (12.6). Chapter 13 covers generative AI for cybersecurity (13.1), open-source alternatives (13.2 LM Studio + Ollama), LLM notes (13.3), prompt engineering (13.4 + 13.5), data generation + analysis (13.6), reporting + visualisation (13.7), incident-response automation + trend analysis (13.8), exploration (13.9), and limitations + ethics (13.10). The lesson curates the four highest-impact ML + GenAI patterns for the firm and adds the human-in-the-loop policy + locality decision as the operational guardrails.</p>
+
+<div class="course-capstone">
+<h3>Course Capstone — From zero to audit-ready, 10 lessons</h3>
+
+<p><strong>Arc 1 (0001&ndash;0003) — Foundational trilogy.</strong> Stop counting vulnerabilities (lesson 0001 — 10-row Vietnamese board pack). METRICS methodology (lesson 0002 — per-metric runbook cards). Audit-ready pack (lesson 0003 — 5-framework cross-reference matrix).</p>
+
+<p><strong>Arc 2 (0004&ndash;0007) — CSF function catalogues.</strong> Govern + Identify (0004 — strategic-foundation metrics). Protect (0005 — IAM/data/platform/awareness metrics). Detect (0006 — FAR/FRR/EER + ATLAS top-10 SOC use cases). Respond + Recover (0007 — MTTC-I/MTTR-I + PDPD 72h + recovery metrics).</p>
+
+<p><strong>Arc 3 (0008&ndash;0010) — Predictive, statistical, AI layers.</strong> Predictive (0008 — REI/PTI/FPSR/AI-DA + per-vector PTI). Statistical methods (0009 — correlation/SMA-EMA/Bayesian/Poisson + window-selection). AI for metrics (0010 — DBSCAN/random forest/SVM + GenAI patterns + human-in-the-loop).</p>
+
+<p><strong>Total deliverables: 10 runbook cards (lesson 0002 pattern), 1 board pack (10 Vietnamese rows), 1 audit-ready pack (5-framework matrix), 7 CSF-function catalogues (lessons 0004&ndash;0007 + 0008), 2 cross-arc layers (0009 statistics, 0010 AI). All references interlinked. All Vietnamese-language. All audit-defensible.</strong></p>
+
+<p><strong>The complete metric catalogue spans CSF + NIST + ISO + CIS + COBIT (lessons 0001 + 0003), supports reactive + predictive + statistical + AI measurement, and is operationalised through the ATLAS spreadsheet (lesson 0006) + the Statistical Methods playbook (0009) + the AI-for-Metrics playbook (0010).</strong></p>
+</div>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson — or any prior lesson — that's unclear: the DBSCAN parameter documentation, the random-forest labelled-data minimum (and how to bootstrap a labelled dataset for a 9-entity firm), the GenAI review-chain audit-log schema, the local-vs-cloud fallback when PDPD-scope cannot be anonymised, the human-in-the-loop accountability boundaries (who reviews, who signs, who is liable), the specific LMS Studio / Ollama model choices for Vietnamese-language output (Llama-3-70B, Mistral-7B, Qwen2.5 — which one?), the prompt-engineering patterns for the four GenAI use cases — ask. The course is complete; the agent remains available for follow-up.
+</div>
+
+<div class="lesson-nav">
+  <a href="0009-statistics.html">&larr; Lesson 0009</a>
+  <a href="index.html">Course index &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

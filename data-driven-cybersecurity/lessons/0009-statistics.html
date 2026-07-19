@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0009 &mdash; Statistical Methods: The Spine of ATLAS</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 15px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .predecessor {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-size: 16px;
+  }
+  .predecessor strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0009 &middot; Data-driven cybersecurity &middot; Arc 3: Beyond the basics</div>
+<h1>Statistical Methods: The Spine of ATLAS</h1>
+<p class="subtitle">Your ATLAS spreadsheet has a "Mean + 2&times;SD" threshold. But which mean? SD over what window? Is the data normal? What if it isn't? Lesson 0009 gives you the statistical depth to answer those questions instead of guessing.</p>
+
+<div class="predecessor">
+<strong>Predecessor lesson.</strong> Lesson <a href="0006-detect.html">0006</a> introduced ATLAS with seven steps (Select, Define, Categorize, Collect, Analyze, Implement, Measure). Step 5 — Analyze — used statistical methods without naming them: weekly percentiles, weekly mean, standard deviation (simple, moving average, log-transformed), slide positivity rate, slope of weekly data on a log scale. This lesson teaches those methods and adds the statistical machinery needed to defend each ATLAS threshold at the audit table: correlation analysis for hidden relationships, SMA/EMA for trend tracking, Bayesian inference for dynamic probability updates, Poisson for vulnerability-event modeling.
+</div>
+
+<h2>Why this lesson ninth</h2>
+
+<p>Lessons <a href="0001-board-pack.html">0001</a>&ndash;<a href="0008-predictive.html">0008</a> taught the what: which metrics matter, which thresholds are defensible, how the catalogue fits together. Lesson 0009 teaches the how &mdash; the statistical methods that make every threshold defensible. Per Mattei (chapter 11.1), statistical metrics enable organisations to "monitor their security posture, identify areas for improvement, and adjust strategies." Without statistical literacy, ATLAS thresholds are guesses; with it, they are reasoned, reproducible, and auditable.</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 11.1.1</span>
+  The essence of continuous improvement is to track progress, analyze data, and refine processes. Statistical methods such as moving averages, trend analysis, regression models, and probability distributions help security teams stay vigilant by turning raw data into actionable insights.
+</div>
+
+<p>For your 9-entity Vietnamese securities firm, statistical methods land with three pressures:</p>
+
+<ol>
+  <li><strong>Thresholds must be reproducible.</strong> An ATLAS threshold of "Mean + 2&times;SD" computed over 30 days produces a different number than the same expression computed over 90 days, or over a period with an anomaly in week 3. The audit-defensible answer is: <em>"Show me the statistical method, the window, the dataset, and the resulting threshold."</em> This lesson teaches the five methods and the window-selection discipline.</li>
+  <li><strong>Correlation reveals patterns not visible in raw data.</strong> Mattei (chapter 11.4) introduces correlation analysis as the tool for finding hidden relationships &mdash; failed login attempts clustering in specific hours, phishing emails predicting credential-stuffing waves, server downtime correlating with cyberattacks. For a 9-entity firm, the cross-entity correlations (e.g., does Entity A's phishing incident predict Entity B's brute-force spike within 48 hours?) are the kind of insight that justifies the consolidated SOC investment.</li>
+  <li><strong>Bayesian inference converts priors into posteriors.</strong> When an alert fires, the question is not "is this a true or false positive?" but "given the evidence (unusual login at 3am from a new device), what is the posterior probability of compromise?" Mattei's Bayesian example (chapter 11.8) converts a 5% prior (base rate of compromise) plus an observation (unusual activity) into a 32% posterior &mdash; a structured way to triage alerts without relying on gut feel.</li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the Statistical Methods playbook (in Vietnamese) &mdash; five methods, each with Python code (pandas / matplotlib / seaborn / scikit-learn), each applied to a specific ATLAS step or board-pack metric, and a window-selection decision tree for choosing the right method for each use case</strong>. This is what the data-science team and the SOC manager reference when the ATLAS threshold needs revision.</p>
+
+<h2>The five statistical methods for cybersecurity metrics</h2>
+
+<p>Mattei (chapter 11) introduces five statistical methods that recur across the cybersecurity-metric catalogue:</p>
+
+<table>
+  <thead>
+    <tr><th>Method</th><th>Chapter</th><th>What it does</th><th>When to use it</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Correlation analysis</strong></td>
+      <td>11.4</td>
+      <td>Measures the linear relationship between two variables &mdash; Pearson r in [-1, +1]</td>
+      <td>Finding hidden relationships: failed logins vs hour-of-day; phishing vs credential stuffing; downtime vs incidents</td>
+    </tr>
+    <tr>
+      <td><strong>Moving averages (SMA, EMA)</strong></td>
+      <td>11.5</td>
+      <td>Smooths short-term fluctuations to reveal long-term trends</td>
+      <td>Trend tracking on noisy metrics: malware detections per day; alert volume per shift; incident count per week</td>
+    </tr>
+    <tr>
+      <td><strong>Clustering (K-Means, DBSCAN)</strong></td>
+      <td>11.6, 12.2</td>
+      <td>Groups similar events / assets / users to surface hidden patterns</td>
+      <td>Behavioural baselining (UBA); anomaly detection on unlabeled data; asset similarity grouping</td>
+    </tr>
+    <tr>
+      <td><strong>Forecasting (ARIMA, regression)</strong></td>
+      <td>11.7</td>
+      <td>Predicts future values from historical series</td>
+      <td>Forward-looking capacity planning; REI trend forecasting; alert-volume forecasting</td>
+    </tr>
+    <tr>
+      <td><strong>Bayesian inference</strong></td>
+      <td>11.8</td>
+      <td>Updates a prior probability with new evidence to get a posterior</td>
+      <td>Dynamic alert prioritisation; threat-likelihood updates; intrusion-detection posterior</td>
+    </tr>
+    <tr>
+      <td><strong>Poisson distribution (vuln-event modeling)</strong></td>
+      <td>11.9</td>
+      <td>Models the rate of rare events (vulnerability exploits) over a fixed interval</td>
+      <td>Vulnerability-exploit forecasting; incident-frequency expectations</td></tr>
+  </tbody>
+</table>
+
+<p>Each method addresses a specific question. The audit-defensible answer to "why this threshold?" uses one or more of these methods with a documented window, dataset, and result.</p>
+
+<h2>Method 1 — Correlation analysis (Mattei 11.4)</h2>
+
+<p>Correlation measures the linear relationship between two variables on a scale from -1 (perfect inverse) to +1 (perfect direct), with 0 meaning no linear relationship. Mattei's chapter 11.4 example computes the correlation between login hour and failed-login count, surfacing the pattern that failed logins cluster during off-hours (a brute-force signal).</p>
+
+<pre>import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Data: login hour vs failed attempts
+df = pd.DataFrame({
+    'Login_Hour': range(24),
+    'Failed_Login_Attempts': [2,3,2,3,5,4,3,4,2,3,4,5,3,6,7,5,
+                               8,9,12,13,10,8,7,5]
+})
+
+correlation_matrix = df.corr()
+
+plt.figure(figsize=(8,6))
+sns.heatmap(correlation_matrix, annot=True, cmap='Grays')
+plt.title('Correlation Between Login Hour and Failed Login Attempts')
+plt.show()</pre>
+
+<p>The correlation in Mattei's example is strongly positive (~0.85) &mdash; failed logins cluster in the evening hours (17:00&ndash;22:00). For your firm, the same analysis on the actual login-history export reveals whether your environment shows the same pattern, or whether your attackers prefer a different time window (Vietnam has a regional adversary pattern that may differ from Mattei's US-centric example).</p>
+
+<h3>Where correlation feeds ATLAS</h3>
+
+<p>The ATLAS Step 5 (Analyze) uses weekly percentiles and weekly mean, but does not directly call for correlation. Correlation is the bridge method: it surfaces <em>which variables to track together</em>. Once you discover that failed-login spikes correlate with phishing-email volume (r = 0.72), you can build a combined metric: "phishing-with-credential-attempt" events, thresholded together. Without the correlation analysis, the two metrics are tracked independently and the pattern is invisible.</p>
+
+<div class="callout">
+  <strong>Correlation is not causation.</strong> A correlation of 0.9 between failed-logins and phishing emails does not mean phishing causes logins &mdash; both may be caused by a third variable (e.g., a new threat campaign). The metric still has value: it tells you when to expect the spike, which is operationally useful. But the strategic-plan language must distinguish "we observed correlated spikes" from "we established a causal relationship."
+</div>
+
+<h2>Method 2 — Moving averages: SMA vs EMA (Mattei 11.5)</h2>
+
+<p>A moving average smooths a noisy time series by averaging over a sliding window. The simple moving average (SMA) gives equal weight to all points in the window; the exponential moving average (EMA) weights recent points more heavily. Mattei's chapter 11.5 example calculates both on a 30-day malware-detection series, surfacing the long-term trend hidden by daily noise.</p>
+
+<pre>import pandas as pd
+import matplotlib.pyplot as plt
+
+# 30 days of daily malware detections
+df = pd.DataFrame({
+    'Day': range(1, 31),
+    'Malware_Detections': [10,8,12,15,9,11,13,8,14,16,
+                           15,13,18,20,17,14,19,21,23,17,
+                           15,14,16,13,12,18,22,25,19,9]
+})
+
+df['SMA'] = df['Malware_Detections'].rolling(window=5).mean()
+df['EMA'] = df['Malware_Detections'].ewm(span=5, adjust=False).mean()
+
+plt.plot(df['Day'], df['Malware_Detections'], label='Daily', marker='o')
+plt.plot(df['Day'], df['SMA'], label='SMA-5', linestyle='--')
+plt.plot(df['Day'], df['EMA'], label='EMA-5', linestyle='-.')
+plt.legend(); plt.grid(); plt.show()</pre>
+
+<h3>SMA vs EMA in ATLAS context</h3>
+
+<p>ATLAS Step 5 (Analyze) uses "weekly mean, standard deviation (simple, moving average, and log-transformed)." The choice of SMA or EMA for the moving-average variant has operational consequences:</p>
+
+<table>
+  <thead>
+    <tr><th>Method</th><th>Window weight</th><th>Best for</th><th>Risk</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>SMA-7 (7-day)</strong></td><td>Equal weight</td><td>Weekly-cycle metrics (alert volume follows Mon-Fri pattern)</td><td>Lags fast-moving threats (week-old data has equal weight to today)</td></tr>
+    <tr><td><strong>EMA-7 (7-day)</strong></td><td>Recent data weighted higher</td><td>Fast-moving metrics (crypto-mining detection, ransomware activity)</td><td>More sensitive to single-day anomalies</td></tr>
+    <tr><td><strong>SMA-30 (30-day)</strong></td><td>Equal weight, broader window</td><td>Slow-moving metrics (vulnerability backlog; patch-cadence drift)</td><td>Insensitive to short-term changes</td></tr>
+    <tr><td><strong>Log-transformed weekly data</strong></td><td>Equal weight on log scale</td><td>Skewed distributions (rare-event metrics; high-count metrics)</td><td>Loses raw-count intuition</td></tr>
+  </tbody>
+</table>
+
+<p>The ATLAS recommendation for the top-10 SOC use cases (lesson 0006) maps onto the method choice:</p>
+
+<ul>
+  <li>Use case 1 (Ransomware detection): EMA-7 with log transform — ransomware can spike overnight and the window must catch it.</li>
+  <li>Use case 3 (Crypto-mining): SMA-7 on CPU-utilisation series — the signal is sustained and stable.</li>
+  <li>Use case 4 (Data exfiltration): EMA-7 + log transform — exfiltration windows are short and the tail matters.</li>
+  <li>Use case 8 (Brute-force): SMA-7 on failed-login count — the signal has a daily cycle.</li>
+</ul>
+
+<h2>Method 3 — Bayesian inference for dynamic alert triage (Mattei 11.8)</h2>
+
+<p>Bayesian inference updates a prior probability with new evidence to produce a posterior probability. Mattei's chapter 11.8 example uses Bayes' theorem to compute the probability of malware infection given observed unusual activity:</p>
+
+<pre># Bayesian inference for alert triage
+P_A = 0.05           # Prior: base rate of compromise per asset = 5%
+P_B_given_A = 0.9    # Likelihood: P(unusual activity | compromised) = 90%
+P_B_given_not_A = 0.1  # Specificity: P(unusual activity | clean) = 10%
+
+P_B = P_B_given_A * P_A + P_B_given_not_A * (1 - P_A)
+P_A_given_B = (P_B_given_A * P_A) / P_B
+
+print(f"P(infection | unusual activity) = {P_A_given_B:.2%}")
+# Output: 32.14%</pre>
+
+<p>The result: given the prior 5% base rate and a likelihood ratio of 9:1 (90% true-positive rate vs 10% false-positive rate), observing unusual activity raises the posterior to 32%. That is a triage decision threshold: investigate (32% is high enough), but do not auto-quarantine yet.</p>
+
+<h3>Where Bayesian inference feeds the catalogue</h3>
+
+<p>Mattei's Bayesian example is the explicit mathematical foundation for the alert-triage decision: the SIEM firing an alert is the "observation B," and the question is whether the posterior probability crosses an action threshold. For your firm, the Bayesian model can be embedded in the SOC playbook:</p>
+
+<table>
+  <thead>
+    <tr><th>Posterior probability</th><th>Action threshold</th><th>SOC action</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>&gt; 90%</td><td>Auto-contain</td><td>Isolate endpoint; notify IR lead within 5 min</td></tr>
+    <tr><td>50&ndash;90%</td><td>Investigate immediately</td><td>SOC analyst triages within 15 min; escalate if pattern matches a known APT</td></tr>
+    <tr><td>20&ndash;50%</td><td>Investigate in batch</td><td>Reviewed in next shift's alert queue</td></tr>
+    <tr><td>&lt; 20%</td><td>Suppression (likely FP)</td><td>Auto-close; documented for FPR measurement (lesson 0006 QA2)</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The prior is the contested value.</strong> The likelihood (90% / 10%) is a property of the detection rule and is auditable from the SIEM. The prior (5% base rate) is the contested value &mdash; it depends on the firm's threat landscape. For a 9-entity Vietnamese securities firm, the prior may differ by entity: a brokerage with high public-facing exposure may have a 10% prior; a back-office entity with no internet-facing assets may have a 0.5% prior. The Bayesian model must be per-entity, not firm-wide. The audit-defensible answer includes the prior's source (incident history, threat-intel signal, asset-exposure profile) and the prior's freshness (the prior must be recomputed quarterly).
+</div>
+
+<h2>Method 4 — Poisson distribution for vulnerability-event modeling (Mattei 11.9)</h2>
+
+<p>The Poisson distribution models the rate of rare events over a fixed interval. Mattei (chapter 11.9) uses Poisson to model monthly vulnerability exploits, with the average rate (&lambda;) computed from historical incident records. For your firm, the application is monthly exploit-event forecasting:</p>
+
+<pre>from scipy.stats import poisson
+
+# Average monthly exploit events (from historical incident records)
+lambda_rate = 3  # Historical: ~3 exploited vulnerabilities per month
+
+# Probability of observing k exploits in the next month
+for k in range(0, 11):
+    prob = poisson.pmf(k, lambda_rate)
+    print(f"P(X={k}) = {prob:.3f}")
+
+# 90th percentile of monthly exploit events (capacity planning)
+p90 = poisson.ppf(0.90, lambda_rate)
+print(f"90th-percentile monthly exploits: {p90}")</pre>
+
+<h3>Where Poisson feeds capacity planning</h3>
+
+<p>The Poisson p90 ("the patch team must handle 5 or more exploits in a month, 10% of the time") feeds lesson 0005's P13 (recovery-test cadence) and P18 (incident-response staffing). The patch-team's monthly capacity must be ≥ p90 of expected exploits, with a buffer for the p95 and p99 cases. Without the Poisson model, the team is staffed to the historical average, which is the wrong operational assumption &mdash; capacity should be sized for the tail, not the mean.</p>
+
+<h2>Method 5 — Forecasting and clustering (Mattei 11.6, 11.7)</h2>
+
+<p>Mattei's chapter 11.6 covers clustering (K-Means for event similarity, DBSCAN for density-based anomalies) and chapter 11.7 covers forecasting (ARIMA for stationary series, linear regression for trend analysis). Both are introduced but the implementation depth is left to chapter 12 (machine learning) and chapter 13 (generative AI). The lesson curates them as forward references:</p>
+
+<table>
+  <thead>
+    <tr><th>Method</th><th>Cybersecurity application</th><th>Lesson coverage</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>K-Means clustering</strong></td><td>Behavioural baselining (UBA) &mdash; cluster users by access patterns; flag users in unexpected clusters</td><td>Lesson 0005 P5 (UBA) + Lesson 0010 (ML)</td></tr>
+    <tr><td><strong>DBSCAN</strong></td><td>Density-based anomaly detection on unlabeled data &mdash; outliers are the anomalies</td><td>Lesson 0010 (ML)</td></tr>
+    <tr><td><strong>ARIMA forecasting</strong></td><td>Forecast REI trend over the next 90 days (lesson 0008 PA1); forecast alert volume for SOC staffing</td><td>Lesson 0010 (statistical methods)</td></tr>
+    <tr><td><strong>Linear regression</strong></td><td>Identify which factors drive incident rate (correlate R6 IRSR-I with R4 MTTC-I; with D5 TTD)</td><td>Lesson 0009 (this lesson)</td></tr>
+  </tbody>
+</table>
+
+<p>The lesson focuses depth on correlation, moving averages, Bayesian, and Poisson (the methods ATLAS and the catalogue directly depend on). Clustering and forecasting are forward references to lessons 0010.</p>
+
+<h2>The window-selection decision tree</h2>
+
+<p>The most-asked statistical question at the audit table is not "which method?" but "which window?" A 7-day window differs from a 30-day window differs from a 90-day window. The decision tree:</p>
+
+<ol>
+  <li><strong>What is the metric's natural cycle?</strong>
+    <ul>
+      <li>Daily cycle (alert volume): use SMA-7 (one week).</li>
+      <li>Weekly cycle (patch-cadence): use SMA-4 (one month).</li>
+      <li>Monthly cycle (vulnerability disclosure): use SMA-3 (one quarter).</li>
+      <li>Quarterly cycle (REI): use full-period computation.</li>
+    </ul>
+  </li>
+  <li><strong>How fast does the underlying signal move?</strong>
+    <ul>
+      <li>Fast-moving (ransomware detection): use EMA-7 (recent-data-weighted).</li>
+      <li>Slow-moving (vulnerability backlog): use SMA-90 (broad window).</li>
+    </ul>
+  </li>
+  <li><strong>Is the distribution skewed?</strong>
+    <ul>
+      <li>Yes (rare-event metrics): use log-transform + SMA.</li>
+      <li>No (roughly normal): use raw + SMA.</li>
+    </ul>
+  </li>
+  <li><strong>Is the dataset noisy?</strong>
+    <ul>
+      <li>Yes (lots of daily variance): use SMA with longer window.</li>
+      <li>No (clean signal): use EMA with shorter window.</li>
+    </ul>
+  </li>
+</ol>
+
+<div class="callout">
+  <strong>The decision is documented, not arbitrary.</strong> The audit-defensible answer for the ATLAS Step 5 (Analyze) is: <em>"For use case N (ransomware detection), we used EMA-7 on log-transformed file-encryption-count-per-hour. The choice was driven by the daily-cycle (fast-moving) and skewed-distribution questions. The window was validated by backtesting: the threshold caught 95% of known incidents with 5% FPR."</em> Each decision is recorded in the ATLAS spreadsheet, with the rationale. This is what makes the threshold reproducible, defensible, and improvable.
+</div>
+
+<h2>Where statistical methods connect to the rest of the catalogue</h2>
+
+<table>
+  <thead>
+    <tr><th>Statistical method</th><th>Feeds catalogue metric(s)</th><th>Lesson</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Correlation</td><td>QA1–QA3 (lesson 0006 FAR/FRR/EER); I4 (lesson 0004 cross-entity)</td><td>This lesson</td></tr>
+    <tr><td>SMA / EMA</td><td>QA thresholds for all 10 ATLAS use cases</td><td>Lesson 0006 + this lesson</td></tr>
+    <tr><td>Bayesian inference</td><td>SOC triage decision thresholds; alert-prioritisation</td><td>This lesson</td></tr>
+    <tr><td>Poisson</td><td>P13, P18 (lesson 0005 capacity); R4 (lesson 0007 IR staffing)</td><td>Lesson 0005/0007 + this lesson</td></tr>
+    <tr><td>ARIMA forecasting</td><td>PA1 REI (lesson 0008 trend forecast)</td><td>Lesson 0010</td></tr>
+    <tr><td>Clustering</td><td>P5 UBA (lesson 0005)</td><td>Lesson 0010</td></tr>
+  </tbody>
+</table>
+
+<h2>The artifact — the Statistical Methods playbook (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact — Playbook Phương pháp Thống kê (Statistical Methods Playbook)</h3>
+
+<p><strong>Use case:</strong> Five methods (correlation, moving averages, Bayesian, Poisson, forecasting/clustering) with Python code, applied to the top-10 ATLAS use cases and the catalogue metrics. Window-selection decision tree documented.</p>
+
+<h3 style="margin-top:18px;">Bảng 5 phương pháp (Five methods)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Phương pháp</th><th>Áp dụng</th><th>Window mặc định</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>S1</td><td>Correlation (Pearson)</td><td>Hidden-relationship discovery; cross-metric insight</td><td>30–90 ngày rolling</td></tr>
+    <tr><td>S2</td><td>SMA / EMA</td><td>ATLAS Step 5 threshold computation; trend tracking</td><td>SMA-7 / EMA-7 / SMA-30</td></tr>
+    <tr><td>S3</td><td>Bayesian inference</td><td>Alert triage decision thresholds; posterior probability</td><td>Per-incident, prior refreshed quarterly</td></tr>
+    <tr><td>S4</td><td>Poisson distribution</td><td>Vulnerability-exploit forecasting; capacity planning</td><td>Monthly, recomputed annually</td></tr>
+    <tr><td>S5</td><td>ARIMA + clustering</td><td>REI forecasting; UBA clustering (forward reference)</td><td>Lesson 0010</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Window-selection decision tree (Mattei 11.1)</h3>
+<ol style="font-size:14px;">
+  <li>Daily cycle? → SMA-7. Weekly? → SMA-4. Monthly? → SMA-3.</li>
+  <li>Fast-moving? → EMA. Slow-moving? → SMA.</li>
+  <li>Skewed distribution? → log-transform + SMA.</li>
+  <li>Noisy data? → longer window. Clean signal? → shorter.</li>
+</ol>
+
+<h3 style="margin-top:18px;">Bayesian triage decision thresholds (mapped to SOC playbook)</h3>
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Posterior</th><th>Action</th><th>Thời gian</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>&gt; 90%</td><td>Auto-contain + notify IR Lead</td><td>≤ 5 phút</td></tr>
+    <tr><td>50–90%</td><td>SOC triage ngay</td><td>≤ 15 phút</td></tr>
+    <tr><td>20–50%</td><td>Investigate trong batch</td><td>Trong ca kế tiếp</td></tr>
+    <tr><td>&lt; 20%</td><td>Suppression (likely FP)</td><td>Auto-close + đo FPR</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">ATLAS Step 5 method cho top-10 SOC use cases</h3>
+<table style="font-size:12px;">
+  <thead>
+    <tr><th>Use case</th><th>Method</th><th>Window</th><th>Transform</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1 Ransomware</td><td>EMA</td><td>7 ngày</td><td>log</td></tr>
+    <tr><td>3 Crypto-mining</td><td>SMA</td><td>7 ngày</td><td>raw</td></tr>
+    <tr><td>4 Data exfiltration</td><td>EMA</td><td>7 ngày</td><td>log</td></tr>
+    <tr><td>8 Brute-force</td><td>SMA</td><td>7 ngày</td><td>raw</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>Reference khi ATLAS threshold cần revision (quarterly). Per-incident: Bayesian posterior drives SOC triage. Per-quarter: SMA/EMA recompute, threshold updated if drift &gt; 10%. Per-year: Poisson recompute, capacity adjusted if p90 drift &gt; 20%. Cross-entity: correlation matrix updated quarterly for cross-9-entity insight.</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Pick one ATLAS use case from lesson 0006 and validate its statistical method using this lesson's playbook. For use case 8 (brute-force detection), pull the last 90 days of failed-login events, compute SMA-7, validate the "Mean + 2&times;SD" threshold against known incidents, and document the result. By next session you should have one ATLAS use case with a statistically-validated threshold + one Bayesian posterior calculation for the SOC playbook alert-triage decision.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is the choice between SMA and EMA operationally consequential, not just a technical preference?</summary>
+<p>Because the two methods weight the data differently and produce different thresholds. SMA-7 gives equal weight to all 7 days; EMA-7 weights the most recent day most heavily. For a fast-moving signal (ransomware detection), EMA-7 catches the spike on day 1; SMA-7 waits until day 4 to show the spike clearly. For a slow-moving signal (vulnerability backlog), SMA-30 is more stable because it averages out daily noise; EMA-30 is too reactive to small daily changes. The ATLAS threshold computed with the wrong method is either too noisy (false alarms) or too sluggish (missed detections). The audit-defensible answer is: show the method choice, the window, the backtest result, and the rationale. Without that, the threshold is a guess.</p>
+</details>
+
+<details>
+<summary>Why is the Bayesian prior the contested value, not the likelihood?</summary>
+<p>Because the likelihood is a property of the detection rule and is auditable from the SIEM (e.g., "this rule fires true positives 90% of the time and false positives 10% of the time"). The prior is a property of the environment and is contested: a 5% base rate of compromise assumes the firm sees 5 compromised assets per 100. That number depends on the firm's threat landscape, the entity (brokerage vs back-office), and the recent incident history. Two reasonable analysts can disagree on the prior, and the posterior changes accordingly (5% prior → 32% posterior; 10% prior → 49% posterior). The audit-defensible answer includes the prior's source (incident history, threat-intel, asset-exposure profile) and the prior's freshness (the prior must be recomputed quarterly because the environment changes). Without that, the Bayesian model is opaque.</p>
+</details>
+
+<details>
+<summary>Why use Poisson for vulnerability-exploit forecasting rather than a simple historical average?</summary>
+<p>Because the historical average is the wrong operational assumption. The Poisson distribution models the rate of rare events and produces a probability distribution, not just a point estimate. A team staffed to the average (3 exploits/month) will be overwhelmed 10% of the time (Poisson p90 = 5 exploits/month). Capacity planning should be sized to the p90 or p95, not the mean, because the tail is where the failures happen. The Poisson model also gives a confidence interval: "we are 90% confident that the next month will see ≤ 5 exploits." Without Poisson, the team is either understaffed (average-sized, occasional overflow) or overstaffed (worst-case-sized, idle most months). Poisson gives the right trade-off.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapter 11 (Statistical methods for continuous improvement — sections 11.1 key concepts, 11.4 correlation, 11.5 moving averages, 11.6 clustering, 11.7 forecasting, 11.8 Bayesian inference, 11.9 vulnerability-event modeling with Poisson). The lesson curates the methods for ATLAS Step 5 (Analyze), for SOC alert-triage decision thresholds, and for vulnerability-management capacity planning. Chapter 12 (ML models: DBSCAN, random forest, SVM) and chapter 13 (generative AI) are forward references to lesson 0010.</p>
+
+<p><strong>Read next:</strong> Mattei's chapter 12 (DBSCAN, random forest, SVM) and chapter 13 (generative AI for cybersecurity). Lesson 0010 — the final lesson — covers ML-for-metrics (DBSCAN for anomaly clustering, random forest for incident classification) and generative AI for reporting (LLMs to draft executive summaries and tabletop scenarios).</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear — how to choose the SMA window when the cycle is mixed (alert volume has a daily AND weekly cycle), how to refresh the Bayesian prior without breaking the triage decision thresholds, how to backtest a Poisson capacity model, how to defend the window choice to a UBCK examiner, how to integrate the statistical playbook with the ATLAS spreadsheet, how to handle a top-10 use case where the data is too sparse for SMA-7 (use case 10 insider-threat on a 9-entity firm may have &lt; 10 data points) — ask. The next (and final) lesson (0010) covers ML models and generative AI for cybersecurity reporting.
+</div>
+
+<div class="lesson-nav">
+  <a href="0008-predictive.html">&larr; Lesson 0008</a>
+  <a href="0010-ai.html">Lesson 0010: AI for Metrics &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

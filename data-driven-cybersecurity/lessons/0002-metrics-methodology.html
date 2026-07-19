@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0002 &mdash; The METRICS Methodology: The Governance Wrapper Around Every Metric</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .step {
+    margin: 18px 0;
+    padding: 14px 18px;
+    background: var(--code-bg);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+  .step h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0002 &middot; Data-driven cybersecurity &middot; Arc 1: The metric discipline</div>
+<h1>The METRICS Methodology: The Governance Wrapper Around Every Metric</h1>
+<p class="subtitle">A metric without a lifecycle is just a number someone used to look at. Mattei's seven-step methodology is the discipline that turns numbers into evidence.</p>
+
+<h2>Why this lesson second</h2>
+
+<p>Lesson <a href="0001-stop-counting-vulnerabilities.html">0001</a> gave you the deconstruction: classify every metric currently produced at your firm, drop the misleading ones, promote the leading ones to a 10-row board pack. The output was a list of metrics. The list has a fatal flaw: <em>a list is not a program.</em></p>
+
+<p>Mattei's METRICS methodology (chapter 3.2) is the response. Seven steps &mdash; <strong>Measure, Evaluate, Threshold, Report, Improve, Communicate, Sustain</strong> &mdash; that wrap every metric in a lifecycle. Without the lifecycle, you get the failure mode Steinberg warned about in the foreword: dashboards that look like measurement but decay silently. With the lifecycle, every metric has an owner, a threshold, a cadence, a report audience, an improvement path, a communication plan, and a sustainment cadence. <em>The metric is the deliverable. The lifecycle is the quality system.</em></p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 3.2</span>
+  The METRICS methodology offers a structured approach to designing, implementing, and maintaining a security metrics program. It provides a step-by-step guide for building an effective security metrics program that aligns with business goals and drives continuous improvement.
+</div>
+
+<p>For your 9-entity Vietnamese securities firm, the lifecycle lands with three pressures the ciso-playbook course did not address:</p>
+
+<ol>
+  <li><strong>Threshold defensibility.</strong> "More than five failed logins triggers alert" looks sensible. But what data justifies five and not three? What if UBCK asks? Threshold-setting is the step that turns an opinion into evidence. ATLAS (chapter 8) is Mattei's framework for the threshold step; we'll preview it here and finish it in lesson 0006 (Detect).</li>
+  <li><strong>Multi-entity ownership.</strong> For a single-entity firm, "the SOC owns MTTD" is one owner. For your firm, the question is harder: is the SOC group-level, entity-level, or both? Who owns the cross-entity consolidated metric? Who owns each entity's number? This is the multi-entity governance question applied to measurement.</li>
+  <li><strong>Sustainment under audit pressure.</strong> UBCK examiners will ask "where does this metric come from, and how do you know it's accurate?" The Sustain step is the answer: a documented cadence for revisiting every metric, threshold, and report. Without it, every metric is a one-time artifact that quietly becomes out-of-date.</li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the per-owner metric runbook &mdash; in Vietnamese &mdash; with each of the 10 board-pack metrics wrapped in the 7-step lifecycle, owned by a named person at your firm, with a defensible threshold and a documented sustainment cadence.</strong> This runbook is what you hand to a new SOC analyst on day one and say <em>"this is how the program runs."</em></p>
+
+<h2>The seven steps, what each one actually demands</h2>
+
+<p>The seven steps are not equal in difficulty. Most teams do Step 1 (Measure) well and abandon at Step 3 (Threshold) or Step 5 (Improve). The lesson teaches each step with the specific failure mode it prevents.</p>
+
+<div class="step">
+<h3>Step 1 &mdash; Measure</h3>
+<p><strong>Question:</strong> What data do we collect, from where, in what format?</p>
+<p><strong>The trap:</strong> collecting data without knowing whether it will be used. Mattei (chapter 3.2.1) warns that "data that is too granular or unaligned with your goals may not be worth the effort."</p>
+<p><strong>For your firm:</strong> every metric in the board pack must trace back to a named system of record. SIEM, vuln scanner, IR ticketing, TPRM platform, BIA matrix, PDPD scope register, audit tracker, policy exception register. If the source isn't named, the metric isn't real.</p>
+</div>
+
+<div class="step">
+<h3>Step 2 &mdash; Evaluate</h3>
+<p><strong>Question:</strong> Is this metric the right one? What business decision does it drive?</p>
+<p><strong>The trap:</strong> confusing "easy to measure" with "useful to measure." Mattei's example: "tracking the number of detected vulnerabilities may not be as insightful as tracking the number of vulnerabilities remediated within a specific time frame."</p>
+<p><strong>For your firm:</strong> every metric on the board pack must answer the question: <em>"if this metric moves, who decides what?"</em> If no one decides anything, the metric is decorative. Lesson 0001's board-pack already demands a "decision-ready" sentence for each metric. The Evaluate step formalises that requirement.</p>
+</div>
+
+<div class="step">
+<h3>Step 3 &mdash; Threshold</h3>
+<p><strong>Question:</strong> What value is acceptable, what is concerning, what is unacceptable? And why?</p>
+<p><strong>The trap:</strong> thresholds set by intuition, with no documented basis. When the regulator or auditor asks "why 95% and not 90%?" the answer is "because it felt right." That answer kills the metric's defensibility.</p>
+<p><strong>For your firm:</strong> every threshold must have a documented basis &mdash; regulatory minimum (PDPD 72-hour, NIST CSF baseline), industry benchmark (CIS Top 18 IG2, SANS SOC Survey median), historical baseline (the firm's own 12-month trend), or risk-appetite statement approved by the board. The MATTEI-recommended ATLAS methodology (chapter 8) is the systematic approach; we'll preview it here and complete the framework in lesson 0006.</p>
+</div>
+
+<div class="step">
+<h3>Step 4 &mdash; Report</h3>
+<p><strong>Question:</strong> Who sees this metric, in what format, how often?</p>
+<p><strong>The trap:</strong> one dashboard for everyone. The SOC manager needs P95 containment time per incident; the board needs the P95 trend across the quarter. Same data, different framings.</p>
+<p><strong>For your firm:</strong> each metric has three report surfaces &mdash; the program-owner dashboard (real-time, operational), the CISO weekly review (weekly summary), and the board pack (quarterly). The same number, three times, each with a different audience-appropriate framing.</p>
+</div>
+
+<div class="step">
+<h3>Step 5 &mdash; Improve</h3>
+<p><strong>Question:</strong> When the threshold breaches, what action follows? When the trend goes wrong, what intervention?</p>
+<p><strong>The trap:</strong> declaring improvement without evidence. Mattei (chapter 3.2.5) requires comparing post-intervention metrics to pre-intervention baselines. "We improved" is not the answer. "We improved from X to Y, against the baseline of Z, because we did W" is the answer.</p>
+<p><strong>For your firm:</strong> each metric has a documented "improvement playbook" &mdash; if X metric crosses the yellow threshold, action A; if it crosses red, action B; if the trend is wrong (not the threshold, the slope), intervention C. This playbook is what makes the metric program defensible at an audit.</p>
+</div>
+
+<div class="step">
+<h3>Step 6 &mdash; Communicate</h3>
+<p><strong>Question:</strong> Beyond the report, who else needs to know? When? In what language?</p>
+<p><strong>The trap:</strong> confusing Report with Communicate. Reporting puts data on a page. Communication creates understanding. Mattei (chapter 3.2.6) is explicit: "CISO ensures that security objectives align with business goals and that top-level stakeholders are aware of critical problems."</p>
+<p><strong>For your firm:</strong> communication is multi-channel &mdash; board pack (quarterly), exec team briefing (monthly), entity-CEO calls (monthly, with their entity's number), team standup (weekly). Each audience gets the metric in their language. The CEO hears "we had three Severity-1 incidents this quarter, all contained within RTO." The SOC analyst hears "we had three Severity-1 incidents, containment times were 1.8h, 2.3h, 4.1h, here are the runbooks tested."</p>
+</div>
+
+<div class="step">
+<h3>Step 7 &mdash; Sustain</h3>
+<p><strong>Question:</strong> How do we keep this metric alive and accurate as the business, the threats, and the regulators change?</p>
+<p><strong>The trap:</strong> producing the metric once and forgetting. The threshold that was right in 2024 may be wrong in 2026. The owner who set up the metric may leave. The reporting tool may be deprecated.</p>
+<p><strong>For your firm:</strong> each metric has a documented sustainment cadence &mdash; quarterly review of threshold, annual review of the metric itself, immediate review after any Severity-1 incident or regulatory change. The cadence is what Mattei calls "ongoing commitment to monitoring and adjusting your cybersecurity metrics program." Without it, the program is a snapshot, not a system.</p>
+</div>
+
+<h2>The METRICS runbook &mdash; one card per metric</h2>
+
+<p>The artifact is the runbook: one card per metric, each card following the seven-step structure. Ten cards for the board-pack metrics. Below is one fully-worked example (Metric 4: backup coverage). The other nine follow the same structure.</p>
+
+<table>
+  <thead>
+    <tr><th>Step</th><th>Question</th><th>For Metric 4: &mdash; % tài sản trọng yếu có backup tested (30 ngày)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>1. Measure</strong></td><td>What data, from where, how?</td><td>Backup platform API &rarr; count of critical-tier assets (per BIA matrix) &rarr; count of assets with a successful backup restore-test in last 30 days. Calculation: tested/critical &times; 100.</td></tr>
+    <tr><td><strong>2. Evaluate</strong></td><td>Why this metric? What decision?</td><td>Decision: whether to commit to the contracted RTO with the customer and to UBCK. A number below threshold means the firm cannot credibly commit to recovery within RTO for that percent of critical assets.</td></tr>
+    <tr><td><strong>3. Threshold</strong></td><td>What is acceptable? Basis?</td><td>Green: &gt; 98%. Yellow: 90&ndash;98%. Red: &lt; 90%. Basis: UBCK ICT risk circular requires demonstrable backup testing; industry benchmark (SANS, ISO 27001 A.8.13) expects &gt; 95% tested coverage of critical assets.</td></tr>
+    <tr><td><strong>4. Report</strong></td><td>Who sees it, how often, in what format?</td><td>Infrastructure Lead (weekly, raw data); CISO weekly review (weekly, summary with breach count); Board pack (quarterly, single trend line); entity-CEO call (monthly, per-entity number).</td></tr>
+    <tr><td><strong>5. Improve</strong></td><td>When threshold breaches, what action?</td><td>Yellow: Infrastructure Lead documents affected assets and remediation plan in 5 business days. Red: CISO escalates to entity CEO; weekly status until green; consolidated platform review if pattern persists across entities.</td></tr>
+    <tr><td><strong>6. Communicate</strong></td><td>Beyond the report, who needs to know?</td><td>Entity-CEO call: each entity's number with peer comparison. Board: trend with breach narrative (which entities, which assets, why). Audit prep: documented evidence trail for UBCK examiner on request.</td></tr>
+    <tr><td><strong>7. Sustain</strong></td><td>How do we keep this metric alive?</td><td>Quarterly: Infrastructure Lead reviews threshold against 12-month trend. Annual: CISO reviews whether the metric still drives the intended decision (e.g., did it change vendor consolidation?). Immediate review: any Severity-1 incident with backup involvement.</td></tr>
+  </tbody>
+</table>
+
+<p>Ten metrics, ten cards. The runbook is the deliverable.</p>
+
+<h2>The ownership question &mdash; one owner, or layered?</h2>
+
+<p>The single most-failed step in real-world metrics programs is Step 1 ownership. "Everyone owns it" is the death sentence. For a 9-entity firm, the ownership question is harder still: do you have <em>one</em> owner per metric, or do you have a layered model?</p>
+
+<table>
+  <thead>
+    <tr><th>Model</th><th>What it looks like</th><th>When it works</th><th>When it fails</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Single group-level owner</strong></td>
+      <td>One named person owns the metric across all 9 entities. Consolidated number is the only number that matters.</td>
+      <td>When the metric is fundamentally group-level (e.g., TPRM vendor-critical-tier review cadence adherence).</td>
+      <td>When entity-specific context is needed to interpret the metric (e.g., why phishing-report rate differs between brokerage and custody).</td>
+    </tr>
+    <tr>
+      <td><strong>Layered: consolidator + entity owners</strong></td>
+      <td>Group-level owner produces consolidated metric; entity-level owners produce entity metrics; consolidator handles cross-entity trends.</td>
+      <td>When the metric has both group-level and entity-level decisions to drive (most operational metrics).</td>
+      <td>When consolidator doesn't have authority over entity owners (typical in 9-entity holding companies).</td>
+    </tr>
+    <tr>
+      <td><strong>Distributed: 9 owners, no consolidator</strong></td>
+      <td>Each entity owns its number; no consolidated view.</td>
+      <td>Never, for board-facing metrics. Useful for entity-only operational metrics.</td>
+      <td>The board sees 9 numbers and 9 stories; no one is responsible for the cross-entity trend.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Recommended model for your firm.</strong> Layered ownership for every board-facing metric: <em>group consolidator</em> (typically the CISO or a designated program lead) owns the consolidated number and the cross-entity trend; <em>entity owners</em> (one per entity, usually the entity's IT manager or security liaison) own their entity's number. The consolidator has <em>visibility</em> into the entity numbers but not <em>authority</em> over entity owners &mdash; the cross-entity governance happens at the CISO + entity-CEO monthly call, not by edict. Document this in the runbook card. If you skip this, the metric will become political.
+</div>
+
+<h2>Where ATLAS fits &mdash; the threshold methodology preview</h2>
+
+<p>Mattei (chapter 8.4) introduces <strong>ATLAS &mdash; the Alert Threshold Lifecycle Assessment System</strong> as the systematic approach to Step 3. ATLAS has four phases:</p>
+
+<ol>
+  <li><strong>Set</strong> &mdash; initial threshold based on data analysis + business priorities.</li>
+  <li><strong>Monitor</strong> &mdash; track threshold breaches and trend over time.</li>
+  <li><strong>Review</strong> &mdash; quarterly review of whether the threshold still makes sense.</li>
+  <li><strong>Adjust</strong> &mdash; update the threshold when the threat landscape, business, or tool changes.</li>
+</ol>
+
+<p>For your firm, ATLAS applies cleanly to two metric categories:</p>
+
+<ul>
+  <li><strong>Detection-quality metrics (FAR/FRR/EER for top SOC use cases).</strong> Lesson 0006 completes this. ATLAS is the difference between "the alert fires at 10 failed logins" (a number someone picked) and "the alert fires at the 95th percentile of the firm's 90-day baseline, recalibrated quarterly" (a defensible threshold).</li>
+  <li><strong>Operational metrics with seasonality.</strong> Phishing-report rate spikes around tax season, dividend announcements, market volatility events. A static threshold will mis-fire. ATLAS lets you set contextual thresholds.</li>
+</ul>
+
+<p>For board-facing metrics, ATLAS is overkill &mdash; the threshold basis is documented once (regulator + benchmark) and reviewed annually. For SOC use-case thresholds, ATLAS is essential. Lesson 0006 builds the ATLAS-based threshold register for the detection program.</p>
+
+<h2>The seven-step fail pattern &mdash; and the one that matters most</h2>
+
+<p>Real-world metrics programs fail at predictable steps. Here is the failure pattern, ordered by frequency:</p>
+
+<table>
+  <thead>
+    <tr><th>Step</th><th>Failure mode</th><th>Symptom</th><th>Audit consequence</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>3. Threshold</strong></td>
+      <td>Threshold set by intuition, no documented basis</td>
+      <td>"We aim for 95% patch compliance"</td>
+      <td>Examiner asks "why 95%?" — no answer.</td>
+    </tr>
+    <tr>
+      <td><strong>5. Improve</strong></td>
+      <td>No documented action when threshold breaches</td>
+      <td>"The metric is red but no one is doing anything"</td>
+      <td>Examiner asks "what did you do when it went red?" — nothing documented.</td>
+    </tr>
+    <tr>
+      <td><strong>7. Sustain</strong></td>
+      <td>Threshold never revisited; metric decays</td>
+      <td>Metric is reported but the number is 18 months stale</td>
+      <td>Examiner asks "when was this last validated?" — unknown.</td>
+    </tr>
+    <tr>
+      <td><strong>1. Measure</strong></td>
+      <td>Source system changes; metric keeps producing old numbers</td>
+      <td>Metric says "patch compliance 95%" but scanner was decommissioned 6 months ago</td>
+      <td>Examiner asks "where does this number come from?" — silence.</td>
+    </tr>
+    <tr>
+      <td><strong>2. Evaluate</strong></td>
+      <td>Metric stays even though business decision it drove has changed</td>
+      <td>"We still report on-boarding-time SLA" but the onboarding system was replaced last year</td>
+      <td>Examiner asks "what does this number drive?" — "Nothing anymore."</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The single most-defensible move you can make in the runbook is to <em>document the basis for every threshold.</em> Not just "5 failed logins" but "5 failed logins, basis: NIST SP 800-63B AAL2 guidance, calibrated to 99th percentile of our 2024 user behaviour baseline, last reviewed Q1 2026." That one sentence is the difference between a metric that survives an audit and one that doesn't.</p>
+
+<h2>The artifact &mdash; the per-metric runbook (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Sổ tay vận hành chỉ số an toàn thông tin (Metric Operations Runbook)</h3>
+
+<p><strong>Use case:</strong> ten cards, one per board-pack metric. Each card follows the seven-step lifecycle. Each card has a named group consolidator and a named entity owner. The runbook is what a new SOC analyst reads on day one; it is what the UBCK examiner sees on request.</p>
+
+<h3 style="margin-top:18px;">Mẫu thẻ chỉ số (metric card template)</h3>
+
+<pre>
+CHỈ SỐ: _________________________________________
+[CSF function] [Loại: Leading / Lagging]
+
+1. MEASURE (Đo lường)
+   Nguồn dữ liệu: ________________________________
+   Công thức: _____________________________________
+   Tần suất thu thập: _____________________________
+
+2. EVALUATE (Đánh giá)
+   Quyết định kích hoạt: __________________________
+   Nếu chỉ số này thay đổi, ai quyết định gì? _____
+
+3. THRESHOLD (Ngưỡng)
+   Xanh: ____  Vàng: ____  Đỏ: ____
+   Cơ sở ngưỡng (regulator / benchmark / baseline): _______
+   Ngày rà soát gần nhất: _______
+
+4. REPORT (Báo cáo)
+   Program-owner dashboard (real-time): _______________
+   CISO weekly review: _____________________________
+   Board pack (quarterly): __________________________
+   Entity-CEO call (monthly): ______________________
+
+5. IMPROVE (Cải tiến)
+   Khi ngưỡng vàng: _______________________________
+   Khi ngưỡng đỏ: _________________________________
+   Khi xu hướng đi xuống (slope): ___________________
+
+6. COMMUNICATE (Truyền đạt)
+   Kênh truyền đạt: _______________________________
+   Ngôn ngữ theo đối tượng:
+     - HĐQT: ______________________________________
+     - Ban lãnh đạo: _______________________________
+     - SOC / IR Lead: ______________________________
+     - UBCK examiner: ______________________________
+
+7. SUSTAIN (Duy trì)
+   Rà soát ngưỡng: ________________ (quarterly / annual)
+   Rà soát chỉ số: _________________ (annual)
+   Rà soát khẩn cấp: _______________ (post Severity-1, regulator change)
+
+OWNERSHIP (Sở hữu)
+   Group consolidator (group-level owner): ____________
+   Entity owners (9 entities):
+     1. ____________  2. ____________  3. ____________
+     4. ____________  5. ____________  6. ____________
+     7. ____________  8. ____________  9. ____________
+</pre>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>In ra. Đặt cạnh dashboard. Khi một threshold chuyển vàng hoặc đỏ, người sở hữu bước vào Step 5 (Improve) trong vòng 24 giờ. Khi UBCK examination đến, runbook là evidence packet &mdash; mỗi câu hỏi của examiner có một câu trả lời tham chiếu rõ ràng trong thẻ chỉ số.</p>
+
+<h3 style="margin-top:18px;">Điều kiện tiên quyết (prerequisite)</h3>
+<p>Bạn phải có lesson 0001's board pack (10 chỉ số) trước khi điền vào runbook. Nếu bạn chưa có, hãy hoàn thành inventory trước. Không có metrics &mdash; không có runbook.</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Fill in two cards completely (pick the two most-operationally-critical metrics from your board pack &mdash; typically backup coverage and time-to-contain). The other eight cards can be skeleton-filled in week 2. By the next session, you should have at least two fully-worked cards in Vietnamese with real names, real thresholds with documented basis, and real owners across the 9 entities. The card that is hardest to fill in is the most informative &mdash; that's the one that surfaces a governance gap.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is Step 3 (Threshold) the most-failed step in real-world metrics programs?</summary>
+<p>Because thresholds look like numbers, and numbers feel objective. "We aim for 95%" sounds like a fact. It is actually an opinion, and the opinion has no documented basis. When a UBCK examiner asks "why 95% and not 90%?", the answer is "because we picked it." That answer kills the metric's audit-defensibility. The fix is to document the basis explicitly: a regulatory minimum, an industry benchmark (CIS, SANS, NIST), a historical baseline of the firm's own data, or a board-approved risk appetite. The basis is the sentence that makes the threshold survive an audit.</p>
+</details>
+
+<details>
+<summary>Why does the Improve step require a documented action when the threshold breaches?</summary>
+<p>Because a metric without an action is a decoration. If the threshold goes red and no documented playbook fires, the metric is reporting a problem that no one is solving. The audit consequence is fatal: "what did you do when this went red?" — "nothing" is the answer that closes the audit with a finding. The Improve step is what converts the metric from a passive report into an active control. For every metric, the runbook card specifies: yellow → action A; red → action B; trend wrong (not threshold, slope) → action C. The actions are named, owned, and have a deadline.</p>
+</details>
+
+<details>
+<summary>Why layered ownership (group consolidator + entity owners) instead of one single owner?</summary>
+<p>Because the decisions the metric drives happen at both levels. The group consolidator drives group-level decisions: consolidate the backup platform, hire a group CISO, escalate to the board. The entity owner drives entity-level decisions: remediate the brokerage's phishing-report rate, escalate the custody entity's audit finding. If only the group consolidator exists, entity context is lost. If only entity owners exist, no one is responsible for the cross-entity trend. The layered model matches the actual decision structure. The political risk (consolidator without authority over entity owners) is real; it is mitigated by the CISO + entity-CEO monthly call, where the cross-entity trend is discussed and the consolidator's recommendations are heard but not dictated.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapter 3.2 (the METRICS methodology itself) and chapter 3.6 (the common pitfalls in metrics programs &mdash; overreliance on quantitative, misalignment with business, stagnation). The ATLAS methodology referenced at Step 3 is introduced in chapter 8.4 and developed fully in chapter 8; lesson 0006 completes the threshold register for the detection program using ATLAS.</p>
+
+<p>The book does not give you the per-owner runbook card; it gives you the seven-step structure. The card format and the layered-ownership model are this course's application of the methodology to a 9-entity Vietnamese securities firm context.</p>
+
+<p><strong>Read next:</strong> chapter 3.4 (dashboard design for different stakeholders &mdash; reinforces the multi-audience reporting frame) and skim chapter 8.4 (ATLAS &mdash; the threshold methodology that lesson 0006 applies). Lesson 0003 builds the audit-ready metrics pack &mdash; the cross-reference matrix between your 10 board-pack metrics and UBCK / ISO 27001 / PDPD / NIST CSF expectations.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear &mdash; how to set a defensible threshold when you have no historical data, how to handle the consolidator-without-authority political risk, what to do when the entity owner disagrees with the consolidator's interpretation, how to document the threshold basis so it survives a UBCK examination &mdash; ask. The next lesson (0003: The Audit-Ready Metrics Pack) cross-references your 10 metric cards against the regulatory layer.
+</div>
+
+<div class="lesson-nav">
+  <a href="0001-stop-counting-vulnerabilities.html">&larr; Lesson 0001</a>
+  <a href="0003-audit-ready-pack.html">Lesson 0003: The Audit-Ready Metrics Pack &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

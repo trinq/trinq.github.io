@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0003 &mdash; The Audit-Ready Metrics Pack: UBCK, ISO 27001, PDPD, NIST CSF</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .regulator-card {
+    margin: 18px 0;
+    padding: 16px 20px;
+    background: var(--code-bg);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+  .regulator-card h3 {
+    margin-top: 0;
+    font-size: 17px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0003 &middot; Data-driven cybersecurity &middot; Arc 1: The metric discipline</div>
+<h1>The Audit-Ready Metrics Pack</h1>
+<p class="subtitle">A board pack satisfies the board. An audit-ready pack satisfies UBCK, ISO 27001, PDPD, and the next examiner who walks in. You need both.</p>
+
+<h2>Why this lesson third</h2>
+
+<p>Lessons <a href="0001-stop-counting-vulnerabilities.html">0001</a> and <a href="0002-metrics-methodology.html">0002</a> gave you the board pack (10 metrics) and the per-metric runbook (seven-step lifecycle). Both are excellent. Neither survives a regulatory examination on its own.</p>
+
+<p>A Vietnamese securities firm does not get to choose between satisfying the board <em>or</em> satisfying the regulator. You must satisfy both &mdash; with the <em>same</em> metric set. The board sees the same numbers the regulator sees; the difference is the framing. Lesson 0003 is the lesson that makes this work.</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 1.5</span>
+  This book uses NIST CSF V2.0 as a foundation for its discussions. The focus is not on NIST itself but on the broader application of cybersecurity metrics across frameworks. This approach allows readers to benefit from the insights provided here, no matter which framework they rely on.
+</div>
+
+<p>Mattei is right that NIST CSF is the lingua franca. But for your firm, NIST CSF alone is insufficient. UBCK (Ủy ban Chứng khoán Nhà nước) sets VN-securities-specific expectations; ISO 27001 is increasingly required for VN brokers; PDPD (Nghị định 13/2023) is in force since 1 July 2023 with a 72-hour breach-notification clock. Each framework asks for slightly different evidence from the same data. <em>The cross-reference matrix is the answer.</em></p>
+
+<p>For your 9-entity firm, the lesson lands with three specific pressures the ciso-playbook course did not address:</p>
+
+<ol>
+  <li><strong>The UBCK examination is coming.</strong> Whether the firm has been audited before or not, the next circular review will ask "where is your evidence?" The audit-ready pack is the answer file. It is the artifact you hand to the examiner, not the dashboard you keep internally.</li>
+  <li><strong>PDPD 72-hour clock is binary.</strong> Unlike NIST CSF or ISO 27001, which are maturity-model frameworks, PDPD has a hard 72-hour breach-notification deadline. The metric "time-from-incident-confirmed-to-MPS-notification (P95)" must be &le; 72 hours, full stop. This is a different category of metric: a regulatory ceiling, not a maturity indicator.</li>
+  <li><strong>ISO 27001 surveillance audits require continuous evidence.</strong> If the firm has or wants ISO 27001 certification, the surveillance auditor will ask for 12 months of evidence per Annex A control. The metric pack must map each board-pack metric to the relevant Annex A control(s) so evidence is auto-collected, not assembled at audit time.</li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the audit-ready cross-reference matrix (in Vietnamese) &mdash; 10 board-pack metrics &times; 5 frameworks (UBCK ICT risk circular, ISO 27001:2022 Annex A, PDPD, NIST CSF 2.0, CIS Top 18 v8) &mdash; showing which metric satisfies which control, what evidence the examiner will request, and how the evidence is auto-collected.</strong> This matrix is the artifact you keep on file and bring out the morning the examiner arrives.</p>
+
+<h2>The five frameworks &mdash; what each one actually demands</h2>
+
+<p>Mattei's chapter 1.5 introduces three frameworks (HITRUST, CIS Top 18, NIST CSF) and references ISO 27001 as the international standard. For your firm, the set is five frameworks, layered:</p>
+
+<div class="regulator-card">
+<h3>1. UBCK ICT Risk Circular (Ủy ban Chứng khoán Nhà nước)</h3>
+<p><strong>What it is:</strong> the specific circular from UBCK governing ICT risk management at VN securities firms. Search thuvienphapluat.vn for the latest version (circulars update; the ciso-playbook course's RESOURCES.md flagged this as a moving target).</p>
+<p><strong>What it demands:</strong> documented ICT risk management programme; named accountable officer; annual ICT risk assessment; incident-response readiness; business continuity arrangements; periodic reporting to UBCK. The circular sets the floor &mdash; compliance is non-negotiable, not aspirational.</p>
+<p><strong>What it does <em>not</em> demand:</strong> a specific metric set or specific framework (NIST CSF / ISO 27001 are accepted as evidence of compliance, not mandated as the framework itself). This is the regulator's gift: you can use ISO 27001 controls to satisfy UBCK expectations.</p>
+<p><strong>For your firm:</strong> UBCK is the primary regulator. The audit-ready pack must show, for each board-pack metric, the UBCK circular clause it satisfies. If the circular requires "incident-response readiness," the metric "tabletop exercise participation by executive team" is the evidence.</p>
+</div>
+
+<div class="regulator-card">
+<h3>2. ISO/IEC 27001:2022 (Information Security Management Systems)</h3>
+<p><strong>What it is:</strong> the international management-system standard for information security. Increasingly required for VN securities firms (and certainly expected if the firm has any foreign counterparty or parent).</p>
+<p><strong>What it demands:</strong> a documented ISMS (information security management system) covering all Annex A controls (93 controls in 4 themes &mdash; Organizational, People, Physical, Technological); risk treatment plan; statement of applicability; internal audit programme; management review; continuous improvement. Annex A control 5.30 (ICT readiness for business continuity) is the one most directly relevant to your recovery metrics.</p>
+<p><strong>What it does <em>not</em> demand:</strong> a specific metric for every control &mdash; it demands evidence of effectiveness, which a metric can provide but is not the only form of evidence.</p>
+<p><strong>For your firm:</strong> if you have or want ISO 27001 certification, every board-pack metric must map to at least one Annex A control. The mapping is the audit defence.</p>
+</div>
+
+<div class="regulator-card">
+<h3>3. PDPD (Nghị định 13/2023/NĐ-CP &mdash; Personal Data Protection)</h3>
+<p><strong>What it is:</strong> Vietnam's Personal Data Protection Act, in force since 1 July 2023. Governs processing of personal data by any organisation operating in Vietnam or processing VN residents' data.</p>
+<p><strong>What it demands:</strong> personal data inventory and classification; lawful basis for processing; consent management; data subject rights (access, correction, deletion); impact assessment for sensitive processing; <strong>breach notification to MPS (Ministry of Public Security) and affected data subjects within 72 hours of incident confirmation</strong>; cross-border transfer controls. Penalties include fines up to 5% of prior year's revenue.</p>
+<p><strong>What it does <em>not</em> demand:</strong> a specific framework or maturity model. PDPD is regulation, not a control framework.</p>
+<p><strong>For your firm:</strong> PDPD has two specific metric implications. First, the personal-data inventory metric (% of data assets classified for PDPD scope) is a board-pack candidate from lesson 0001's metric #7. Second, the 72-hour breach-notification clock is a regulatory ceiling &mdash; the metric is binary (compliant or non-compliant), not a maturity indicator.</p>
+</div>
+
+<div class="regulator-card">
+<h3>4. NIST Cybersecurity Framework (CSF) 2.0</h3>
+<p><strong>What it is:</strong> the US National Institute of Standards and Technology's voluntary cybersecurity framework. Globally the de facto vocabulary for cybersecurity program design. CSF 2.0 (released 2024) added <em>Govern</em> as a top-level function (previously grouped under Identify in CSF 1.x).</p>
+<p><strong>What it demands:</strong> nothing mandatory (it's voluntary), but everything language-defining. Every cybersecurity conversation, in any country, expects you to be conversant with the CSF function structure. UBCK examiners will use the CSF vocabulary in their questioning even if they don't cite the framework directly.</p>
+<p><strong>CSF 2.0 functions:</strong> Govern, Identify, Protect, Detect, Respond, Recover. The book (and your course) maps each chapter and lesson onto these functions.</p>
+<p><strong>For your firm:</strong> the CSF is your <em>internal</em> organising structure. Every board-pack metric maps to one CSF function; every cross-reference to UBCK / ISO 27001 / PDPD also maps to a CSF function (because the crosswalks are public). The CSF is the hub.</p>
+</div>
+
+<div class="regulator-card">
+<h3>5. CIS Critical Security Controls (CIS Top 18) v8</h3>
+<p><strong>What it is:</strong> the Center for Internet Security's prioritised set of 18 controls (previously 20). Implementation Groups (IG1, IG2, IG3) stratify controls by organisation size and sensitivity.</p>
+<p><strong>What it demands:</strong> nothing mandatory. But CIS is the most-operationally-actionable framework &mdash; if a SOC analyst must implement a control, CIS tells them how. UBCK examiners and ISO 27001 auditors both accept CIS as evidence of operational implementation.</p>
+<p><strong>For your firm:</strong> CIS Implementation Group 2 (IG2) is the right target for a mid-size securities firm (600 people, 9 entities, sensitive data). CIS maps to both NIST CSF and ISO 27001 Annex A publicly &mdash; the crosswalks are free.</p>
+</div>
+
+<h2>Layering, not substituting &mdash; the relationship between frameworks</h2>
+
+<p>The five frameworks overlap heavily. This is the design feature, not a bug. The same data satisfies multiple frameworks. The cross-reference matrix exploits the overlap.</p>
+
+<table>
+  <thead>
+    <tr><th>Framework</th><th>Layer</th><th>What it gives you</th><th>What you give it</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>UBCK ICT Risk Circular</strong></td>
+      <td>Regulator (VN)</td>
+      <td>Legal authority to operate; examiner expectations</td>
+      <td>Evidence of compliance with ICT risk circular clauses</td>
+    </tr>
+    <tr>
+      <td><strong>ISO 27001:2022</strong></td>
+      <td>Management system (international)</td>
+      <td>Certification if you pursue it; global credibility</td>
+      <td>Documented ISMS + Annex A control evidence</td>
+    </tr>
+    <tr>
+      <td><strong>PDPD</strong></td>
+      <td>Regulation (VN)</td>
+      <td>Legal right to process personal data</td>
+      <td>Personal-data inventory + breach-notification compliance</td>
+    </tr>
+    <tr>
+      <td><strong>NIST CSF 2.0</strong></td>
+      <td>Vocabulary (global)</td>
+      <td>Common language with any cybersecurity professional</td>
+      <td>Function-aligned program evidence</td>
+    </tr>
+    <tr>
+      <td><strong>CIS Top 18 v8 IG2</strong></td>
+      <td>Operational implementation (global)</td>
+      <td>SOC-actionable control guidance</td>
+      <td>Implementation evidence per control</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The layering principle.</strong> Each framework operates at a different altitude. UBCK at 50,000 feet (do you have an ICT risk programme?). ISO 27001 at 30,000 feet (does your ISMS cover the controls?). NIST CSF at 20,000 feet (does your program cover the functions?). CIS Top 18 at 5,000 feet (is each control actually implemented?). PDPD sits orthogonal to all of these (does your personal-data processing comply?). The audit-ready pack shows the same metric at multiple altitudes &mdash; the data is the same, the framing is different.
+</div>
+
+<h2>The cross-reference matrix &mdash; how to build it</h2>
+
+<p>The artifact is a 10&times;5 matrix: rows are the board-pack metrics from lesson 0001; columns are the five frameworks. Each cell contains (a) the specific clause / control / function / control-number the metric satisfies, and (b) the evidence the examiner will request.</p>
+
+<p>Two of the ten board-pack metrics are fully worked below. The remaining eight follow the same pattern.</p>
+
+<table>
+  <thead>
+    <tr><th>Framework</th><th>Metric 4: &mdash; % tài sản trọng yếu có backup tested (30 ngày)</th><th>Metric 7: &mdash; % dữ liệu cá nhân đã phân loại theo PDPD</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>UBCK ICT Risk Circular</strong></td>
+      <td>Sao lưu &amp; phục hồi &mdash; clause requiring "demonstrable backup testing of critical systems." Evidence: backup-platform export of tested-restore log per critical asset, monthly.</td>
+      <td>Not directly addressed (UBCK circular predates PDPD enforcement). Evidence gap &mdash; flag for the strategic plan to address.</td>
+    </tr>
+    <tr>
+      <td><strong>ISO 27001:2022 Annex A</strong></td>
+      <td>A.8.13 (Information backup); A.5.30 (ICT readiness for business continuity). Evidence: backup-platform API export + BIA matrix cross-reference + restore-test attestation.</td>
+      <td>A.5.34 (Privacy and protection of personally identifiable information / PII). Evidence: data inventory classification register + lawful basis record.</td>
+    </tr>
+    <tr>
+      <td><strong>PDPD (Nghị định 13/2023)</strong></td>
+      <td>Indirect &mdash; supports Article 11 (data integrity) and Article 12 (data security). Evidence: backup-tested attestation satisfies "appropriate to protect personal data from loss."</td>
+      <td><strong>Direct</strong> &mdash; Article 9 (data classification obligations), Article 11 (data integrity and security). Evidence: classification register + scope percentage.</td>
+    </tr>
+    <tr>
+      <td><strong>NIST CSF 2.0</strong></td>
+      <td><strong>Recover</strong> (RC.RP-1: Recovery plan is executed during or after an incident). Evidence: backup coverage map.</td>
+      <td><strong>Identify</strong> (ID.AM-5: Resources are prioritised based on their classification, criticality, and business value). Evidence: PDPD-scope classification.</td>
+    </tr>
+    <tr>
+      <td><strong>CIS Top 18 v8 IG2</strong></td>
+      <td>Control 11 (Data Recovery). Evidence: backup-platform API export + restore-test attestation.</td>
+      <td>Control 3 (Data Protection). Evidence: classification register + DLP coverage.</td>
+    </tr>
+    <tr>
+      <td><strong>Evidence request at audit</strong></td>
+      <td>"Show me your 12-month backup-tested coverage trend, per critical asset, per entity." (Auto-collected from backup platform API.)</td>
+      <td>"Show me your PDPD scope classification, per data asset, per entity, with the lawful basis recorded." (Auto-collected from data inventory + classification register.)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The pattern: each metric appears in multiple framework columns. One number (e.g., 95% backup coverage) satisfies UBCK + ISO 27001 + NIST CSF + CIS. The metric is one; the evidence collection is one; the framing is many.</p>
+
+<h2>The UBCK examination &mdash; what actually happens</h2>
+
+<p>The UBCK examination pattern for a securities firm is well-documented in peer conversations (per ciso-playbook RESOURCES.md's wisdom section), even though no public examiner checklist exists. The pattern:</p>
+
+<ol>
+  <li><strong>Document request phase (1&ndash;2 weeks before the visit).</strong> UBCK sends a list of requested documents: ICT risk management policy, ICT risk assessment (last 12 months), incident response plan, business continuity plan, third-party-risk assessment for critical vendors, evidence of awareness training, evidence of penetration testing, evidence of backup testing. The list is the curriculum.</li>
+  <li><strong>On-site visit (typically 2&ndash;5 days).</strong> The examiner walks the program with the CISO. They ask: "show me the metric for X." "How do you know it's accurate?" "What did you do when the metric went red?" "Show me the runbook for this metric." "Who owns it?" "When was the threshold last reviewed?"</li>
+  <li><strong>Findings phase (1&ndash;4 weeks after).</strong> The examiner issues findings: minor (corrective action within 30&ndash;90 days), major (corrective action within 30 days + escalation), or critical (immediate remediation + potential UBCK enforcement action).</li>
+</ol>
+
+<p>The audit-ready pack pre-empts each phase. The document request is satisfied by the runbook cards from lesson 0002 plus the cross-reference matrix from this lesson. The on-site visit is satisfied by the board-pack trend lines + the per-entity owner roster. The findings phase is satisfied by the Improve-step playbooks from lesson 0002.</p>
+
+<div class="callout">
+  <strong>The examiner's first question.</strong> Almost always: <em>"Show me how you measure your incident-response readiness."</em> The answer is the tabletop-exercise metric (board-pack #8). The follow-up is: <em>"When was the last one, who attended, what did you change?"</em> If the answer is "we ran two last year, the CEO attended, we updated the runbook to reflect the gap we found" &mdash; you pass. If the answer is "we ran one two years ago and we're planning the next one" &mdash; you have a finding.
+</div>
+
+<h2>The PDPD 72-hour clock &mdash; a different category of metric</h2>
+
+<p>Most cybersecurity metrics are maturity indicators. "Time-to-contain P95" is better at 2 hours than 4 hours, but neither is "compliant" or "non-compliant" in a regulatory sense. PDPD's 72-hour breach-notification clock is different: it is a <strong>regulatory ceiling</strong>. P95 must be &le; 72 hours, full stop. Above 72 hours, the firm is non-compliant, with fines up to 5% of prior-year revenue.</p>
+
+<p>This category demands different measurement discipline:</p>
+
+<table>
+  <thead>
+    <tr><th>Property</th><th>Maturity indicator (most metrics)</th><th>Regulatory ceiling (PDPD 72-hour)</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Threshold</strong></td>
+      <td>Yellow / red bands; trends matter</td>
+      <td>Binary &mdash; within 72 hours or not</td>
+    </tr>
+    <tr>
+      <td><strong>Reporting cadence</strong></td>
+      <td>Weekly / monthly / quarterly</td>
+      <td>Per-incident + monthly aggregate</td>
+    </tr>
+    <tr>
+      <td><strong>Owner</strong></td>
+      <td>Program owner (SOC, IR Lead, etc.)</td>
+      <td>Data Protection Officer (DPO) + CISO</td>
+    </tr>
+    <tr>
+      <td><strong>Failure consequence</strong></td>
+      <td>Program degradation</td>
+      <td>Regulatory fine + reputational damage</td>
+    </tr>
+    <tr>
+      <td><strong>Evidence required</strong></td>
+      <td>Trend line + improvement narrative</td>
+      <td>Per-incident timestamp log + notification proof</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The 72-hour clock requires its own card in the runbook &mdash; not folded into "time-to-contain." Lesson 0007 (Respond + Recover) builds the PDPD-specific metric pack; lesson 0003 only registers the requirement.</p>
+
+<h2>The audit-ready evidence packet &mdash; what to assemble before the examiner arrives</h2>
+
+<p>The packet has six sections. Each section is pre-assembled and updated quarterly. The examiner's document-request phase is satisfied by handing them the packet.</p>
+
+<ol>
+  <li><strong>Program overview</strong> &mdash; the strategic plan from ciso-playbook 0010 (revised quarterly), the board pack from lesson 0001, the per-metric runbook cards from lesson 0002.</li>
+  <li><strong>Metric catalogue</strong> &mdash; the full metric set (not just board-pack 10 &mdash; the program-owner metrics too), with the cross-reference matrix from this lesson.</li>
+  <li><strong>Evidence trail per metric</strong> &mdash; for each board-pack metric, the 12-month trend, the Improve-step playbook, the threshold-basis documentation. Auto-collected where possible (SIEM exports, IR ticket exports, backup-platform exports).</li>
+  <li><strong>Runbook for the Improve-step</strong> &mdash; when a metric breaches, what happened. Include Severity-1 incidents from the past 12 months with metric-trigger documentation.</li>
+  <li><strong>Personnel and ownership</strong> &mdash; the layered ownership roster from lesson 0002 (group consolidator + 9 entity owners per metric). Includes entity-CEO monthly-call minutes referencing the metric.</li>
+  <li><strong>Regulatory correspondence</strong> &mdash; prior audit findings, prior responses, prior remediation evidence. Plus any proactive correspondence (e.g., "we self-reported this incident under PDPD, here is the notification proof").</li>
+</ol>
+
+<p>The packet is not a fire-drill. It is a <em>standing</em> artefact, updated quarterly as part of the Sustain step from lesson 0002. The morning the examiner arrives, you do not assemble it. You print it.</p>
+
+<h2>The artifact &mdash; the cross-reference matrix (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Ma trận chỉ số &times; khung quản trị (Audit-Ready Cross-Reference Matrix)</h3>
+
+<p><strong>Use case:</strong> 10 board-pack metrics &times; 5 frameworks. Each cell shows the specific clause/control/function the metric satisfies and the evidence the examiner will request. Vietnamese-language artifact; updated quarterly alongside the runbook cards from lesson 0002.</p>
+
+<h3 style="margin-top:18px;">Cấu trúc (structure)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>Chỉ số</th><th>UBCK ICT Risk Circular</th><th>ISO 27001:2022</th><th>PDPD</th><th>NIST CSF 2.0</th><th>CIS Top 18 v8 IG2</th><th>Evidence request</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>M1</strong> &mdash; Patch SLA tài sản rủi ro cao</td>
+      <td>Clause: quản lý lỗ hổng</td>
+      <td>A.8.8 (quản lý lỗ hổng kỹ thuật)</td>
+      <td>Indirect</td>
+      <td>ID.RA-1; PR.PS-2</td>
+      <td>Control 7</td>
+      <td>12-month trend per critical asset, per entity, auto-export từ vuln scanner</td>
+    </tr>
+    <tr>
+      <td><strong>M2</strong> &mdash; Phishing-report rate</td>
+      <td>Clause: nhận thức &amp; đào tạo</td>
+      <td>A.6.3 (nhận thức, giáo dục, đào tạo)</td>
+      <td>Indirect</td>
+      <td>PR.AT-1</td>
+      <td>Control 14</td>
+      <td>Trend theo entity, auto-export từ awareness platform</td>
+    </tr>
+    <tr>
+      <td><strong>M3</strong> &mdash; Time-to-contain P95</td>
+      <td>Clause: ứng phó sự cố</td>
+      <td>A.5.24 (quản lý sự cố)</td>
+      <td>Article 12 (data security)</td>
+      <td>RS.MI-2</td>
+      <td>Control 17</td>
+      <td>Per-incident timestamps từ IR case mgmt</td>
+    </tr>
+    <tr>
+      <td><strong>M4</strong> &mdash; Backup coverage (30 ngày)</td>
+      <td>Clause: sao lưu &amp; phục hồi</td>
+      <td>A.8.13 (information backup); A.5.30</td>
+      <td>Article 11 (data integrity)</td>
+      <td>RC.RP-1</td>
+      <td>Control 11</td>
+      <td>Backup-platform API export + restore-test attestation</td>
+    </tr>
+    <tr>
+      <td><strong>M5</strong> &mdash; FAR top-10 SOC use cases</td>
+      <td>Indirect</td>
+      <td>A.8.16 (monitoring activities)</td>
+      <td>Indirect</td>
+      <td>DE.CM-1</td>
+      <td>Control 13 (network monitoring)</td>
+      <td>SIEM detection logs + ATLAS-tuned thresholds</td>
+    </tr>
+    <tr>
+      <td><strong>M6</strong> &mdash; TPRM review cadence</td>
+      <td>Clause: quản trị rủi ro bên thứ ba</td>
+      <td>A.5.19 (security in supplier relationships); A.5.20</td>
+      <td>Article 9 (third-party data processing)</td>
+      <td>GV.SC-1 through GV.SC-7</td>
+      <td>Control 15 (service provider management)</td>
+      <td>TPRM platform export per vendor criticality</td>
+    </tr>
+    <tr>
+      <td><strong>M7</strong> &mdash; PDPD scope classification</td>
+      <td>Gap (pre-PDPD circular)</td>
+      <td>A.5.34 (PII)</td>
+      <td>Article 9; 11</td>
+      <td>ID.AM-5</td>
+      <td>Control 3 (data protection)</td>
+      <td>Data inventory + classification register</td>
+    </tr>
+    <tr>
+      <td><strong>M8</strong> &mdash; Tabletop participation (12 tháng)</td>
+      <td>Clause: diễn tập ứng phó</td>
+      <td>A.5.29 (ICT readiness, incl. testing)</td>
+      <td>Article 12 (incident preparedness)</td>
+      <td>RS.RP-1; RS.DP-1</td>
+      <td>Control 17</td>
+      <td>Tabletop calendar + attendance log + after-action report</td>
+    </tr>
+    <tr>
+      <td><strong>M9</strong> &mdash; Open audit findings</td>
+      <td>Implicit (remediation tracking)</td>
+      <td>A.5.35 (independent review); A.10.1 (nonconformity)</td>
+      <td>Article 9 (compliance evidence)</td>
+      <td>GV.OC-3; ID.RA-4</td>
+      <td>Control 18 (penetration testing)</td>
+      <td>Audit tracker with age and tier per finding</td>
+    </tr>
+    <tr>
+      <td><strong>M10</strong> &mdash; Entity exception consolidation</td>
+      <td>Implicit</td>
+      <td>A.5.36 (compliance with policies); A.5.37 (documented operating procedures)</td>
+      <td>Indirect</td>
+      <td>GV.OC-2; GV.PO-1</td>
+      <td>Implicit (governance baseline)</td>
+      <td>Policy exception register per entity with group-approved rationale</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Quy tắc (rules)</h3>
+<ul>
+  <li>Mỗi ô chứa <em>một clause / control / function / control-number cụ thể</em> &mdash; không viết "covered" hay "yes". Examiner sẽ hỏi "covered by what exactly?"</li>
+  <li>Mỗi ô có một <em>evidence request</em> &mdash; câu hỏi cụ thể mà examiner sẽ hỏi và câu trả lời auto-collected.</li>
+  <li>Cập nhật quarterly cùng với runbook cards từ lesson 0002. UBCK circular update &rarr; refresh matrix ngay.</li>
+  <li>Ô "Gap" (M7/UBCK) &mdash; flag cho strategic plan (ciso-playbook 0010) để address trong roadmap.</li>
+</ul>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>Bind cùng với runbook cards (lesson 0002) &mdash; hai artifact tạo thành evidence packet. Khi UBCK examination đến, in ra, hand to examiner. Khi ISO 27001 surveillance audit, cùng matrix. Khi PDPD breach investigation, lấy ra M3 + M7 + 72-hour card (lesson 0007).</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Map all 10 board-pack metrics against the latest UBCK ICT risk circular. Identify which metric satisfies which clause. Flag the gaps (like M7/UBCK) for the strategic-plan roadmap. Then re-render the matrix in Vietnamese with your firm's actual UBCK circular clause references &mdash; not the generic "clause: quản lý lỗ hổng" but the specific circular number and clause (e.g., "Thông tư 05/2024/TT-UBCK, Điều 12, Khoản 3"). The matrix is only useful if the references are specific to the firm's actual obligations.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is the PDPD 72-hour clock treated as a different category of metric than time-to-contain?</summary>
+<p>Because the 72-hour clock is a regulatory ceiling, not a maturity indicator. Time-to-contain P95 is better at 2 hours than 4 hours, but neither is "non-compliant." PDPD's 72-hour breach-notification clock is binary: within 72 hours of incident confirmation, MPS must be notified. Above 72 hours, the firm is non-compliant, with fines up to 5% of prior-year revenue. Maturity-indicator metrics get a trend line and an improvement narrative; regulatory-ceiling metrics get per-incident timestamp logs and notification proof. Different evidence, different reporting cadence, different owners (DPO + CISO for the ceiling, program owner for the maturity indicator). Conflating the two categories is the most-common audit-readiness gap.</p>
+</details>
+
+<details>
+<summary>Why does the audit-ready pack layer frameworks rather than substitute one for another?</summary>
+<p>Because each framework operates at a different altitude, and the same data satisfies multiple altitudes. UBCK at 50,000 feet asks whether you have an ICT risk programme. ISO 27001 at 30,000 feet asks whether your ISMS covers the controls. NIST CSF at 20,000 feet asks whether your program covers the functions. CIS Top 18 at 5,000 feet asks whether each control is actually implemented. PDPD sits orthogonal &mdash; it asks whether your personal-data processing complies with the law. The audit-ready pack shows the same metric at all altitudes simultaneously. One number (e.g., 95% backup coverage) satisfies UBCK + ISO 27001 + NIST CSF + CIS at four altitudes. Substituting frameworks &mdash; choosing NIST and ignoring ISO 27001 &mdash; forfeits evidence the examiner may want. Layering exploits the public crosswalks; substituting forfeits them.</p>
+</details>
+
+<details>
+<summary>What is the examiner's first question, and how do you pre-empt it?</summary>
+<p>The examiner's first question is almost always: <em>"Show me how you measure your incident-response readiness."</em> The answer is the tabletop-exercise metric (board-pack M8). The follow-up is: <em>"When was the last one, who attended, what did you change?"</em> The audit-ready pack pre-empts this by having M8's runbook card ready (lesson 0002), the cross-reference matrix showing M8 satisfies UBCK + ISO 27001 + NIST CSF + CIS (this lesson), and the evidence trail showing the 12-month trend of executive-team participation (auto-collected from the tabletop calendar + attendance log). If the answer is "we ran two last year, the CEO attended, we updated the runbook to reflect the gap we found" &mdash; you pass. If the answer is "we ran one two years ago and we're planning the next one" &mdash; you have a finding.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapter 1.5 (the framework landscape &mdash; HITRUST, CIS, NIST CSF, ISO 27001), chapter 4 (business alignment &mdash; how to demonstrate that metrics map to business priorities), and the chapter 9 sections on incident-response metrics (which include the compliance-tracking dimension). The 5-framework layering (UBCK + ISO 27001 + PDPD + NIST CSF + CIS) and the PDPD 72-hour clock treatment are this course's application of Mattei's framework-cataloguing approach to the specific regulatory environment of a Vietnamese securities firm. Mattei is US/global; the VN-regulator and PDPD specifics are this course's contribution.</p>
+
+<p><strong>Read next:</strong> chapter 4 (Integrating metrics into business strategy &mdash; reinforces the framework-alignment argument with concrete case studies). Lesson 0004 begins Arc 2 &mdash; measuring every program area, starting with <em>Govern + Identify</em> (which maps onto ciso-playbook 0010 strategic plan + 0006 BIA). The audit-ready matrix you've built today is the input; lesson 0004 starts filling in the per-CSF-function metric catalogue.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear &mdash; how to read the actual UBCK circular clauses, how to map to ISO 27001 Annex A specifically (the 2022 restructure is significant), how to operationalise the 72-hour PDPD clock in your IR runbook, what to do about framework gaps (like M7/UBCK), how to integrate this matrix with the ciso-playbook strategic plan (lesson 0010) &mdash; ask. The next lesson (0004: Govern + Identify) measures the strategic-foundation layer of your existing program.
+</div>
+
+<div class="lesson-nav">
+  <a href="0002-metrics-methodology.html">&larr; Lesson 0002</a>
+  <a href="0004-govern-identify.html">Lesson 0004: Govern + Identify &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

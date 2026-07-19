@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0005 &mdash; Protect: Identity, Data, Platform, and Awareness Metrics</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .predecessor {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-size: 16px;
+  }
+  .predecessor strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0005 &middot; Data-driven cybersecurity &middot; Arc 2: Measure every program area</div>
+<h1>Protect: Identity, Data, Platform, and Awareness Metrics</h1>
+<p class="subtitle">Detection gets the headlines. Protection is where the actual losses are prevented. And protection metrics are where most programs are the weakest.</p>
+
+<div class="predecessor">
+<strong>Predecessor lesson (ciso-playbook course).</strong> This lesson measures the program areas covered by <a href="../../ciso-playbook/lessons/0002-blended-team.html">ciso-playbook 0002 (blended-capability team)</a> and <a href="../../ciso-playbook/lessons/0003-awareness-training.html">ciso-playbook 0003 (awareness training)</a>. The Vietnamese artifacts from those lessons &mdash; specifically the capability-coverage matrix (lesson 0002) and the role-based training catalogue (lesson 0003) &mdash; are the input. This lesson adds the measurement layer: are the controls and training actually doing what they were designed to do?
+</div>
+
+<h2>Why this lesson fifth</h2>
+
+<p>Lesson <a href="0004-govern-identify.html">0004</a> measured the strategic foundation: governance, asset inventory, risk assessment. Lesson 0005 measures the function that consumes the foundation and produces the inputs to detection &mdash; <em>Protect</em>. Per Mattei (chapter 7), Protect spans four sub-domains: identity and access management, awareness and training, data security, and platform/configuration management. Together they form the largest, most-operationally-fraught measurement surface in the program.</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 7.1</span>
+  Identity management (IdM) is a foundational process in which organizations manage individuals' identification, authentication, and authorization to access data, systems, and resources.
+</div>
+
+<p>For your 9-entity Vietnamese securities firm, Protect lands with three pressures the ciso-playbook course did not address:</p>
+
+<ol>
+  <li><strong>Identity is multi-entity by definition.</strong> One firm-wide identity provider, or nine entity-level directories that federate, or something in between? The IAM metric set looks completely different at each operating model. Lesson 0004's lesson was to measure the strategic choice; this lesson is to measure the operational execution. <em>Time to de-provision</em> is the single most-defensible IAM metric at the audit table &mdash; a slow de-provision means an ex-employee still has access, and UBCK examiners know exactly where to look.</li>
+  <li><strong>PDPD scope dictates data-security metrics.</strong> Lesson 0003 reserved M7 (PDPD scope classification) for board-pack consideration. This lesson operationalises it: what fraction of personal data assets are encrypted at rest, encrypted in transit, encrypted in use, and classified for lawful basis? The data-security metric set is bounded by the PDPD scope inventory.</li>
+  <li><strong>Awareness is the lagging indicator of culture.</strong> Mattei (chapter 7.2) is explicit: phishing-simulation failure rate, training-completion rate, and repeat-offender rate are the leading indicators of security culture. The "tone at the top" metric is measured from the bottom up &mdash; what the lowest-click-rate entity is doing that the highest-click-rate entity is not.</li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the Protect metric catalogue (in Vietnamese) &mdash; 14&ndash;16 metrics across four sub-domains (IAM, awareness, data, platform), each cross-referenced to the ciso-playbook capability-coverage matrix and the role-based training catalogue.</strong> This catalogue is what the SOC manager reviews weekly, what the CISO presents monthly to the executive team, and what UBCK examines under the "controls" theme.</p>
+
+<h2>The four sub-domains and where they overlap</h2>
+
+<p>Protect is the largest CSF function by surface area. Mattei (chapter 7) organises it into four sub-domains, but the boundaries between them are porous &mdash; a control might be both an IAM control and a data-security control (encryption of personal data is governed by IAM access policies but implemented as a data-security control). The lesson's metric catalogue keeps the sub-domains separate for ownership clarity but flags the overlaps.</p>
+
+<table>
+  <thead>
+    <tr><th>Sub-domain</th><th>Mattei chapter</th><th>What it covers</th><th>Typical metric count</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>IAM (Identity &amp; Access Management)</strong></td>
+      <td>7.1</td>
+      <td>Authentication, access control, identity life cycle, MFA, privileged access</td>
+      <td>4&ndash;5 metrics</td>
+    </tr>
+    <tr>
+      <td><strong>Awareness &amp; Training</strong></td>
+      <td>7.2</td>
+      <td>Awareness training, role-based training, phishing simulations, culture</td>
+      <td>4&ndash;5 metrics</td>
+    </tr>
+    <tr>
+      <td><strong>Data Security</strong></td>
+      <td>7.3</td>
+      <td>Data at rest, in transit, in use; backup; encryption; PDPD scope</td>
+      <td>3&ndash;4 metrics</td>
+    </tr>
+    <tr>
+      <td><strong>Platform &amp; Configuration</strong></td>
+      <td>7.4 + 7.6</td>
+      <td>Patch management, configuration baselines, secure SDLC, infrastructure resilience</td>
+      <td>3&ndash;4 metrics</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>14&ndash;16 metrics is a lot. Most belong at the program-owner level. The board-pack subset is 2&ndash;3 metrics from this layer, joined to the 2 from Govern + Identify (lesson 0004) and the rest of the board pack (lessons 0006, 0007).</p>
+
+<h2>IAM metrics &mdash; the identity life cycle</h2>
+
+<p>Mattei (chapter 7.1) frames identity life cycle management (ILM) as the spine of IAM: create user, assign access, provision identity, manage identity, offboard identity. Each stage has a metric. The metrics cluster around three audit-defensible questions:</p>
+
+<ol>
+  <li><em>Are the right people getting access quickly?</em> &mdash; provisioning time.</li>
+  <li><em>Are the wrong people losing access quickly?</em> &mdash; de-provisioning time.</li>
+  <li><em>Is access review keeping pace with role change?</em> &mdash; access-review cadence and findings.</li>
+</ol>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>P1 &mdash; Provisioning time P95</strong> (new joiner → all required access)</td>
+      <td>Efficiency of onboarding &mdash; whether the joiner can be productive on day one</td>
+      <td>IAM Lead (group) + HR-IT (per entity)</td>
+      <td>Xanh &le; 4 giờ (làm việc); Đỏ &gt; 24 giờ</td>
+    </tr>
+    <tr>
+      <td><strong>P2 &mdash; De-provisioning time P95</strong> (offboarder → all access revoked)</td>
+      <td>Whether ex-employees lose access immediately &mdash; the <em>single most-defensible IAM metric at audit</em></td>
+      <td>IAM Lead (group) + HR-IT (per entity)</td>
+      <td>Xanh &le; 4 giờ (ngay khi nghỉ việc); Đỏ &gt; 24 giờ</td>
+    </tr>
+    <tr>
+      <td><strong>P3 &mdash; % privileged accounts with MFA enforced</strong></td>
+      <td>Whether high-risk access is gated by MFA per CIS Control 6 / NIST SP 800-63B AAL3</td>
+      <td>IAM Lead (group)</td>
+      <td>Xanh 100%; Đỏ &lt; 95%</td>
+    </tr>
+    <tr>
+      <td><strong>P4 &mdash; Access-review completion rate</strong> (% of entitlements reviewed per cadence)</td>
+      <td>Whether access is being re-attested at the cadence the framework requires</td>
+      <td>IAM Lead (group) + each system owner</td>
+      <td>Xanh &ge; 95%; Đỏ &lt; 80%</td>
+    </tr>
+    <tr>
+      <td><strong>P5 &mdash; Auth-success rate (week-over-week trend)</strong></td>
+      <td>Whether authentication is healthy &mdash; sudden drops indicate attack or system failure</td>
+      <td>IAM Lead (group)</td>
+      <td>Xanh &ge; 98%; Đỏ &lt; 95% (and dropping)</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Why de-provisioning is the audit-defensible metric.</strong> The UBCK examination of IAM typically starts with one question: "show me your de-provisioning process for an employee who leaves." The follow-up is: "show me the last 12 months of offboarding tickets &mdash; what was the de-provisioning time?" If the P95 is &gt; 24 hours, the examiner has a finding: ex-employees retained access past the SLA. If the P95 is &le; 4 hours, you pass. The threshold basis is documented in the metric card (lesson 0002): regulator minimum (UBCK ICT risk circular requires immediate revocation for offboarding), industry benchmark (SANS IAM survey median &le; 4h), and firm risk appetite (any ex-employee access past 24h is unacceptable per the strategic plan).
+</div>
+
+<h2>Awareness &amp; training metrics &mdash; the lagging indicator of culture</h2>
+
+<p>Mattei (chapter 7.2) frames awareness and training as the measurement of whether the workforce has the knowledge to behave securely. The metrics cluster around three questions:</p>
+
+<ol>
+  <li><em>Is everyone trained?</em> &mdash; completion rate.</li>
+  <li><em>Did they learn anything?</em> &mdash; comprehension rate + retraining rate.</li>
+  <li><em>Is the training changing behaviour?</em> &mdash; phishing-simulation click rate, repeat-offender rate.</li>
+</ol>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>P6 &mdash; Training completion rate</strong> (role-based training catalogue)</td>
+      <td>Whether everyone has done their required training &mdash; the floor metric</td>
+      <td>Awareness Lead (group) + HR (per entity)</td>
+      <td>Xanh 100% theo kế hoạch; Đỏ &lt; 90%</td>
+    </tr>
+    <tr>
+      <td><strong>P7 &mdash; Phishing simulation click rate</strong></td>
+      <td>Real-world behaviour &mdash; whether training is translating into changed behaviour</td>
+      <td>Awareness Lead (group)</td>
+      <td>Xanh &le; 5%; Vàng 5&ndash;10%; Đỏ &gt; 10%</td>
+    </tr>
+    <tr>
+      <td><strong>P8 &mdash; Phishing report rate</strong></td>
+      <td>Whether employees actively report suspicious emails &mdash; the early-warning indicator</td>
+      <td>Awareness Lead (group)</td>
+      <td>Xanh &ge; 30% reported within 24h; Vàng 15&ndash;30%; Đỏ &lt; 15%</td>
+    </tr>
+    <tr>
+      <td><strong>P9 &mdash; Repeat-offender rate</strong> (% of employees who fail &gt; 2 phishing simulations in 12 months)</td>
+      <td>Whether training is reaching the people who need it most &mdash; the leading indicator of culture breakdown</td>
+      <td>Awareness Lead (group) + HR (per entity)</td>
+      <td>Xanh &le; 2%; Vàng 2&ndash;5%; Đỏ &gt; 5%</td>
+    </tr>
+    <tr>
+      <td><strong>P10 &mdash; Role-based training completion</strong> (developers, SOC analysts, execs)</td>
+      <td>Whether specialised training is reaching specialised roles &mdash; the ciso-playbook 0003 catalogue</td>
+      <td>Awareness Lead (group) + capability leads</td>
+      <td>Xanh &ge; 95% cho mỗi role</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>The two phishing metrics that move together.</strong> Phishing click rate (P7) and phishing report rate (P8) are two sides of the same coin. A workforce that clicks more also reports more (the report is what catches the click). The healthy balance is high click + high report (caught early) or low click + low report (well-trained). The unhealthy balance is high click + low report (compromised without knowing) or low click + high report (training is paranoid, not protective). The cross-entity comparison in lesson 0004's catalogue lives here: which entity has the best click-to-report ratio, and what are they doing differently?
+</div>
+
+<h2>Data-security metrics &mdash; bounded by PDPD scope</h2>
+
+<p>Mattei (chapter 7.3) frames data security around three states: data at rest, data in transit, data in use. The metrics cluster around three questions:</p>
+
+<ol>
+  <li><em>Is the sensitive data identified?</em> &mdash; PDPD scope classification (already M7 from lesson 0001).</li>
+  <li><em>Is it encrypted appropriately for its state?</em> &mdash; encryption coverage at rest, in transit, in use.</li>
+  <li><em>Can we recover it?</em> &mdash; backup coverage + RTO/RPO compliance (already M4 from lesson 0001).</li>
+</ol>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>P11 &mdash; % personal-data assets encrypted at rest</strong> (within PDPD scope)</td>
+      <td>Whether personal data is protected at the storage layer &mdash; PDPD Article 11 obligation</td>
+      <td>Data Protection Officer (DPO) + Data Engineering Lead</td>
+      <td>Xanh 100% (AES-256 or equivalent); Đỏ &lt; 95%</td>
+    </tr>
+    <tr>
+      <td><strong>P12 &mdash; % data-in-transit using TLS 1.2+</strong></td>
+      <td>Whether data in transit is encrypted per Mattei's chapter 7.3.2 (TLS 1.0/1.1 are no longer secure)</td>
+      <td>Network/Security Engineering Lead</td>
+      <td>Xanh 100% cho external; Vàng &ge; 95% cho internal; Đỏ &lt; 90% internal</td>
+    </tr>
+    <tr>
+      <td><strong>P13 &mdash; Backup coverage (covered in lesson 0001 as M4)</strong></td>
+      <td>Whether critical assets can be restored &mdash; the recoverability question</td>
+      <td>Infrastructure Lead</td>
+      <td>Xanh &ge; 98% tested trong 30 ngày; Đỏ &lt; 90%</td>
+    </tr>
+    <tr>
+      <td><strong>P14 &mdash; RTO compliance rate</strong> (actual recovery time vs committed RTO)</td>
+      <td>Whether the firm can actually meet its RTO commitment &mdash; the contractual question</td>
+      <td>Infrastructure Lead + BIA owner</td>
+      <td>Xanh &ge; 95% đạt RTO trong 4h; Đỏ &lt; 85%</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Why TLS 1.0/1.1 still being detected is a common audit finding.</strong> Legacy systems, internal applications, and forgotten vendor appliances often still negotiate TLS 1.0 or 1.1. The TLS version is set by the application or library, not by the network team. A network scan finds these systems; the application owner has to remediate. The P12 metric catches the entire scope &mdash; not just internet-facing but internal systems that handle sensitive data. For PDPD scope data, the threshold is 100% TLS 1.2+ across the board.
+</div>
+
+<h2>Platform &amp; configuration metrics &mdash; the patch and baseline layer</h2>
+
+<p>Mattei (chapter 7.4) frames platform and configuration management around the disciplines of keeping systems patched, configured to baseline, and monitored for unauthorised change. The metrics cluster around three questions:</p>
+
+<ol>
+  <li><em>Are vulnerabilities being patched on schedule?</em> &mdash; patch SLA compliance (already M1 from lesson 0001).</li>
+  <li><em>Are systems configured to baseline?</em> &mdash; configuration-drift rate.</li>
+  <li><em>Is unauthorised software / change being blocked?</em> &mdash; application-whitelist effectiveness + change-control adherence.</li>
+</ol>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>P15 &mdash; Patch SLA compliance (covered in lesson 0001 as M1)</strong></td>
+      <td>Whether critical vulnerabilities are patched within the committed SLA &mdash; the patching discipline</td>
+      <td>Vulnerability Management Lead</td>
+      <td>Xanh &ge; 95% trong 14 ngày cho critical; Đỏ &lt; 80%</td>
+    </tr>
+    <tr>
+      <td><strong>P16 &mdash; Configuration-drift rate</strong> (% of systems with documented baseline deviation)</td>
+      <td>Whether systems remain at the documented secure baseline &mdash; the "we deployed, then drifted" trap</td>
+      <td>Platform Engineering Lead</td>
+      <td>Xanh &le; 5%; Vàng 5&ndash;10%; Đỏ &gt; 10%</td>
+    </tr>
+    <tr>
+      <td><strong>P17 &mdash; % endpoints with EDR coverage</strong> (and reporting healthy)</td>
+      <td>Whether every endpoint has functioning endpoint detection &mdash; the detection prerequisite</td>
+      <td>SOC Manager</td>
+      <td>Xanh &ge; 98%; Đỏ &lt; 95%</td>
+    </tr>
+    <tr>
+      <td><strong>P18 &mdash; Change-failure rate</strong> (% of changes to production that cause an incident or rollback)</td>
+      <td>Whether the change-control process is healthy &mdash; the leading indicator of platform stability</td>
+      <td>Change Manager + Platform Lead</td>
+      <td>Xanh &le; 5%; Đỏ &gt; 15%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The Protect board-pack subset &mdash; two metrics</h2>
+
+<p>Of the 14&ndash;16 Protect metrics, two belong on the board pack (joining the 2 from Govern + Identify in lesson 0004):</p>
+
+<ul>
+  <li><strong>P2 &mdash; De-provisioning time P95.</strong> The audit-defensible IAM metric. The board sees the trend; the SOC manager sees the per-entity distribution; the HR-IT process owner sees the per-offboarder tickets.</li>
+  <li><strong>P7 &mdash; Phishing simulation click rate.</strong> The cultural indicator. The board sees the trend + the cross-entity comparison; the Awareness Lead sees the per-role and per-department breakdown.</li>
+</ul>
+
+<p>The other metrics live at the program-owner level: the IAM Lead's weekly review, the Awareness Lead's monthly dashboard, the Data Protection Officer's quarterly report, the SOC Manager's real-time dashboard. This layering keeps the board pack small (8&ndash;12 metrics total) while preserving the operational depth needed to actually run the program.</p>
+
+<h2>Multi-entity IAM &mdash; the operating-model question</h2>
+
+<p>The IAM metric set looks different depending on the firm's identity operating model:</p>
+
+<table>
+  <thead>
+    <tr><th>Operating model</th><th>What it looks like</th><th>Which metrics are real</th><th>Which are inflated</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Centralised IdP</strong> (one group-level identity provider, federated to entity apps)</td>
+      <td>One source of truth for identity; entity apps trust the central IdP via SAML/OIDC</td>
+      <td>P1&ndash;P5 are all real and central-tracked</td>
+      <td>None &mdash; if centralised, all metrics are clean</td>
+    </tr>
+    <tr>
+      <td><strong>Federated directories</strong> (one directory per entity or group, federated for SSO)</td>
+      <td>Each entity has its own authoritative directory; SSO bridges them</td>
+      <td>P1, P2 real at each entity; P3, P5 central-tracked; P4 depends on federation health</td>
+      <td>P4 &mdash; access review must be per-entity, not central, and the metric often drifts at the entity</td>
+    </tr>
+    <tr>
+      <td><strong>Entity-silo</strong> (each entity has its own IdP, no federation)</td>
+      <td>No group-level view of identity; each entity operates independently</td>
+      <td>None cleanly group-tracked &mdash; all metrics are entity-tracked</td>
+      <td>All group-level metrics &mdash; the consolidated number is an average that hides outliers</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Recommended model for your firm.</strong> Centralised IdP with entity-level attribute mapping. The IdP is group-owned (e.g., Okta, Azure AD, or Keycloak); entity-level HR systems feed attributes (department, role, entity affiliation) into the IdP; access policies are written at the group level but resolve entity-specific attributes at runtime. This gives clean group-level metrics (P1&ndash;P5) while preserving the entity-specific access that the 9 entities need. The migration path from federated or silo is a 12&ndash;18 month program &mdash; but it's worth it for the metric clarity.
+</div>
+
+<h2>Awareness training &mdash; the role-based catalogue</h2>
+
+<p>Ciso-playbook 0003 produced a role-based training catalogue: every role in the firm has a specific training requirement (developers → secure coding + OWASP Top 10; SOC analysts → incident response + threat hunting; executives → cyber risk for board members; HR → phishing + social engineering; etc.). The Protect metric P10 (% role-based training completion per role) is the measurement of whether the catalogue is actually being delivered.</p>
+
+<p>The hard part is not the catalogue &mdash; it's the <em>completion tracking</em>. For a 9-entity firm, the training records live in at least three systems: the LMS (if a group LMS exists), the HR system (if training is tracked per employee), and the awareness platform (if phishing simulations are tracked separately). The metric is only real if the three systems are reconciled.</p>
+
+<p>The audit-defensible answer is: <em>one authoritative system of record for training completion, with the others as inputs.</em> The metric card for P10 must document which system is authoritative and how often the reconciliation is performed.</p>
+
+<h2>Data security &mdash; the PDPD scope question</h2>
+
+<p>The PDPD scope classification (M7 from lesson 0001, M-I7 from lesson 0004) is the inventory from which every data-security metric is calculated. If the scope is incomplete, the encryption-coverage metric is misleading.</p>
+
+<p>Two patterns dominate the PDPD scope problem at mid-size firms:</p>
+
+<ul>
+  <li><strong>Unstructured-data-blind.</strong> The scope covers databases (structured data) but not file shares, email archives, or document-management systems (unstructured data). UBCK examiners know this gap and will ask about it.</li>
+  <li><strong>Contractor-data-blind.</strong> The scope covers firm-managed data but not contractor-managed data (vendor helpdesks, outsourced processing, joint ventures). PDPD Article 9 holds the firm liable for contractor processing.</li>
+</ul>
+
+<p>The metric P11 (% personal-data assets encrypted at rest, within PDPD scope) is only as good as the scope definition. If the scope is wrong, the metric is wrong.</p>
+
+<h2>Platform &amp; configuration &mdash; the configuration-drift trap</h2>
+
+<p>Mattei (chapter 7.4) treats configuration management as the discipline of "establishing and maintaining standard configurations." The hard part is not setting the baseline &mdash; it's keeping the systems at the baseline over time. <em>Configuration drift</em> is the slow accumulation of unauthorised changes: a developer opens port 22 on a production server for an emergency fix and forgets to close it; an ops engineer disables a security control to debug an issue and forgets to re-enable it; a vendor pushes a configuration update that weakens a baseline.</p>
+
+<p>The metric P16 (% of systems with documented baseline deviation) catches the drift. The audit-defensible answer is: <em>drift is measured continuously, deviations are documented in a register, deviations past 30 days are remediated.</em> The metric card must specify how "deviation" is detected &mdash; typically a combination of configuration-management tooling (Chef, Puppet, Ansible, Intune) and periodic compliance scans (CIS-CAT, Nessus config audit).</p>
+
+<h2>Where Protect metrics connect to the rest of the program</h2>
+
+<p>Protect metrics are the inputs to Detect (lesson 0006) and Respond (lesson 0007). The P17 metric (% endpoints with EDR coverage) is the leading indicator for the FAR/FRR/EER detection-quality metrics. The P2 metric (de-provisioning time) is the leading indicator for the access-revocation containment metric. The M4 backup coverage metric (lesson 0001) is the input to the recovery-time containment metric.</p>
+
+<table>
+  <thead>
+    <tr><th>Protect metric</th><th>Downstream consumer</th><th>What it enables</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>P2 (de-provisioning time)</td><td>Respond (lesson 0007) &mdash; access-revocation containment</td><td>If de-provisioning is slow, the access-revocation IR scenario is harder to test reliably</td></tr>
+    <tr><td>P11 (encryption at rest)</td><td>Respond (lesson 0007) &mdash; PDPD breach notification scope</td><td>If personal data is encrypted at rest, the PDPD 72-hour notification scope may be smaller (good-faith encryption defence)</td></tr>
+    <tr><td>P17 (EDR coverage)</td><td>Detect (lesson 0006) &mdash; endpoint detection coverage</td><td>If EDR coverage is &lt; 95%, the FAR metric is calculated over a smaller denominator and may be misleading</td></tr>
+    <tr><td>P15 (patch SLA)</td><td>Detect (lesson 0006) &mdash; vulnerability-driven alert volume</td><td>If patching is behind SLA, the alert volume from vulnerability scanners increases and the SOC's signal-to-noise degrades</td></tr>
+    <tr><td>P7 (phishing click rate)</td><td>Detect (lesson 0006) &mdash; phishing-report alert volume</td><td>If click rate is high, the alert volume from the report-button is high and the SOC's response queue grows</td></tr>
+  </tbody>
+</table>
+
+<h2>The artifact &mdash; the Protect metric catalogue (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Danh mục chỉ số Bảo vệ (Protect Metric Catalogue)</h3>
+
+<p><strong>Use case:</strong> 14&ndash;16 metrics across four sub-domains (IAM, awareness, data, platform), each cross-referenced to the ciso-playbook capability-coverage matrix and the role-based training catalogue. Two board-pack metrics + program-owner dashboard. Vietnamese-language artifact; updated quarterly alongside lessons 0002, 0003, 0004.</p>
+
+<h3 style="margin-top:18px;">Bảng chỉ số IAM</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>P1</td><td>Provisioning time P95</td><td>IAM Lead (group) + HR-IT (per entity)</td><td>Xanh &le; 4h; Đỏ &gt; 24h</td></tr>
+    <tr><td>P2</td><td>De-provisioning time P95</td><td>IAM Lead (group) + HR-IT (per entity)</td><td>Xanh &le; 4h; Đỏ &gt; 24h</td></tr>
+    <tr><td>P3</td><td>% privileged accounts with MFA enforced</td><td>IAM Lead (group)</td><td>Xanh 100%; Đỏ &lt; 95%</td></tr>
+    <tr><td>P4</td><td>Access-review completion rate</td><td>IAM Lead (group) + system owners</td><td>Xanh &ge; 95%; Đỏ &lt; 80%</td></tr>
+    <tr><td>P5</td><td>Authentication success rate (week-over-week)</td><td>IAM Lead (group)</td><td>Xanh &ge; 98%; Đỏ &lt; 95% (and dropping)</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Awareness &amp; Training</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>P6</td><td>Training completion rate (role-based catalogue)</td><td>Awareness Lead (group) + HR (per entity)</td><td>Xanh 100% theo kế hoạch; Đỏ &lt; 90%</td></tr>
+    <tr><td>P7</td><td>Phishing simulation click rate</td><td>Awareness Lead (group)</td><td>Xanh &le; 5%; Vàng 5&ndash;10%; Đỏ &gt; 10%</td></tr>
+    <tr><td>P8</td><td>Phishing report rate</td><td>Awareness Lead (group)</td><td>Xanh &ge; 30%; Đỏ &lt; 15%</td></tr>
+    <tr><td>P9</td><td>Repeat-offender rate</td><td>Awareness Lead (group) + HR (per entity)</td><td>Xanh &le; 2%; Đỏ &gt; 5%</td></tr>
+    <tr><td>P10</td><td>Role-based training completion</td><td>Awareness Lead (group) + capability leads</td><td>Xanh &ge; 95% cho mỗi role</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Data Security</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>P11</td><td>% personal-data assets encrypted at rest (within PDPD scope)</td><td>DPO + Data Engineering Lead</td><td>Xanh 100% (AES-256); Đỏ &lt; 95%</td></tr>
+    <tr><td>P12</td><td>% data-in-transit using TLS 1.2+</td><td>Network/Security Engineering Lead</td><td>Xanh 100% external; Vàng &ge; 95% internal</td></tr>
+    <tr><td>P13</td><td>Backup coverage (M4 from lesson 0001)</td><td>Infrastructure Lead</td><td>Xanh &ge; 98% tested trong 30 ngày</td></tr>
+    <tr><td>P14</td><td>RTO compliance rate</td><td>Infrastructure Lead + BIA owner</td><td>Xanh &ge; 95% đạt RTO trong 4h</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Platform &amp; Configuration</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>P15</td><td>Patch SLA compliance (M1 from lesson 0001)</td><td>Vulnerability Management Lead</td><td>Xanh &ge; 95% trong 14 ngày critical</td></tr>
+    <tr><td>P16</td><td>Configuration-drift rate</td><td>Platform Engineering Lead</td><td>Xanh &le; 5%; Đỏ &gt; 10%</td></tr>
+    <tr><td>P17</td><td>% endpoints with EDR coverage</td><td>SOC Manager</td><td>Xanh &ge; 98%; Đỏ &lt; 95%</td></tr>
+    <tr><td>P18</td><td>Change-failure rate</td><td>Change Manager + Platform Lead</td><td>Xanh &le; 5%; Đỏ &gt; 15%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Board pack subset (2 metric)</h3>
+<ul>
+  <li><strong>P2</strong> &mdash; De-provisioning time P95 (the audit-defensible IAM metric)</li>
+  <li><strong>P7</strong> &mdash; Phishing simulation click rate (the cultural indicator)</li>
+</ul>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>Bind cùng với runbook cards (lesson 0002), cross-reference matrix (lesson 0003), Govern+Identify catalogue (lesson 0004). Quarterly review the trend 12 tháng của mỗi chỉ số, cập nhật threshold nếu cần. Khi UBCK examination, đây là evidence cho "controls" theme &mdash; controls existence + controls effectiveness + controls review.</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Pick the two board-pack metrics (P2 de-provisioning time, P7 phishing click rate) and operationalise them. For P2: pull the last 12 months of HR offboarding tickets; calculate P95 de-provisioning time; identify the slow-offboarding entities; document the threshold basis. For P7: pull the last 12 months of phishing simulation results; calculate click rate + report rate + repeat-offender rate; identify the high-click-rate departments; document the awareness-program changes that would move the metric. By the next session you should have two operational Protect metrics with real numbers, real entity distributions, and real improvement playbooks.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is de-provisioning time treated as the single most-defensible IAM metric?</summary>
+<p>Because a slow de-provisioning means an ex-employee still has access &mdash; which is the most-basic failure of identity life cycle management. UBCK examiners know exactly where to look: the last 12 months of offboarding tickets, the de-provisioning SLA, and the actual revocation time per system. If P95 is &gt; 24 hours, the firm has a finding: ex-employees retained access past the SLA. The audit-defensible answer is P95 &le; 4 hours, documented in the metric card with the regulator minimum (UBCK ICT risk circular requires immediate revocation), the industry benchmark (SANS IAM survey median), and the firm risk appetite (any ex-employee access past 24h is unacceptable). The improvement playbook: automate the offboarding ticket, integrate the HR system with the IdP, federate entity-level directories.</p>
+</details>
+
+<details>
+<summary>Why are phishing click rate and phishing report rate treated as two sides of the same coin?</summary>
+<p>Because they measure complementary behaviours: the click is the failure mode; the report is the early-warning that catches the failure. A workforce that clicks more also reports more (the report catches the click). The healthy balance is high click + high report (caught early) or low click + low report (well-trained). The unhealthy balance is high click + low report (compromised without knowing) or low click + high report (training is paranoid, not protective). The cross-entity comparison tells the story: which entity has the best click-to-report ratio, and what are they doing differently? The answer is almost always a combination of click-rate reduction (better training content) and report-rate increase (better feedback when employees report correctly).</p>
+</details>
+
+<details>
+<summary>Why is the PDPD scope classification the bounding inventory for every data-security metric?</summary>
+<p>Because if the scope is incomplete, the encryption-coverage metric is misleading. P11 (% personal-data assets encrypted at rest, within PDPD scope) is calculated as <em>encrypted personal-data assets / total personal-data assets in scope</em>. If the denominator misses contractor-managed data or unstructured data, the metric over-reports coverage. Two patterns dominate the PDPD scope problem: unstructured-data-blind (databases are scoped, file shares and email archives are not) and contractor-data-blind (firm-managed data is scoped, contractor-managed data is not). PDPD Article 9 holds the firm liable for contractor processing, so the contractor scope must be included.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapter 7 (Protect &mdash; sections 7.1 IAM, 7.2 Awareness and training, 7.3 Data security, 7.4 Configuration management, 7.6 Technology infrastructure resilience). The book introduces direct and derived metrics for each sub-domain; this lesson curates the catalogue for a 9-entity Vietnamese securities firm context, adds the multi-entity IAM operating-model dimension, and binds the metrics to the ciso-playbook capability-coverage matrix and the role-based training catalogue.</p>
+
+<p><strong>Read next:</strong> chapter 7.1.10 (IAM metrics in detail), chapter 7.2.1 (awareness and training metrics), and chapter 8 (the detection function &mdash; which lesson 0006 maps to). Lesson 0006 is the FAR/FRR/EER detection-quality dashboard + ATLAS coverage for the SOC's top use cases.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear &mdash; how to set the de-provisioning threshold when HR-IT is decentralised across 9 entities, how to operationalise the click-to-report ratio when the awareness platform is per-entity, how to detect TLS 1.0/1.1 on internal systems where the network team doesn't own the application, how to handle the contractor-data PDPD scope gap &mdash; ask. The next lesson (0006: Detect) measures the SOC's alert-quality layer.
+</div>
+
+<div class="lesson-nav">
+  <a href="0004-govern-identify.html">&larr; Lesson 0004</a>
+  <a href="0006-detect.html">Lesson 0006: Detect &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>

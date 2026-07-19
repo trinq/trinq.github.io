@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson 0008 &mdash; Predictive Analytics: REI, PTI, and AI-Effectiveness</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --rule: #d8d4cc;
+    --accent: #8b2c2c;
+    --code-bg: #f0ede6;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .meta {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    font-size: 19px;
+  }
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    margin-top: 48px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 20px;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    margin: 24px 0;
+    padding: 0 0 0 18px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .quote {
+    margin: 28px 0;
+    padding: 18px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-style: italic;
+    color: var(--ink);
+  }
+  .quote .cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .callout {
+    margin: 28px 0;
+    padding: 18px 22px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .callout strong { color: var(--accent); }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 16px 0 24px;
+  }
+  details {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f3efe6;
+    border-radius: 4px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 15px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .lesson-nav a { color: var(--accent); text-decoration: none; }
+  .artifact-box {
+    margin: 28px 0;
+    padding: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .artifact-box h3 {
+    margin-top: 0;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+  }
+  .predecessor {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background: #f3efe6;
+    border-left: 4px solid var(--accent);
+    font-size: 16px;
+  }
+  .predecessor strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+
+<div class="meta">Lesson 0008 &middot; Data-driven cybersecurity &middot; Arc 3: Beyond the basics</div>
+<h1>Predictive Analytics: REI, PTI, and AI-Effectiveness</h1>
+<p class="subtitle">Lessons 0001&ndash;0007 measure what already happened. This lesson measures what is about to happen &mdash; and whether the AI you bought is actually doing what the vendor promised.</p>
+
+<div class="predecessor">
+<strong>Predecessor lesson.</strong> This lesson builds on the detection catalogue (lesson 0006) and the threat-monitoring use cases. Arc 2 metrics measured reactive performance: how fast you detect, how clean the alerts are, how fast you contain. Arc 3 metrics measure forward-looking performance: how exposed you are, how likely the next attack is, and whether the AI overlay is making things better or worse. The ciso-playbook strat-plan baseline (risk appetite, asset inventory, threat-landscape review) is the input that scopes what "exposed" means.
+</div>
+
+<h2>Why this lesson eighth</h2>
+
+<p>Lessons <a href="0004-govern-identify.html">0004</a>&ndash;<a href="0007-respond-recover.html">0007</a> measured the present-tense: Govern, Identify, Protect, Detect, Respond, Recover. Lesson 0008 measures the future-tense &mdash; <em>predictive analytics</em>. Per Mattei (chapter 10.1), predictive analytics uses statistical algorithms, machine learning, and threat intelligence to forecast potential incidents before they occur, moving the firm from reactive to proactive. The measurable surfaces are three: <em>risk exposure</em> (REI), <em>threat likelihood</em> (PTI), and <em>AI effectiveness</em> (FPSR, AI-DA, CTDA).</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 10.2</span>
+  The REI quantifies an organization's overall risk based on a combination of factors, such as the number of vulnerabilities, the likelihood of exploitation, and the potential effect on the business.
+</div>
+
+<p>For your 9-entity Vietnamese securities firm, predictive analytics lands with three pressures the previous lessons did not address:</p>
+
+<ol>
+  <li><strong>Reactive metrics answer "what happened last quarter." Predictive metrics answer "what will happen next quarter."</strong> Mattei (chapter 10.2) is explicit: traditional metrics rely on past incidents; predictive analytics build models that forecast future events. The board pack can stay at 8&ndash;10 metrics (reactive + a small predictive layer), but the strategic-plan risk discussion must engage predictive numbers. "We had 12 incidents last quarter" is reactive. "Our PTI is at 18%, with a 60% likelihood of ransomware affecting the trading platform in the next 90 days" is predictive.</li>
+  <li><strong>The AI vendor promise rarely materialises without measurement.</strong> Mattei (chapter 10.4) frames the problem: AI tools are sold on the promise of false-positive suppression and detection improvement, but the firm has no way to verify the claim without measuring. FPSR (False-Positive Suppression Rate) and AI-DA (AI-based Decision Accuracy) are the audit-defensible answers to "is the AI actually helping or hurting?"</li>
+  <li><strong>Cloud and hybrid environments have a different predictive surface.</strong> Mattei (chapter 10.5) introduces CTDA (Cloud Threat Detection Accuracy) and the Attack Surface Index (ASI) &mdash; metrics calibrated for ephemeral workloads, shared-responsibility configurations, and data-egress anomalies that traditional on-prem detection misses. For your firm, the cloud-shadow trap from lesson 0004 is exactly what these metrics are designed to detect.</li>
+</ol>
+
+<p>By the end of this lesson you will have produced <strong>the Predictive metric catalogue (in Vietnamese) &mdash; REI and PTI formula implementation, FPSR/AI-DA for the AI overlay measurement, CTDA + ASI for cloud/network, and the Anomaly-Detection Effectiveness (ADE) metric for advanced threat detection</strong>. This is what the CISO presents in the quarterly strategic-plan review, what UBCK examines under the "forward-looking risk management" theme, and what the security-strategy team uses for budget allocation across the nine entities.</p>
+
+<h2>The three predictive surfaces</h2>
+
+<p>Mattei (chapter 10) organises predictive analytics into three measurable surfaces:</p>
+
+<table>
+  <thead>
+    <tr><th>Surface</th><th>What it measures</th><th>Key metrics</th><th>Cadence</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Risk exposure</strong></td>
+      <td>Whether the firm is more or less exposed than last quarter &mdash; the forward-looking risk score</td>
+      <td>REI (Risk Exposure Index)</td>
+      <td>Monthly recompute; quarterly trend</td>
+    </tr>
+    <tr>
+      <td><strong>Threat likelihood</strong></td>
+      <td>The probability of specific attack vectors hitting the firm in the next N days</td>
+      <td>PTI (Predictive Threat Index); Anomaly-Detection Effectiveness</td>
+      <td>Monthly recompute; quarterly review</td>
+    </tr>
+    <tr>
+      <td><strong>AI effectiveness</strong></td>
+      <td>Whether the AI overlay is actually improving detection quality</td>
+      <td>FPSR (False-Positive Suppression Rate); AI-DA (Decision Accuracy); CTDA (Cloud Threat Detection Accuracy)</td>
+      <td>Monthly measurement; vendor review</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The three surfaces depend on each other. REI requires an accurate asset inventory (lesson 0004's I1). PTI requires accurate threat-intelligence feeds and historical-incident data. AI-DA requires a labelled ground-truth dataset (incidents you can definitively say were or were not detected by the AI). All three surfaces require measurement infrastructure, not just SIEM data.</p>
+
+<h2>REI &mdash; the Risk Exposure Index</h2>
+
+<p>Mattei (chapter 10.2.1) introduces REI as a forward-looking measure of risk exposure based on vulnerabilities, threat intelligence, and business effects. The formula (equation 10.1):</p>
+
+<pre>REI = (Σ vulnerability_score × likelihood_factor × business_impact_factor) / total_assets</pre>
+
+<p>Where <code>vulnerability_score</code> is the sum of CVSS scores across all assets, <code>likelihood_factor</code> adjusts for exploit-availability (KEV-listed, EPSS-percentile, threat-intel signal), and <code>business_impact_factor</code> is the asset-criticality weight from the BIA matrix (lesson 0002 / ciso-playbook 0006).</p>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 10.2.1</span>
+  A REI of 5.625 suggests moderate risk exposure, and you would need to monitor this metric over time to gauge the effectiveness of risk mitigation measures.
+</div>
+
+<p>The metric is bounded between 0 (no exposure) and 10 (maximum exposure &mdash; every critical asset has a CVSS-10 vulnerability with active exploitation). The defensible threshold for a mid-size securities firm:</p>
+
+<table>
+  <thead>
+    <tr><th>REI band</th><th>Interpretation</th><th>Action</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>0&ndash;2</td><td>Low risk exposure</td><td>Maintain; quarterly review</td></tr>
+    <tr><td>2&ndash;5</td><td>Moderate exposure</td><td>Monthly review; targeted remediation</td></tr>
+    <tr><td>5&ndash;7</td><td>Elevated exposure</td><td>Weekly review; accelerated remediation</td></tr>
+    <tr><td>&gt; 7</td><td>High exposure</td><td>Daily review; executive escalation</td></tr>
+  </tbody>
+</table>
+
+<h3>REI implementation notes for your firm</h3>
+
+<ol>
+  <li><strong>CVSS base score is not enough.</strong> Mattei (chapter 10.2.1) treats CVSS as the starting point, not the final score. The <code>likelihood_factor</code> adjusts for KEV (CISA Known Exploited Vulnerabilities), EPSS percentile, and active-threat-intel signal. A CVSS-7 vulnerability with no known exploit is lower-risk than a CVSS-5 vulnerability on KEV with public PoC.</li>
+  <li><strong>Business-impact factor must come from the BIA, not gut feel.</strong> The asset-criticality weight is from lesson 0002 / ciso-playbook 0006's BIA matrix. Tier-1 assets (trading platform, settlement, customer data) get weight 3; Tier-2 weight 2; Tier-3 weight 1.</li>
+  <li><strong>Asset inventory denominator is the lesson-0004 guarantee.</strong> REI over a wrong denominator (70% accurate inventory) gives a wrong REI. The lesson 0004/0008 dependency is the same as for coverage metrics (lesson 0006 D1).</li>
+</ol>
+
+<h2>PTI &mdash; the Predictive Threat Index</h2>
+
+<p>Mattei (chapter 10.2.2) introduces PTI as the probability of specific attack vectors hitting the firm in the near future. The formula (equation 10.3):</p>
+
+<pre>PTI = (historical_incidents × threat_likelihood) / total_assets</pre>
+
+<p>Where <code>historical_incidents</code> is the count of similar incidents in the past 12 months, <code>threat_likelihood</code> is the threat-intel-based probability of the vector (e.g., malware campaign targeting Vietnamese financial services), and <code>total_assets</code> is the asset inventory.</p>
+
+<div class="callout">
+  <strong>PTI is calibrated per threat vector.</strong> Unlike REI (which is a single firm-wide number), PTI is computed per threat vector. A firm may have PTI-malware = 18% and PTI-ransomware = 5% and PTI-phishing = 60%. The board-pack number is the highest, not the average; the per-vector PTI drives the per-vector defence investment.
+</div>
+
+<p>The defensible thresholds for the top-5 threat vectors in a Vietnamese securities firm:</p>
+
+<table>
+  <thead>
+    <tr><th>Threat vector</th><th>Xanh (low)</th><th>Vàng (moderate)</th><th>Đỏ (high)</th><th>Defensive action when Đỏ</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Phishing</td><td>&le; 20%</td><td>20&ndash;40%</td><td>&gt; 40%</td><td>Increase awareness training; tighten email filtering</td></tr>
+    <tr><td>Ransomware</td><td>&le; 10%</td><td>10&ndash;25%</td><td>&gt; 25%</td><td>Verify backup coverage; tabletop exercise</td></tr>
+    <tr><td>Credential stuffing</td><td>&le; 15%</td><td>15&ndash;35%</td><td>&gt; 35%</td><td>Enforce MFA on all privileged accounts (lesson 0005 P3)</td></tr>
+    <tr><td>Insider threat</td><td>&le; 5%</td><td>5&ndash;15%</td><td>&gt; 15%</td><td>UBA on PDPD-scope assets; access review</td></tr>
+    <tr><td>Cloud misconfiguration</td><td>&le; 10%</td><td>10&ndash;25%</td><td>&gt; 25%</td><td>CSPM rollout; cloud security training</td></tr>
+  </tbody>
+</table>
+
+<h2>AI-effectiveness metrics &mdash; FPSR, AI-DA, CTDA</h2>
+
+<p>Mattei (chapter 10.4) introduces three AI-effectiveness metrics. These are the audit-defensible answers to the question every CISO hears: "Is the AI you bought actually helping?"</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Formula</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>FPSR (False-Positive Suppression Rate)</strong></td>
+      <td>The % reduction in false positives after AI implementation</td>
+      <td>(FP_pre − FP_post) / FP_pre × 100</td>
+      <td>Xanh &ge; 70%; Vàng 40&ndash;70%; Đỏ &lt; 40%</td>
+    </tr>
+    <tr>
+      <td><strong>AI-DA (AI-based Decision Accuracy)</strong></td>
+      <td>The % of correct AI decisions (TP + TN) over total decisions</td>
+      <td>(TP + TN) / (TP + TN + FP + FN) × 100</td>
+      <td>Xanh &ge; 90%; Vàng 80&ndash;90%; Đỏ &lt; 80%</td>
+    </tr>
+    <tr>
+      <td><strong>CTDA (Cloud Threat Detection Accuracy)</strong></td>
+      <td>The accuracy of cloud-specific threat detection (calibrated for ephemeral workloads, shared-responsibility)</td>
+      <td>Same as AI-DA but applied to the cloud telemetry feed</td>
+      <td>Xanh &ge; 85%; Đỏ &lt; 70%</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="quote">
+  <span class="cite">Mariano Mattei, <em>Data-Driven Cybersecurity</em> ch. 10.4.2</span>
+  AI-DA is typically calculated by dividing the number of correct decisions the AI system makes (true positives and true negatives) by the total number of decisions made (true positives, true negatives, false positives, and false negatives).
+</div>
+
+<h3>The ground-truth dataset problem</h3>
+
+<p>FPSR and AI-DA both require a labelled ground-truth dataset: incidents you can definitively say were or were not detected by the AI. The dataset is hard to assemble because:</p>
+
+<ul>
+  <li><strong>True negatives are silent.</strong> The AI correctly identifies 10,000 benign activities, but you only know about them if you do a separate review.</li>
+  <li><strong>True positives take time to confirm.</strong> An AI-detected event may take days to investigate and confirm as malicious; the AI-DA calculation must wait.</li>
+  <li><strong>The dataset must be refreshed.</strong> As the threat landscape shifts, the ground truth changes; the dataset must be re-labelled periodically.</li>
+</ul>
+
+<p>The audit-defensible answer is: <em>"Show me the labelled ground-truth dataset for the last 90 days, and show me the AI-DA calculation against that dataset."</em> If the dataset doesn't exist, the vendor claim is unverified.</p>
+
+<div class="callout">
+  <strong>The vendor-trap pattern.</strong> Most AI vendors quote accuracy numbers based on their own internal datasets (often curated to favour the product). The firm must independently measure against its own ground truth. A vendor claiming 99% accuracy that delivers 75% AI-DA in your environment is failing &mdash; but you cannot detect the failure without your own measurement. The CTDA metric, measured monthly and reported to the CISO, is the only defence.
+</div>
+
+<h2>Advanced threat detection metrics</h2>
+
+<p>Mattei (chapter 10.3) introduces advanced threat detection through anomaly detection, time-to-predict, and dynamic risk scoring. The lesson adds three new metrics for the advanced-detection layer.</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Anomaly-Detection Effectiveness (ADE)</strong></td>
+      <td>% of true anomalies correctly flagged by the anomaly-detection model</td>
+      <td>Xanh &ge; 80%; Đỏ &lt; 60%</td>
+    </tr>
+    <tr>
+      <td><strong>Time-to-Predict (TTP)</strong></td>
+      <td>Lead time between when the predictive model flags elevated risk and when the attack occurs (positive = early warning; negative = after the fact)</td>
+      <td>Xanh P50 &ge; 7 days; Đỏ P50 &le; 0 days</td>
+    </tr>
+    <tr>
+      <td><strong>Dynamic Risk Score (DRS)</strong></td>
+      <td>Real-time per-asset risk score that updates as new threats emerge (vs the static REI)</td>
+      <td>Xanh &le; 5 (out of 10) for &ge; 95% of assets; Đỏ &gt; 5 for &gt; 10% of assets</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Cloud and network metrics &mdash; CTDA and ASI</h2>
+
+<p>Mattei (chapter 10.5) introduces two cloud/network-specific metrics that go beyond the lesson 0006 coverage metrics (D3, D4). These measure the <em>effectiveness</em> of cloud detection, not just the <em>coverage</em>.</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What it measures</th><th>Owner</th><th>Defensible threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>CTDA (Cloud Threat Detection Accuracy)</strong></td>
+      <td>Accuracy of cloud-specific threat detection &mdash; ephemeral workloads, shared-responsibility configurations, data-egress anomalies</td>
+      <td>Cloud Security Lead</td>
+      <td>Xanh &ge; 85%; Đỏ &lt; 70%</td>
+    </tr>
+    <tr>
+      <td><strong>ASI (Attack Surface Index)</strong></td>
+      <td>The exposed attack surface: internet-facing assets, exposed credentials, misconfigured permissions, unpatched public-facing services</td>
+      <td>Vulnerability Management Lead</td>
+      <td>Xanh &le; 1,000 exposed endpoints (for a mid-size firm); decrease month-over-month</td>
+    </tr>
+    <tr>
+      <td><strong>Threat-Hunting Lead Time (THLT)</strong></td>
+      <td>Lead time between when the threat hunter identifies a hidden threat and when the SIEM would have flagged it (positive = hunter is ahead of automation)</td>
+      <td>Threat Hunting Lead</td>
+      <td>Xanh P50 &ge; 7 days; Đỏ P50 &le; 0 days</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The Predictive board-pack subset &mdash; one or two metrics</h2>
+
+<p>Of the Predictive metrics, one or two belong on the board pack (joining the reactive metrics from lessons 0004&ndash;0007):</p>
+
+<ul>
+  <li><strong>REI</strong> &mdash; the forward-looking firm-wide risk score (the single most-defensible predictive metric at the audit table)</li>
+  <li>OR <strong>PTI-ransomware</strong> &mdash; the per-vector probability for the highest-impact threat</li>
+</ul>
+
+<p>The rest live at the security-strategy team's monthly review and the CISO's quarterly strategic-plan discussion. The board sees the trend: is risk exposure falling? is threat likelihood falling? is the AI overlay helping?</p>
+
+<h2>Why REI and PTI are different from REA and PTI</h2>
+
+<p>Mattei is careful to distinguish REI (forward-looking, predictive) from REA (reactive, historical). The two metrics move in different directions: REI can rise while REA falls (the firm is historically clean but increasingly exposed to a new threat vector). The board-pack number is REI, not REA &mdash; the board wants to know what is about to happen, not what already happened.</p>
+
+<div class="callout">
+  <strong>The two axes of risk measurement.</strong> Most firms measure only one axis. The reactive axis (REA, lessons 0004&ndash;0007) tells the past. The predictive axis (REI, PTI, lesson 0008) tells the future. A firm that has only the reactive axis is permanently late: they see threats after the attack, never before. A firm that has only the predictive axis is permanently fictional: they see threats that never materialise, miss threats that do. The complete measurement has both. The strategic-plan risk discussion uses both; the budget allocation uses the predictive axis because it tells you where to invest before the incident, not after.
+</div>
+
+<h2>Where Predictive metrics connect to the rest of the program</h2>
+
+<p>Predictive metrics are the bridge between measurement and strategy. The REI depends on lesson 0004's asset inventory (I1) and lesson 0002's BIA-criticality weights. The PTI depends on lesson 0007's incident history (R4-R6) and on the threat-intelligence feeds. The AI-DA and CTDA depend on lesson 0006's ATLAS spreadsheet and on the vendor contract terms.</p>
+
+<table>
+  <thead>
+    <tr><th>Predictive metric</th><th>Upstream dependency</th><th>Strategic use</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>REI</td><td>I1 (lesson 0004 inventory), BIA-criticality (lesson 0002)</td><td>Budget allocation; capital expenditure prioritisation</td></tr>
+    <tr><td>PTI per vector</td><td>R4-R6 (lesson 0007 incident history), threat-intel feeds</td><td>Defensive investment per threat vector; tabletop exercise selection</td></tr>
+    <tr><td>FPSR / AI-DA</td><td>Lesson 0006 ATLAS + SIEM detection rules; ground-truth dataset</td><td>Vendor renewal decisions; AI overlay refresh</td></tr>
+    <tr><td>CTDA</td><td>Lesson 0006 D3 (cloud coverage)</td><td>Cloud security tool selection</td></tr>
+    <tr><td>ASI</td><td>Lesson 0004 I1 (inventory) + I4 (internet-facing assets)</td><td>Attack-surface reduction prioritisation</td></tr>
+  </tbody>
+</table>
+
+<h2>The artifact &mdash; the Predictive metric catalogue (Vietnamese)</h2>
+
+<div class="artifact-box">
+<h3>Artifact &mdash; Danh mục chỉ số Dự đoán (Predictive Metric Catalogue)</h3>
+
+<p><strong>Use case:</strong> 7 metrics across three surfaces (risk exposure, threat likelihood, AI effectiveness) + the per-vector PTI table for the top-5 threats + the REI implementation formula in Vietnamese-language terms. Updated monthly; quarterly review with the strategic plan.</p>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Risk Exposure</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Formula</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PA1</td><td>REI (Risk Exposure Index)</td><td>(Σ CVSS × likelihood_factor × business_impact) / total_assets</td><td>Xanh &le; 5; Vàng 5&ndash;7; Đỏ &gt; 7</td></tr>
+    <tr><td>PA2</td><td>Dynamic Risk Score (DRS)</td><td>Real-time per-asset score</td><td>Xanh &le; 5 cho &ge; 95% assets</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Threat Likelihood (per vector)</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Vector</th><th>Đỏ threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PA3</td><td>PTI-phishing</td><td>Phishing</td><td>&gt; 40%</td></tr>
+    <tr><td>PA4</td><td>PTI-ransomware</td><td>Ransomware</td><td>&gt; 25%</td></tr>
+    <tr><td>PA5</td><td>PTI-credential-stuffing</td><td>Credential stuffing</td><td>&gt; 35%</td></tr>
+    <tr><td>PA6</td><td>PTI-insider-threat</td><td>Insider threat</td><td>&gt; 15%</td></tr>
+    <tr><td>PA7</td><td>PTI-cloud-misconfig</td><td>Cloud misconfiguration</td><td>&gt; 25%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số AI Effectiveness</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Formula</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PA8</td><td>FPSR (False-Positive Suppression Rate)</td><td>(FP_pre - FP_post) / FP_pre</td><td>Xanh &ge; 70%; Đỏ &lt; 40%</td></tr>
+    <tr><td>PA9</td><td>AI-DA (Decision Accuracy)</td><td>(TP+TN) / total_decisions</td><td>Xanh &ge; 90%; Đỏ &lt; 80%</td></tr>
+    <tr><td>PA10</td><td>CTDA (Cloud Threat Detection Accuracy)</td><td>Same as AI-DA; cloud telemetry</td><td>Xanh &ge; 85%; Đỏ &lt; 70%</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Bảng chỉ số Cloud/Network + Hunting</h3>
+
+<table style="font-size:13px;">
+  <thead>
+    <tr><th>#</th><th>Chỉ số</th><th>Owner</th><th>Threshold</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PA11</td><td>ASI (Attack Surface Index)</td><td>Vuln Mgmt Lead</td><td>Xanh &le; 1,000 exposed endpoints; trending down</td></tr>
+    <tr><td>PA12</td><td>THLT (Threat-Hunting Lead Time)</td><td>Threat Hunting Lead</td><td>Xanh P50 &ge; 7 days; Đỏ P50 &le; 0</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:18px;">Board pack subset (1&ndash;2 metric)</h3>
+<ul>
+  <li><strong>PA1</strong> &mdash; REI (the forward-looking firm-wide risk score)</li>
+  <li>OR <strong>PA4</strong> &mdash; PTI-ransomware (the highest-impact vector)</li>
+</ul>
+
+<h3 style="margin-top:18px;">REI implementation note (Vietnamese)</h3>
+<p><code>REI = (Tổng(CVSS) × KEV_factor × BIA_weight) / Tổng_tài_sản</code>. KEV_factor = 1.5 nếu trong CISA KEV (hoặc VN-CERT cảnh báo); 1.0 nếu EPSS percentile &gt; 50%; 0.5 nếu chỉ có CVSS base. BIA_weight từ lesson 0002 / ciso-playbook 0006: Tier 1 = 3, Tier 2 = 2, Tier 3 = 1.</p>
+
+<h3 style="margin-top:18px;">Cách dùng (use)</h3>
+<p>PA1&ndash;PA2 monthly recompute (joined với lesson 0004 asset inventory refresh). PA3&ndash;PA7 per-vector PTI monthly; dùng cho tabletop exercise selection (lesson 0007 R14). PA8&ndash;PA10 measured against labelled ground-truth dataset, monthly review, used for vendor-renewal decisions. PA11&ndash;PA12 monthly trend; quarterly board-report.</p>
+</div>
+
+<div class="callout">
+  <strong>Before the next session.</strong> Build the labelled ground-truth dataset for FPSR/AI-DA. Pull the last 90 days of confirmed incidents; for each, label whether the AI detected it and whether the detection was correct. Calculate PA8 (FPSR) and PA9 (AI-DA). If the dataset doesn't exist or the metrics are unmeasurable, that is itself a finding: the AI overlay is unverified. By next session you should have a measurable AI-DA baseline + a documented ground-truth dataset refresh process.
+</div>
+
+<h2>Self-check</h2>
+
+<details>
+<summary>Why is REI computed over the lesson 0004 asset inventory rather than a raw vulnerability count?</summary>
+<p>Because the denominator changes the meaning. A raw vulnerability count is a count of bugs; REI is an exposure score. A firm with 100 vulnerabilities on 1,000 assets (REI = 1.0) is much less exposed than a firm with 100 vulnerabilities on 10 assets (REI = 10.0), even though the "vulnerability count" is identical. The denominator normalises across firm size and avoids the "we have too many assets" trap. The denominator must also be the authoritative inventory (lesson 0004's I1) — if the inventory is 70% accurate, the REI is calculated over the wrong population and the exposure picture is wrong. This is why fixing lesson 0004's inventory is a prerequisite for meaningful lesson 0008 metrics.</p>
+</details>
+
+<details>
+<summary>Why does the firm need its own ground-truth dataset for AI-DA, rather than trusting the vendor's accuracy claim?</summary>
+<p>Because vendor accuracy claims are typically measured on curated internal datasets that favour the product. The firm measures in its own environment, against its own threat landscape, with its own network noise patterns. A vendor claiming 99% accuracy may deliver 75% AI-DA in your environment because the false-positive patterns are different. The ground-truth dataset must be labelled independently — confirmed incidents that the AI missed (false negatives) or flagged (true positives), confirmed-benign activities the AI mis-flagged (false positives) or correctly cleared (true negatives). Without the dataset, the AI-DA claim is unverified, and the firm cannot make a defensible vendor-renewal decision. The dataset must be refreshed as the threat landscape shifts.</p>
+</details>
+
+<details>
+<summary>Why is PTI per-vector rather than a single firm-wide number?</summary>
+<p>Because defensive investments are per-vector, not firm-wide. A firm with PTI-phishing = 60% needs to invest in awareness training and email filtering; a firm with PTI-ransomware = 40% needs to invest in backup coverage and tabletop exercises. A single firm-wide PTI (e.g., 25%) hides the fact that phishing is the dominant threat and ransomware is moderate. The per-vector PTI is computed separately and presented as a heatmap: PTI-phishing, PTI-ransomware, PTI-credential-stuffing, PTI-insider, PTI-cloud-misconfig. The board sees the top-3 vectors; the security-strategy team uses all five for budget allocation; the SOC uses the top vector for staffing.</p>
+</details>
+
+<h2>Primary source</h2>
+
+<p>This lesson draws on Mattei's chapter 10 (Predictive analytics, AI, advanced threat detection — sections 10.1 risk-exposure intro, 10.2 REI formula and PTI formula, 10.3 advanced threat detection, 10.4 AI effectiveness with FPSR and AI-DA, 10.5 cloud/network metrics with CTDA and ASI, 10.6 incident management with threat hunting). The lesson curates the catalogue for a 9-entity Vietnamese securities firm, adds the per-vector PTI table (rather than a single firm-wide PTI as in the book), and binds the metrics to lesson 0004's inventory, lesson 0002's BIA, and lesson 0006's ATLAS spreadsheet.</p>
+
+<p><strong>Read next:</strong> Mattei's chapters 11–13, which cover statistical methods for continuous improvement (chapter 11), machine-learning models for threat detection (chapter 12), and generative AI for cybersecurity (chapter 13). Lesson 0009 (Statistical methods) dives into the statistical-analysis methods used in the ATLAS spreadsheet — moving averages, percentile-based anomaly detection, Bayesian inference. Lesson 0010 (AI for metrics) covers DBSCAN, random forest, and the practical use of LLMs in cybersecurity reporting.</p>
+
+<div class="callout">
+  <strong>Ask follow-up questions.</strong> The agent is your teacher. Anything in this lesson that's unclear — how to compute REI when the asset inventory is incomplete, how to label the ground-truth dataset for AI-DA, how to defend the KEV-factor weighting to a UBCK examiner, how to handle PTI when the threat-intel feed is per-entity rather than group, how to set THLT thresholds when the threat-hunting team is single-digit staffed, how to integrate the Predictive catalogue with the existing CSF-function catalogues — ask. The next lesson (0009: Statistical methods) covers the statistical depth behind the ATLAS spreadsheet.
+</div>
+
+<div class="lesson-nav">
+  <a href="0007-respond-recover.html">&larr; Lesson 0007</a>
+  <a href="0009-statistics.html">Lesson 0009: Statistical Methods &rarr;</a>
+</div>
+
+</main>
+</body>
+</html>
